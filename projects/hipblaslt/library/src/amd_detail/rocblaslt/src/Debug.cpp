@@ -69,8 +69,9 @@ namespace rocblaslt
             m_printLogAsMarker = strtol(hipblaslt_marker, nullptr, 0) == 2;
 #ifndef HIPBLASLT_ENABLE_MARKER
             if(m_printMarker)
-                printf("HIPBLASLT_ENABLE_MARKER is not defined. Please rebuild with -DHIPBLASLT_ENABLE_MARKER=ON\n");
-#endif  
+                printf("HIPBLASLT_ENABLE_MARKER is not defined. Please rebuild with "
+                       "-DHIPBLASLT_ENABLE_MARKER=ON\n");
+#endif
         }
 
         const char* hipblaslt_bench = std::getenv("HIPBLASLT_BENCH_PRINT_COMMAND");
@@ -79,7 +80,7 @@ namespace rocblaslt
             m_benchPrintCommand = strtol(hipblaslt_bench, nullptr, 0) != 0;
         }
 
-        const char *hipblaslt_preload = std::getenv("HIPBLASLT_PRELOAD_KERNELS");
+        const char* hipblaslt_preload = std::getenv("HIPBLASLT_PRELOAD_KERNELS");
         m_preloadAllKernels = hipblaslt_preload && strtol(hipblaslt_preload, nullptr, 0) != 0;
     }
 

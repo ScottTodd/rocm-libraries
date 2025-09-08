@@ -26,8 +26,8 @@
 #include "../../config.hpp"
 #include "../../detail/various.hpp"
 
-#include "../../intrinsics.hpp"
 #include "../../functional.hpp"
+#include "../../intrinsics.hpp"
 
 #include "../../intrinsics/thread.hpp"
 #include "../../thread/thread_reduce.hpp"
@@ -60,10 +60,10 @@ class block_scan_reduce_then_scan
 
     // Minimize LDS bank conflicts
     static constexpr unsigned int banks_no_ = ::rocprim::detail::get_lds_banks_no();
-    static constexpr bool has_bank_conflicts_ =
-        ::rocprim::detail::is_power_of_two(thread_reduction_size_) && thread_reduction_size_ > 1;
-    static constexpr unsigned int bank_conflicts_padding =
-        has_bank_conflicts_ ? (warp_size_ * thread_reduction_size_ / banks_no_) : 0;
+    static constexpr bool         has_bank_conflicts_
+        = ::rocprim::detail::is_power_of_two(thread_reduction_size_) && thread_reduction_size_ > 1;
+    static constexpr unsigned int bank_conflicts_padding
+        = has_bank_conflicts_ ? (warp_size_ * thread_reduction_size_ / banks_no_) : 0;
 
     struct storage_type_
     {
@@ -77,10 +77,7 @@ public:
 
     template<class BinaryFunction>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void inclusive_scan(T input,
-                        T& output,
-                        storage_type& storage,
-                        BinaryFunction scan_op)
+    void inclusive_scan(T input, T& output, storage_type& storage, BinaryFunction scan_op)
     {
         const auto flat_tid = ::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>();
         this->inclusive_scan_impl(flat_tid, input, output, storage, scan_op);
@@ -92,17 +89,15 @@ public:
                         T& output,
                         BinaryFunction scan_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->inclusive_scan(input, output, storage, scan_op);
     }
 
     template<class BinaryFunction>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void inclusive_scan(T input,
-                        T& output,
-                        T& reduction,
-                        storage_type& storage,
-                        BinaryFunction scan_op)
+    void inclusive_scan(
+        T input, T& output, T& reduction, storage_type& storage, BinaryFunction scan_op)
     {
         storage_type_& storage_ = storage.get();
         this->inclusive_scan(input, output, storage, scan_op);
@@ -116,28 +111,30 @@ public:
                         T& reduction,
                         BinaryFunction scan_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->inclusive_scan(input, output, reduction, storage, scan_op);
     }
 
     template<class PrefixCallback, class BinaryFunction>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void inclusive_scan(T input,
-                        T& output,
-                        storage_type& storage,
+    void inclusive_scan(T               input,
+                        T&              output,
+                        storage_type&   storage,
                         PrefixCallback& prefix_callback_op,
-                        BinaryFunction scan_op)
+                        BinaryFunction  scan_op)
     {
         const auto flat_tid = ::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>();
-        const auto warp_id = ::rocprim::warp_id(flat_tid);
+        const auto warp_id  = ::rocprim::warp_id(flat_tid);
         storage_type_& storage_ = storage.get();
         this->inclusive_scan_impl(flat_tid, input, output, storage, scan_op);
         // Include block prefix (this operation overwrites storage_.threads[0])
-        T block_prefix = this->get_block_prefix(
-            flat_tid, warp_id,
-            storage_.threads[index(BlockSize - 1)], // block reduction
-            prefix_callback_op, storage
-        );
+        T block_prefix
+            = this->get_block_prefix(flat_tid,
+                                     warp_id,
+                                     storage_.threads[index(BlockSize - 1)], // block reduction
+                                     prefix_callback_op,
+                                     storage);
         output = scan_op(block_prefix, output);
     }
 
@@ -145,7 +142,7 @@ public:
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void inclusive_scan(T (&input)[ItemsPerThread],
                         T (&output)[ItemsPerThread],
-                        storage_type& storage,
+                        storage_type&  storage,
                         BinaryFunction scan_op)
     {
         // Reduce thread items
@@ -153,12 +150,11 @@ public:
 
         // Scan of reduced values to get prefixes
         const auto flat_tid = ::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>();
-        this->exclusive_scan_impl(
-            flat_tid,
-            thread_input, thread_input, // input, output
-            storage,
-            scan_op
-        );
+        this->exclusive_scan_impl(flat_tid,
+                                  thread_input,
+                                  thread_input, // input, output
+                                  storage,
+                                  scan_op);
 
         // Include prefix (first thread does not have prefix)
         ::rocprim::thread_scan_inclusive(input, output, scan_op, thread_input, flat_tid > 0);
@@ -170,7 +166,8 @@ public:
                         T (&output)[ItemsPerThread],
                         BinaryFunction scan_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->inclusive_scan(input, output, storage, scan_op);
     }
 
@@ -193,7 +190,8 @@ public:
                         T (&output)[ItemsPerThread],
                         BinaryFunction scan_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->inclusive_scan(input, init, output, storage, scan_op);
     }
 
@@ -201,8 +199,8 @@ public:
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void inclusive_scan(T (&input)[ItemsPerThread],
                         T (&output)[ItemsPerThread],
-                        T& reduction,
-                        storage_type& storage,
+                        T&             reduction,
+                        storage_type&  storage,
                         BinaryFunction scan_op)
     {
         storage_type_& storage_ = storage.get();
@@ -218,7 +216,8 @@ public:
                         T& reduction,
                         BinaryFunction scan_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->inclusive_scan(input, output, reduction, storage, scan_op);
     }
 
@@ -243,21 +242,18 @@ public:
                         T& reduction,
                         BinaryFunction scan_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->inclusive_scan(input, init, output, reduction, storage, scan_op);
     }
 
-    template<
-        class PrefixCallback,
-        unsigned int ItemsPerThread,
-        class BinaryFunction
-    >
+    template<class PrefixCallback, unsigned int ItemsPerThread, class BinaryFunction>
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void inclusive_scan(T (&input)[ItemsPerThread],
                         T (&output)[ItemsPerThread],
-                        storage_type& storage,
+                        storage_type&   storage,
                         PrefixCallback& prefix_callback_op,
-                        BinaryFunction scan_op)
+                        BinaryFunction  scan_op)
     {
         storage_type_& storage_ = storage.get();
         // Reduce thread items
@@ -265,40 +261,37 @@ public:
 
         // Scan of reduced values to get prefixes
         const auto flat_tid = ::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>();
-        this->exclusive_scan_impl(
-            flat_tid,
-            thread_input, thread_input, // input, output
-            storage,
-            scan_op
-        );
+        this->exclusive_scan_impl(flat_tid,
+                                  thread_input,
+                                  thread_input, // input, output
+                                  storage,
+                                  scan_op);
 
         // this operation overwrites storage_.threads[0]
-        T block_prefix = this->get_block_prefix(
-            flat_tid, ::rocprim::warp_id(flat_tid),
-            storage_.threads[index(BlockSize - 1)], // block reduction
-            prefix_callback_op, storage
-        );
+        T block_prefix
+            = this->get_block_prefix(flat_tid,
+                                     ::rocprim::warp_id(flat_tid),
+                                     storage_.threads[index(BlockSize - 1)], // block reduction
+                                     prefix_callback_op,
+                                     storage);
 
         // Include prefix (first thread does not have prefix)
         output[0] = input[0];
-        if(flat_tid != 0) output[0] = scan_op(thread_input, input[0]);
+        if(flat_tid != 0)
+            output[0] = scan_op(thread_input, input[0]);
         // Include block prefix
         output[0] = scan_op(block_prefix, output[0]);
         // Final thread-local scan
         ROCPRIM_UNROLL
         for(unsigned int i = 1; i < ItemsPerThread; i++)
         {
-            output[i] = scan_op(output[i-1], input[i]);
+            output[i] = scan_op(output[i - 1], input[i]);
         }
     }
 
     template<class BinaryFunction>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void exclusive_scan(T input,
-                        T& output,
-                        T init,
-                        storage_type& storage,
-                        BinaryFunction scan_op)
+    void exclusive_scan(T input, T& output, T init, storage_type& storage, BinaryFunction scan_op)
     {
         const auto flat_tid = ::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>();
         this->exclusive_scan_impl(flat_tid, input, output, init, storage, scan_op);
@@ -311,24 +304,19 @@ public:
                         T init,
                         BinaryFunction scan_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->exclusive_scan(input, output, init, storage, scan_op);
     }
 
     template<class BinaryFunction>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void exclusive_scan(T input,
-                        T& output,
-                        T init,
-                        T& reduction,
-                        storage_type& storage,
-                        BinaryFunction scan_op)
+    void exclusive_scan(
+        T input, T& output, T init, T& reduction, storage_type& storage, BinaryFunction scan_op)
     {
         const auto flat_tid = ::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>();
         storage_type_& storage_ = storage.get();
-        this->exclusive_scan_impl(
-            flat_tid, input, output, init, storage, scan_op
-        );
+        this->exclusive_scan_impl(flat_tid, input, output, init, storage, scan_op);
         // Save reduction result
         reduction = storage_.threads[index(BlockSize - 1)];
     }
@@ -341,41 +329,39 @@ public:
                         T& reduction,
                         BinaryFunction scan_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->exclusive_scan(input, output, init, reduction, storage, scan_op);
     }
 
     template<class PrefixCallback, class BinaryFunction>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void exclusive_scan(T input,
-                        T& output,
-                        storage_type& storage,
+    void exclusive_scan(T               input,
+                        T&              output,
+                        storage_type&   storage,
                         PrefixCallback& prefix_callback_op,
-                        BinaryFunction scan_op)
+                        BinaryFunction  scan_op)
     {
         const auto flat_tid = ::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>();
-        const auto warp_id = ::rocprim::warp_id(flat_tid);
+        const auto warp_id  = ::rocprim::warp_id(flat_tid);
         storage_type_& storage_ = storage.get();
-        this->exclusive_scan_impl(
-            flat_tid, input, output, storage, scan_op
-        );
+        this->exclusive_scan_impl(flat_tid, input, output, storage, scan_op);
         // Get reduction result
         T reduction = storage_.threads[index(BlockSize - 1)];
         // Include block prefix (this operation overwrites storage_.threads[0])
-        T block_prefix = this->get_block_prefix(
-            flat_tid, warp_id, reduction,
-            prefix_callback_op, storage
-        );
+        T block_prefix
+            = this->get_block_prefix(flat_tid, warp_id, reduction, prefix_callback_op, storage);
         output = scan_op(block_prefix, output);
-        if(flat_tid == 0) output = block_prefix;
+        if(flat_tid == 0)
+            output = block_prefix;
     }
 
     template<unsigned int ItemsPerThread, class BinaryFunction>
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void exclusive_scan(T (&input)[ItemsPerThread],
                         T (&output)[ItemsPerThread],
-                        T init,
-                        storage_type& storage,
+                        T              init,
+                        storage_type&  storage,
                         BinaryFunction scan_op)
     {
         // Reduce thread items
@@ -388,16 +374,15 @@ public:
 
         // Scan of reduced values to get prefixes
         const auto flat_tid = ::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>();
-        this->exclusive_scan_impl(
-            flat_tid,
-            thread_input, thread_input, // input, output
-            init,
-            storage,
-            scan_op
-        );
+        this->exclusive_scan_impl(flat_tid,
+                                  thread_input,
+                                  thread_input, // input, output
+                                  init,
+                                  storage,
+                                  scan_op);
 
         // Include init value
-        T prev = input[0];
+        T prev      = input[0];
         T exclusive = init;
         if(flat_tid != 0)
         {
@@ -408,7 +393,7 @@ public:
         for(unsigned int i = 1; i < ItemsPerThread; i++)
         {
             exclusive = scan_op(exclusive, prev);
-            prev = input[i];
+            prev      = input[i];
             output[i] = exclusive;
         }
     }
@@ -420,7 +405,8 @@ public:
                         T init,
                         BinaryFunction scan_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->exclusive_scan(input, output, init, storage, scan_op);
     }
 
@@ -428,9 +414,9 @@ public:
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void exclusive_scan(T (&input)[ItemsPerThread],
                         T (&output)[ItemsPerThread],
-                        T init,
-                        T& reduction,
-                        storage_type& storage,
+                        T              init,
+                        T&             reduction,
+                        storage_type&  storage,
                         BinaryFunction scan_op)
     {
         storage_type_& storage_ = storage.get();
@@ -447,21 +433,18 @@ public:
                         T& reduction,
                         BinaryFunction scan_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->exclusive_scan(input, output, init, reduction, storage, scan_op);
     }
 
-    template<
-        class PrefixCallback,
-        unsigned int ItemsPerThread,
-        class BinaryFunction
-    >
+    template<class PrefixCallback, unsigned int ItemsPerThread, class BinaryFunction>
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void exclusive_scan(T (&input)[ItemsPerThread],
                         T (&output)[ItemsPerThread],
-                        storage_type& storage,
+                        storage_type&   storage,
                         PrefixCallback& prefix_callback_op,
-                        BinaryFunction scan_op)
+                        BinaryFunction  scan_op)
     {
         storage_type_& storage_ = storage.get();
         // Reduce thread items
@@ -474,22 +457,22 @@ public:
 
         // Scan of reduced values to get prefixes
         const auto flat_tid = ::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>();
-        this->exclusive_scan_impl(
-            flat_tid,
-            thread_input, thread_input, // input, output
-            storage,
-            scan_op
-        );
+        this->exclusive_scan_impl(flat_tid,
+                                  thread_input,
+                                  thread_input, // input, output
+                                  storage,
+                                  scan_op);
 
         // this operation overwrites storage_.warp_prefixes[0]
-        T block_prefix = this->get_block_prefix(
-            flat_tid, ::rocprim::warp_id(flat_tid),
-            storage_.threads[index(BlockSize - 1)], // block reduction
-            prefix_callback_op, storage
-        );
+        T block_prefix
+            = this->get_block_prefix(flat_tid,
+                                     ::rocprim::warp_id(flat_tid),
+                                     storage_.threads[index(BlockSize - 1)], // block reduction
+                                     prefix_callback_op,
+                                     storage);
 
         // Include init value and block prefix
-        T prev = input[0];
+        T prev      = input[0];
         T exclusive = block_prefix;
         if(flat_tid != 0)
         {
@@ -500,23 +483,22 @@ public:
         for(unsigned int i = 1; i < ItemsPerThread; i++)
         {
             exclusive = scan_op(exclusive, prev);
-            prev = input[i];
+            prev      = input[i];
             output[i] = exclusive;
         }
     }
 
 private:
-
     // Calculates inclusive scan results and stores them in storage_.threads,
     // result for each thread is stored in storage_.threads[flat_tid], and sets
     // output to storage_.threads[flat_tid]
     template<class BinaryFunction>
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void inclusive_scan_impl(const unsigned int flat_tid,
-                             T input,
-                             T& output,
-                             storage_type& storage,
-                             BinaryFunction scan_op)
+                             T                  input,
+                             T&                 output,
+                             storage_type&      storage,
+                             BinaryFunction     scan_op)
     {
         storage_type_& storage_ = storage.get();
         // Calculate inclusive scan,
@@ -530,11 +512,11 @@ private:
     template<class BinaryFunction>
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void inclusive_scan_base(const unsigned int flat_tid,
-                             T input,
-                             storage_type& storage,
-                             BinaryFunction scan_op)
+                             T                  input,
+                             storage_type&      storage,
+                             BinaryFunction     scan_op)
     {
-        storage_type_& storage_ = storage.get();
+        storage_type_& storage_           = storage.get();
         storage_.threads[index(flat_tid)] = input;
         ::rocprim::syncthreads();
         if(flat_tid < warp_size_)
@@ -631,17 +613,18 @@ private:
     template<class BinaryFunction>
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void exclusive_scan_impl(const unsigned int flat_tid,
-                             T input,
-                             T& output,
-                             T init,
-                             storage_type& storage,
-                             BinaryFunction scan_op)
+                             T                  input,
+                             T&                 output,
+                             T                  init,
+                             storage_type&      storage,
+                             BinaryFunction     scan_op)
     {
         storage_type_& storage_ = storage.get();
         // Calculates inclusive scan, result for each thread is stored in storage_.threads[flat_tid]
         this->inclusive_scan_base(flat_tid, input, storage, scan_op);
         output = init;
-        if(flat_tid != 0) output = scan_op(init, storage_.threads[index(flat_tid-1)]);
+        if(flat_tid != 0)
+            output = scan_op(init, storage_.threads[index(flat_tid - 1)]);
     }
 
     template<class BinaryFunction>
@@ -667,17 +650,17 @@ private:
     template<class BinaryFunction>
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void exclusive_scan_impl(const unsigned int flat_tid,
-                             T input,
-                             T& output,
-                             storage_type& storage,
-                             BinaryFunction scan_op)
+                             T                  input,
+                             T&                 output,
+                             storage_type&      storage,
+                             BinaryFunction     scan_op)
     {
         storage_type_& storage_ = storage.get();
         // Calculates inclusive scan, result for each thread is stored in storage_.threads[flat_tid]
         this->inclusive_scan_base(flat_tid, input, storage, scan_op);
         if(flat_tid > 0)
         {
-            output = storage_.threads[index(flat_tid-1)];
+            output = storage_.threads[index(flat_tid - 1)];
         }
     }
 
@@ -686,17 +669,15 @@ private:
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void include_block_prefix(const unsigned int flat_tid,
                               const unsigned int warp_id,
-                              const T input,
-                              T& output,
-                              const T reduction,
-                              PrefixCallback& prefix_callback_op,
-                              storage_type& storage,
-                              BinaryFunction scan_op)
+                              const T            input,
+                              T&                 output,
+                              const T            reduction,
+                              PrefixCallback&    prefix_callback_op,
+                              storage_type&      storage,
+                              BinaryFunction     scan_op)
     {
-        T block_prefix = this->get_block_prefix(
-            flat_tid, warp_id, reduction,
-            prefix_callback_op, storage
-        );
+        T block_prefix
+            = this->get_block_prefix(flat_tid, warp_id, reduction, prefix_callback_op, storage);
         output = scan_op(block_prefix, input);
     }
 
@@ -705,9 +686,9 @@ private:
     ROCPRIM_DEVICE ROCPRIM_INLINE
     T get_block_prefix(const unsigned int flat_tid,
                        const unsigned int warp_id,
-                       const T reduction,
-                       PrefixCallback& prefix_callback_op,
-                       storage_type& storage)
+                       const T            reduction,
+                       PrefixCallback&    prefix_callback_op,
+                       storage_type&      storage)
     {
         storage_type_& storage_ = storage.get();
         if(warp_id == 0)
@@ -729,7 +710,7 @@ private:
     static unsigned int index(unsigned int n)
     {
         // Move every 32-bank wide "row" (32 banks * 4 bytes) by one item
-        return has_bank_conflicts_ ? (n + (n/banks_no_)) : n;
+        return has_bank_conflicts_ ? (n + (n / banks_no_)) : n;
     }
 
     template<int N, typename F>

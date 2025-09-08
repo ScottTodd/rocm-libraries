@@ -29,7 +29,21 @@ import stat
 import subprocess
 import sys
 
-BenchmarkContext = namedtuple('BenchmarkContext', ['gpu_architecture', 'benchmark_output_dir', 'benchmark_dir', 'benchmark_filename_regex', 'benchmark_filter_regex', 'size', 'trials', 'seed', 'skip_gathered'])
+BenchmarkContext = namedtuple(
+    "BenchmarkContext",
+    [
+        "gpu_architecture",
+        "benchmark_output_dir",
+        "benchmark_dir",
+        "benchmark_filename_regex",
+        "benchmark_filter_regex",
+        "size",
+        "trials",
+        "seed",
+        "skip_gathered",
+    ],
+)
+
 
 def run_benchmarks(benchmark_context):
     def is_benchmark_executable(filename):
@@ -40,7 +54,9 @@ def run_benchmarks(benchmark_context):
 
         # we are not interested in permissions, just whether there is any execution flag set
         # and it is a regular file (S_IFREG)
-        return (st_mode & (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)) and (st_mode & stat.S_IFREG)
+        return (st_mode & (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)) and (
+            st_mode & stat.S_IFREG
+        )
 
     def should_skip(results_json_path):
         if not benchmark_context.skip_gathered:
@@ -55,72 +71,109 @@ def run_benchmarks(benchmark_context):
         return True
 
     success = True
-    benchmark_names = [name for name in os.listdir(benchmark_context.benchmark_dir) if is_benchmark_executable(name)]
-    print('The following benchmarks will be ran:\n{}'.format('\n'.join(benchmark_names)), file=sys.stderr, flush=True)
+    benchmark_names = [
+        name
+        for name in os.listdir(benchmark_context.benchmark_dir)
+        if is_benchmark_executable(name)
+    ]
+    print(
+        "The following benchmarks will be ran:\n{}".format("\n".join(benchmark_names)),
+        file=sys.stderr,
+        flush=True,
+    )
     for benchmark_name in benchmark_names:
-        results_json_name = f'{benchmark_name}_{benchmark_context.gpu_architecture}.json'
+        results_json_name = (
+            f"{benchmark_name}_{benchmark_context.gpu_architecture}.json"
+        )
 
         benchmark_path = os.path.join(benchmark_context.benchmark_dir, benchmark_name)
-        results_json_path = os.path.join(benchmark_context.benchmark_output_dir, results_json_name)
+        results_json_path = os.path.join(
+            benchmark_context.benchmark_output_dir, results_json_name
+        )
         if should_skip(results_json_path):
-            print(f'Skipping {benchmark_name}, because its results have already been gathered at {results_json_path}', file=sys.stderr, flush=True)
+            print(
+                f"Skipping {benchmark_name}, because its results have already been gathered at {results_json_path}",
+                file=sys.stderr,
+                flush=True,
+            )
             continue
         args = [
             benchmark_path,
-            f'--benchmark_out={results_json_path}',
-            f'--benchmark_filter={benchmark_context.benchmark_filter_regex}'
+            f"--benchmark_out={results_json_path}",
+            f"--benchmark_filter={benchmark_context.benchmark_filter_regex}",
         ]
         if benchmark_context.size:
-            args += ['--size', benchmark_context.size]
+            args += ["--size", benchmark_context.size]
         if benchmark_context.trials:
-            args += ['--trials', benchmark_context.trials]
+            args += ["--trials", benchmark_context.trials]
         if benchmark_context.seed:
-            args += ['--seed', benchmark_context.seed]
+            args += ["--seed", benchmark_context.seed]
         try:
             subprocess.check_call(args)
         except subprocess.CalledProcessError as error:
-            print(f'Could not run benchmark at {benchmark_path}. Error: "{error}"', file=sys.stderr, flush=True)
+            print(
+                f'Could not run benchmark at {benchmark_path}. Error: "{error}"',
+                file=sys.stderr,
+                flush=True,
+            )
             success = False
     return success
 
 
-
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--benchmark_dir',
-        help='The local directory that contains the benchmark executables',
-        required=True)
-    parser.add_argument('--benchmark_gpu_architecture',
-        help='The architecture of the currently enabled GPU',
-        required=True)
-    parser.add_argument('--benchmark_output_dir',
-        help='The directory to write the benchmarks to',
-        required=True)
-    parser.add_argument('--benchmark_filename_regex',
-        help='Regular expression that controls the list of benchmark executables to run',
-        default=r'^benchmark',
-        required=False)
-    parser.add_argument('--benchmark_filter_regex',
-        help='Regular expression that controls the list of benchmarks to run in each benchmark executable',
-        default='',
-        required=False)
-    parser.add_argument('--size',
-        help='Controls the number of processed items in each benchmark',
-        default='',
-        required=False)
-    parser.add_argument('--trials',
-        help='Controls the number of trial iterations for each benchmark case',
-        default='',
-        required=False)
-    parser.add_argument('--seed',
-        help='Controls the seed for random number generation for each benchmark case',
-        default='',
-        required=False)
-    parser.add_argument('--skip_gathered',
-        help='Skip running benchmarks whose JSON data has already been gathered',
+    parser.add_argument(
+        "--benchmark_dir",
+        help="The local directory that contains the benchmark executables",
+        required=True,
+    )
+    parser.add_argument(
+        "--benchmark_gpu_architecture",
+        help="The architecture of the currently enabled GPU",
+        required=True,
+    )
+    parser.add_argument(
+        "--benchmark_output_dir",
+        help="The directory to write the benchmarks to",
+        required=True,
+    )
+    parser.add_argument(
+        "--benchmark_filename_regex",
+        help="Regular expression that controls the list of benchmark executables to run",
+        default=r"^benchmark",
+        required=False,
+    )
+    parser.add_argument(
+        "--benchmark_filter_regex",
+        help="Regular expression that controls the list of benchmarks to run in each benchmark executable",
+        default="",
+        required=False,
+    )
+    parser.add_argument(
+        "--size",
+        help="Controls the number of processed items in each benchmark",
+        default="",
+        required=False,
+    )
+    parser.add_argument(
+        "--trials",
+        help="Controls the number of trial iterations for each benchmark case",
+        default="",
+        required=False,
+    )
+    parser.add_argument(
+        "--seed",
+        help="Controls the seed for random number generation for each benchmark case",
+        default="",
+        required=False,
+    )
+    parser.add_argument(
+        "--skip_gathered",
+        help="Skip running benchmarks whose JSON data has already been gathered",
         default=False,
-        action='store_true',
-        required=False)
+        action="store_true",
+        required=False,
+    )
 
     args = parser.parse_args()
 
@@ -133,14 +186,15 @@ def main():
         args.size,
         args.trials,
         args.seed,
-        args.skip_gathered)
+        args.skip_gathered,
+    )
 
     benchmark_run_successful = run_benchmarks(benchmark_context)
 
     return benchmark_run_successful
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     success = main()
     if success:
         exit(0)

@@ -40,78 +40,92 @@ def parse_args():
     """Parse command-line arguments"""
     parser = argparse.ArgumentParser(description="""Checks build arguments""")
     # common
-    parser.add_argument('-g',
-                        '--debug',
-                        required=False,
-                        default=False,
-                        action='store_true',
-                        help='Generate Debug build (optional, default: False)')
-    parser.add_argument('--build_dir',
-                        type=str,
-                        required=False,
-                        default="build",
-                        help='Build directory path (optional, default: build)')
     parser.add_argument(
-        '--static',
+        "-g",
+        "--debug",
         required=False,
         default=False,
-        dest='static_lib',
-        action='store_true',
-        help='Generate static library build (optional, default: False)')
+        action="store_true",
+        help="Generate Debug build (optional, default: False)",
+    )
     parser.add_argument(
-        '-c',
-        '--clients',
+        "--build_dir",
+        type=str,
+        required=False,
+        default="build",
+        help="Build directory path (optional, default: build)",
+    )
+    parser.add_argument(
+        "--static",
         required=False,
         default=False,
-        dest='build_clients',
-        action='store_true',
-        help='Generate all client builds (optional, default: False)')
-    parser.add_argument('-i',
-                        '--install',
-                        required=False,
-                        default=False,
-                        dest='install',
-                        action='store_true',
-                        help='Install after build (optional, default: False)')
+        dest="static_lib",
+        action="store_true",
+        help="Generate static library build (optional, default: False)",
+    )
     parser.add_argument(
-        '--cmake_darg',
+        "-c",
+        "--clients",
         required=False,
-        dest='cmake_dargs',
-        nargs='+',
-        help=
-        'List of additional cmake defines for builds (optional, e.g. CMAKE)')
-    parser.add_argument('-v',
-                        '--verbose',
-                        required=False,
-                        default=False,
-                        action='store_true',
-                        help='Verbose build (optional, default: False)')
+        default=False,
+        dest="build_clients",
+        action="store_true",
+        help="Generate all client builds (optional, default: False)",
+    )
+    parser.add_argument(
+        "-i",
+        "--install",
+        required=False,
+        default=False,
+        dest="install",
+        action="store_true",
+        help="Install after build (optional, default: False)",
+    )
+    parser.add_argument(
+        "--cmake_darg",
+        required=False,
+        dest="cmake_dargs",
+        nargs="+",
+        help="List of additional cmake defines for builds (optional, e.g. CMAKE)",
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        required=False,
+        default=False,
+        action="store_true",
+        help="Verbose build (optional, default: False)",
+    )
     # rocFFT options
     parser.add_argument(
-        '--gen_pattern',
-        nargs='+',
+        "--gen_pattern",
+        nargs="+",
         required=False,
-        default=['all'],
-        help=
-        'Size patterns to generate (none, pow2, pow3, pow5, pow7, 2D, large, small, all)'
+        default=["all"],
+        help="Size patterns to generate (none, pow2, pow3, pow5, pow7, 2D, large, small, all)",
     )
-    parser.add_argument('--gen_precision',
-                        nargs='+',
-                        required=False,
-                        default=['all'],
-                        help='Precision types generate (single, double, all)')
-    parser.add_argument('--gen_groups',
-                        type=int,
-                        required=False,
-                        help='Number of small kernel groups')
-    parser.add_argument('--manual_small',
-                        nargs='+',
-                        required=False,
-                        help='Small problem sizes to generate')
-    parser.add_argument('--manual_large',
-                        nargs='+',
-                        required=False,
-                        help='Large problem sizes to generate')
+    parser.add_argument(
+        "--gen_precision",
+        nargs="+",
+        required=False,
+        default=["all"],
+        help="Precision types generate (single, double, all)",
+    )
+    parser.add_argument(
+        "--gen_groups", type=int, required=False, help="Number of small kernel groups"
+    )
+    parser.add_argument(
+        "--manual_small",
+        nargs="+",
+        required=False,
+        help="Small problem sizes to generate",
+    )
+    parser.add_argument(
+        "--manual_large",
+        nargs="+",
+        required=False,
+        help="Large problem sizes to generate",
+    )
 
     return parser.parse_args()
 
@@ -127,7 +141,7 @@ def os_detect():
                 for line in f:
                     if "=" in line:
                         k, v = line.strip().split("=")
-                        OS_info[k] = v.replace('"', '')
+                        OS_info[k] = v.replace('"', "")
     OS_info["NUM_PROC"] = os.cpu_count()
     print(OS_info)
 
@@ -163,19 +177,19 @@ def config_cmd():
     cmake_platform_opts = []
     if os.name == "nt":
         # not really rocm path as none exist, HIP_DIR set in toolchain is more important
-        rocm_path = os.getenv('ROCM_CMAKE_PATH',
-                              "C:/github/rocm-cmake-master/share/rocm")
-        #set CPACK_PACKAGING_INSTALL_PREFIX= defined as blank as it is appended to end of path for archive creation
+        rocm_path = os.getenv(
+            "ROCM_CMAKE_PATH", "C:/github/rocm-cmake-master/share/rocm"
+        )
+        # set CPACK_PACKAGING_INSTALL_PREFIX= defined as blank as it is appended to end of path for archive creation
         cmake_platform_opts.append(f"-DCPACK_PACKAGING_INSTALL_PREFIX=")
         cmake_platform_opts.append(f"-DCMAKE_INSTALL_PREFIX=C:/hipSDK")
         generator = ["-G", "Ninja"]
         cmake_options.extend(generator)
         toolchain = os.path.join(src_path, "toolchain-windows.cmake")
     else:
-        rocm_path = os.getenv('ROCM_PATH', "/opt/rocm")
+        rocm_path = os.getenv("ROCM_PATH", "/opt/rocm")
         cmake_platform_opts.append(f"-DROCM_DIR:PATH={rocm_path}")
-        cmake_platform_opts.append(
-            f"-DCPACK_PACKAGING_INSTALL_PREFIX={rocm_path}")
+        cmake_platform_opts.append(f"-DCPACK_PACKAGING_INSTALL_PREFIX={rocm_path}")
         cmake_platform_opts.append(f"-DCMAKE_INSTALL_PREFIX=rocfft-install")
         toolchain = "toolchain-linux.cmake"
 
@@ -187,7 +201,8 @@ def config_cmd():
     cmake_options.extend(cmake_platform_opts)
 
     cmake_base_options = [
-        f"-DROCM_PATH={rocm_path}", f"-DCMAKE_PREFIX_PATH:PATH={rocm_path}"
+        f"-DROCM_PATH={rocm_path}",
+        f"-DCMAKE_PREFIX_PATH:PATH={rocm_path}",
     ]
     cmake_options.extend(cmake_base_options)
 
@@ -195,7 +210,7 @@ def config_cmd():
     cmake_pack_options = f"-DCPACK_SET_DESTDIR=OFF"
     cmake_options.append(cmake_pack_options)
 
-    if os.getenv('CMAKE_CXX_COMPILER_LAUNCHER'):
+    if os.getenv("CMAKE_CXX_COMPILER_LAUNCHER"):
         cmake_options.append(
             f"-DCMAKE_CXX_COMPILER_LAUNCHER={os.getenv('CMAKE_CXX_COMPILER_LAUNCHER')}"
         )
@@ -232,16 +247,17 @@ def config_cmd():
 
     # rocFFT-specific options
     cmake_options.append(f"-DGENERATOR_PATTERN={','.join(args.gen_pattern)}")
-    cmake_options.append(
-        f"-DGENERATOR_PRECISION={','.join(args.gen_precision)}")
+    cmake_options.append(f"-DGENERATOR_PRECISION={','.join(args.gen_precision)}")
     if args.gen_groups is not None:
         cmake_options.append(f"-DGENERATOR_GROUP_NUM={args.gen_groups}")
     if args.manual_small:
         cmake_options.append(
-            f"-DGENERATOR_MANUAL_SMALL_SIZE={','.join(args.manual_small)}")
+            f"-DGENERATOR_MANUAL_SMALL_SIZE={','.join(args.manual_small)}"
+        )
     if args.manual_large:
         cmake_options.append(
-            f"-DGENERATOR_MANUAL_LARGE_SIZE={','.join(args.manual_large)}")
+            f"-DGENERATOR_MANUAL_LARGE_SIZE={','.join(args.manual_large)}"
+        )
 
     cmake_options.append(f"{src_path}")
 
@@ -295,5 +311,5 @@ def main():
     run_cmd(exe, opts)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

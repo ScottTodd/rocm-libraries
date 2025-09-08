@@ -44,14 +44,15 @@ public:
              typename UniqueOutputIteratorT,
              typename LengthsOutputIteratorT,
              typename NumRunsOutputIteratorT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t Encode(void*                  d_temp_storage,
-                                                     size_t&                temp_storage_bytes,
-                                                     InputIteratorT         d_in,
-                                                     UniqueOutputIteratorT  d_unique_out,
-                                                     LengthsOutputIteratorT d_counts_out,
-                                                     NumRunsOutputIteratorT d_num_runs_out,
-                                                     int                    num_items,
-                                                     hipStream_t            stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t Encode(void*                  d_temp_storage,
+                             size_t&                temp_storage_bytes,
+                             InputIteratorT         d_in,
+                             UniqueOutputIteratorT  d_unique_out,
+                             LengthsOutputIteratorT d_counts_out,
+                             NumRunsOutputIteratorT d_num_runs_out,
+                             int                    num_items,
+                             hipStream_t            stream = 0)
     {
         return hipCUDAErrorTohipError(::cub::DeviceRunLengthEncode::Encode(d_temp_storage,
                                                                            temp_storage_bytes,
@@ -67,16 +68,16 @@ public:
              typename UniqueOutputIteratorT,
              typename LengthsOutputIteratorT,
              typename NumRunsOutputIteratorT>
-    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION static hipError_t
-        Encode(void*                  d_temp_storage,
-               size_t&                temp_storage_bytes,
-               InputIteratorT         d_in,
-               UniqueOutputIteratorT  d_unique_out,
-               LengthsOutputIteratorT d_counts_out,
-               NumRunsOutputIteratorT d_num_runs_out,
-               int                    num_items,
-               hipStream_t            stream,
-               bool                   debug_synchronous)
+    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION
+    static hipError_t Encode(void*                  d_temp_storage,
+                             size_t&                temp_storage_bytes,
+                             InputIteratorT         d_in,
+                             UniqueOutputIteratorT  d_unique_out,
+                             LengthsOutputIteratorT d_counts_out,
+                             NumRunsOutputIteratorT d_num_runs_out,
+                             int                    num_items,
+                             hipStream_t            stream,
+                             bool                   debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return Encode(d_temp_storage,
@@ -93,14 +94,15 @@ public:
              typename OffsetsOutputIteratorT,
              typename LengthsOutputIteratorT,
              typename NumRunsOutputIteratorT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t NonTrivialRuns(void*          d_temp_storage,
-                                                             size_t&        temp_storage_bytes,
-                                                             InputIteratorT d_in,
-                                                             OffsetsOutputIteratorT d_offsets_out,
-                                                             LengthsOutputIteratorT d_lengths_out,
-                                                             NumRunsOutputIteratorT d_num_runs_out,
-                                                             int                    num_items,
-                                                             hipStream_t            stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t NonTrivialRuns(void*                  d_temp_storage,
+                                     size_t&                temp_storage_bytes,
+                                     InputIteratorT         d_in,
+                                     OffsetsOutputIteratorT d_offsets_out,
+                                     LengthsOutputIteratorT d_lengths_out,
+                                     NumRunsOutputIteratorT d_num_runs_out,
+                                     int                    num_items,
+                                     hipStream_t            stream = 0)
     {
         return hipCUDAErrorTohipError(
             ::cub::DeviceRunLengthEncode::NonTrivialRuns(d_temp_storage,
@@ -117,16 +119,16 @@ public:
              typename OffsetsOutputIteratorT,
              typename LengthsOutputIteratorT,
              typename NumRunsOutputIteratorT>
-    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION static hipError_t
-        NonTrivialRuns(void*                  d_temp_storage,
-                       size_t&                temp_storage_bytes,
-                       InputIteratorT         d_in,
-                       OffsetsOutputIteratorT d_offsets_out,
-                       LengthsOutputIteratorT d_lengths_out,
-                       NumRunsOutputIteratorT d_num_runs_out,
-                       int                    num_items,
-                       hipStream_t            stream,
-                       bool                   debug_synchronous)
+    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION
+    static hipError_t NonTrivialRuns(void*                  d_temp_storage,
+                                     size_t&                temp_storage_bytes,
+                                     InputIteratorT         d_in,
+                                     OffsetsOutputIteratorT d_offsets_out,
+                                     LengthsOutputIteratorT d_lengths_out,
+                                     NumRunsOutputIteratorT d_num_runs_out,
+                                     int                    num_items,
+                                     hipStream_t            stream,
+                                     bool                   debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return NonTrivialRuns(d_temp_storage,

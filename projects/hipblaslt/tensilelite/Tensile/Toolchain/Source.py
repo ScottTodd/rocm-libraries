@@ -33,18 +33,27 @@ from ..Common import print1, ensurePath
 
 from .Component import Compiler, Bundler
 
+
 class SourceToolchain(NamedTuple):
-   compiler: Compiler
-   bundler: Bundler
+    compiler: Compiler
+    bundler: Bundler
 
 
-def makeSourceToolchain(compiler_path, bundler_path, asan_build=False, build_id_kind="sha1", save_temps=False):
-   compiler = Compiler(compiler_path, build_id_kind, asan_build, save_temps)
-   bundler = Bundler(bundler_path)
-   return SourceToolchain(compiler, bundler)
+def makeSourceToolchain(
+    compiler_path,
+    bundler_path,
+    asan_build=False,
+    build_id_kind="sha1",
+    save_temps=False,
+):
+    compiler = Compiler(compiler_path, build_id_kind, asan_build, save_temps)
+    bundler = Bundler(bundler_path)
+    return SourceToolchain(compiler, bundler)
 
 
-def _computeSourceCodeObjectFilename(target: str, base: str, buildPath: Union[Path, str], arch: str) -> Union[Path, None]:
+def _computeSourceCodeObjectFilename(
+    target: str, base: str, buildPath: Union[Path, str], arch: str
+) -> Union[Path, None]:
     """Generates a code object file path using the target, base, and build path.
 
     Args:
@@ -65,20 +74,20 @@ def _computeSourceCodeObjectFilename(target: str, base: str, buildPath: Union[Pa
         if arch in baseVariant:
             coPath = buildPath / (baseVariant + ".hsaco.raw")
     else:
-        coPath= buildPath / "{0}.so-000-{1}.hsaco.raw".format(base, arch)
+        coPath = buildPath / "{0}.so-000-{1}.hsaco.raw".format(base, arch)
 
     return coPath
 
 
 def buildSourceCodeObjectFiles(
-        compiler: Compiler,
-        bundler: Bundler,
-        destDir: Union[Path, str],
-        tmpObjDir: Union[Path, str],
-        includeDir: Union[Path, str],
-        kernelPath: Union[Path, str],
-        cmdlineArchs: List[str]
-    ) -> List[str]:
+    compiler: Compiler,
+    bundler: Bundler,
+    destDir: Union[Path, str],
+    tmpObjDir: Union[Path, str],
+    includeDir: Union[Path, str],
+    kernelPath: Union[Path, str],
+    cmdlineArchs: List[str],
+) -> List[str]:
     """Compiles a HIP source code file into a code object file.
 
     Args:
@@ -97,24 +106,27 @@ def buildSourceCodeObjectFiles(
     destDir = Path(ensurePath(destDir))
     kernelPath = Path(kernelPath)
 
-    objFilename = kernelPath.stem + '.o'
+    objFilename = kernelPath.stem + ".o"
     coPathsRaw = []
-    coPaths= []
+    coPaths = []
 
     objPath = str(tmpObjDir / objFilename)
     compiler(str(includeDir), cmdlineArchs, str(kernelPath), objPath)
 
     for target in bundler.targets(objPath):
-      match = re.search("gfx.*$", target)
-      if match:
-        arch = re.sub(":", "-", match.group())
-        coPathRaw = _computeSourceCodeObjectFilename(target, kernelPath.stem, tmpObjDir, arch)
-        if not coPathRaw: continue
-        bundler(target, objPath, str(coPathRaw))
+        match = re.search("gfx.*$", target)
+        if match:
+            arch = re.sub(":", "-", match.group())
+            coPathRaw = _computeSourceCodeObjectFilename(
+                target, kernelPath.stem, tmpObjDir, arch
+            )
+            if not coPathRaw:
+                continue
+            bundler(target, objPath, str(coPathRaw))
 
-        coPath = str(destDir / coPathRaw.stem)
-        coPathsRaw.append(coPathRaw)
-        coPaths.append(coPath)
+            coPath = str(destDir / coPathRaw.stem)
+            coPathsRaw.append(coPathRaw)
+            coPaths.append(coPath)
 
     for src, dst in zip(coPathsRaw, coPaths):
         shutil.move(src, dst)

@@ -27,19 +27,23 @@
 #include <hipblaslt/hipblaslt-ext.hpp>
 #include <iostream>
 
-void printResult(int tuned, uint64_t m, uint64_t n, uint64_t k) {
-    if (tuned == 1) {
+void printResult(int tuned, uint64_t m, uint64_t n, uint64_t k)
+{
+    if(tuned == 1)
+    {
         std::cout << "[" << m << ", " << n << ", " << k << "] is tuned\n";
-    } else {
+    }
+    else
+    {
         std::cout << "[" << m << ", " << n << ", " << k << "] is un-tuned\n";
     }
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     hipblasLtHandle_t handle{};
     hipblasLtCreate(&handle);
-    hipblasLtMatmulDesc_t matmulDesc{};
+    hipblasLtMatmulDesc_t   matmulDesc{};
     hipblasLtMatrixLayout_t matA{};
     hipblasLtMatrixLayout_t matB{};
     hipblasLtMatrixLayout_t matC{};
@@ -48,10 +52,11 @@ int main(int argc, char **argv)
     hipblasOperation_t opA = HIPBLAS_OP_T;
     hipblasLtMatmulDescSetAttribute(matmulDesc, HIPBLASLT_MATMUL_DESC_TRANSA, &opA, sizeof(opA));
     hipblasLtPointerMode_t pMode = HIPBLASLT_POINTER_MODE_ALPHA_DEVICE_VECTOR_BETA_HOST;
-    hipblasLtMatmulDescSetAttribute(matmulDesc, HIPBLASLT_MATMUL_DESC_POINTER_MODE, &pMode, sizeof(pMode));
-    const uint64_t m = argc > 3 ? std::atoll(argv[1]): 128;
-    const uint64_t n = argc > 3 ? std::atoll(argv[2]): 128;
-    const uint64_t k = argc > 3 ? std::atoll(argv[3]): 128;
+    hipblasLtMatmulDescSetAttribute(
+        matmulDesc, HIPBLASLT_MATMUL_DESC_POINTER_MODE, &pMode, sizeof(pMode));
+    const uint64_t m = argc > 3 ? std::atoll(argv[1]) : 128;
+    const uint64_t n = argc > 3 ? std::atoll(argv[2]) : 128;
+    const uint64_t k = argc > 3 ? std::atoll(argv[3]) : 128;
     hipblasLtMatrixLayoutCreate(&matA, HIP_R_16F, k, m, k);
     hipblasLtMatrixLayoutCreate(&matB, HIP_R_16F, k, n, k);
     hipblasLtMatrixLayoutCreate(&matC, HIP_R_16F, m, n, m);

@@ -305,7 +305,7 @@ void AMaxTest(hipDataType type, hipDataType dtype, std::size_t m, std::size_t n)
 
 TEST_P(ExtOpAMaxTest, amaxSuccess)
 {
-    AMaxTestData    testdata = GetParam();
+    AMaxTestData testdata = GetParam();
 
     if(testdata.type == HIP_R_32F && testdata.dtype == HIP_R_32F)
     {

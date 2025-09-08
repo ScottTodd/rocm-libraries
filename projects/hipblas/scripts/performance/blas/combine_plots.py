@@ -8,18 +8,60 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import numpy as np
 
-parser = argparse.ArgumentParser(description='Used with completed datasets from performancereport.py to compare different functions\' performance.\n' +
-                                             'Works with hipblas-bench and hipBLAS\' performancereport.py. Can also be used with rocblas-bench and rocBLAS\' performancereport.py with ' +
-                                             'command line arguments.',
-                                 epilog='Example usage: ./combine_plots.py -s N -d ./output_gemm/run00 -d ./output_symm/run00')
-parser.add_argument('-s', '--size_arg', help='Value which to base the x axis "size" on.', dest='size_arg', default='N')
-parser.add_argument('-d', '--dir', action='append', help='Each directory containing data which you would like to compare.', dest='dirs', required=True)
-parser.add_argument('-t', '--titles', action='append', help='The subtitle name for the resulting plot for each directory, in the same order as the arguments passed in --dir.', dest='titles')
-parser.add_argument('-f', '--savedir', type=str, help='Directory where resulting plots will be saved.', dest='savedir', default='combine_plots')
-parser.add_argument('-x', '--executable', type=str, help='Name of the executable used to run perf tests.', dest='executable_name', default='hipblas-bench')
-parser.add_argument('--search_str', type=str, help='A search string to find data line in data files.', dest='search_string', default='hipblas-Gflops')
+parser = argparse.ArgumentParser(
+    description="Used with completed datasets from performancereport.py to compare different functions' performance.\n"
+    + "Works with hipblas-bench and hipBLAS' performancereport.py. Can also be used with rocblas-bench and rocBLAS' performancereport.py with "
+    + "command line arguments.",
+    epilog="Example usage: ./combine_plots.py -s N -d ./output_gemm/run00 -d ./output_symm/run00",
+)
+parser.add_argument(
+    "-s",
+    "--size_arg",
+    help='Value which to base the x axis "size" on.',
+    dest="size_arg",
+    default="N",
+)
+parser.add_argument(
+    "-d",
+    "--dir",
+    action="append",
+    help="Each directory containing data which you would like to compare.",
+    dest="dirs",
+    required=True,
+)
+parser.add_argument(
+    "-t",
+    "--titles",
+    action="append",
+    help="The subtitle name for the resulting plot for each directory, in the same order as the arguments passed in --dir.",
+    dest="titles",
+)
+parser.add_argument(
+    "-f",
+    "--savedir",
+    type=str,
+    help="Directory where resulting plots will be saved.",
+    dest="savedir",
+    default="combine_plots",
+)
+parser.add_argument(
+    "-x",
+    "--executable",
+    type=str,
+    help="Name of the executable used to run perf tests.",
+    dest="executable_name",
+    default="hipblas-bench",
+)
+parser.add_argument(
+    "--search_str",
+    type=str,
+    help="A search string to find data line in data files.",
+    dest="search_string",
+    default="hipblas-Gflops",
+)
 
 args = parser.parse_args()
+
 
 def get_all_files(directory_str):
     """
@@ -41,7 +83,10 @@ def get_all_files(directory_str):
 
     return ret_list
 
-def get_output_val_from_file(filename, output_param='hipblas-Gflops', gflops_str='hipblas-Gflops'):
+
+def get_output_val_from_file(
+    filename, output_param="hipblas-Gflops", gflops_str="hipblas-Gflops"
+):
     """
     parses through file and returns the val as given in the file.
 
@@ -53,18 +98,19 @@ def get_output_val_from_file(filename, output_param='hipblas-Gflops', gflops_str
         value (string): the gflops as listed in the file, refer to example file (TODO).
     """
     if os.path.exists(filename):
-        lines = open(filename, 'r').readlines()
+        lines = open(filename, "r").readlines()
 
         for i in range(0, len(lines)):
-            if(output_param in lines[i]):
+            if output_param in lines[i]:
                 arg_line = lines[i].split(",")
-                data_line = re.split(r',\s*(?![^()]*\))', lines[i+1])
+                data_line = re.split(r",\s*(?![^()]*\))", lines[i + 1])
                 idx = arg_line.index(gflops_str)
                 return data_line[idx]
 
-    return '-1'
+    return "-1"
 
-def get_input_param_from_file(filename, input_param, executable_name = 'hipblas-bench'):
+
+def get_input_param_from_file(filename, input_param, executable_name="hipblas-bench"):
     """
     parses through file and returns the function name as given in the file (by the -f argument passed to xxx-bench).
 
@@ -76,16 +122,24 @@ def get_input_param_from_file(filename, input_param, executable_name = 'hipblas-
         funcname (string): function name as given by the -f argument passed to xxx-bench.
     """
     if os.path.exists(filename):
-        lines = open(filename, 'r').readlines()
+        lines = open(filename, "r").readlines()
 
     for line in lines:
         if executable_name in line:
             linesplit = line.split()
-            return linesplit[linesplit.index(input_param)+1]
+            return linesplit[linesplit.index(input_param) + 1]
 
-    raise RuntimeError('Cannot find input param ' + input_param + ' in file: ' + filename)
+    raise RuntimeError(
+        "Cannot find input param " + input_param + " in file: " + filename
+    )
 
-def get_data_from_directories(directories, size_param = 'N', executable_name = 'hipblas-bench', search_string = 'hipblas-Gflops'):
+
+def get_data_from_directories(
+    directories,
+    size_param="N",
+    executable_name="hipblas-bench",
+    search_string="hipblas-Gflops",
+):
     """
     For each directory in directories, gathers function name, precisions, sizes, and gflops from within files in that directory and returns it.
 
@@ -111,12 +165,15 @@ def get_data_from_directories(directories, size_param = 'N', executable_name = '
             # append funcname to list of funcnames, only for first file in each directory as we assume
             # each directory has data for only one function (but multiple precisions)
             if cur_funcname is None:
-                cur_funcname = get_input_param_from_file(f, '-f')
+                cur_funcname = get_input_param_from_file(f, "-f")
 
-            prec = get_input_param_from_file(f, '-r', executable_name)
+            prec = get_input_param_from_file(f, "-r", executable_name)
 
             # a tuple of (size, gflops) as gathered from the current file
-            size_perf_tuple = (int(get_output_val_from_file(f, search_string, size_param)), float(get_output_val_from_file(f, search_string)))
+            size_perf_tuple = (
+                int(get_output_val_from_file(f, search_string, size_param)),
+                float(get_output_val_from_file(f, search_string)),
+            )
             if prec in cur_dict:
                 cur_dict[prec].append(size_perf_tuple)
             else:
@@ -127,7 +184,8 @@ def get_data_from_directories(directories, size_param = 'N', executable_name = '
 
     return res_dicts, res_funcs
 
-def plot_data(gflops_dicts, titles, savedir, size_arg = 'N'):
+
+def plot_data(gflops_dicts, titles, savedir, size_arg="N"):
     """
     plots gflops data from dictionaries, one plot for each common precision present in all dictionaries.
 
@@ -142,45 +200,57 @@ def plot_data(gflops_dicts, titles, savedir, size_arg = 'N'):
 
     gflops_dict0 = gflops_dicts[0]
     for prec, _ in gflops_dict0.items():
-        colors=iter(cm.rainbow(np.linspace(0,1,len(gflops_dicts))))
-        figure, axes = plt.subplots(figsize=(7,7))
+        colors = iter(cm.rainbow(np.linspace(0, 1, len(gflops_dicts))))
+        figure, axes = plt.subplots(figsize=(7, 7))
         for gflops_dict, funcname in zip(gflops_dicts, titles):
             cur_color = next(colors)
             if prec not in gflops_dict:
                 continue
             gflops = gflops_dict[prec]
-            gflops.append((0, 0)) # I prefer having a 0 at the bottom so the performance looks more accurate
+            gflops.append(
+                (0, 0)
+            )  # I prefer having a 0 at the bottom so the performance looks more accurate
             sorted_tuples = sorted(gflops)
             sorted_sizes = [x[0] for x in sorted_tuples]
             sorted_gflops = [x[1] for x in sorted_tuples]
 
             axes.scatter(sorted_sizes, sorted_gflops, color=cur_color, label=funcname)
-            axes.plot(sorted_sizes, sorted_gflops, '-ok', color=cur_color)
+            axes.plot(sorted_sizes, sorted_gflops, "-ok", color=cur_color)
 
-        axes.set_xlabel('='.join(size_arg)) # in case we add multiple params
-        axes.set_ylabel('gflops')
+        axes.set_xlabel("=".join(size_arg))  # in case we add multiple params
+        axes.set_ylabel("gflops")
 
         # magic numbers from performancereport.py to make plots look nice
-        axes.legend(fontsize=10, bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left',
-                    mode='expand', borderaxespad=0.)
-        figure.tight_layout(rect=(0,0.05,1.0,1.0))
+        axes.legend(
+            fontsize=10,
+            bbox_to_anchor=(0.0, 1.02, 1.0, 0.102),
+            loc="lower left",
+            mode="expand",
+            borderaxespad=0.0,
+        )
+        figure.tight_layout(rect=(0, 0.05, 1.0, 1.0))
 
-        filename = ''
+        filename = ""
         for func in titles:
-            if filename != '':
-                filename += '_'
+            if filename != "":
+                filename += "_"
             filename += func
-        filename += '_' + prec
+        filename += "_" + prec
         if not os.path.exists(savedir):
             os.makedirs(savedir)
         figure.savefig(os.path.join(os.getcwd(), savedir, filename))
 
-gflops, funcnames = get_data_from_directories(args.dirs, args.size_arg, args.executable_name, args.search_string)
+
+gflops, funcnames = get_data_from_directories(
+    args.dirs, args.size_arg, args.executable_name, args.search_string
+)
 
 if args.titles:
     if len(args.titles) == len(gflops):
         funcnames = args.titles
     else:
-        raise RuntimeError('Must have same amount of -t parameters as -d parameters, or have no -t parameters.')
+        raise RuntimeError(
+            "Must have same amount of -t parameters as -d parameters, or have no -t parameters."
+        )
 
 plot_data(gflops, funcnames, args.savedir, args.size_arg)

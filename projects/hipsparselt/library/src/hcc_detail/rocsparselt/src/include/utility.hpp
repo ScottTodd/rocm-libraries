@@ -40,7 +40,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-hipsparseOperation_t     HCCOperationToHIPOperation(rocsparselt_operation_ op);
+hipsparseOperation_t HCCOperationToHIPOperation(rocsparselt_operation_ op);
 #ifdef __cplusplus
 }
 #endif

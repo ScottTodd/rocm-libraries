@@ -107,9 +107,9 @@ struct execute_on_stream : execute_on_stream_base<execute_on_stream>
   using base_t = execute_on_stream_base<execute_on_stream>;
 
   THRUST_HOST_DEVICE execute_on_stream()
-      : base_t(){};
+      : base_t() {};
   THRUST_HOST_DEVICE execute_on_stream(hipStream_t stream)
-      : base_t(stream){};
+      : base_t(stream) {};
 };
 
 struct execute_on_stream_nosync : execute_on_stream_nosync_base<execute_on_stream_nosync>
@@ -117,9 +117,9 @@ struct execute_on_stream_nosync : execute_on_stream_nosync_base<execute_on_strea
   using base_t = execute_on_stream_nosync_base<execute_on_stream_nosync>;
 
   THRUST_HOST_DEVICE execute_on_stream_nosync()
-      : base_t(){};
+      : base_t() {};
   THRUST_HOST_DEVICE execute_on_stream_nosync(hipStream_t stream)
-      : base_t(stream){};
+      : base_t(stream) {};
 };
 
 THRUST_SUPPRESS_DEPRECATED_PUSH
@@ -181,9 +181,9 @@ private:
 
 public:
   THRUST_HOST_DEVICE execute_on_stream_deterministic_base()
-      : base_t(){};
+      : base_t() {};
   THRUST_HOST_DEVICE execute_on_stream_deterministic_base(hipStream_t stream)
-      : base_t(stream){};
+      : base_t(stream) {};
 
 private:
   friend THRUST_HOST_DEVICE integral_constant<bool, false>
@@ -198,9 +198,9 @@ struct execute_on_stream_deterministic : execute_on_stream_deterministic_base<ex
   using base_t = execute_on_stream_deterministic_base<execute_on_stream_deterministic>;
 
   THRUST_HOST_DEVICE execute_on_stream_deterministic()
-      : base_t(){};
+      : base_t() {};
   THRUST_HOST_DEVICE execute_on_stream_deterministic(hipStream_t stream)
-      : base_t(stream){};
+      : base_t(stream) {};
 };
 
 struct par_det_t
@@ -237,9 +237,9 @@ private:
 
 public:
   THRUST_HOST_DEVICE execute_on_stream_nosync_deterministic_base()
-      : base_t(){};
+      : base_t() {};
   THRUST_HOST_DEVICE execute_on_stream_nosync_deterministic_base(hipStream_t stream)
-      : base_t(stream){};
+      : base_t(stream) {};
 
 private:
   friend THRUST_HOST_DEVICE integral_constant<bool, false>
@@ -255,9 +255,9 @@ struct execute_on_stream_nosync_deterministic
   using base_t = execute_on_stream_nosync_deterministic_base<execute_on_stream_nosync_deterministic>;
 
   THRUST_HOST_DEVICE execute_on_stream_nosync_deterministic()
-      : base_t(){};
+      : base_t() {};
   THRUST_HOST_DEVICE execute_on_stream_nosync_deterministic(hipStream_t stream)
-      : base_t(stream){};
+      : base_t(stream) {};
 };
 
 struct par_det_nosync_t

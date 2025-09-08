@@ -18,10 +18,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include <iostream>
-#include <vector>
-#include <numeric>
 #include <algorithm>
+#include <iostream>
+#include <numeric>
+#include <vector>
 
 #include <hip/hip_runtime.h>
 #include <rocprim/rocprim.hpp>
@@ -45,22 +45,16 @@ int main(int, char**)
     using T = unsigned int;
 
     // host input/output
-    const size_t size = 1024 * 256;
+    const size_t   size = 1024 * 256;
     std::vector<T> input(size, 1);
-    T output = 0;
+    T              output = 0;
 
     // device input/output
-    T * d_input;
-    T * d_output;
+    T* d_input;
+    T* d_output;
     HIP_CHECK(hipMalloc(reinterpret_cast<void**>(&d_input), input.size() * sizeof(T)));
     HIP_CHECK(hipMalloc(reinterpret_cast<void**>(&d_output), sizeof(T)));
-    HIP_CHECK(
-        hipMemcpy(
-            d_input, input.data(),
-            input.size() * sizeof(T),
-            hipMemcpyHostToDevice
-        )
-    );
+    HIP_CHECK(hipMemcpy(d_input, input.data(), input.size() * sizeof(T), hipMemcpyHostToDevice));
     HIP_CHECK(hipDeviceSynchronize());
 
     // Calculate expected results on host
@@ -68,14 +62,10 @@ int main(int, char**)
 
     // Temporary storage
     size_t temp_storage_size_bytes;
-    void * d_temp_storage = nullptr;
+    void*  d_temp_storage = nullptr;
     // Get size of d_temp_storage
     HIP_CHECK(
-        rocprim::reduce(
-            d_temp_storage, temp_storage_size_bytes,
-            d_input, d_output, input.size()
-        )
-    );
+        rocprim::reduce(d_temp_storage, temp_storage_size_bytes, d_input, d_output, input.size()));
 
     // Allocate temporary storage
     HIP_CHECK(hipMalloc(&d_temp_storage, temp_storage_size_bytes));
@@ -83,29 +73,17 @@ int main(int, char**)
 
     // Run
     HIP_CHECK(
-        rocprim::reduce(
-            d_temp_storage, temp_storage_size_bytes,
-            d_input, d_output, input.size()
-        )
-    );
+        rocprim::reduce(d_temp_storage, temp_storage_size_bytes, d_input, d_output, input.size()));
     HIP_CHECK(hipDeviceSynchronize());
 
     // Copy output to host
-    HIP_CHECK(
-        hipMemcpy(
-            &output, d_output,
-            sizeof(T),
-            hipMemcpyDeviceToHost
-        )
-    );
+    HIP_CHECK(hipMemcpy(&output, d_output, sizeof(T), hipMemcpyDeviceToHost));
     HIP_CHECK(hipDeviceSynchronize());
 
     if(output != expected)
     {
-        std::cout
-            << "Failure: output (" << output
-            << ") != expected (" << expected << ")"
-            << std::endl;
+        std::cout << "Failure: output (" << output << ") != expected (" << expected << ")"
+                  << std::endl;
         return 1;
     }
     return 0;

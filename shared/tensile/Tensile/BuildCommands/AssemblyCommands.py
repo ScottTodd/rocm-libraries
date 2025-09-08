@@ -63,7 +63,9 @@ def _linkIntoCodeObject(
     if lineLength > maxLineLength:
         with tempfile.NamedTemporaryFile(mode="wt", delete=False) as rf:
             # Use repr on Windows to a get raw string with non-escaped path separators
-            strArgs = " ".join(map(repr, objFiles)) if os.name == "nt" else " ".join(objFiles)
+            strArgs = (
+                " ".join(map(repr, objFiles)) if os.name == "nt" else " ".join(objFiles)
+            )
             rf.write(strArgs)
             rf.flush()
             args = writer.getLinkCodeObjectArgs([f"@{rf.name}"], str(coPathDest))
@@ -86,7 +88,9 @@ def buildAssemblyCodeObjectFiles(
     removeTemporaries: bool,
 ):
 
-    countAsmKernels = lambda kernels: sum(k["KernelLanguage"] == "Assembly" for k in kernels)
+    countAsmKernels = lambda kernels: sum(
+        k["KernelLanguage"] == "Assembly" for k in kernels
+    )
 
     extObj = ".o"
     extCo = ".co"
@@ -96,7 +100,9 @@ def buildAssemblyCodeObjectFiles(
     asmDir = Path(writer.getAssemblyDirectory())
 
     maxLineLength = (
-        8191 if os.name == "nt" else int(subprocess.check_output(["getconf", "ARG_MAX"]).strip())
+        8191
+        if os.name == "nt"
+        else int(subprocess.check_output(["getconf", "ARG_MAX"]).strip())
     )
 
     assemblyKernels = [k for k in kernels if k["KernelLanguage"] == "Assembly"]
@@ -149,15 +155,22 @@ def buildAssemblyCodeObjectFiles(
             # no mergefiles
             assemblyKernelNames = [writer.getKernelFileBase(k) for k in archKernels]
             origCOFiles = [os.path.join(asmDir, k + ".co") for k in assemblyKernelNames]
-            newCOFiles = [os.path.join(destDir, k + "_" + gfx + ".co") for k in assemblyKernelNames]
+            newCOFiles = [
+                os.path.join(destDir, k + "_" + gfx + ".co")
+                for k in assemblyKernelNames
+            ]
 
             for src, dst in (
                 zip(origCOFiles, newCOFiles)
                 if globalParameters["PrintLevel"] == 0
-                else Utils.tqdm(zip(origCOFiles, newCOFiles), desc="Relocating code objects")
+                else Utils.tqdm(
+                    zip(origCOFiles, newCOFiles), desc="Relocating code objects"
+                )
             ):
                 shutil.copyfile(src, dst)
             coFiles += newCOFiles
-            printWarning("Code object files are not compressed in `--no-merge-files` build mode.")
+            printWarning(
+                "Code object files are not compressed in `--no-merge-files` build mode."
+            )
 
     return coFiles

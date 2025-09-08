@@ -82,8 +82,7 @@ template<class ItemT,
          unsigned BlockSize,
          unsigned RunsPerThread,
          unsigned DecodedItemsPerThread>
-__global__
-__launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void block_run_length_decode_kernel(const ItemT*   d_run_items,
                                     const LengthT* d_run_lengths,
                                     ItemT*         d_decoded_items)
@@ -91,7 +90,8 @@ void block_run_length_decode_kernel(const ItemT*   d_run_items,
     using BlockRunLengthDecodeT
         = hipcub::BlockRunLengthDecode<ItemT, BlockSize, RunsPerThread, DecodedItemsPerThread>;
     static constexpr unsigned int decoded_items_per_block = BlockSize * DecodedItemsPerThread;
-    __shared__ typename BlockRunLengthDecodeT::TempStorage temp_storage;
+    __shared__
+    typename BlockRunLengthDecodeT::TempStorage temp_storage;
 
     ItemT   run_items[RunsPerThread];
     LengthT run_lengths[RunsPerThread];

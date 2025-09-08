@@ -34,5 +34,5 @@ if __name__ == "__main__":
     outfile = args[1]
     with open(infile) as f:
         data = yaml.load(f)
-    with open(outfile, 'wb') as f:
+    with open(outfile, "wb") as f:
         msgpack.dump(data, f)

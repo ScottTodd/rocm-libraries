@@ -59,10 +59,10 @@ namespace TensileLite
 
                 if(!iot::outputting(io))
                 {
-                    using Entry  = typename Table::Entry;
+                    using Entry   = typename Table::Entry;
                     using KBEntry = typename Table::KBEntry;
                     using std::get;
-                    auto comp    = [](Entry const& e1, Entry const& e2) {
+                    auto comp = [](Entry const& e1, Entry const& e2) {
                         return e1.key < e2.key || (e1.key == e2.key && e1.speed > e2.speed);
                     };
                     std::sort(table.table.begin(), table.table.end(), comp);
@@ -77,7 +77,8 @@ namespace TensileLite
                                 auto k   = it->key.size() > 3 ? it->key[3] : it->key[2];
                                 auto b   = it->key.size() > 3 ? it->key[2] : 1;
                                 auto key = std::tuple(it->key[0], it->key[1]);
-                                table.kSolutionMap[key].emplace_back(KBEntry{static_cast<int32_t>(k), static_cast<int32_t>(b), it->value});
+                                table.kSolutionMap[key].emplace_back(KBEntry{
+                                    static_cast<int32_t>(k), static_cast<int32_t>(b), it->value});
                             }
 
                             // Creating kd-tree

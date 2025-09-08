@@ -25,6 +25,7 @@
 from ..Component import Component, MAC
 from ..DataType import DataType
 
+
 class MAC_F32C_Plain(MAC):
     kernel = {"ProblemType": {"DataType": DataType(DataType.complexSingle)}}
 
@@ -49,10 +50,14 @@ class MAC_F32C_Plain(MAC):
                     vars["b"] = idx1 if writer.tPB["tile01Idx"] else idx0
                     vars["iui"] = iui
 
-                    vars["cStr"] = "v[vgprValuC+({idx0}+{idx1}*{ThreadTile0})*2]".format_map(vars)
+                    vars[
+                        "cStr"
+                    ] = "v[vgprValuC+({idx0}+{idx1}*{ThreadTile0})*2]".format_map(vars)
                     vars["aStr"] = "v[vgprValuA_X{m}_I{iui}+{a}*2]".format_map(vars)
                     vars["bStr"] = "v[vgprValuB_X{m}_I{iui}+{b}*2]".format_map(vars)
-                    kStr += "_v_mac_f32 {cStr}, {aStr}, {bStr}{endLine}".format_map(vars)
+                    kStr += "_v_mac_f32 {cStr}, {aStr}, {bStr}{endLine}".format_map(
+                        vars
+                    )
 
                     kStr += priority(writer, 1, "Raise priority while processing macs")
 
@@ -65,12 +70,28 @@ class MAC_F32C_Plain(MAC):
                     vars["b"] = idx1 if writer.tPB["tile01Idx"] else idx0
                     vars["iui"] = iui
 
-                    vars["cStr"] = "v[vgprValuC+({idx0}+{idx1}*{ThreadTile0})*2]".format_map(vars)
+                    vars[
+                        "cStr"
+                    ] = "v[vgprValuC+({idx0}+{idx1}*{ThreadTile0})*2]".format_map(vars)
                     vars["aStr"] = "v[vgprValuA_X{m}_I{iui}+{a}*2+1]".format_map(vars)
                     vars["bStr"] = "v[vgprValuB_X{m}_I{iui}+{b}*2+1]".format_map(vars)
-                    vars["sign"] = "-" if (not kernel["ProblemType"]["ComplexConjugateA"] and not kernel["ProblemType"]["ComplexConjugateB"]) or \
-                            (kernel["ProblemType"]["ComplexConjugateA"] and kernel["ProblemType"]["ComplexConjugateB"]) else ""
-                    kStr += "_v_mac_f32 {cStr}, {sign}{aStr}, {bStr}{endLine}".format_map(vars)
+                    vars["sign"] = (
+                        "-"
+                        if (
+                            not kernel["ProblemType"]["ComplexConjugateA"]
+                            and not kernel["ProblemType"]["ComplexConjugateB"]
+                        )
+                        or (
+                            kernel["ProblemType"]["ComplexConjugateA"]
+                            and kernel["ProblemType"]["ComplexConjugateB"]
+                        )
+                        else ""
+                    )
+                    kStr += (
+                        "_v_mac_f32 {cStr}, {sign}{aStr}, {bStr}{endLine}".format_map(
+                            vars
+                        )
+                    )
 
                     kStr += priority(writer, 1, "Raise priority while processing macs")
 
@@ -83,11 +104,21 @@ class MAC_F32C_Plain(MAC):
                     vars["b"] = idx1 if writer.tPB["tile01Idx"] else idx0
                     vars["iui"] = iui
 
-                    vars["cStr"] = "v[vgprValuC+({idx0}+{idx1}*{ThreadTile0})*2+1]".format_map(vars)
+                    vars[
+                        "cStr"
+                    ] = "v[vgprValuC+({idx0}+{idx1}*{ThreadTile0})*2+1]".format_map(
+                        vars
+                    )
                     vars["aStr"] = "v[vgprValuA_X{m}_I{iui}+{a}*2]".format_map(vars)
                     vars["bStr"] = "v[vgprValuB_X{m}_I{iui}+{b}*2+1]".format_map(vars)
-                    vars["sign"] = "-" if kernel["ProblemType"]["ComplexConjugateB"] else ""
-                    kStr += "_v_mac_f32 {cStr}, {aStr}, {sign}{bStr}{endLine}".format_map(vars)
+                    vars["sign"] = (
+                        "-" if kernel["ProblemType"]["ComplexConjugateB"] else ""
+                    )
+                    kStr += (
+                        "_v_mac_f32 {cStr}, {aStr}, {sign}{bStr}{endLine}".format_map(
+                            vars
+                        )
+                    )
 
                     kStr += priority(writer, 1, "Raise priority while processing macs")
 
@@ -100,11 +131,21 @@ class MAC_F32C_Plain(MAC):
                     vars["b"] = idx1 if writer.tPB["tile01Idx"] else idx0
                     vars["iui"] = iui
 
-                    vars["cStr"] = "v[vgprValuC+({idx0}+{idx1}*{ThreadTile0})*2+1]".format_map(vars)
+                    vars[
+                        "cStr"
+                    ] = "v[vgprValuC+({idx0}+{idx1}*{ThreadTile0})*2+1]".format_map(
+                        vars
+                    )
                     vars["aStr"] = "v[vgprValuA_X{m}_I{iui}+{a}*2+1]".format_map(vars)
                     vars["bStr"] = "v[vgprValuB_X{m}_I{iui}+{b}*2]".format_map(vars)
-                    vars["sign"] = "-" if kernel["ProblemType"]["ComplexConjugateA"] else ""
-                    kStr += "_v_mac_f32 {cStr}, {sign}{aStr}, {bStr}{endLine}".format_map(vars)
+                    vars["sign"] = (
+                        "-" if kernel["ProblemType"]["ComplexConjugateA"] else ""
+                    )
+                    kStr += (
+                        "_v_mac_f32 {cStr}, {sign}{aStr}, {bStr}{endLine}".format_map(
+                            vars
+                        )
+                    )
 
                     kStr += priority(writer, 1, "Raise priority while processing macs")
 

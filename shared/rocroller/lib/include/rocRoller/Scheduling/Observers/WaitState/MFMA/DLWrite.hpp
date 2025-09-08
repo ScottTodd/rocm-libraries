@@ -50,7 +50,7 @@ namespace rocRoller
         public:
             DLWrite() {}
             DLWrite(ContextPtr context)
-                : WaitStateObserver<DLWrite>(context){};
+                : WaitStateObserver<DLWrite>(context) {};
 
             constexpr static bool required(GPUArchitectureTarget const& target)
             {

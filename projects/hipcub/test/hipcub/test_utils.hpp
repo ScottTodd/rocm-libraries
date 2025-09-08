@@ -297,7 +297,8 @@ OutputIt host_exclusive_scan_by_key_impl(InputIt         first,
         if(key_compare_op(*k_first, *(k_first + 1)))
         {
             sum = op(sum, *first);
-        } else
+        }
+        else
         {
             sum = initial_value;
         }
@@ -390,7 +391,8 @@ OutputIt host_inclusive_scan_by_key_impl(InputIt         first,
         if(key_compare_op(*k_first, *(k_first + 1)))
         {
             sum = op(sum, *first);
-        } else
+        }
+        else
         {
             sum = *first;
         }
@@ -448,50 +450,57 @@ OutputIt host_inclusive_scan_by_key(InputIt  first,
 }
 
 template<class T, class U = T>
-HIPCUB_HOST_DEVICE inline constexpr std::common_type_t<T, U> max(const T& t, const U& u)
+HIPCUB_HOST_DEVICE
+inline constexpr std::common_type_t<T, U> max(const T& t, const U& u)
 {
     using common_type = std::common_type_t<T, U>;
     return static_cast<common_type>(t) < static_cast<common_type>(u) ? u : t;
 }
 
-HIPCUB_HOST_DEVICE inline test_utils::half max(const test_utils::half& a, const test_utils::half& b)
+HIPCUB_HOST_DEVICE
+inline test_utils::half max(const test_utils::half& a, const test_utils::half& b)
 {
     return test_utils::half_maximum{}(a, b);
 }
 
 template<class T>
-HIPCUB_HOST_DEVICE inline constexpr T max(const T& t, const test_utils::half& u)
+HIPCUB_HOST_DEVICE
+inline constexpr T max(const T& t, const test_utils::half& u)
 {
     return test_utils::max(t, static_cast<T>(u));
 }
 
 template<class T>
-HIPCUB_HOST_DEVICE inline constexpr T max(const test_utils::half& t, const T& u)
+HIPCUB_HOST_DEVICE
+inline constexpr T max(const test_utils::half& t, const T& u)
 {
     return test_utils::max(static_cast<T>(t), u);
 }
 
-HIPCUB_HOST_DEVICE inline test_utils::bfloat16 max(const test_utils::bfloat16& a,
-                                                   const test_utils::bfloat16& b)
+HIPCUB_HOST_DEVICE
+inline test_utils::bfloat16 max(const test_utils::bfloat16& a, const test_utils::bfloat16& b)
 {
     return test_utils::bfloat16_maximum{}(a, b);
 }
 
 template<class T>
-HIPCUB_HOST_DEVICE inline constexpr T max(const T& t, const test_utils::bfloat16& u)
+HIPCUB_HOST_DEVICE
+inline constexpr T max(const T& t, const test_utils::bfloat16& u)
 {
     return test_utils::max(t, static_cast<T>(u));
 }
 
 template<class T>
-HIPCUB_HOST_DEVICE inline constexpr T max(const test_utils::bfloat16& t, const T& u)
+HIPCUB_HOST_DEVICE
+inline constexpr T max(const test_utils::bfloat16& t, const T& u)
 {
     return test_utils::max(static_cast<T>(t), u);
 }
 
 template<class T, class U>
-HIPCUB_HOST_DEVICE inline constexpr std::common_type_t<test_utils::custom_test_type<T>,
-                                                       test_utils::custom_test_type<U>>
+HIPCUB_HOST_DEVICE
+inline constexpr std::common_type_t<test_utils::custom_test_type<T>,
+                                    test_utils::custom_test_type<U>>
     min(const test_utils::custom_test_type<T>& t, const test_utils::custom_test_type<U>& u)
 {
     using common_type
@@ -503,50 +512,57 @@ HIPCUB_HOST_DEVICE inline constexpr std::common_type_t<test_utils::custom_test_t
 }
 
 template<class T, class U = T>
-HIPCUB_HOST_DEVICE inline constexpr std::common_type_t<T, U> min(const T& t, const U& u)
+HIPCUB_HOST_DEVICE
+inline constexpr std::common_type_t<T, U> min(const T& t, const U& u)
 {
     using common_type = std::common_type_t<T, U>;
     return static_cast<common_type>(t) < static_cast<common_type>(u) ? t : u;
 }
 
 template<class T>
-HIPCUB_HOST_DEVICE inline constexpr T min(const T& t, const test_utils::half& u)
+HIPCUB_HOST_DEVICE
+inline constexpr T min(const T& t, const test_utils::half& u)
 {
     return test_utils::min(t, static_cast<T>(u));
 }
 
 template<class T>
-HIPCUB_HOST_DEVICE inline constexpr T min(const test_utils::half& t, const T& u)
+HIPCUB_HOST_DEVICE
+inline constexpr T min(const test_utils::half& t, const T& u)
 {
     return test_utils::min(static_cast<T>(t), u);
 }
 
-HIPCUB_HOST_DEVICE inline test_utils::half min(const test_utils::half& a, const test_utils::half& b)
+HIPCUB_HOST_DEVICE
+inline test_utils::half min(const test_utils::half& a, const test_utils::half& b)
 {
     return test_utils::half_minimum{}(a, b);
 }
 
 template<class T>
-HIPCUB_HOST_DEVICE inline constexpr T min(const T& t, const test_utils::bfloat16& u)
+HIPCUB_HOST_DEVICE
+inline constexpr T min(const T& t, const test_utils::bfloat16& u)
 {
     return test_utils::min(t, static_cast<T>(u));
 }
 
 template<class T>
-HIPCUB_HOST_DEVICE inline constexpr T min(const test_utils::bfloat16& t, const T& u)
+HIPCUB_HOST_DEVICE
+inline constexpr T min(const test_utils::bfloat16& t, const T& u)
 {
     return test_utils::min(static_cast<T>(t), u);
 }
 
-HIPCUB_HOST_DEVICE inline test_utils::bfloat16 min(const test_utils::bfloat16& a,
-                                                   const test_utils::bfloat16& b)
+HIPCUB_HOST_DEVICE
+inline test_utils::bfloat16 min(const test_utils::bfloat16& a, const test_utils::bfloat16& b)
 {
     return test_utils::bfloat16_minimum{}(a, b);
 }
 
 template<class T, class U>
-HIPCUB_HOST_DEVICE inline constexpr typename std::common_type<test_utils::custom_test_type<T>,
-                                                              test_utils::custom_test_type<U>>::type
+HIPCUB_HOST_DEVICE
+inline constexpr typename std::common_type<test_utils::custom_test_type<T>,
+                                           test_utils::custom_test_type<U>>::type
     max(const test_utils::custom_test_type<T>& t, const test_utils::custom_test_type<U>& u)
 {
     using common_type = typename std::common_type<test_utils::custom_test_type<T>,
@@ -558,16 +574,16 @@ HIPCUB_HOST_DEVICE inline constexpr typename std::common_type<test_utils::custom
 }
 
 template<class T>
-HIPCUB_HOST_DEVICE inline
-constexpr bool is_power_of_two(const T x)
+HIPCUB_HOST_DEVICE
+inline constexpr bool is_power_of_two(const T x)
 {
     static_assert(std::is_integral<T>::value, "T must be integer type");
     return (x > 0) && ((x & (x - 1)) == 0);
 }
 
 template<class T>
-HIPCUB_HOST_DEVICE inline
-constexpr T next_power_of_two(const T x, const T acc = 1)
+HIPCUB_HOST_DEVICE
+inline constexpr T next_power_of_two(const T x, const T acc = 1)
 {
     static_assert(std::is_unsigned<T>::value, "T must be unsigned type");
     return acc >= x ? acc : next_power_of_two(x, 2 * acc);
@@ -575,23 +591,20 @@ constexpr T next_power_of_two(const T x, const T acc = 1)
 
 // Return id of "logical warp" in a block
 template<unsigned int LogicalWarpSize = HIPCUB_DEVICE_WARP_THREADS>
-HIPCUB_DEVICE inline
-unsigned int logical_warp_id()
+HIPCUB_DEVICE
+inline unsigned int logical_warp_id()
 {
-    return hipcub::RowMajorTid(1, 1, 1)/LogicalWarpSize;
+    return hipcub::RowMajorTid(1, 1, 1) / LogicalWarpSize;
 }
 
-inline
-size_t get_max_block_size()
+inline size_t get_max_block_size()
 {
     hipDeviceProp_t device_properties;
-    hipError_t error = hipGetDeviceProperties(&device_properties, 0);
+    hipError_t      error = hipGetDeviceProperties(&device_properties, 0);
     if(error != hipSuccess)
     {
-        std::cout << "HIP error: " << error
-                << " file: " << __FILE__
-                << " line: " << __LINE__
-                << std::endl;
+        std::cout << "HIP error: " << error << " file: " << __FILE__ << " line: " << __LINE__
+                  << std::endl;
         std::exit(error);
     }
     return device_properties.maxThreadsPerBlock;
@@ -600,26 +613,26 @@ size_t get_max_block_size()
 // Select the minimal warp size for block of size block_size, it's
 // useful for blocks smaller than maximal warp size.
 template<class T>
-HIPCUB_HOST_DEVICE inline
-constexpr T get_min_warp_size(const T block_size, const T max_warp_size)
+HIPCUB_HOST_DEVICE
+inline constexpr T get_min_warp_size(const T block_size, const T max_warp_size)
 {
     static_assert(std::is_unsigned<T>::value, "T must be unsigned type");
     return block_size >= max_warp_size ? max_warp_size : next_power_of_two(block_size);
 }
 
-#define SKIP_IF_UNSUPPORTED_WARP_SIZE(test_warp_size) { \
-    const auto host_warp_size = HIPCUB_HOST_WARP_THREADS; \
-    if (host_warp_size < (test_warp_size)) \
-    { \
-        GTEST_SKIP() << "Cannot run test of warp size " \
-            << (test_warp_size) \
-            << " on a device with warp size " \
-            << host_warp_size; \
-    } \
-}
+#define SKIP_IF_UNSUPPORTED_WARP_SIZE(test_warp_size)                           \
+    {                                                                           \
+        const auto host_warp_size = HIPCUB_HOST_WARP_THREADS;                   \
+        if(host_warp_size < (test_warp_size))                                   \
+        {                                                                       \
+            GTEST_SKIP() << "Cannot run test of warp size " << (test_warp_size) \
+                         << " on a device with warp size " << host_warp_size;   \
+        }                                                                       \
+    }
 
 template<unsigned int LogicalWarpSize>
-__device__ constexpr bool device_test_enabled_for_warp_size_v
+__device__
+constexpr bool device_test_enabled_for_warp_size_v
     = HIPCUB_DEVICE_WARP_THREADS >= LogicalWarpSize;
 
 template<typename T,
@@ -635,51 +648,49 @@ inline constexpr auto ceiling_div(const T a, const U b)
 // Need for hipcub::DeviceReduce::Min/Max etc.
 namespace std
 {
-    template<>
-    class numeric_limits<test_utils::custom_test_type<int>>
+template<>
+class numeric_limits<test_utils::custom_test_type<int>>
+{
+    using T = typename test_utils::custom_test_type<int>;
+
+public:
+    static constexpr inline T max()
     {
-        using T = typename test_utils::custom_test_type<int>;
+        return std::numeric_limits<typename T::value_type>::max();
+    }
 
-        public:
-
-        static constexpr inline T max()
-        {
-            return std::numeric_limits<typename T::value_type>::max();
-        }
-
-        static constexpr inline T min()
-        {
-            return std::numeric_limits<typename T::value_type>::min();
-        }
-
-        static constexpr inline T lowest()
-        {
-            return std::numeric_limits<typename T::value_type>::lowest();
-        }
-    };
-
-    template<>
-    class numeric_limits<test_utils::custom_test_type<float>>
+    static constexpr inline T min()
     {
-        using T = typename test_utils::custom_test_type<float>;
+        return std::numeric_limits<typename T::value_type>::min();
+    }
 
-        public:
+    static constexpr inline T lowest()
+    {
+        return std::numeric_limits<typename T::value_type>::lowest();
+    }
+};
 
-        static constexpr inline T max()
-        {
-            return std::numeric_limits<typename T::value_type>::max();
-        }
+template<>
+class numeric_limits<test_utils::custom_test_type<float>>
+{
+    using T = typename test_utils::custom_test_type<float>;
 
-        static constexpr inline T min()
-        {
-            return std::numeric_limits<typename T::value_type>::min();
-        }
+public:
+    static constexpr inline T max()
+    {
+        return std::numeric_limits<typename T::value_type>::max();
+    }
 
-        static constexpr inline T lowest()
-        {
-            return std::numeric_limits<typename T::value_type>::lowest();
-        }
-    };
-}
+    static constexpr inline T min()
+    {
+        return std::numeric_limits<typename T::value_type>::min();
+    }
+
+    static constexpr inline T lowest()
+    {
+        return std::numeric_limits<typename T::value_type>::lowest();
+    }
+};
+} // namespace std
 
 #endif // HIPCUB_TEST_HIPCUB_TEST_UTILS_HPP_

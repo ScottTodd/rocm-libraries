@@ -428,7 +428,7 @@ namespace
         }
 
         // KernelLauncher is not copyable or assignable
-        KernelLauncher(const KernelLauncher&) = delete;
+        KernelLauncher(const KernelLauncher&)            = delete;
         KernelLauncher& operator=(const KernelLauncher&) = delete;
 
         // Get the number of devices
@@ -688,9 +688,8 @@ rocsparselt_status runContractionProblem(const RocsparseltContractionProblem<Ti,
                     if(ms < min_ms)
                     {
                         *config_id = id;
-                        min_ms = ms;
+                        min_ms     = ms;
                     }
-
                 }
                 RETURN_IF_HIP_ERROR(hipEventDestroy(startEvent));
                 RETURN_IF_HIP_ERROR(hipEventDestroy(stopEvent));

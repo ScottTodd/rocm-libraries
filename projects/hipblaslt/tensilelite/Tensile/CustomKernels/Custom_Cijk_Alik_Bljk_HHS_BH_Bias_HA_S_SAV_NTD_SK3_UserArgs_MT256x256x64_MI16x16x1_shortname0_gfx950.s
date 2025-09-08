@@ -1666,7 +1666,7 @@ ds_read_b128 v[vgprValuB_X0_I0+24:vgprValuB_X0_I0+24+3], v[vgprLocalReadAddrB] o
 ds_read_b128 v[vgprValuB_X0_I0+28:vgprValuB_X0_I0+28+3], v[vgprLocalReadAddrB] offset:896 // L -> Reg lro=0 swapByteOffset=0 ti=256 vIdx=0 eIdx=7 rIdx=0 oIdx=0 buffer=0 iui=0
 
 s_waitcnt lgkmcnt(0)
-  
+
 /* local read inc a */
 /* N/A, lro->32 */
 /* self.localReadDoCntA 1 self.localReadDoCntB 1 */

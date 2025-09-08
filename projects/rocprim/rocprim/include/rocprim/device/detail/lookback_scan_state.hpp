@@ -46,7 +46,8 @@
 // Global coherence of prefixes_*_values is ensured by atomic_load/atomic_store that bypass
 // cache.
 #ifndef ROCPRIM_DETAIL_LOOKBACK_SCAN_STATE_WITHOUT_SLOW_FENCES
-    #if defined(__HIP_DEVICE_COMPILE__) && (defined(__gfx942__) || defined(__gfx950__) || defined(__gfx9_4_generic__))
+    #if defined(__HIP_DEVICE_COMPILE__) \
+        && (defined(__gfx942__) || defined(__gfx950__) || defined(__gfx9_4_generic__))
         #define ROCPRIM_DETAIL_LOOKBACK_SCAN_STATE_WITHOUT_SLOW_FENCES 1
     #else
         #define ROCPRIM_DETAIL_LOOKBACK_SCAN_STATE_WITHOUT_SLOW_FENCES 0
@@ -805,8 +806,8 @@ private:
         rocprim::detail::atomic_fence_release_vmem_order_only();
 #else
         auto* values               = static_cast<T*>(flag == lookback_scan_prefix_flag::partial
-                                                         ? prefixes_partial_values
-                                                         : prefixes_complete_values);
+                                           ? prefixes_partial_values
+                                           : prefixes_complete_values);
         values[padding + block_id] = value;
         ::rocprim::detail::memory_fence_device();
 #endif
@@ -843,13 +844,16 @@ class lookback_scan_prefix_op
                   "T must be LookbackScanState::value_type");
 
 public:
-    ROCPRIM_DEVICE ROCPRIM_INLINE lookback_scan_prefix_op(unsigned int       block_id,
-                                                         BinaryFunction     scan_op,
-                                                         LookbackScanState& scan_state)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    lookback_scan_prefix_op(unsigned int       block_id,
+                            BinaryFunction     scan_op,
+                            LookbackScanState& scan_state)
         : block_id_(block_id), scan_op_(scan_op), scan_state_(scan_state)
     {}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE ~lookback_scan_prefix_op() = default;
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    ~lookback_scan_prefix_op()
+        = default;
 
 private:
     ROCPRIM_DEVICE ROCPRIM_INLINE
@@ -944,13 +948,16 @@ class lookback_scan_prefix_op<T,
                               ::rocprim::arch::wavefront::target::dynamic>
 {
 public:
-    ROCPRIM_DEVICE ROCPRIM_INLINE lookback_scan_prefix_op(unsigned int       block_id,
-                                                         BinaryFunction     scan_op,
-                                                         LookbackScanState& scan_state)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    lookback_scan_prefix_op(unsigned int       block_id,
+                            BinaryFunction     scan_op,
+                            LookbackScanState& scan_state)
         : wave32_op(block_id, scan_op, scan_state), wave64_op(block_id, scan_op, scan_state)
     {}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE ~lookback_scan_prefix_op() = default;
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    ~lookback_scan_prefix_op()
+        = default;
 
 private:
     using lookback_scan_prefix_op_wave32
@@ -1096,10 +1103,11 @@ private:
 public:
     using storage_type = typename factory::storage_type;
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE offset_lookback_scan_prefix_op(unsigned int       block_id,
-                                                                LookbackScanState& state,
-                                                                storage_type&      storage,
-                                                                BinaryOp binary_op = BinaryOp())
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    offset_lookback_scan_prefix_op(unsigned int       block_id,
+                                   LookbackScanState& state,
+                                   storage_type&      storage,
+                                   BinaryOp           binary_op = BinaryOp())
         : base_type(block_id, BinaryOp(std::move(binary_op)), state), storage(storage)
     {}
 

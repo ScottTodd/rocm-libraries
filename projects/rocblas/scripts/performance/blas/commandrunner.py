@@ -20,7 +20,7 @@
    CTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-'''
+"""
 This tool is meant to manage running commands related to a single project,
 but from multiple versions of that project and/or multiple hardware configurations.
 
@@ -57,7 +57,7 @@ create more meaningful plots/figures.
 
 This file is setup to act as an example benchmark tool for the Linux commandline
 tool "df". See the end of the file for example code.
-'''
+"""
 import argparse
 from collections import OrderedDict
 import copy
@@ -90,6 +90,7 @@ except ImportError:
     np = None
 try:
     import pandas as pd
+
     if plt is not None:
         pd.plotting.register_matplotlib_converters()
 except ImportError:
@@ -107,21 +108,23 @@ try:
 except ImportError:
     BytesIO = None
 
+
 class SystemMonitor(object):
     supported_metrics = [
-            'used_memory_percent',
-            'fclk_megahertz',
-            'mclk_megahertz',
-            'sclk_megahertz',
-            'socclk_megahertz',
-            # 'dcefclk_megahertz',
-            'fan_speed_percent',
-            ]
-    def __init__(self, metrics = supported_metrics, cuda = False):
+        "used_memory_percent",
+        "fclk_megahertz",
+        "mclk_megahertz",
+        "sclk_megahertz",
+        "socclk_megahertz",
+        # 'dcefclk_megahertz',
+        "fan_speed_percent",
+    ]
+
+    def __init__(self, metrics=supported_metrics, cuda=False):
         if len(metrics) == 0:
-            raise ValueError('SystemMonitor must record at least one metric')
+            raise ValueError("SystemMonitor must record at least one metric")
         self.metrics = metrics
-        self.data = {metric:{} for metric in self.metrics}
+        self.data = {metric: {} for metric in self.metrics}
 
     def record_line(self, cuda):
         now = datetime.datetime.now()
@@ -131,43 +134,58 @@ class SystemMonitor(object):
     def measure(self, metric, cuda, device=None):
         if device is None:
             device = getspecs.listdevices(cuda)[0]
-        elif metric == 'fan_speed_percent':
+        elif metric == "fan_speed_percent":
             gfx = getspecs.getgfx(device, cuda)
             # Not querying fan speed on 908 or 90a
-            if gfx == 'gfx908' or gfx == 'gfx90a' or gfx == 'N/A':
-                return 'N/A'
+            if gfx == "gfx908" or gfx == "gfx90a" or gfx == "N/A":
+                return "N/A"
             return getspecs.getfanspeedpercent(device, cuda)[1]
-        elif metric.find('clk') >=0 and metric.split('_')[0] in getspecs.validclocknames(cuda):
-            return int(getspecs.getcurrentclockfreq(device, metric.split('_')[0], cuda).strip('Mhz'))
-        elif 'used_memory_percent':
-            used_bytes, total_bytes = getspecs.getmeminfo(device, 'vram', cuda)
+        elif metric.find("clk") >= 0 and metric.split("_")[
+            0
+        ] in getspecs.validclocknames(cuda):
+            return int(
+                getspecs.getcurrentclockfreq(device, metric.split("_")[0], cuda).strip(
+                    "Mhz"
+                )
+            )
+        elif "used_memory_percent":
+            used_bytes, total_bytes = getspecs.getmeminfo(device, "vram", cuda)
             used_bytes_int = used_bytes.split()[0] if cuda else used_bytes
             total_bytes_int = total_bytes.split()[0] if cuda else total_bytes
-            return int(used_bytes_int)*100.0/int(total_bytes_int)
+            return int(used_bytes_int) * 100.0 / int(total_bytes_int)
         else:
-            raise ValueError('Unrecognized metric requested: {}'.format(metric))
+            raise ValueError("Unrecognized metric requested: {}".format(metric))
 
     def save(self, info_filename):
-        with open(info_filename, 'w') as output_file:
-            output_file.write('# Time, {}\n'.format(', '.join(self.metrics)))
+        with open(info_filename, "w") as output_file:
+            output_file.write("# Time, {}\n".format(", ".join(self.metrics)))
             for time_measurement in sorted(self.data[self.metrics[0]].keys()):
-                output_file.write('{}, {}\n'.format(str(time_measurement),
-                        ', '.join(str(self.data[metric][time_measurement]) for metric in self.metrics)))
+                output_file.write(
+                    "{}, {}\n".format(
+                        str(time_measurement),
+                        ", ".join(
+                            str(self.data[metric][time_measurement])
+                            for metric in self.metrics
+                        ),
+                    )
+                )
             output_file.close()
 
     @classmethod
     def from_file(cls, info_filename):
         if pd is None:
-            print('WARNING - pandas is required for background system monitor')
+            print("WARNING - pandas is required for background system monitor")
             return None
         rv = cls()
-        rv.data = pd.read_csv(info_filename, index_col=0, squeeze=True, parse_dates=True).to_dict()
+        rv.data = pd.read_csv(
+            info_filename, index_col=0, squeeze=True, parse_dates=True
+        ).to_dict()
         rv.metrics = [key for key in rv.data.keys()]
         return rv
 
     def extend(self, other):
         if self.metrics != other.metrics:
-            raise ValueError('Both SystemMonitors must have the same record metrics')
+            raise ValueError("Both SystemMonitors must have the same record metrics")
         for metric in self.metrics:
             for time_measurement, value in other.data[metric].items():
                 self.data[metric][time_measurement] = value
@@ -183,28 +201,33 @@ class SystemMonitor(object):
 
     def plot(self):
         if plt is not None:
-            figure, axes = plt.subplots(len(self.metrics), 1, sharex=True, squeeze=False)
+            figure, axes = plt.subplots(
+                len(self.metrics), 1, sharex=True, squeeze=False
+            )
             for ax_idx, metric in enumerate(self.metrics):
                 ax = axes[ax_idx, 0]
                 x_values = sorted(self.data[metric].keys())
                 y_values = [self.data[metric][x] for x in x_values]
-                ax.plot(x_values, y_values, '.')
+                ax.plot(x_values, y_values, ".")
                 ax.set_ylabel(metric, rotation=0)
             plt.show()
+
 
 class ArgumentABC(object):
     def __init__(self):
         self._value = None
 
     def get_args(self):
-        raise NotImplementedError('ArgumentABC.get_args is meant to be pure virtual')
+        raise NotImplementedError("ArgumentABC.get_args is meant to be pure virtual")
 
     def get_hash(self):
-        return '_'.join(self.get_args())
+        return "_".join(self.get_args())
 
     def get_value(self):
         if self._value is None:
-            raise RuntimeError('No value specified! ArgumentABC.get_value can only be used if a value is explicitely set.')
+            raise RuntimeError(
+                "No value specified! ArgumentABC.get_value can only be used if a value is explicitely set."
+            )
         return self._value
 
     def set(self, value):
@@ -214,14 +237,16 @@ class ArgumentABC(object):
         return self._value is not None
 
     def is_shell_only(self):
-        '''Returns True if the command must be run with subprocess: shell=True'''
+        """Returns True if the command must be run with subprocess: shell=True"""
         return False
+
 
 class PositionalArgument(ArgumentABC):
     def get_args(self):
         if self._value is None:
-            raise RuntimeError('No value set for positional argument')
+            raise RuntimeError("No value set for positional argument")
         return [str(self._value)]
+
 
 class RequiredArgument(ArgumentABC):
     def __init__(self, flag):
@@ -230,8 +255,9 @@ class RequiredArgument(ArgumentABC):
 
     def get_args(self):
         if self._value is None:
-            raise RuntimeError('No value set for {}'.format(self.flag))
+            raise RuntimeError("No value set for {}".format(self.flag))
         return [self.flag, str(self._value)]
+
 
 class DefaultArgument(ArgumentABC):
     def __init__(self, flag, default):
@@ -244,6 +270,7 @@ class DefaultArgument(ArgumentABC):
             return [self.flag, str(self.default)]
         return [self.flag, str(self._value)]
 
+
 class RepeatedArgument(ArgumentABC):
     def __init__(self, flag):
         ArgumentABC.__init__(self)
@@ -252,10 +279,11 @@ class RepeatedArgument(ArgumentABC):
     def get_args(self):
         rv = []
         if self._value is None:
-            raise RuntimeError('No value set for {}'.format(self.flag))
+            raise RuntimeError("No value set for {}".format(self.flag))
         for item in self._value:
             rv.extend([self.flag, str(item)])
         return rv
+
 
 class OptionalArgument(RequiredArgument):
     def get_args(self):
@@ -263,9 +291,10 @@ class OptionalArgument(RequiredArgument):
             return []
         return [self.flag, str(self._value)]
 
+
 class OptionalFlagArgument(ArgumentABC):
-    def __init__(self, flag, default = False, add_flag_on_true = True):
-        '''Adds `flag` if the `value` is set to `add_flag_on_true` '''
+    def __init__(self, flag, default=False, add_flag_on_true=True):
+        """Adds `flag` if the `value` is set to `add_flag_on_true`"""
         ArgumentABC.__init__(self)
         self.flag = flag
         self._value = default
@@ -276,53 +305,65 @@ class OptionalFlagArgument(ArgumentABC):
             return [self.flag]
         return []
 
+
 class PipeToArgument(ArgumentABC):
     def get_args(self):
         if self._value is None:
-            raise RuntimeError('No value set for pipe to argument')
-        return ['2>&1', '|', 'tee', str(self._value)]
+            raise RuntimeError("No value set for pipe to argument")
+        return ["2>&1", "|", "tee", str(self._value)]
 
     def is_shell_only(self):
         return True
+
 
 class ExecutionInfo(object):
     def __init__(self, filename):
         self.filename = filename
         self._props = {}
         if os.path.exists(self.filename):
-            self._props = json.load(open(self.filename, 'r'))
+            self._props = json.load(open(self.filename, "r"))
 
     def save(self):
-        json.dump(self._props, open(self.filename, 'w'), sort_keys=True, indent=4)
+        json.dump(self._props, open(self.filename, "w"), sort_keys=True, indent=4)
 
     def set_return_code(self, return_code):
-        self._props['return_code'] = return_code
+        self._props["return_code"] = return_code
 
     def get_return_code(self):
-        return self._props['return_code'] if 'return_code' in self._props else None
+        return self._props["return_code"] if "return_code" in self._props else None
 
 
 class ArgumentSetABC(object):
     def _define_consistent_arguments(self):
-        '''Fill self.consistent_args with instances of ArgumentABC.'''
-        raise NotImplementedError('ArgumentSetABC._define_consistent_arguments is meant to be pure virtual')
+        """Fill self.consistent_args with instances of ArgumentABC."""
+        raise NotImplementedError(
+            "ArgumentSetABC._define_consistent_arguments is meant to be pure virtual"
+        )
 
     def _define_variable_arguments(self):
-        '''Fill self.variable_args with instances of ArgumentABC.'''
-        raise NotImplementedError('ArgumentSetABC._define_variable_arguments is meant to be pure virtual')
+        """Fill self.variable_args with instances of ArgumentABC."""
+        raise NotImplementedError(
+            "ArgumentSetABC._define_variable_arguments is meant to be pure virtual"
+        )
 
     def get_full_command(self, run_configuration):
-        '''Translate an instance of RunConfiguration into the full set of command line arguments.'''
-        raise NotImplementedError('ArgumentSetABC.get_full_command is meant to be pure virtual')
+        """Translate an instance of RunConfiguration into the full set of command line arguments."""
+        raise NotImplementedError(
+            "ArgumentSetABC.get_full_command is meant to be pure virtual"
+        )
 
     def get_interleaved_command(self, run_configurations):
-        '''Translate all of the instances of RunConfiguration into a single set of command line arguments
-           that generates all output folders in single call.'''
-        raise NotImplementedError('ArgumentSetABC.get_interleaved_command is meant to be pure virtual')
+        """Translate all of the instances of RunConfiguration into a single set of command line arguments
+        that generates all output folders in single call."""
+        raise NotImplementedError(
+            "ArgumentSetABC.get_interleaved_command is meant to be pure virtual"
+        )
 
     def collect_timing(self, run_configuration):
-        '''Use a RunConfiguration to find the data files on disk and process them.'''
-        raise NotImplementedError('ArgumentSetABC.collect_timing is meant to be pure virtual')
+        """Use a RunConfiguration to find the data files on disk and process them."""
+        raise NotImplementedError(
+            "ArgumentSetABC.collect_timing is meant to be pure virtual"
+        )
 
     def __init__(self, combine_executables=False, **kwargs):
         self.combine_executables = combine_executables
@@ -334,18 +375,18 @@ class ArgumentSetABC(object):
             self.set(key, kwargs[key])
 
     def set_user_args(self, user_args):
-        ''' Set the command line arguments specified by the user through argparse.
+        """Set the command line arguments specified by the user through argparse.
         Not to be confused with the command line arguments that are used to run a benchmark tool.
         Argparse arguments are available to control progam flow, but only after the constructor
         because otherwise child classes would need to correctly pass them in. This function is
-        called when argument sets are added to a CommandRunner instance'''
+        called when argument sets are added to a CommandRunner instance"""
         self.user_args = user_args
 
     def get_deep_copy(self):
         return copy.deepcopy(self)
 
     def is_shell_only(self):
-        '''Returns True if the command must be run with subprocess: shell=True'''
+        """Returns True if the command must be run with subprocess: shell=True"""
         for key in self.consistent_args:
             if self.consistent_args[key].is_shell_only():
                 return True
@@ -360,9 +401,9 @@ class ArgumentSetABC(object):
         elif key in self.variable_args:
             self.variable_args[key].set(value)
         else:
-            raise ValueError('{} is not a defined argument'.format(key))
+            raise ValueError("{} is not a defined argument".format(key))
         # Add a convience accessor, prefixed with an underscore to denote that it is private/read only.
-        self.__setattr__('_' + key, value)
+        self.__setattr__("_" + key, value)
 
     def set_many(self, kvpairs):
         for key in kvpairs:
@@ -374,7 +415,7 @@ class ArgumentSetABC(object):
         elif key in self.variable_args:
             return self.variable_args[key]
         else:
-            raise ValueError('{} is not a defined argument'.format(key))
+            raise ValueError("{} is not a defined argument".format(key))
 
     def get_args(self, consistent_only=False, ignore_keys=[], require_keys=None):
         rv = []
@@ -390,68 +431,105 @@ class ArgumentSetABC(object):
         return rv
 
     def __repr__(self):
-        arg_values = ['{}:{}'.format(key, self.consistent_args[key]._value) for key in self.consistent_args if self.consistent_args[key]._value is not None]
-        return 'ArgumentSet(' + ' '.join(arg_values) + ')'
+        arg_values = [
+            "{}:{}".format(key, self.consistent_args[key]._value)
+            for key in self.consistent_args
+            if self.consistent_args[key]._value is not None
+        ]
+        return "ArgumentSet(" + " ".join(arg_values) + ")"
 
     # Use this hash of the arguments to remove equivalent runs from the global set of runs
     # Additional constraints on the keys used for the hash can be added for sorting purposes
     def get_hash(self, *args, **kwargs):
-        return str(hashlib.md5(' '.join(self.get_args(True, *args, **kwargs)).encode()).hexdigest())
+        return str(
+            hashlib.md5(
+                " ".join(self.get_args(True, *args, **kwargs)).encode()
+            ).hexdigest()
+        )
 
     def get_name(self):
-        return '"{}"'.format(' '.join(self.get_args(True)))
+        return '"{}"'.format(" ".join(self.get_args(True)))
 
     def get_output_basename(self):
-        '''Returns a hash of the argument set to create a unique name for the output data.
+        """Returns a hash of the argument set to create a unique name for the output data.
         Can be overridden to a more intuitive name as long as the returned string is unique
-        for a given set of arguments.'''
-        return self.get_hash() + '.dat'
+        for a given set of arguments."""
+        return self.get_hash() + ".dat"
 
     def get_output_subdirectory(self, run_configuration, create=True):
-        '''Returns a hash of the argument set to create a unique name for the output data.
+        """Returns a hash of the argument set to create a unique name for the output data.
         Can be overridden to a more intuitive name as long as the returned string is unique
-        for a given set of arguments.'''
+        for a given set of arguments."""
         rv = os.path.join(run_configuration.output_directory, self.get_hash())
         if create and not os.path.exists(rv):
             os.makedirs(rv)
         return rv
 
     def get_output_file(self, run_configuration):
-        return os.path.join(run_configuration.output_directory, self.get_output_basename())
+        return os.path.join(
+            run_configuration.output_directory, self.get_output_basename()
+        )
 
     def get_output_file_compare(self, run_configuration):
-        return os.path.join(run_configuration.output_directory_compare, self.get_output_basename())
+        return os.path.join(
+            run_configuration.output_directory_compare, self.get_output_basename()
+        )
 
     def get_caption(self, similar_keys):
-        '''Override this function to make a more meaninful caption based off a subset of keys.'''
+        """Override this function to make a more meaninful caption based off a subset of keys."""
         return None
 
     def _get_stdout_filename(self, run_configuration):
-            basename = os.path.splitext(self.get_output_basename())[0]
-            return os.path.abspath(os.path.join(run_configuration.output_directory, basename + '.out'))
+        basename = os.path.splitext(self.get_output_basename())[0]
+        return os.path.abspath(
+            os.path.join(run_configuration.output_directory, basename + ".out")
+        )
+
     def _get_stderr_filename(self, run_configuration):
-            basename = os.path.splitext(self.get_output_basename())[0]
-            return os.path.abspath(os.path.join(run_configuration.output_directory, basename + '.err'))
+        basename = os.path.splitext(self.get_output_basename())[0]
+        return os.path.abspath(
+            os.path.join(run_configuration.output_directory, basename + ".err")
+        )
+
     def _get_exec_info_filename(self, run_configuration):
-            basename = os.path.splitext(self.get_output_basename())[0]
-            return os.path.abspath(os.path.join(run_configuration.output_directory, basename + '.json'))
+        basename = os.path.splitext(self.get_output_basename())[0]
+        return os.path.abspath(
+            os.path.join(run_configuration.output_directory, basename + ".json")
+        )
+
     def _get_system_monitor_filename(self, run_configuration):
-            basename = os.path.splitext(self.get_output_basename())[0]
-            return os.path.abspath(os.path.join(run_configuration.output_directory, basename + '.info'))
+        basename = os.path.splitext(self.get_output_basename())[0]
+        return os.path.abspath(
+            os.path.join(run_configuration.output_directory, basename + ".info")
+        )
 
     def get_system_monitor(self, run_configuration):
         info_filename = self._get_system_monitor_filename(run_configuration)
-        return SystemMonitor.from_file(info_filename) if os.path.exists(info_filename) else None
+        return (
+            SystemMonitor.from_file(info_filename)
+            if os.path.exists(info_filename)
+            else None
+        )
 
-    def execute(self,
-                run_configuration = None,
-                run_configurations = None,
-                overwrite = True,
-                dry_run = False):
-        if self.combine_executables and (run_configurations is None or run_configuration is not None):
-            raise ValueError('A list of run configurations must be passed in when using combined executables!')
-        if not self.combine_executables and (run_configuration is None or run_configurations is not None):
-            raise ValueError('A single run configuration must be passed in when using individual executables!')
+    def execute(
+        self,
+        run_configuration=None,
+        run_configurations=None,
+        overwrite=True,
+        dry_run=False,
+    ):
+        if self.combine_executables and (
+            run_configurations is None or run_configuration is not None
+        ):
+            raise ValueError(
+                "A list of run configurations must be passed in when using combined executables!"
+            )
+        if not self.combine_executables and (
+            run_configuration is None or run_configurations is not None
+        ):
+            raise ValueError(
+                "A single run configuration must be passed in when using individual executables!"
+            )
         basename = os.path.splitext(self.get_output_basename())[0]
 
         # If running multiple, base commands off the first run configuration, and copy output files for others.
@@ -461,35 +539,52 @@ class ArgumentSetABC(object):
         else:
             run_configurations = [run_configuration]
 
-        execution_info = ExecutionInfo(filename = self._get_exec_info_filename(run_configuration))
+        execution_info = ExecutionInfo(
+            filename=self._get_exec_info_filename(run_configuration)
+        )
         old_return_code = execution_info.get_return_code() if not dry_run else None
         if old_return_code is not None and not overwrite:
-            message = '{0} Using existing result with code {1} {0}'.format('=' * 10, old_return_code)
+            message = "{0} Using existing result with code {1} {0}".format(
+                "=" * 10, old_return_code
+            )
             return_code = old_return_code
         else:
-            cmd = self.get_interleaved_command(run_configurations) if self.combine_executables else self.get_full_command(run_configuration)
-            cmd_str = ' '.join(cmd)
+            cmd = (
+                self.get_interleaved_command(run_configurations)
+                if self.combine_executables
+                else self.get_full_command(run_configuration)
+            )
+            cmd_str = " ".join(cmd)
             print(cmd_str)
 
             if dry_run:
                 return_code = 0
             else:
-                stdout_file = open(self._get_stdout_filename(run_configuration), mode='w')
-                stderr_file = open(self._get_stderr_filename(run_configuration), mode='w')
+                stdout_file = open(
+                    self._get_stdout_filename(run_configuration), mode="w"
+                )
+                stderr_file = open(
+                    self._get_stderr_filename(run_configuration), mode="w"
+                )
                 # Log some information about the time and command being executed
                 time_str = str(datetime.datetime.now())
                 for out_file in [stdout_file, stderr_file]:
-                    out_file.write('{0} {1} {0}\n'.format('=' * 10, time_str))
-                    out_file.write(cmd_str + '\n')
+                    out_file.write("{0} {1} {0}\n".format("=" * 10, time_str))
+                    out_file.write(cmd_str + "\n")
                     out_file.flush()
 
-                system_monitor = SystemMonitor(cuda = self.user_args.cuda)
+                system_monitor = SystemMonitor(cuda=self.user_args.cuda)
 
                 is_shell_only = self.is_shell_only()
                 if is_shell_only:
                     cmd = cmd_str
-                proc = subprocess.Popen(cmd, stdout=stdout_file, stderr=stderr_file,
-                                        env=os.environ.copy(), shell=is_shell_only)
+                proc = subprocess.Popen(
+                    cmd,
+                    stdout=stdout_file,
+                    stderr=stderr_file,
+                    env=os.environ.copy(),
+                    shell=is_shell_only,
+                )
                 # Monitor system metrics while the process executes
                 poll_metric_count = 0
                 try:
@@ -499,35 +594,47 @@ class ArgumentSetABC(object):
                         poll_metric_count += 1
                 except Exception as e:
                     proc.kill()
-                    raise(e)
+                    raise (e)
 
                 # Process has completed, collect the return code
-                return_code = proc.poll() # return code of process
+                return_code = proc.poll()  # return code of process
                 execution_info.set_return_code(return_code)
                 execution_info.save()
-                system_monitor.save(self._get_system_monitor_filename(run_configuration))
-                message = '{0} Completed with code {1} {0}'.format('=' * 10, return_code)
+                system_monitor.save(
+                    self._get_system_monitor_filename(run_configuration)
+                )
+                message = "{0} Completed with code {1} {0}".format(
+                    "=" * 10, return_code
+                )
 
                 for out_file in [stdout_file, stderr_file]:
-                    out_file.write(message + '\n')
+                    out_file.write(message + "\n")
                     out_file.flush()
 
                 # Copy output files for each run configuration that is not the first.
                 for added_run_configuration in run_configurations[1:]:
-                    for filename_fn in [self._get_stdout_filename, self._get_stderr_filename, self._get_exec_info_filename]:
-                        shutil.copyfile(filename_fn(run_configuration), filename_fn(added_run_configuration))
+                    for filename_fn in [
+                        self._get_stdout_filename,
+                        self._get_stderr_filename,
+                        self._get_exec_info_filename,
+                    ]:
+                        shutil.copyfile(
+                            filename_fn(run_configuration),
+                            filename_fn(added_run_configuration),
+                        )
 
         if return_code != 0 or old_return_code is not None:
             print(message)
         return return_code
 
+
 class ArgumentSetDifference(object):
-    def __init__(self, argument_sets, ignore_keys = []):
+    def __init__(self, argument_sets, ignore_keys=[]):
         if len(argument_sets) <= 0:
-            raise ValueError('Expected more than one set of arguments')
+            raise ValueError("Expected more than one set of arguments")
         for argument_set in argument_sets:
             if not isinstance(argument_set, ArgumentSetABC):
-                raise ValueError('Inputs must derive from ArgumentSetABC')
+                raise ValueError("Inputs must derive from ArgumentSetABC")
         self.argument_sets = argument_sets
         self.ignore_keys = ignore_keys
         # Cache a list of differences and similarities with respect to the first input
@@ -539,7 +646,10 @@ class ArgumentSetDifference(object):
             if not key in ignore_keys:
                 is_similar = True
                 for compare_argument_set in self.compare_list:
-                    if self.base_argument_set.get(key).get_args() != compare_argument_set.get(key).get_args():
+                    if (
+                        self.base_argument_set.get(key).get_args()
+                        != compare_argument_set.get(key).get_args()
+                    ):
                         is_similar = False
                 append_list = self.similarities if is_similar else self.differences
                 append_list.append(key)
@@ -554,32 +664,49 @@ class ArgumentSetDifference(object):
         custom_caption = self.base_argument_set.get_caption(self.similarities)
         if custom_caption is not None:
             return custom_caption
-        rv = 'Constants: '
+        rv = "Constants: "
         for key in self.similarities:
-            rv = ' '.join([rv] + self.base_argument_set.get(key).get_args())
+            rv = " ".join([rv] + self.base_argument_set.get(key).get_args())
         if len(self.differences) > 0:
-            rv += '; Differences: '
+            rv += "; Differences: "
             for key in self.differences:
-                rv += str([' '.join(argument_set.get(key).get_args()) for argument_set in self.argument_sets])
+                rv += str(
+                    [
+                        " ".join(argument_set.get(key).get_args())
+                        for argument_set in self.argument_sets
+                    ]
+                )
         return rv
 
+
 class ArgumentSetSort(OrderedDict):
-    '''Subclass of OrderedDict that divides a list of argument_sets according to common keys.'''
+    """Subclass of OrderedDict that divides a list of argument_sets according to common keys."""
+
     def __init__(self, argument_sets, isolate_keys):
         OrderedDict.__init__(self)
         alphabet = [x for x in string.ascii_lowercase]
         if len(alphabet) < len(argument_sets):
-            alphabet.extend([x1 + x2 + x3 for x1,x2, x3 in itertools.product(string.ascii_lowercase, string.ascii_lowercase, string.ascii_lowercase)])
+            alphabet.extend(
+                [
+                    x1 + x2 + x3
+                    for x1, x2, x3 in itertools.product(
+                        string.ascii_lowercase,
+                        string.ascii_lowercase,
+                        string.ascii_lowercase,
+                    )
+                ]
+            )
         hash_to_label = {}
         alphabet_idx = 0
         for argument_set in argument_sets:
             hash_ignoring = argument_set.get_hash(ignore_keys=isolate_keys)
             if not hash_ignoring in hash_to_label:
-                label = 'Run {})'.format(alphabet[alphabet_idx])
+                label = "Run {})".format(alphabet[alphabet_idx])
                 hash_to_label[hash_ignoring] = label
                 alphabet_idx += 1
                 self[label] = []
             self[hash_to_label[hash_ignoring]].append(argument_set)
+
 
 class MachineSpecs(dict):
     @classmethod
@@ -587,96 +714,107 @@ class MachineSpecs(dict):
         # Helper to translate bytes into human readable units
         def to_mem_units(num_bytes):
             num_bytes = int(num_bytes)
-            for exponent, unit in enumerate(['bytes', 'kB', 'MB', 'GB', 'TB']):
+            for exponent, unit in enumerate(["bytes", "kB", "MB", "GB", "TB"]):
                 divisor = 1024.0**exponent
                 if num_bytes / divisor < 1024.0:
                     break
-            return '{:.1f}{}'.format(num_bytes / divisor, unit)
+            return "{:.1f}{}".format(num_bytes / divisor, unit)
 
         rv = cls()
         host_info = {}
-        host_info['hostname'] = getspecs.gethostname()
+        host_info["hostname"] = getspecs.gethostname()
 
-        host_info['cpu info'] = getspecs.getcpu()
-        host_info['ram'] = getspecs.getram()
-        host_info['distro'] = getspecs.getdistro()
-        host_info['kernel version'] = getspecs.getkernel()
-        host_info['rocm version'] = getspecs.getrocmversion()
-        rv['Host'] = host_info
+        host_info["cpu info"] = getspecs.getcpu()
+        host_info["ram"] = getspecs.getram()
+        host_info["distro"] = getspecs.getdistro()
+        host_info["kernel version"] = getspecs.getkernel()
+        host_info["rocm version"] = getspecs.getrocmversion()
+        rv["Host"] = host_info
         for device_num in device_numbers:
             device_info = {}
-            device_info['device'] = getspecs.getdeviceinfo(device_num, cuda)
-            device_info['vbios version'] = getspecs.getvbios(device_num, cuda)
-            device_info['vram'] = getspecs.getvram(device_num, cuda)
-            device_info['system clock'] = getspecs.getsclk(device_num, cuda)
-            device_info['memory clock'] = getspecs.getmclk(device_num, cuda)
-            rv['Device {0:2d}'.format(device_num)] = device_info
+            device_info["device"] = getspecs.getdeviceinfo(device_num, cuda)
+            device_info["vbios version"] = getspecs.getvbios(device_num, cuda)
+            device_info["vram"] = getspecs.getvram(device_num, cuda)
+            device_info["system clock"] = getspecs.getsclk(device_num, cuda)
+            device_info["memory clock"] = getspecs.getmclk(device_num, cuda)
+            rv["Device {0:2d}".format(device_num)] = device_info
         devices = getspecs.listdevices(cuda)
         for device in devices:
             smi_info = {}
-            smi_info['Bus'] = getspecs.getbus(device, cuda)
-            smi_info['Profile'] = getspecs.getprofile(device, cuda)
-            smi_info['Start Fan Speed'] = getspecs.getfanspeedpercent(device, cuda) + '%'
+            smi_info["Bus"] = getspecs.getbus(device, cuda)
+            smi_info["Profile"] = getspecs.getprofile(device, cuda)
+            smi_info["Start Fan Speed"] = (
+                getspecs.getfanspeedpercent(device, cuda) + "%"
+            )
             for clock in getspecs.validclocknames(cuda):
                 freq = getspecs.getcurrentclockfreq(device, clock, cuda)
-                if 'MEM' in clock:
-                    clock = 'mclk'
-                if 'clk' == clock or 'cur_clk' == clock:
-                    clock = 'sclk'
-                smi_info['Start ' + clock] = '{}'.format(freq)
+                if "MEM" in clock:
+                    clock = "mclk"
+                if "clk" == clock or "cur_clk" == clock:
+                    clock = "sclk"
+                smi_info["Start " + clock] = "{}".format(freq)
             for mem_type in getspecs.validmemtypes(cuda):
-                key = 'Start {} Memory'.format(mem_type)
+                key = "Start {} Memory".format(mem_type)
                 used_bytes, total_bytes = getspecs.getmeminfo(device, mem_type, cuda)
                 try:
                     used_bytes_int = used_bytes.split()[0] if cuda else int(used_bytes)
-                    total_bytes_int = total_bytes.split()[0] if cuda else int(total_bytes)
-                    smi_info[key] = '{} / {}'.format(to_mem_units(used_bytes_int), to_mem_units(total_bytes_int))
+                    total_bytes_int = (
+                        total_bytes.split()[0] if cuda else int(total_bytes)
+                    )
+                    smi_info[key] = "{} / {}".format(
+                        to_mem_units(used_bytes_int), to_mem_units(total_bytes_int)
+                    )
                 except:
                     pass
 
             for component in getspecs.validversioncomponents(cuda):
                 if cuda:
-                    smi_info[component.capitalize() + ' Version'] = getspecs.getversion(device, component, cuda)
+                    smi_info[component.capitalize() + " Version"] = getspecs.getversion(
+                        device, component, cuda
+                    )
                 else:
-                    smi_info[component.capitalize() + ' Version'] = getspecs.getversion(device, component, cuda)
-            rv['Card' + str(device)] = smi_info
+                    smi_info[component.capitalize() + " Version"] = getspecs.getversion(
+                        device, component, cuda
+                    )
+            rv["Card" + str(device)] = smi_info
 
         return rv
 
     @classmethod
     def from_file(cls, filename):
-        rv = cls(json.load(open(filename, 'r')))
+        rv = cls(json.load(open(filename, "r")))
         return rv
 
     def save(self, filename):
-        json.dump(self, open(filename, 'w'), sort_keys=True, indent=4)
+        json.dump(self, open(filename, "w"), sort_keys=True, indent=4)
 
     def write_latex(self, latex_module):
         for section_key in sorted(self.keys()):
             with latex_module.create(pylatex.FlushLeft()) as centered:
-                with centered.create(pylatex.Tabu('ll')) as data_table:
-                    header_row = [section_key + ' Info', '']
+                with centered.create(pylatex.Tabu("ll")) as data_table:
+                    header_row = [section_key + " Info", ""]
                     data_table.add_row(header_row, mapper=[pylatex.utils.bold])
                     section_info = self[section_key]
                     for spec_key in sorted(section_info.keys()):
-                        data_table.add_row([spec_key + ':', section_info[spec_key]])
-            #latex_module.append('\n\n')
+                        data_table.add_row([spec_key + ":", section_info[spec_key]])
+            # latex_module.append('\n\n')
 
     def write_docx(self, document, table_style, level=1):
         for section_key in sorted(self.keys()):
             num_columns = 2
             section_info = self[section_key]
             num_rows = len(section_info) + 1
-            document.add_heading(section_key + ' Specifications', level=level)
+            document.add_heading(section_key + " Specifications", level=level)
             table = document.add_table(num_rows, num_columns, style=table_style)
-            table.cell(0,0).text = 'Description'
-            table.cell(0,1).text = 'Value'
+            table.cell(0, 0).text = "Description"
+            table.cell(0, 1).text = "Value"
             for row_idx, spec_key in enumerate(sorted(section_info.keys())):
-                table.cell(row_idx+1,0).text = str(spec_key)
-                table.cell(row_idx+1,1).text = str(section_info[spec_key])
+                table.cell(row_idx + 1, 0).text = str(spec_key)
+                table.cell(row_idx + 1, 1).text = str(section_info[spec_key])
+
 
 class RunConfiguration(object):
-    '''A RunConfiguration contains all of the information that is unique to a set of comparable commands.
+    """A RunConfiguration contains all of the information that is unique to a set of comparable commands.
 
     Works in conjunction with ArgumentSetABC to define the complete set of parameters for running an executable.
     ArgumentSetABC should define all of the constant parameters, whereas RunConfiguration defines all of the
@@ -686,15 +824,26 @@ class RunConfiguration(object):
 
     An instance of RunConfiguration is passed into ArgumentSetABC.get_full_command. That is where the
     information stored in this class is translated into actual commandline arguments.
-    '''
-    def __init__(self, user_args, executable_directory, output_directory, output_directory_compare, label, run_number = None):
+    """
+
+    def __init__(
+        self,
+        user_args,
+        executable_directory,
+        output_directory,
+        output_directory_compare,
+        label,
+        run_number=None,
+    ):
         self.user_args = user_args
         self.executable_directory = executable_directory
         self.output_directory = output_directory
         self.output_directory_compare = output_directory_compare
         self.label = label
         if run_number is not None:
-            self.output_directory = os.path.join(output_directory, 'run{0:02d}'.format(run_number))
+            self.output_directory = os.path.join(
+                output_directory, "run{0:02d}".format(run_number)
+            )
         self.run_number = run_number
 
     def get_hash(self):
@@ -713,7 +862,9 @@ class RunConfiguration(object):
 
     def assert_exists(self):
         if not os.path.exists(self.output_directory):
-            raise ValueError('Unable to find output directory: {}'.format(self.output_directory))
+            raise ValueError(
+                "Unable to find output directory: {}".format(self.output_directory)
+            )
 
     def _machine_specs_filename(self):
         return os.path.join(self.output_directory, "specs.json")
@@ -723,7 +874,9 @@ class RunConfiguration(object):
 
     def save_specifications(self, device_num, cuda):
         filename = self._machine_specs_filename()
-        MachineSpecs.collect_specs([device_num], cuda, self.user_args.install_path).save(filename)
+        MachineSpecs.collect_specs(
+            [device_num], cuda, self.user_args.install_path
+        ).save(filename)
         # Does not return the specs because to use them robustly, they need to be loaded
         # from disk. Collecting could overwrite saved specs when post-processing results.
 
@@ -732,6 +885,7 @@ class RunConfiguration(object):
 
     def load_specifications_compare(self):
         return MachineSpecs.from_file(self._machine_specs_filename_compare())
+
 
 class RunConfigurationsList(list):
     def group_by_label(self):
@@ -743,8 +897,9 @@ class RunConfigurationsList(list):
             sorted_configurations[key].append(run_configuration)
         return sorted_configurations
 
+
 class Comparison(object):
-    def __init__(self, argument_sets = [], filename = None, description = None):
+    def __init__(self, argument_sets=[], filename=None, description=None):
         self.argument_sets = copy.deepcopy(argument_sets)
         self.filename = filename
         self.description = description
@@ -755,16 +910,18 @@ class Comparison(object):
         self._check_consistency()
 
     def _check_consistency(self):
-        argument_set_hashes = [argument_set.get_hash() for argument_set in self.argument_sets]
+        argument_set_hashes = [
+            argument_set.get_hash() for argument_set in self.argument_sets
+        ]
         if len(argument_set_hashes) != len(set(argument_set_hashes)):
-            raise RuntimeError('Not all run argument sets have a unique hash!')
+            raise RuntimeError("Not all run argument sets have a unique hash!")
 
     def set_user_args(self, user_args):
-        ''' Set the command line arguments specified by the user through argparse.
+        """Set the command line arguments specified by the user through argparse.
         Not to be confused with the command line arguments that are used to run a benchmark tool.
         Argparse arguments are available to control progam flow, but only after the constructor
         because otherwise child classes would need to correctly pass them in. This function is
-        called when comparisons are added to a CommandRunner instance'''
+        called when comparisons are added to a CommandRunner instance"""
         self.user_args = user_args
 
     def get_name(self):
@@ -779,59 +936,80 @@ class Comparison(object):
             hash += argument_set.get_hash()
         return str(hashlib.md5(hash.encode()).hexdigest())
 
-    def get_caption(self, run_configurations = None):
-        rv = self.description if self.description is not None else ''
+    def get_caption(self, run_configurations=None):
+        rv = self.description if self.description is not None else ""
         if run_configurations is None:
-            rv += ' ' + ArgumentSetDifference(self.argument_sets).get_as_caption()
+            rv += " " + ArgumentSetDifference(self.argument_sets).get_as_caption()
         else:
             grouped_run_configurations = run_configurations.group_by_label()
             if len(grouped_run_configurations) != len(run_configurations):
-                rv += ' Bar chart represents median value from multiple runs and the sorted raw data is super-imposed with black markers.'
-        if not rv: # Still blank, attempt to collect from ArgumentSerDiffernce
+                rv += " Bar chart represents median value from multiple runs and the sorted raw data is super-imposed with black markers."
+        if not rv:  # Still blank, attempt to collect from ArgumentSerDiffernce
             rv += ArgumentSetDifference(self.argument_sets).get_as_caption()
         return rv
 
     def _get_sweep_keys(self):
-        '''The keys that are collapsed when collecting results. E.g. Used to make the x-axis of a plot.'''
+        """The keys that are collapsed when collecting results. E.g. Used to make the x-axis of a plot."""
         return []
 
     def write_latex_table(self, latex_module):
         if len(self.argument_sets) > 0:
-            argument_diff = ArgumentSetDifference(self.argument_sets, ignore_keys=self._get_sweep_keys())
+            argument_diff = ArgumentSetDifference(
+                self.argument_sets, ignore_keys=self._get_sweep_keys()
+            )
             differences = argument_diff.get_differences()
             is_a_comparison = len(differences) > 0
             latex_module.append(
-                 ('For all runs, ``' if is_a_comparison else 'Command: ')
-                + ' '.join(self.argument_sets[0].get_args(require_keys=argument_diff.get_similarities()))
-                +("'' is held constant." if is_a_comparison else '')
+                ("For all runs, ``" if is_a_comparison else "Command: ")
+                + " ".join(
+                    self.argument_sets[0].get_args(
+                        require_keys=argument_diff.get_similarities()
+                    )
                 )
+                + ("'' is held constant." if is_a_comparison else "")
+            )
             if is_a_comparison:
                 with latex_module.create(pylatex.Center()) as centered:
-                    tabu_format = 'r|' + ''.join(['c' for key in differences])
+                    tabu_format = "r|" + "".join(["c" for key in differences])
                     with centered.create(pylatex.Tabu(tabu_format)) as data_table:
-                        header_row = ['label'] + differences
+                        header_row = ["label"] + differences
                         data_table.add_row(header_row, mapper=[pylatex.utils.bold])
                         data_table.add_hline()
-                        sorted_argument_sets = self.sort_argument_sets(isolate_keys=self._get_sweep_keys())
-                        for argument_set_hash, argument_sets in sorted_argument_sets.items():
+                        sorted_argument_sets = self.sort_argument_sets(
+                            isolate_keys=self._get_sweep_keys()
+                        )
+                        for (
+                            argument_set_hash,
+                            argument_sets,
+                        ) in sorted_argument_sets.items():
                             if len(argument_sets) > 0:
                                 argument_set = argument_sets[0]
                                 row = [argument_set_hash]
                                 for key in differences:
                                     argument = argument_set.get(key)
-                                    row.append(argument.get_value() if argument.is_set() else 'DEFAULT')
+                                    row.append(
+                                        argument.get_value()
+                                        if argument.is_set()
+                                        else "DEFAULT"
+                                    )
                                 data_table.add_row(row)
 
     def write_docx_table(self, document):
         if len(self.argument_sets) > 0:
-            argument_diff = ArgumentSetDifference(self.argument_sets, ignore_keys=self._get_sweep_keys())
+            argument_diff = ArgumentSetDifference(
+                self.argument_sets, ignore_keys=self._get_sweep_keys()
+            )
             differences = argument_diff.get_differences()
             is_a_comparison = len(differences) > 0
             document.add_paragraph(
-                 ('For all runs, ``' if is_a_comparison else 'Command: ')
-                + ' '.join(self.argument_sets[0].get_args(require_keys=argument_diff.get_similarities()))
-                +("'' is held constant." if is_a_comparison else '')
+                ("For all runs, ``" if is_a_comparison else "Command: ")
+                + " ".join(
+                    self.argument_sets[0].get_args(
+                        require_keys=argument_diff.get_similarities()
+                    )
                 )
+                + ("'' is held constant." if is_a_comparison else "")
+            )
             # if is_a_comparison:
             #     header_row = ['label'] + differences
             #     num_columns = len(header_row)
@@ -861,18 +1039,22 @@ class Comparison(object):
         if num_argument_sets == 0:
             return
 
-        sorted_argument_sets = self.sort_argument_sets(isolate_keys=[]) # No sort applied, but labels provided
+        sorted_argument_sets = self.sort_argument_sets(
+            isolate_keys=[]
+        )  # No sort applied, but labels provided
         grouped_run_configurations = run_configurations.group_by_label()
 
         num_groups = len(grouped_run_configurations)
-        metric_labels = [key for key in self.argument_sets[0].collect_timing(run_configurations[0])]
+        metric_labels = [
+            key for key in self.argument_sets[0].collect_timing(run_configurations[0])
+        ]
         num_metrics = len(metric_labels)
         if num_metrics == 0:
             return
         num_comparables = num_groups * num_argument_sets
         x_locations = np.arange(num_metrics)
         width = 0.8 / num_comparables
-        offset_start = -0.4 + width/2.0
+        offset_start = -0.4 + width / 2.0
         label_map = OrderedDict()
 
         # Create a mapping of x-locations for the bar chart.
@@ -886,8 +1068,8 @@ class Comparison(object):
                 group_linear_mapping = []
                 for group_label in grouped_run_configurations:
                     group_linear_mapping.append(
-                            x_metric_offset + offset_start + width*cmp_idx
-                            )
+                        x_metric_offset + offset_start + width * cmp_idx
+                    )
                     cmp_idx += 1
                 # scale down the size of each subset plot to 90% to create a gap
                 group_linear_mapping = np.array(group_linear_mapping)
@@ -896,17 +1078,27 @@ class Comparison(object):
                 group_linear_mapping *= gap_scalar
                 group_linear_mapping += group_linear_mapping_mean
                 for group_idx, group_label in enumerate(grouped_run_configurations):
-                    x_mapping[metric_label][subset_label][group_label] = (
-                            group_linear_mapping[group_idx]
-                            )
+                    x_mapping[metric_label][subset_label][
+                        group_label
+                    ] = group_linear_mapping[group_idx]
 
-        def map_to_x_list(subset_label, metric_label, group_label, y_list = [0, ]):
+        def map_to_x_list(
+            subset_label,
+            metric_label,
+            group_label,
+            y_list=[
+                0,
+            ],
+        ):
             num_x = len(y_list)
-            sub_x_offsets = np.linspace(-0.4*width, 0.4*width, num_x+1, endpoint=True)
+            sub_x_offsets = np.linspace(
+                -0.4 * width, 0.4 * width, num_x + 1, endpoint=True
+            )
             return [
                 x_mapping[metric_label][subset_label][group_label]
-                + 0.5 *(sub_x_offsets[data_idx] + sub_x_offsets[data_idx+1])
-                for data_idx in range(num_x)]
+                + 0.5 * (sub_x_offsets[data_idx] + sub_x_offsets[data_idx + 1])
+                for data_idx in range(num_x)
+            ]
 
         # loop over independent outputs
         x_scatter_by_group = OrderedDict()
@@ -921,35 +1113,43 @@ class Comparison(object):
             # loop over argument sets that differ other than the swept variable(s)
             for subset_label, partial_argument_sets in sorted_argument_sets.items():
                 if len(partial_argument_sets) != 1:
-                    raise ValueError('Assumed that sorting argument sets with no keys has a single element per sort.')
+                    raise ValueError(
+                        "Assumed that sorting argument sets with no keys has a single element per sort."
+                    )
                 argument_set = partial_argument_sets[0]
-                y_list_by_metric = OrderedDict() # One array of y values for each metric
+                y_list_by_metric = (
+                    OrderedDict()
+                )  # One array of y values for each metric
                 # loop over number of coarse grain runs and concatenate results
                 for run_configuration in run_configuration_group:
                     timing_results = argument_set.collect_timing(run_configuration)
                     for metric_label in timing_results:
                         if not metric_label in y_list_by_metric:
                             y_list_by_metric[metric_label] = []
-                        y_list_by_metric[metric_label].extend(timing_results[metric_label])
+                        y_list_by_metric[metric_label].extend(
+                            timing_results[metric_label]
+                        )
                 # For each metric, add a set of bars in the bar chart.
                 for metric_label, y_list in y_list_by_metric.items():
-                    x_list = map_to_x_list(subset_label, metric_label, group_label, y_list)
+                    x_list = map_to_x_list(
+                        subset_label, metric_label, group_label, y_list
+                    )
                     x_scatter_by_group[group_label].extend(x_list)
                     y_scatter_by_group[group_label].extend(sorted(y_list))
                     x_bar_by_group[group_label].append(np.mean(x_list))
                     y_bar_by_group[group_label].append(np.median(y_list))
         for group_label in x_scatter_by_group:
             axes.bar(
-                    x_bar_by_group[group_label],
-                    y_bar_by_group[group_label],
-                    gap_scalar * width,
-                    label = group_label,
-                    )
+                x_bar_by_group[group_label],
+                y_bar_by_group[group_label],
+                gap_scalar * width,
+                label=group_label,
+            )
             axes.plot(
-                    x_scatter_by_group[group_label],
-                    y_scatter_by_group[group_label],
-                    'k*',
-                    )
+                x_scatter_by_group[group_label],
+                y_scatter_by_group[group_label],
+                "k*",
+            )
         # If a single metric is provided, it is labelled on the y-axis.
         # If multiple metrics are provided, they are labelled along the x-axis and
         # then the units are assumed to be Time (s).
@@ -965,15 +1165,17 @@ class Comparison(object):
             for subset_label in sorted_argument_sets:
                 group_x = []
                 for group_label in grouped_run_configurations:
-                    group_x.extend(map_to_x_list(subset_label, metric_label, group_label))
+                    group_x.extend(
+                        map_to_x_list(subset_label, metric_label, group_label)
+                    )
                 minor_ticks.append(np.mean(group_x))
                 minor_labels.append(subset_label)
-        axes.xaxis.set_minor_formatter(FuncFormatter(lambda x, pos : str(x)))
+        axes.xaxis.set_minor_formatter(FuncFormatter(lambda x, pos: str(x)))
         axes.set_xticks(minor_ticks, minor=True)
         axes.set_xticklabels(minor_labels, minor=True)
 
         axes.set_xlim(x_locations[0] - 0.5, x_locations[-1] + 0.5)
-        axes.set_ylabel(metric_labels[0] if len(metric_labels) == 1 else 'Time (s)' )
+        axes.set_ylabel(metric_labels[0] if len(metric_labels) == 1 else "Time (s)")
         return True
 
     def custom_plot(self, run_configurations, is_make_plot):
@@ -981,13 +1183,15 @@ class Comparison(object):
         plot_caption = None
         return plot_filename, plot_caption
 
+
 class SingleCommand(object):
     def __init__(self, argument_set, run_configuration):
         self.argument_set = argument_set
         self.run_configuration = run_configuration
 
     def execute(self, **kwargs):
-        self.argument_set.execute(run_configuration = self.run_configuration, **kwargs)
+        self.argument_set.execute(run_configuration=self.run_configuration, **kwargs)
+
 
 class CombinedCommand(object):
     def __init__(self, argument_set, run_configurations):
@@ -995,7 +1199,8 @@ class CombinedCommand(object):
         self.run_configurations = run_configurations
 
     def execute(self, **kwargs):
-        self.argument_set.execute(run_configurations = self.run_configurations, **kwargs)
+        self.argument_set.execute(run_configurations=self.run_configurations, **kwargs)
+
 
 class CommandList(object):
     def __init__(self):
@@ -1009,14 +1214,17 @@ class CommandList(object):
                 self.commands.append(SingleCommand(argument_set, run_configuration))
 
     def execute_shuffled(self, **kwargs):
-        random.Random(8341).shuffle(self.commands) # Randomize, but with a consistent seed.
+        random.Random(8341).shuffle(
+            self.commands
+        )  # Randomize, but with a consistent seed.
         num_commands = len(self.commands)
         for idx, command in enumerate(self.commands):
-            print('Running command {} of {}'.format(idx+1, num_commands))
+            print("Running command {} of {}".format(idx + 1, num_commands))
             command.execute(**kwargs)
 
+
 class CommandRunner(object):
-    def __init__(self, user_args, run_configuration_cls = RunConfiguration):
+    def __init__(self, user_args, run_configuration_cls=RunConfiguration):
         self.user_args = user_args
 
         executable_directories = user_args.input_executables
@@ -1030,22 +1238,22 @@ class CommandRunner(object):
         if len(output_directory_compare) == 1:
             output_directory_compare = output_directory_compare[0]
 
-        print('Excecutable directories: ', executable_directories)
+        print("Excecutable directories: ", executable_directories)
 
         if len(executable_directories) > len(output_directories):
             for i in range(len(output_directories), len(executable_directories)):
-                output_directories.append('dir' + str(i))
-        print('Output directories: ', output_directories)
+                output_directories.append("dir" + str(i))
+        print("Output directories: ", output_directories)
 
         if compare_hip_cuda:
-            print('Output directory compare: ', output_directory_compare)
+            print("Output directory compare: ", output_directory_compare)
 
         if len(output_directories) > len(labels):
             for i in range(len(labels), len(output_directories)):
-                labels.append(os.path.basename(output_directories[i].strip('/')))
-        print('Run labels:', labels)
+                labels.append(os.path.basename(output_directories[i].strip("/")))
+        print("Run labels:", labels)
 
-        print('Document output: ', user_args.documentation_directory)
+        print("Document output: ", user_args.documentation_directory)
         if not os.path.exists(user_args.documentation_directory):
             os.makedirs(user_args.documentation_directory)
 
@@ -1058,24 +1266,28 @@ class CommandRunner(object):
         self.surface_plot = surface_plot
 
         if self.cuda:
-            print('Running for a CUDA system')
+            print("Running for a CUDA system")
         else:
-            print('Not running for a CUDA system')
+            print("Not running for a CUDA system")
 
         if self.compare_hip_cuda:
-            print('Comparing data from a HIP run and a CUDA run')
+            print("Comparing data from a HIP run and a CUDA run")
 
         self.run_configurations = RunConfigurationsList()
-        for exec_dir, out_dir, label in zip(executable_directories, output_directories, labels):
+        for exec_dir, out_dir, label in zip(
+            executable_directories, output_directories, labels
+        ):
             for run_number in range(user_args.num_repititions):
-                self.run_configurations.append(run_configuration_cls(
-                        user_args = user_args,
-                        executable_directory = exec_dir,
-                        output_directory = out_dir,
-                        output_directory_compare = output_directory_compare,
-                        label = label,
-                        run_number = run_number,
-                        ))
+                self.run_configurations.append(
+                    run_configuration_cls(
+                        user_args=user_args,
+                        executable_directory=exec_dir,
+                        output_directory=out_dir,
+                        output_directory_compare=output_directory_compare,
+                        label=label,
+                        run_number=run_number,
+                    )
+                )
 
         self.argument_set_map = {}
         self.comparison_map = OrderedDict()
@@ -1084,36 +1296,53 @@ class CommandRunner(object):
         if self.is_use_pylatex():
             geometry_options = {"margin": "0.7in"}
             self.doc = pylatex.Document(
-                os.path.join(self.user_args.documentation_directory, 'latex_summary'),
-                geometry_options=geometry_options)
+                os.path.join(self.user_args.documentation_directory, "latex_summary"),
+                geometry_options=geometry_options,
+            )
 
             header = pylatex.PageStyle("header")
             with header.create(pylatex.Foot("L")):
                 header.append("AMD Internal Use Only")
             with header.create(pylatex.Foot("R")):
-                header.append(pylatex.NoEscape(r'\today'))
+                header.append(pylatex.NoEscape(r"\today"))
             self.doc.preamble.append(header)
             self.doc.change_document_style("header")
 
-            self.doc.preamble.append(pylatex.Command('title', pylatex.NoEscape(r'Benchmark Summary \\ \large AMD Internal Use Only')))
-            self.doc.preamble.append(pylatex.Command('author', getpass.getuser()))
-            self.doc.preamble.append(pylatex.Command('date', pylatex.NoEscape(r'\today')))
-            self.doc.append(pylatex.NoEscape(r'\maketitle'))
+            self.doc.preamble.append(
+                pylatex.Command(
+                    "title",
+                    pylatex.NoEscape(
+                        r"Benchmark Summary \\ \large AMD Internal Use Only"
+                    ),
+                )
+            )
+            self.doc.preamble.append(pylatex.Command("author", getpass.getuser()))
+            self.doc.preamble.append(
+                pylatex.Command("date", pylatex.NoEscape(r"\today"))
+            )
+            self.doc.append(pylatex.NoEscape(r"\maketitle"))
 
         if self.is_use_docx():
             # Author, date and Internal Only, page numbers, etc. set by template file
             self.docx_doc = docx.Document(self.user_args.docx_template)
             if self.user_args.docx_template is None:
-                self.docx_doc.add_heading('Benchmark Summary', 0)
-                self.docx_doc.add_paragraph('AMD Internal Use Only')
-                self.docx_doc.add_paragraph('Default formatting of this auto-generated document is not ideal.'
-                                            ' Consider using PDF or supplying a document with a style guide.'
-                                            ' Tables and figures will be appended to the end of the input document.')
+                self.docx_doc.add_heading("Benchmark Summary", 0)
+                self.docx_doc.add_paragraph("AMD Internal Use Only")
+                self.docx_doc.add_paragraph(
+                    "Default formatting of this auto-generated document is not ideal."
+                    " Consider using PDF or supplying a document with a style guide."
+                    " Tables and figures will be appended to the end of the input document."
+                )
 
     def _check_consistency(self):
-        run_configuration_hashes = [run_configuration.get_hash() for run_configuration in self.run_configurations]
+        run_configuration_hashes = [
+            run_configuration.get_hash()
+            for run_configuration in self.run_configurations
+        ]
         if len(run_configuration_hashes) != len(set(run_configuration_hashes)):
-            raise RuntimeError('Not all run configurations have a unique hash! Are the output directories unique?')
+            raise RuntimeError(
+                "Not all run configurations have a unique hash! Are the output directories unique?"
+            )
 
     def main(self):
         self.execute()
@@ -1122,35 +1351,37 @@ class CommandRunner(object):
         self.output_summary()
 
     def is_run_tool(self):
-        return 'EXECUTE' in self.user_args.methods
+        return "EXECUTE" in self.user_args.methods
 
     def is_dry_run(self):
-        is_dry_run = ('DRY' in self.user_args.methods)
+        is_dry_run = "DRY" in self.user_args.methods
         if self.is_run_tool() and is_dry_run:
-            raise ValueError('DRY and EXECUTE are mutually exclusive. Both were specified.')
+            raise ValueError(
+                "DRY and EXECUTE are mutually exclusive. Both were specified."
+            )
         return is_dry_run
 
     def is_make_plots(self):
-        return 'PLOT' in self.user_args.methods
+        return "PLOT" in self.user_args.methods
 
     def is_use_matplotlib(self):
         if self.is_make_plots():
             if plt is None:
-                print('WARNING - Matplotlib is recommended!')
+                print("WARNING - Matplotlib is recommended!")
                 return False
             if np is None:
-                print('WARNING - Numpy is recommended!')
+                print("WARNING - Numpy is recommended!")
                 return False
             return True
         return False
 
     def is_make_document(self):
-        return 'DOCUMENT' in self.user_args.methods
+        return "DOCUMENT" in self.user_args.methods
 
     def is_use_pylatex(self):
         if self.is_make_document():
             if pylatex is None:
-                print('WARNING - PyLaTeX is required for PDF summary!')
+                print("WARNING - PyLaTeX is required for PDF summary!")
                 return False
             return True
         print("not is make document")
@@ -1159,28 +1390,29 @@ class CommandRunner(object):
     def is_use_docx(self):
         if self.is_make_document():
             if docx is None:
-                print('WARNING - docx package is required for .docx summary!')
+                print("WARNING - docx package is required for .docx summary!")
                 return False
             if BytesIO is None:
-                print('WARNING - BytesIO package is required for .docx summary!')
+                print("WARNING - BytesIO package is required for .docx summary!")
                 return False
             return True
         return False
 
     def is_interactive(self):
-        return 'INTERACTIVE' in self.user_args.methods
+        return "INTERACTIVE" in self.user_args.methods
 
     def is_overwrite(self):
-        return 'OVERWRITE' in self.user_args.methods
+        return "OVERWRITE" in self.user_args.methods
 
     def setup_system(self):
         for run_configuration in self.run_configurations:
             if self.is_run_tool():
                 run_configuration.make_output_directory()
-                run_configuration.save_specifications(self.user_args.device_num, self.cuda)
+                run_configuration.save_specifications(
+                    self.user_args.device_num, self.cuda
+                )
             elif not self.is_dry_run():
                 run_configuration.assert_exists()
-
 
     def add_argument_set(self, argument_set):
         argument_set.set_user_args(self.user_args)
@@ -1191,14 +1423,16 @@ class CommandRunner(object):
             comparison_name = comparison.get_name()
             if comparison_name in self.comparison_map:
                 print(comparison.argument_sets)
-                raise ValueError('Comparison {} was added twice'.format(comparison_name))
+                raise ValueError(
+                    "Comparison {} was added twice".format(comparison_name)
+                )
             comparison.set_user_args(self.user_args)
             self.comparison_map[comparison_name] = comparison
             for argument_set in comparison.argument_sets:
                 self.add_argument_set(argument_set)
 
     def _filter_argument_set(self, argument_set):
-        args = ' '.join(argument_set.get_args(True))
+        args = " ".join(argument_set.get_args(True))
         for required_arg in self.user_args.filter_in:
             if args.find(required_arg) < 0:
                 return False
@@ -1215,7 +1449,9 @@ class CommandRunner(object):
         self.command_list = command_list
 
         if self.is_run_tool() or self.is_dry_run():
-            command_list.execute_shuffled(overwrite = self.is_overwrite(), dry_run = self.is_dry_run())
+            command_list.execute_shuffled(
+                overwrite=self.is_overwrite(), dry_run=self.is_dry_run()
+            )
 
     def show_plots(self, cuda, compare):
         if self.is_dry_run():
@@ -1225,63 +1461,104 @@ class CommandRunner(object):
             run_configuration = run_configuration_group[0]
             machine_specs = run_configuration.load_specifications()
             if self.is_use_pylatex():
-                with self.doc.create(pylatex.Section('{} Specifications'.format(group_label))):
+                with self.doc.create(
+                    pylatex.Section("{} Specifications".format(group_label))
+                ):
                     machine_specs.write_latex(self.doc)
             if self.is_use_docx():
-                table_style = 'Light Grid' if self.user_args.docx_template is None else None
+                table_style = (
+                    "Light Grid" if self.user_args.docx_template is None else None
+                )
                 machine_specs.write_docx(self.docx_doc, table_style)
                 self.docx_doc.add_page_break()
 
-        active_plots = [] # show plots in batches
+        active_plots = []  # show plots in batches
         docx_fig_count = 1
         for comparison_name, comparison in self.comparison_map.items():
             # Create any non-matplotlib plots within Comparison.custom_plot()
-            plot_filename, plot_caption = comparison.custom_plot(self.run_configurations, self.is_make_plots())
+            plot_filename, plot_caption = comparison.custom_plot(
+                self.run_configurations, self.is_make_plots()
+            )
             if plot_filename is not None and os.path.exists(plot_filename):
                 if self.is_use_pylatex():
-                    with self.doc.create(pylatex.Figure(position='htbp')) as plot:
-                        plot.add_image(os.path.abspath(plot_filename), width=pylatex.NoEscape(r'0.8\textwidth'))
+                    with self.doc.create(pylatex.Figure(position="htbp")) as plot:
+                        plot.add_image(
+                            os.path.abspath(plot_filename),
+                            width=pylatex.NoEscape(r"0.8\textwidth"),
+                        )
                         if plot_caption:
                             plot.add_caption(plot_caption)
                         else:
-                            plot.add_caption(comparison.get_caption(self.run_configurations))
-                            plot.append(pylatex.NoEscape(r'\vspace{0.3cm}'))
+                            plot.add_caption(
+                                comparison.get_caption(self.run_configurations)
+                            )
+                            plot.append(pylatex.NoEscape(r"\vspace{0.3cm}"))
                             comparison.write_latex_table(plot)
-                    self.doc.append(pylatex.NoEscape(r'\clearpage'))
-
+                    self.doc.append(pylatex.NoEscape(r"\clearpage"))
 
             # Add any Matplotlib plots using Comparison.plot()
             if self.is_use_matplotlib():
                 if self.surface_plot:
                     figure, axes = plt.subplots(subplot_kw={"projection": "3d"})
                 else:
-                    figure, axes = plt.subplots(figsize = (7, 7))
-                plot_success = comparison.plot(self.run_configurations, figure, axes, cuda, compare)
+                    figure, axes = plt.subplots(figsize=(7, 7))
+                plot_success = comparison.plot(
+                    self.run_configurations, figure, axes, cuda, compare
+                )
                 if plot_success:
                     if self.surface_plot:
-                        #Saved the 3d plot PDF file in performancerepoprt.py
-                        continue;
+                        # Saved the 3d plot PDF file in performancerepoprt.py
+                        continue
                     else:
-                        axes.legend(fontsize = 10, bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left',
-                                     mode='expand', borderaxespad=0.)
-                        figure.tight_layout(rect=(0,0.05,1.0,1.0))
+                        axes.legend(
+                            fontsize=10,
+                            bbox_to_anchor=(0.0, 1.02, 1.0, 0.102),
+                            loc="lower left",
+                            mode="expand",
+                            borderaxespad=0.0,
+                        )
+                        figure.tight_layout(rect=(0, 0.05, 1.0, 1.0))
 
                         if self.is_use_pylatex():
-                            with self.doc.create(pylatex.Figure(position='htbp')) as plot:
-                                plot.add_plot(width=pylatex.NoEscape(r'0.8\textwidth'), dpi=300, transparent=True)
-                                plot.add_caption(comparison.get_caption(self.run_configurations))
-                                plot.append(pylatex.NoEscape(r'\vspace{0.3cm}'))
+                            with self.doc.create(
+                                pylatex.Figure(position="htbp")
+                            ) as plot:
+                                plot.add_plot(
+                                    width=pylatex.NoEscape(r"0.8\textwidth"),
+                                    dpi=300,
+                                    transparent=True,
+                                )
+                                plot.add_caption(
+                                    comparison.get_caption(self.run_configurations)
+                                )
+                                plot.append(pylatex.NoEscape(r"\vspace{0.3cm}"))
                                 comparison.write_latex_table(plot)
-                            self.doc.append(pylatex.NoEscape(r'\clearpage'))
+                            self.doc.append(pylatex.NoEscape(r"\clearpage"))
 
                         if self.is_use_docx():
                             memfile = BytesIO()
                             figure.tight_layout()
                             # figure.savefig(memfile, format='png', dpi=300, transparent=True)
-                            figure.savefig(memfile, format='png', dpi=300, transparent=True, bbox_inches="tight")
-                            self.docx_doc.add_picture(memfile, width=docx.shared.Inches(6.0))
-                            caption_style = 'Quote' if self.user_args.docx_template is None else None
-                            self.docx_doc.add_paragraph('Figure {}: '.format(docx_fig_count) + comparison.get_caption(self.run_configurations), style=caption_style)
+                            figure.savefig(
+                                memfile,
+                                format="png",
+                                dpi=300,
+                                transparent=True,
+                                bbox_inches="tight",
+                            )
+                            self.docx_doc.add_picture(
+                                memfile, width=docx.shared.Inches(6.0)
+                            )
+                            caption_style = (
+                                "Quote"
+                                if self.user_args.docx_template is None
+                                else None
+                            )
+                            self.docx_doc.add_paragraph(
+                                "Figure {}: ".format(docx_fig_count)
+                                + comparison.get_caption(self.run_configurations),
+                                style=caption_style,
+                            )
                             comparison.write_docx_table(self.docx_doc)
                             self.docx_doc.add_page_break()
                             docx_fig_count += 1
@@ -1290,8 +1567,13 @@ class CommandRunner(object):
                         # figure.suptitle(comparison.get_caption(self.run_configurations),
                         #                 fontsize='medium', y=0.02, va='bottom')
                         figure.tight_layout()
-                        figure.savefig(os.path.join(self.user_args.documentation_directory,
-                                                    comparison.get_name() + '_auto_plot.pdf'), bbox_inches="tight")
+                        figure.savefig(
+                            os.path.join(
+                                self.user_args.documentation_directory,
+                                comparison.get_name() + "_auto_plot.pdf",
+                            ),
+                            bbox_inches="tight",
+                        )
 
                 if not self.is_interactive():
                     plt.close(figure)
@@ -1314,7 +1596,9 @@ class CommandRunner(object):
         for cmd_hash, argument_set in self.argument_set_map.items():
             if self._filter_argument_set(argument_set):
                 for run_configuration in self.run_configurations:
-                    run_system_monitor = argument_set.get_system_monitor(run_configuration)
+                    run_system_monitor = argument_set.get_system_monitor(
+                        run_configuration
+                    )
                     if run_system_monitor is not None:
                         if total_system_monitor is None:
                             total_system_monitor = run_system_monitor
@@ -1324,7 +1608,11 @@ class CommandRunner(object):
             start = total_system_monitor.get_start_time()
             end = total_system_monitor.get_end_time()
             total_time = (end - start).total_seconds()
-            print('Test ran from {} to {}. A total of {} seconds.'.format(start, end, total_time))
+            print(
+                "Test ran from {} to {}. A total of {} seconds.".format(
+                    start, end, total_time
+                )
+            )
             total_system_monitor.plot()
 
     def output_summary(self):
@@ -1335,130 +1623,214 @@ class CommandRunner(object):
             try:
                 self.doc.generate_pdf(clean_tex=False)
             except subprocess.CalledProcessError:
-                print('WARNING: Failed to output document')
+                print("WARNING: Failed to output document")
             self.doc.generate_tex()
             os.chdir(current_working_directory)
         if self.is_use_docx():
             print("SUMMARY2")
-            self.docx_doc.save(os.path.join(self.user_args.documentation_directory, 'benchmark_summary.docx'))
+            self.docx_doc.save(
+                os.path.join(
+                    self.user_args.documentation_directory, "benchmark_summary.docx"
+                )
+            )
+
 
 def parse_input_arguments(parser):
     def to_multiple_choices(choices, input_string):
         rv = input_string.upper()
         if not rv in choices:
-            raise argparse.ArgumentTypeError('Method must be one of {}. Received {}.'.format(choices, rv))
+            raise argparse.ArgumentTypeError(
+                "Method must be one of {}. Received {}.".format(choices, rv)
+            )
         return rv
 
-    all_test_methods     = ['DRY', 'EXECUTE', 'OVERWRITE', 'PROCESS', 'PLOT', 'DOCUMENT', 'INTERACTIVE']
-    default_test_methods = [       'EXECUTE', 'OVERWRITE', 'PROCESS', 'PLOT', 'DOCUMENT']
+    all_test_methods = [
+        "DRY",
+        "EXECUTE",
+        "OVERWRITE",
+        "PROCESS",
+        "PLOT",
+        "DOCUMENT",
+        "INTERACTIVE",
+    ]
+    default_test_methods = ["EXECUTE", "OVERWRITE", "PROCESS", "PLOT", "DOCUMENT"]
+
     def to_test_methods(s):
         return to_multiple_choices(all_test_methods, s)
 
-    parser.add_argument('--cuda', default=False, action='store_true', help='Run on a CUDA device.')
-    parser.add_argument('--compare-hip-cuda', default=False, action='store_true', help='Compare data from a HIP run and a CUDA run')
-    parser.add_argument('-i', '--input-executables', action='append', required=True,
-                        help='Input executable location, can be added multiple times.')
-    parser.add_argument('-o', '--output-directories', action='append', default=[],
-                        help=('Output directories. If more than one input executable is specified,'
-                             +' then an output directory must be specified for each.'
-                             #+' If a single executable was used for multiple runs, outputs can still be multiply specified.'
-                             ))
-    parser.add_argument('--output-directory-compare-cuda', action='append', default=[],
-                        help=('Output direcotry containing CUDA data to compare to.'))
-    parser.add_argument('-l', '--labels', action='append', default=[],
-                        help=('Labels for comparing multiple runs. If more than one output is specified,'
-                             +' then a label may be specified for each.'
-                             +' defaults to the basename of the output directory.'
-                             ))
-    parser.add_argument('-m', '--methods', default=default_test_methods, nargs='+',
-                        type = to_test_methods,
-                        help=('Execute a portion of the benchmark suite, or just a subset.'
-                             +' Choose a space separated list from [{}]'.format(' '.join(all_test_methods))
-                             +' To generate a document without re-running the benchmarks, use `-m PLOT DOCUMENT`.'
-                             +' To run without plotting/documentation tools use `-m EXECUTE` and post-process later.'
-                             +' To generate plots without creating a summary document use `-m EXECUTE PLOT`.'
-                             +' To interact with plots after generating the data use `-m PLOT INTERACTIVE`.'
-                             +' By default, existing results are overwritten, but `-m EXECUTE PLOT DOCUMENT` can be used to restart killed runs (omit `OVERWRITE`).'
-                             ))
-    parser.add_argument('--filter-in', default=[], nargs='+',
-                        help=('Space separated list of strings that must be part of the command line string'
-                             +' to be considered for this run. Due to limitations in argparse, the input cannot'
-                             +' have a leading dash, even when encapsulated with quotes. Note that quotes are'
-                             +' likely required because any key-value pair will be separated by a space.'
-                             ))
-    parser.add_argument('--filter-out', default=[], nargs='+',
-                        help=('Space separated list of strings that must NOT be part of the command line string'
-                             +' to be considered for this run. Due to limitations in argparse, the input cannot'
-                             +' have a leading dash, even when encapsulated with quotes. Note that quotes are'
-                             +' likely required because any key-value pair will be separated by a space.'
-                             ))
-    parser.add_argument('-n', '--num-repititions', default=1, type=int,
-                        help='Number of times to run the exectuable.')
-    parser.add_argument('--docx-template', default=None,
-                        help='Empty docx that contains only a style guide to be used as a template for the summary document.')
-    parser.add_argument('-w', '--documentation-directory', default='doc',
-                        help='Output directory for the summary documentation.')
-    parser.add_argument('-d', '--device-num', default=0, type=int,
-                        help='Device number to run on.')
-    parser.add_argument('--install-path', default='/opt/rocm', help='Top directory of driver installation.')
+    parser.add_argument(
+        "--cuda", default=False, action="store_true", help="Run on a CUDA device."
+    )
+    parser.add_argument(
+        "--compare-hip-cuda",
+        default=False,
+        action="store_true",
+        help="Compare data from a HIP run and a CUDA run",
+    )
+    parser.add_argument(
+        "-i",
+        "--input-executables",
+        action="append",
+        required=True,
+        help="Input executable location, can be added multiple times.",
+    )
+    parser.add_argument(
+        "-o",
+        "--output-directories",
+        action="append",
+        default=[],
+        help=(
+            "Output directories. If more than one input executable is specified,"
+            + " then an output directory must be specified for each."
+            # +' If a single executable was used for multiple runs, outputs can still be multiply specified.'
+        ),
+    )
+    parser.add_argument(
+        "--output-directory-compare-cuda",
+        action="append",
+        default=[],
+        help=("Output direcotry containing CUDA data to compare to."),
+    )
+    parser.add_argument(
+        "-l",
+        "--labels",
+        action="append",
+        default=[],
+        help=(
+            "Labels for comparing multiple runs. If more than one output is specified,"
+            + " then a label may be specified for each."
+            + " defaults to the basename of the output directory."
+        ),
+    )
+    parser.add_argument(
+        "-m",
+        "--methods",
+        default=default_test_methods,
+        nargs="+",
+        type=to_test_methods,
+        help=(
+            "Execute a portion of the benchmark suite, or just a subset."
+            + " Choose a space separated list from [{}]".format(
+                " ".join(all_test_methods)
+            )
+            + " To generate a document without re-running the benchmarks, use `-m PLOT DOCUMENT`."
+            + " To run without plotting/documentation tools use `-m EXECUTE` and post-process later."
+            + " To generate plots without creating a summary document use `-m EXECUTE PLOT`."
+            + " To interact with plots after generating the data use `-m PLOT INTERACTIVE`."
+            + " By default, existing results are overwritten, but `-m EXECUTE PLOT DOCUMENT` can be used to restart killed runs (omit `OVERWRITE`)."
+        ),
+    )
+    parser.add_argument(
+        "--filter-in",
+        default=[],
+        nargs="+",
+        help=(
+            "Space separated list of strings that must be part of the command line string"
+            + " to be considered for this run. Due to limitations in argparse, the input cannot"
+            + " have a leading dash, even when encapsulated with quotes. Note that quotes are"
+            + " likely required because any key-value pair will be separated by a space."
+        ),
+    )
+    parser.add_argument(
+        "--filter-out",
+        default=[],
+        nargs="+",
+        help=(
+            "Space separated list of strings that must NOT be part of the command line string"
+            + " to be considered for this run. Due to limitations in argparse, the input cannot"
+            + " have a leading dash, even when encapsulated with quotes. Note that quotes are"
+            + " likely required because any key-value pair will be separated by a space."
+        ),
+    )
+    parser.add_argument(
+        "-n",
+        "--num-repititions",
+        default=1,
+        type=int,
+        help="Number of times to run the exectuable.",
+    )
+    parser.add_argument(
+        "--docx-template",
+        default=None,
+        help="Empty docx that contains only a style guide to be used as a template for the summary document.",
+    )
+    parser.add_argument(
+        "-w",
+        "--documentation-directory",
+        default="doc",
+        help="Output directory for the summary documentation.",
+    )
+    parser.add_argument(
+        "-d", "--device-num", default=0, type=int, help="Device number to run on."
+    )
+    parser.add_argument(
+        "--install-path",
+        default="/opt/rocm",
+        help="Top directory of driver installation.",
+    )
 
-    parser.add_argument('--surface-plot', default=False, action='store_true', help='Adds a surface plot instead of a normal plot.')
+    parser.add_argument(
+        "--surface-plot",
+        default=False,
+        action="store_true",
+        help="Adds a surface plot instead of a normal plot.",
+    )
 
     return parser.parse_args()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import re
+
     # As an example, profile various modes of the bash function "ls".
     class ListDirArgumentSet(ArgumentSetABC):
         def _define_consistent_arguments(self):
-            self.consistent_args['human_readable'] = OptionalFlagArgument('-h')
-            self.consistent_args['summarize'] = OptionalFlagArgument('-s')
-            self.consistent_args['depth'] = OptionalArgument('-d')
+            self.consistent_args["human_readable"] = OptionalFlagArgument("-h")
+            self.consistent_args["summarize"] = OptionalFlagArgument("-s")
+            self.consistent_args["depth"] = OptionalArgument("-d")
 
         def _define_variable_arguments(self):
             # Instead of coparing the performance of different executables, we are timing the
             # performance of running the command on the "executable directory"
-            self.variable_args['target'] = PositionalArgument()
-            self.variable_args['output_file'] = PipeToArgument()
+            self.variable_args["target"] = PositionalArgument()
+            self.variable_args["output_file"] = PipeToArgument()
 
-        def __init__(self,
-                     human_readable,
-                     summarize,
-                     depth = None,
-                     ):
+        def __init__(
+            self,
+            human_readable,
+            summarize,
+            depth=None,
+        ):
             # The base constructor could be used directly, but only if all of the inputs
             # are specified as kwargs.
             ArgumentSetABC.__init__(
-                    self,
-                    human_readable = human_readable,
-                    summarize = summarize,
-                    depth = depth
-                    )
+                self, human_readable=human_readable, summarize=summarize, depth=depth
+            )
 
         def get_full_command(self, run_configuration):
-            self.set('output_file', self.get_output_file(run_configuration))
-            self.set('target', run_configuration.target)
-            return ['time', 'du'] + self.get_args()
+            self.set("output_file", self.get_output_file(run_configuration))
+            self.set("target", run_configuration.target)
+            return ["time", "du"] + self.get_args()
 
         def collect_timing(self, run_configuration):
             output_filename = self.get_output_file(run_configuration)
             rv = {}
             if os.path.exists(output_filename):
-                timing_file = open(output_filename, 'r')
+                timing_file = open(output_filename, "r")
                 output_text = timing_file.read()
-                match = re.search(r'(\d+\.\d+)user', output_text)
+                match = re.search(r"(\d+\.\d+)user", output_text)
                 if match:
-                    rv['timing'] = [float(match.group(1))]
-                match = re.search(r'(\d+\.\d+)system', output_text)
+                    rv["timing"] = [float(match.group(1))]
+                match = re.search(r"(\d+\.\d+)system", output_text)
                 if match:
-                    rv['user'] = [float(match.group(1))]
+                    rv["user"] = [float(match.group(1))]
             return rv
-
 
     class ListDirRunConfiguration(RunConfiguration):
         def __init__(self, user_args, executable_directory, *args, **kwargs):
-            RunConfiguration.__init__(self, user_args, executable_directory, *args, **kwargs)
+            RunConfiguration.__init__(
+                self, user_args, executable_directory, *args, **kwargs
+            )
             self.target = executable_directory
 
     def create_comparisons():
@@ -1468,40 +1840,48 @@ if __name__ == '__main__':
         comparisons = []
         for human_readable in [True, False]:
             comparison = Comparison(
-                    description = 'Check the cost of the summarize option.',
-                    )
+                description="Check the cost of the summarize option.",
+            )
             for summarize in [True, False]:
-                comparison.add(ListDirArgumentSet(
-                        human_readable = human_readable,
-                        summarize = summarize,
-                        depth = 0,
-                        ))
+                comparison.add(
+                    ListDirArgumentSet(
+                        human_readable=human_readable,
+                        summarize=summarize,
+                        depth=0,
+                    )
+                )
             comparisons.append(comparison)
         for depth in [0, 1, 2]:
             comparison = Comparison(
-                    description = 'Fix the depth, and compare the cost of using human readable.',
-                    )
+                description="Fix the depth, and compare the cost of using human readable.",
+            )
             for human_readable in [True, False]:
-                comparison.add(ListDirArgumentSet(
-                        human_readable = human_readable,
-                        summarize = False,
-                        depth = depth,
-                        ))
+                comparison.add(
+                    ListDirArgumentSet(
+                        human_readable=human_readable,
+                        summarize=False,
+                        depth=depth,
+                    )
+                )
             comparisons.append(comparison)
         single_run_comparison = Comparison(
-            description = 'Single run without comparisons',
+            description="Single run without comparisons",
+        )
+        single_run_comparison.add(
+            ListDirArgumentSet(
+                human_readable=True,
+                summarize=summarize,
+                depth=2,
             )
-        single_run_comparison.add(ListDirArgumentSet(
-                human_readable = True,
-                summarize = summarize,
-                depth = 2,
-                ))
+        )
         comparisons.append(single_run_comparison)
         return comparisons
 
     # location of if __name__ == '__main__': in a normal script
-    print('Suggested Usage: python3 commandrunner.py -i / -i /sys -o /tmp/bench_df_root -o /tmp/bench_df_sys'
-        + ' -n 3 -m EXECUTE PLOT DOCUMENT')
+    print(
+        "Suggested Usage: python3 commandrunner.py -i / -i /sys -o /tmp/bench_df_root -o /tmp/bench_df_sys"
+        + " -n 3 -m EXECUTE PLOT DOCUMENT"
+    )
 
     # Create a parser and optionally add custom user inputs
     parser = argparse.ArgumentParser()

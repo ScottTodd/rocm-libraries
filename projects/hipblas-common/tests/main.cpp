@@ -22,9 +22,10 @@
 // CTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // ########################################################################
 
-#include "hipblas-common/hipblas-common.h"
 #include <iostream>
 
-int main(){
+#include "hipblas-common/hipblas-common.h"
+
+int main() {
     std::puts("Hello hipblas-common");
 }

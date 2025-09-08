@@ -30,12 +30,12 @@
 
 #include <Tensile/AMDGPUPredicates.hpp>
 #include <Tensile/ContractionProblemPredicates.hpp>
+#include <Tensile/ContractionTaskPredicates.hpp>
 #include <Tensile/ExactLogicLibrary.hpp>
 #include <Tensile/FreeSizeLibrary.hpp>
 #include <Tensile/GranularitySelectionLibrary.hpp>
 #include <Tensile/MLPClassificationLibrary.hpp>
 #include <Tensile/PropertyMatching.hpp>
-#include <Tensile/ContractionTaskPredicates.hpp>
 
 #include <cstddef>
 #include <map>
@@ -172,30 +172,35 @@ namespace TensileLite
         TENSILE_SERIALIZE_VECTOR(false, float);
         TENSILE_SERIALIZE_VECTOR(false, TensileLite::Half);
 
-        TENSILE_SERIALIZE_VECTOR(true,
-                                 TensileLite::ExactLogicLibrary<TensileLite::ContractionProblemGemm,
-                                                            TensileLite::ContractionSolution,
-                                                            TensileLite::HardwarePredicate>::Row);
-
         TENSILE_SERIALIZE_VECTOR(
             true,
             TensileLite::ExactLogicLibrary<TensileLite::ContractionProblemGemm,
-                                       TensileLite::ContractionSolution,
-                                       TensileLite::ProblemPredicate<ContractionProblemGemm>>::Row);
+                                           TensileLite::ContractionSolution,
+                                           TensileLite::HardwarePredicate>::Row);
+
+        TENSILE_SERIALIZE_VECTOR(true,
+                                 TensileLite::ExactLogicLibrary<
+                                     TensileLite::ContractionProblemGemm,
+                                     TensileLite::ContractionSolution,
+                                     TensileLite::ProblemPredicate<ContractionProblemGemm>>::Row);
 
         TENSILE_SERIALIZE_VECTOR(
-            true, std::shared_ptr<TensileLite::Predicates::Predicate<TensileLite::ContractionProblemGemm>>);
+            true,
+            std::shared_ptr<
+                TensileLite::Predicates::Predicate<TensileLite::ContractionProblemGemm>>);
         TENSILE_SERIALIZE_VECTOR(
             true, std::shared_ptr<TensileLite::Predicates::Predicate<TensileLite::Hardware>>);
-        TENSILE_SERIALIZE_VECTOR(true,
-                                 std::shared_ptr<TensileLite::Predicates::Predicate<TensileLite::AMDGPU>>);
-        TENSILE_SERIALIZE_VECTOR(true,
-                                 std::shared_ptr<TensileLite::Predicates::Predicate<TensileLite::Task>>);
+        TENSILE_SERIALIZE_VECTOR(
+            true, std::shared_ptr<TensileLite::Predicates::Predicate<TensileLite::AMDGPU>>);
+        TENSILE_SERIALIZE_VECTOR(
+            true, std::shared_ptr<TensileLite::Predicates::Predicate<TensileLite::Task>>);
         TENSILE_SERIALIZE_VECTOR(
             true, std::shared_ptr<TensileLite::Property<TensileLite::ContractionProblemGemm>>);
         TENSILE_SERIALIZE_VECTOR(true, std::shared_ptr<TensileLite::Property<TensileLite::Task>>);
         TENSILE_SERIALIZE_VECTOR(
-            true, std::shared_ptr<TensileLite::MLFeatures::MLFeature<TensileLite::ContractionProblemGemm>>);
+            true,
+            std::shared_ptr<
+                TensileLite::MLFeatures::MLFeature<TensileLite::ContractionProblemGemm>>);
 
         TENSILE_SERIALIZE_VECTOR(false, std::shared_ptr<TensileLite::ContractionSolution>);
 
@@ -203,12 +208,15 @@ namespace TensileLite
 
         template <typename Value, typename IO>
         struct SequenceTraits<std::vector<TensileLite::FreeSizeEntry<Value>>, IO>
-            : public DefaultSequenceTraits<std::vector<TensileLite::FreeSizeEntry<Value>>, IO, false>
+            : public DefaultSequenceTraits<std::vector<TensileLite::FreeSizeEntry<Value>>,
+                                           IO,
+                                           false>
         {
         };
 
         template <typename Key, typename Value, typename IO>
-        struct SequenceTraits<std::vector<TensileLite::Matching::MatchingTableEntry<Key, Value>>, IO>
+        struct SequenceTraits<std::vector<TensileLite::Matching::MatchingTableEntry<Key, Value>>,
+                              IO>
             : public DefaultSequenceTraits<
                   std::vector<TensileLite::Matching::MatchingTableEntry<Key, Value>>,
                   IO,

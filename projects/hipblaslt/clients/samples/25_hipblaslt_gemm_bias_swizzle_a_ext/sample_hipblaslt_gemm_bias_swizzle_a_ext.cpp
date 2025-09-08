@@ -170,9 +170,11 @@ void swizzleGemmEpilogueBiasVecExt(hipblasLtHandle_t  handle,
                 matA, HIPBLASLT_MATRIX_LAYOUT_ORDER, &orderA, sizeof(orderA)));
             std::vector<hipblasLtHalf> src(m * k, 0);
             std::vector<hipblasLtHalf> dst(m * k, 0);
-            CHECK_HIP_ERROR(hipMemcpy(src.data(), d_a, m * k * sizeof(hipblasLtHalf), hipMemcpyDeviceToHost));
+            CHECK_HIP_ERROR(
+                hipMemcpy(src.data(), d_a, m * k * sizeof(hipblasLtHalf), hipMemcpyDeviceToHost));
             swizzleTensor(dst.data(), src.data(), m, k, true);
-            CHECK_HIP_ERROR(hipMemcpy(d_a, dst.data(), m * k * sizeof(hipblasLtHalf), hipMemcpyHostToDevice));
+            CHECK_HIP_ERROR(
+                hipMemcpy(d_a, dst.data(), m * k * sizeof(hipblasLtHalf), hipMemcpyHostToDevice));
         }
     }
     else

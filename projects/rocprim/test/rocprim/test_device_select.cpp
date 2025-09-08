@@ -231,8 +231,7 @@ template<class T>
 struct select_op
 {
     __device__ __host__
-    inline bool
-        operator()(const T& value) const
+    inline bool operator()(const T& value) const
     {
         return rocprim::less<T>()(value, T(50));
     }
@@ -729,12 +728,12 @@ void testUniqueGuardedOperator()
                 }
 
                 // Allocate and copy to device
-                common::device_ptr<T>                d_input(input);
-                common::device_ptr<F>                d_flag(input_flag);
-                common::device_ptr<U>                d_output(input.size());
-                common::device_ptr<unsigned int>     d_selected_count_output(1);
-                element_equal_operator<F, T>         device_equal_op(d_flag.get());
-                element_equal_operator<F, T>         host_equal_op(input_flag.data());
+                common::device_ptr<T>            d_input(input);
+                common::device_ptr<F>            d_flag(input_flag);
+                common::device_ptr<U>            d_output(input.size());
+                common::device_ptr<unsigned int> d_selected_count_output(1);
+                element_equal_operator<F, T>     device_equal_op(d_flag.get());
+                element_equal_operator<F, T>     host_equal_op(input_flag.data());
 
                 // Calculate expected results on host
                 std::vector<U> expected;
@@ -1321,8 +1320,8 @@ TEST_P(RocprimDeviceSelectLargeInputTests, LargeInputFlagged)
 
         // temp_storage_size_bytes must be >0
         ASSERT_GT(temp_storage_size_bytes, 0);
-        common::device_ptr<void>     d_temp_storage(temp_storage_size_bytes);
-        test_utils::GraphHelper      gHelper;
+        common::device_ptr<void> d_temp_storage(temp_storage_size_bytes);
+        test_utils::GraphHelper  gHelper;
         if(use_graphs)
         {
             gHelper.startStreamCapture(stream);
@@ -1369,10 +1368,9 @@ TEST_P(RocprimDeviceSelectLargeInputTests, LargeInputFlagged)
 template<class T>
 struct large_select_op
 {
-    T max_value;
+    T           max_value;
     __device__ __host__
-    inline bool
-        operator()(const T& value) const
+    inline bool operator()(const T& value) const
     {
         return rocprim::less<T>()(value, T(max_value));
     }
@@ -1648,8 +1646,8 @@ TEST_P(RocprimDeviceSelectLargeInputTests, LargeInputUnique)
                                   debug_synchronous));
 
         ASSERT_GT(temp_storage_size_bytes, 0);
-        common::device_ptr<void>     d_temp_storage(temp_storage_size_bytes);
-        test_utils::GraphHelper      gHelper;
+        common::device_ptr<void> d_temp_storage(temp_storage_size_bytes);
+        test_utils::GraphHelper  gHelper;
         if(use_graphs)
         {
             gHelper.startStreamCapture(stream);

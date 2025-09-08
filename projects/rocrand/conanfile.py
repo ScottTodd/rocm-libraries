@@ -5,6 +5,7 @@
 
 from conans import ConanFile, CMake
 
+
 class ConanPkgReqs(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "cmake_find_package"

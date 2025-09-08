@@ -78,16 +78,19 @@ struct philox4x32_10_device_engine : public ::rocrand_device::philox4x32_10_engi
     typedef ::rocrand_device::philox4x32_10_engine base_type;
     typedef base_type::philox4x32_10_state         state_type;
 
-    __forceinline__ philox4x32_10_device_engine() = default;
+    __forceinline__
+    philox4x32_10_device_engine()
+        = default;
 
     __forceinline__ __device__ __host__
-        philox4x32_10_device_engine(const unsigned long long seed,
-                                    const unsigned long long subsequence,
-                                    const unsigned long long offset)
+    philox4x32_10_device_engine(const unsigned long long seed,
+                                const unsigned long long subsequence,
+                                const unsigned long long offset)
         : base_type(seed, subsequence, offset)
     {}
 
-    __forceinline__ __device__ __host__ uint4 next4_leap(unsigned int leap)
+    __forceinline__ __device__ __host__
+    uint4 next4_leap(unsigned int leap)
     {
         uint4 ret = m_state.result;
         if(m_state.substate > 0)
@@ -106,14 +109,15 @@ struct philox4x32_10_device_engine : public ::rocrand_device::philox4x32_10_engi
 };
 
 template<typename T, typename Distribution>
-__host__ __device__ __forceinline__ void generate_philox(dim3                        block_idx,
-                                                         dim3                        thread_idx,
-                                                         dim3                        grid_dim,
-                                                         dim3                        block_dim,
-                                                         philox4x32_10_device_engine engine,
-                                                         T*                          data,
-                                                         const size_t                n,
-                                                         Distribution                distribution)
+__host__ __device__ __forceinline__
+void generate_philox(dim3                        block_idx,
+                     dim3                        thread_idx,
+                     dim3                        grid_dim,
+                     dim3                        block_dim,
+                     philox4x32_10_device_engine engine,
+                     T*                          data,
+                     const size_t                n,
+                     Distribution                distribution)
 {
     constexpr unsigned int input_width  = Distribution::input_width;
     constexpr unsigned int output_width = Distribution::output_width;

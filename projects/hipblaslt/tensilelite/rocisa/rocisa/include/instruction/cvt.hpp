@@ -279,7 +279,7 @@ namespace rocisa
                        const std::optional<VOP3PModifiers>&      vop3    = std::nullopt,
                        const std::string&                        comment = "")
             : VCvtInstruction(
-                CvtType::CVT_PK_F32_to_FP8, dst, {src0, src1}, std::nullopt, vop3, comment)
+                  CvtType::CVT_PK_F32_to_FP8, dst, {src0, src1}, std::nullopt, vop3, comment)
         {
             setInst("v_cvt_pk_fp8_f32");
         }
@@ -303,7 +303,7 @@ namespace rocisa
                        const std::optional<VOP3PModifiers>&      vop3    = std::nullopt,
                        const std::string&                        comment = "")
             : VCvtInstruction(
-                CvtType::CVT_PK_F32_to_BF8, dst, {src0, src1}, std::nullopt, vop3, comment)
+                  CvtType::CVT_PK_F32_to_BF8, dst, {src0, src1}, std::nullopt, vop3, comment)
         {
             setInst("v_cvt_pk_bf8_f32");
         }
@@ -327,7 +327,7 @@ namespace rocisa
                        const std::optional<VOP3PModifiers>&      vop3    = std::nullopt,
                        const std::string&                        comment = "")
             : VCvtInstruction(
-                CvtType::CVT_SR_F32_to_FP8, dst, {src0, src1}, std::nullopt, vop3, comment)
+                  CvtType::CVT_SR_F32_to_FP8, dst, {src0, src1}, std::nullopt, vop3, comment)
         {
             setInst("v_cvt_sr_fp8_f32");
         }
@@ -351,7 +351,7 @@ namespace rocisa
                        const std::optional<VOP3PModifiers>&      vop3    = std::nullopt,
                        const std::string&                        comment = "")
             : VCvtInstruction(
-                CvtType::CVT_SR_F32_to_BF8, dst, {src0, src1}, std::nullopt, vop3, comment)
+                  CvtType::CVT_SR_F32_to_BF8, dst, {src0, src1}, std::nullopt, vop3, comment)
         {
             setInst("v_cvt_sr_bf8_f32");
         }
@@ -376,7 +376,7 @@ namespace rocisa
                             std::optional<VOP3PModifiers>             vop3    = std::nullopt,
                             const std::string&                        comment = "")
             : VCvtInstruction(
-                CvtType::CVT_SCALEF32_PK_F16_FP8, dst, {src, scale}, sdwa, vop3, comment)
+                  CvtType::CVT_SCALEF32_PK_F16_FP8, dst, {src, scale}, sdwa, vop3, comment)
         {
             setInst("v_cvt_scalef32_pk_f16_fp8");
         }
@@ -401,7 +401,7 @@ namespace rocisa
                             std::optional<VOP3PModifiers>             vop3    = std::nullopt,
                             const std::string&                        comment = "")
             : VCvtInstruction(
-                CvtType::CVT_SCALEF32_PK_F16_BF8, dst, {src, scale}, sdwa, vop3, comment)
+                  CvtType::CVT_SCALEF32_PK_F16_BF8, dst, {src, scale}, sdwa, vop3, comment)
         {
             setInst("v_cvt_scalef32_pk_f16_bf8");
         }
@@ -450,7 +450,7 @@ namespace rocisa
                             std::optional<VOP3PModifiers>             vop3    = std::nullopt,
                             const std::string&                        comment = "")
             : VCvtInstruction(
-                CvtType::CVT_SCALEF32_PK_FP8_F16, dst, {src, scale}, sdwa, vop3, comment)
+                  CvtType::CVT_SCALEF32_PK_FP8_F16, dst, {src, scale}, sdwa, vop3, comment)
         {
             setInst("v_cvt_scalef32_pk_fp8_f16");
         }
@@ -475,7 +475,7 @@ namespace rocisa
                             std::optional<VOP3PModifiers>             vop3    = std::nullopt,
                             const std::string&                        comment = "")
             : VCvtInstruction(
-                CvtType::CVT_SCALEF32_PK_BF8_F16, dst, {src, scale}, sdwa, vop3, comment)
+                  CvtType::CVT_SCALEF32_PK_BF8_F16, dst, {src, scale}, sdwa, vop3, comment)
         {
             setInst("v_cvt_scalef32_pk_bf8_f16");
         }
@@ -500,7 +500,7 @@ namespace rocisa
                             std::optional<VOP3PModifiers>             vop3    = std::nullopt,
                             const std::string&                        comment = "")
             : VCvtInstruction(
-                CvtType::CVT_SCALEF32_SR_FP8_F16, dst, {src, scale}, sdwa, vop3, comment)
+                  CvtType::CVT_SCALEF32_SR_FP8_F16, dst, {src, scale}, sdwa, vop3, comment)
         {
             setInst("v_cvt_scalef32_sr_fp8_f16");
         }
@@ -525,7 +525,7 @@ namespace rocisa
                             std::optional<VOP3PModifiers>             vop3    = std::nullopt,
                             const std::string&                        comment = "")
             : VCvtInstruction(
-                CvtType::CVT_SCALEF32_SR_BF8_F16, dst, {src, scale}, sdwa, vop3, comment)
+                  CvtType::CVT_SCALEF32_SR_BF8_F16, dst, {src, scale}, sdwa, vop3, comment)
         {
             setInst("v_cvt_scalef32_sr_bf8_f16");
         }

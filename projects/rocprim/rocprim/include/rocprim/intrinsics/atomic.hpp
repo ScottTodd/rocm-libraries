@@ -27,145 +27,149 @@ BEGIN_ROCPRIM_NAMESPACE
 
 namespace detail
 {
-    ROCPRIM_DEVICE ROCPRIM_INLINE
-    unsigned int atomic_add(unsigned int * address, unsigned int value)
-    {
-        return ::atomicAdd(address, value);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+unsigned int atomic_add(unsigned int* address, unsigned int value)
+{
+    return ::atomicAdd(address, value);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE
-    int atomic_add(int * address, int value)
-    {
-        return ::atomicAdd(address, value);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+int atomic_add(int* address, int value)
+{
+    return ::atomicAdd(address, value);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE
-    float atomic_add(float * address, float value)
-    {
-        return ::atomicAdd(address, value);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+float atomic_add(float* address, float value)
+{
+    return ::atomicAdd(address, value);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE
-    double atomic_add(double * address, double value)
-    {
-        return ::atomicAdd(address, value);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+double atomic_add(double* address, double value)
+{
+    return ::atomicAdd(address, value);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE unsigned long atomic_add(unsigned long* address,
-                                                           unsigned long  value)
-    {
-        return ::atomicAdd(address, value);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+unsigned long atomic_add(unsigned long* address, unsigned long value)
+{
+    return ::atomicAdd(address, value);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE
-    unsigned long long atomic_add(unsigned long long * address, unsigned long long value)
-    {
-        return ::atomicAdd(address, value);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+unsigned long long atomic_add(unsigned long long* address, unsigned long long value)
+{
+    return ::atomicAdd(address, value);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE
-    unsigned int atomic_wrapinc(unsigned int* address, unsigned int value)
-    {
-        return ::atomicInc(address, value);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+unsigned int atomic_wrapinc(unsigned int* address, unsigned int value)
+{
+    return ::atomicInc(address, value);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE
-    unsigned int atomic_max(unsigned int* address, unsigned int value)
-    {
-        return ::atomicMax(address, value);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+unsigned int atomic_max(unsigned int* address, unsigned int value)
+{
+    return ::atomicMax(address, value);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE
-    unsigned long atomic_max(unsigned long* address, unsigned long value)
-    {
-        return ::atomicMax(address, value);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+unsigned long atomic_max(unsigned long* address, unsigned long value)
+{
+    return ::atomicMax(address, value);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE
-    unsigned long long atomic_max(unsigned long long* address, unsigned long long value)
-    {
-        return ::atomicMax(address, value);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+unsigned long long atomic_max(unsigned long long* address, unsigned long long value)
+{
+    return ::atomicMax(address, value);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE
-    unsigned int atomic_min(unsigned int* address, unsigned int value)
-    {
-        return ::atomicMin(address, value);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+unsigned int atomic_min(unsigned int* address, unsigned int value)
+{
+    return ::atomicMin(address, value);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE
-    unsigned long atomic_min(unsigned long* address, unsigned long value)
-    {
-        return ::atomicMin(address, value);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+unsigned long atomic_min(unsigned long* address, unsigned long value)
+{
+    return ::atomicMin(address, value);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE
-    unsigned long long atomic_min(unsigned long long* address, unsigned long long value)
-    {
-        return ::atomicMin(address, value);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+unsigned long long atomic_min(unsigned long long* address, unsigned long long value)
+{
+    return ::atomicMin(address, value);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE
-    unsigned int atomic_cas(unsigned int* address, unsigned int compare, unsigned int value)
-    {
-        return ::atomicCAS(address, compare, value);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+unsigned int atomic_cas(unsigned int* address, unsigned int compare, unsigned int value)
+{
+    return ::atomicCAS(address, compare, value);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE
-    unsigned long atomic_cas(unsigned long* address, unsigned long compare, unsigned long value)
-    {
-        return ::atomicCAS(address, compare, value);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+unsigned long atomic_cas(unsigned long* address, unsigned long compare, unsigned long value)
+{
+    return ::atomicCAS(address, compare, value);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE
-    unsigned long long atomic_cas(unsigned long long* address,
-                                  unsigned long long  compare,
-                                  unsigned long long  value)
-    {
-        return ::atomicCAS(address, compare, value);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+unsigned long long
+    atomic_cas(unsigned long long* address, unsigned long long compare, unsigned long long value)
+{
+    return ::atomicCAS(address, compare, value);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE
-    unsigned int atomic_exch(unsigned int* address, unsigned int value)
-    {
-        return ::atomicExch(address, value);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+unsigned int atomic_exch(unsigned int* address, unsigned int value)
+{
+    return ::atomicExch(address, value);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE
-    unsigned long long atomic_exch(unsigned long long * address, unsigned long long value)
-    {
-        return ::atomicExch(address, value);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+unsigned long long atomic_exch(unsigned long long* address, unsigned long long value)
+{
+    return ::atomicExch(address, value);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE unsigned char atomic_load(const unsigned char* address)
-    {
-        return __hip_atomic_load(address, __ATOMIC_RELAXED, __HIP_MEMORY_SCOPE_AGENT);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+unsigned char atomic_load(const unsigned char* address)
+{
+    return __hip_atomic_load(address, __ATOMIC_RELAXED, __HIP_MEMORY_SCOPE_AGENT);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE unsigned short atomic_load(const unsigned short* address)
-    {
-        return __hip_atomic_load(address, __ATOMIC_RELAXED, __HIP_MEMORY_SCOPE_AGENT);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+unsigned short atomic_load(const unsigned short* address)
+{
+    return __hip_atomic_load(address, __ATOMIC_RELAXED, __HIP_MEMORY_SCOPE_AGENT);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE unsigned int atomic_load(const unsigned int* address)
-    {
-        return __hip_atomic_load(address, __ATOMIC_RELAXED, __HIP_MEMORY_SCOPE_AGENT);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+unsigned int atomic_load(const unsigned int* address)
+{
+    return __hip_atomic_load(address, __ATOMIC_RELAXED, __HIP_MEMORY_SCOPE_AGENT);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE unsigned long atomic_load(const unsigned long* address)
-    {
-        return __hip_atomic_load(address, __ATOMIC_RELAXED, __HIP_MEMORY_SCOPE_AGENT);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+unsigned long atomic_load(const unsigned long* address)
+{
+    return __hip_atomic_load(address, __ATOMIC_RELAXED, __HIP_MEMORY_SCOPE_AGENT);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE unsigned long long atomic_load(const unsigned long long* address)
-    {
-        return __hip_atomic_load(address, __ATOMIC_RELAXED, __HIP_MEMORY_SCOPE_AGENT);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+unsigned long long atomic_load(const unsigned long long* address)
+{
+    return __hip_atomic_load(address, __ATOMIC_RELAXED, __HIP_MEMORY_SCOPE_AGENT);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE
-    __uint128_t atomic_load(const __uint128_t* address)
-    {
-        __uint128_t result;
+ROCPRIM_DEVICE ROCPRIM_INLINE
+__uint128_t atomic_load(const __uint128_t* address)
+{
+    __uint128_t result;
 
 #define ROCPRIM_ATOMIC_LOAD(inst, mod, wait, ptr) \
     asm volatile(inst " %0, %1 " mod "\t\n" wait : "=v"(result) : "v"(ptr) : "memory")
@@ -217,71 +221,72 @@ namespace detail
     #if !ROCPRIM_TARGET_SPIRV && defined(__has_builtin) \
         && __has_builtin(__builtin_amdgcn_is_shared) && __has_builtin(__builtin_amdgcn_is_private)
 
-        auto* ptr = (const __attribute__((address_space(0 /*flat*/))) __uint128_t*)address;
-        if(__builtin_amdgcn_is_shared(ptr))
-        {
-            auto* shared_ptr
-                = (const __attribute__((address_space(3 /*lds*/))) __uint128_t*)address;
-            ROCPRIM_ATOMIC_LOAD_SHARED(shared_ptr);
-        }
-        else if(__builtin_amdgcn_is_private(ptr))
-        {
-            ROCPRIM_ATOMIC_LOAD_FLAT(address);
-        }
-        else
-        {
-            auto* global_ptr
-                = (const __attribute__((address_space(1 /*global*/))) __uint128_t*)address;
-            ROCPRIM_ATOMIC_LOAD_GLOBAL(global_ptr);
-        }
-    #else
-        // SPIR-V does not like the address-space checks. For now
-        // lets just do flat loading/storing.
+    auto* ptr = (const __attribute__((address_space(0 /*flat*/))) __uint128_t*)address;
+    if(__builtin_amdgcn_is_shared(ptr))
+    {
+        auto* shared_ptr = (const __attribute__((address_space(3 /*lds*/))) __uint128_t*)address;
+        ROCPRIM_ATOMIC_LOAD_SHARED(shared_ptr);
+    }
+    else if(__builtin_amdgcn_is_private(ptr))
+    {
         ROCPRIM_ATOMIC_LOAD_FLAT(address);
+    }
+    else
+    {
+        auto* global_ptr = (const __attribute__((address_space(1 /*global*/))) __uint128_t*)address;
+        ROCPRIM_ATOMIC_LOAD_GLOBAL(global_ptr);
+    }
+    #else
+    // SPIR-V does not like the address-space checks. For now
+    // lets just do flat loading/storing.
+    ROCPRIM_ATOMIC_LOAD_FLAT(address);
     #endif
 #else
-        (void)address;
-        result = 0;
+    (void)address;
+    result = 0;
 #endif
 
-        return result;
+    return result;
 
 #undef ROCPRIM_ATOMIC_LOAD
 #undef ROCPRIM_ATOMIC_LOAD_FLAT
 #undef ROCPRIM_ATOMIC_LOAD_SHARED
 #undef ROCPRIM_ATOMIC_LOAD_GLOBAL
-    }
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE
-    void atomic_store(unsigned char* address, unsigned char value)
-    {
-        __hip_atomic_store(address, value, __ATOMIC_RELAXED, __HIP_MEMORY_SCOPE_AGENT);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+void atomic_store(unsigned char* address, unsigned char value)
+{
+    __hip_atomic_store(address, value, __ATOMIC_RELAXED, __HIP_MEMORY_SCOPE_AGENT);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE void atomic_store(unsigned short* address, unsigned short value)
-    {
-        __hip_atomic_store(address, value, __ATOMIC_RELAXED, __HIP_MEMORY_SCOPE_AGENT);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+void atomic_store(unsigned short* address, unsigned short value)
+{
+    __hip_atomic_store(address, value, __ATOMIC_RELAXED, __HIP_MEMORY_SCOPE_AGENT);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE void atomic_store(unsigned int* address, unsigned int value)
-    {
-        __hip_atomic_store(address, value, __ATOMIC_RELAXED, __HIP_MEMORY_SCOPE_AGENT);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+void atomic_store(unsigned int* address, unsigned int value)
+{
+    __hip_atomic_store(address, value, __ATOMIC_RELAXED, __HIP_MEMORY_SCOPE_AGENT);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE void atomic_store(unsigned long* address, unsigned long value)
-    {
-        __hip_atomic_store(address, value, __ATOMIC_RELAXED, __HIP_MEMORY_SCOPE_AGENT);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+void atomic_store(unsigned long* address, unsigned long value)
+{
+    __hip_atomic_store(address, value, __ATOMIC_RELAXED, __HIP_MEMORY_SCOPE_AGENT);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE void atomic_store(unsigned long long* address,
-                                                    unsigned long long  value)
-    {
-        __hip_atomic_store(address, value, __ATOMIC_RELAXED, __HIP_MEMORY_SCOPE_AGENT);
-    }
+ROCPRIM_DEVICE ROCPRIM_INLINE
+void atomic_store(unsigned long long* address, unsigned long long value)
+{
+    __hip_atomic_store(address, value, __ATOMIC_RELAXED, __HIP_MEMORY_SCOPE_AGENT);
+}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE
-    void atomic_store(__uint128_t* address, const __uint128_t value)
-    {
+ROCPRIM_DEVICE ROCPRIM_INLINE
+void atomic_store(__uint128_t* address, const __uint128_t value)
+{
 #define ROCPRIM_ATOMIC_STORE(inst, mod, wait, ptr) \
     asm volatile(inst " %0, %1 " mod "\t\n" wait : : "v"(ptr), "v"(value) : "memory")
 
@@ -325,70 +330,72 @@ namespace detail
     #if !ROCPRIM_TARGET_SPIRV && defined(__has_builtin) \
         && __has_builtin(__builtin_amdgcn_is_shared) && __has_builtin(__builtin_amdgcn_is_private)
 
-        auto* ptr = (__attribute__((address_space(0 /*flat*/))) __uint128_t*)address;
-        if(__builtin_amdgcn_is_shared(ptr))
-        {
-            auto* shared_ptr = (__attribute__((address_space(3 /*lds*/))) __uint128_t*)address;
-            ROCPRIM_ATOMIC_STORE_SHARED(shared_ptr);
-        }
-        else if(__builtin_amdgcn_is_private(ptr))
-        {
-            ROCPRIM_ATOMIC_STORE_FLAT(address);
-        }
-        else
-        {
-            auto* global_ptr = (__attribute__((address_space(1 /*global*/))) __uint128_t*)address;
-            ROCPRIM_ATOMIC_STORE_GLOBAL(global_ptr);
-        }
-    #else
-        // SPIR-V does not like the address-space checks. For now
-        // lets just do flat loading/storing.
+    auto* ptr = (__attribute__((address_space(0 /*flat*/))) __uint128_t*)address;
+    if(__builtin_amdgcn_is_shared(ptr))
+    {
+        auto* shared_ptr = (__attribute__((address_space(3 /*lds*/))) __uint128_t*)address;
+        ROCPRIM_ATOMIC_STORE_SHARED(shared_ptr);
+    }
+    else if(__builtin_amdgcn_is_private(ptr))
+    {
         ROCPRIM_ATOMIC_STORE_FLAT(address);
+    }
+    else
+    {
+        auto* global_ptr = (__attribute__((address_space(1 /*global*/))) __uint128_t*)address;
+        ROCPRIM_ATOMIC_STORE_GLOBAL(global_ptr);
+    }
+    #else
+    // SPIR-V does not like the address-space checks. For now
+    // lets just do flat loading/storing.
+    ROCPRIM_ATOMIC_STORE_FLAT(address);
     #endif
 #else
-        (void)address;
-        (void)value;
+    (void)address;
+    (void)value;
 #endif
 
 #undef ROCPRIM_ATOMIC_STORE
 #undef ROCPRIM_ATOMIC_STORE_FLAT
 #undef ROCPRIM_ATOMIC_STORE_SHARED
 #undef ROCPRIM_ATOMIC_STORE_GLOBAL
-    }
-
-    /// \brief Wait for all vector memory operations to complete
-    ///
-    /// This ensures that previous visible writes to vector memory have completed before the function
-    /// returns. Atomic operations following the call are guaranteed to be visible
-    /// to other threads in the device after vmem writes preceding the call.
-    ///
-    /// Provides no guarantees about visibility, only ordering, i.e. caches are not flushed.
-    /// Visibility has to be enforced in another way (e.g. writing *through* cache)
-    ///
-    /// This is a dangerous internal function not meant for users, and only meant to be used by
-    /// developers that know what they are doing.
-    ROCPRIM_DEVICE ROCPRIM_INLINE void atomic_fence_release_vmem_order_only()
-    {
-        __builtin_amdgcn_fence(__ATOMIC_RELEASE, "workgroup");
-        // Wait until all vmem operations complete (s_waitcnt vmcnt(0))
-        __builtin_amdgcn_s_waitcnt(/*vmcnt*/ 0 | (/*exp_cnt*/ 0x7 << 4) | (/*lgkmcnt*/ 0xf << 8));
-    }
-
-    /// \brief Make sure visible operations are complete
-    ///
-    /// Ensure that following visible reads are not reordered before preceding atomic operations
-    /// Similarly to atomic_fence_release_vmem_order_only() this function provides no visibility
-    /// guarantees, visiblity of reads must be guaranteed in other wise (like reading *through*
-    /// caches)
-    ///
-    /// This is a dangerous internal function not meant for users, and only meant to be used by
-    /// developers that know what they are doing.
-    ROCPRIM_DEVICE ROCPRIM_INLINE void atomic_fence_acquire_order_only()
-    {
-        __builtin_amdgcn_s_waitcnt(/*vmcnt*/ 0 | (/*exp_cnt*/ 0x7 << 4) | (/*lgkmcnt*/ 0xf << 8));
-        __builtin_amdgcn_fence(__ATOMIC_ACQUIRE, "workgroup");
-    }
 }
+
+/// \brief Wait for all vector memory operations to complete
+///
+/// This ensures that previous visible writes to vector memory have completed before the function
+/// returns. Atomic operations following the call are guaranteed to be visible
+/// to other threads in the device after vmem writes preceding the call.
+///
+/// Provides no guarantees about visibility, only ordering, i.e. caches are not flushed.
+/// Visibility has to be enforced in another way (e.g. writing *through* cache)
+///
+/// This is a dangerous internal function not meant for users, and only meant to be used by
+/// developers that know what they are doing.
+ROCPRIM_DEVICE ROCPRIM_INLINE
+void atomic_fence_release_vmem_order_only()
+{
+    __builtin_amdgcn_fence(__ATOMIC_RELEASE, "workgroup");
+    // Wait until all vmem operations complete (s_waitcnt vmcnt(0))
+    __builtin_amdgcn_s_waitcnt(/*vmcnt*/ 0 | (/*exp_cnt*/ 0x7 << 4) | (/*lgkmcnt*/ 0xf << 8));
+}
+
+/// \brief Make sure visible operations are complete
+///
+/// Ensure that following visible reads are not reordered before preceding atomic operations
+/// Similarly to atomic_fence_release_vmem_order_only() this function provides no visibility
+/// guarantees, visiblity of reads must be guaranteed in other wise (like reading *through*
+/// caches)
+///
+/// This is a dangerous internal function not meant for users, and only meant to be used by
+/// developers that know what they are doing.
+ROCPRIM_DEVICE ROCPRIM_INLINE
+void atomic_fence_acquire_order_only()
+{
+    __builtin_amdgcn_s_waitcnt(/*vmcnt*/ 0 | (/*exp_cnt*/ 0x7 << 4) | (/*lgkmcnt*/ 0xf << 8));
+    __builtin_amdgcn_fence(__ATOMIC_ACQUIRE, "workgroup");
+}
+} // namespace detail
 
 END_ROCPRIM_NAMESPACE
 

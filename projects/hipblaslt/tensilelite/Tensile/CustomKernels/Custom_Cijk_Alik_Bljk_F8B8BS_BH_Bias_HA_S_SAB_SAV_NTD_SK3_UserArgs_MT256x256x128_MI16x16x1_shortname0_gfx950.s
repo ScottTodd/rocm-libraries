@@ -867,7 +867,7 @@ label_PersistentLoopStart:
 .set sgpr102, 84
 .set sgpr103, 85
 .set sgpr104, 86
-  
+
 /******************************************/
 /* Begin setupNewTile                     */
 /******************************************/
@@ -1902,7 +1902,7 @@ ds_read_b128 v[vgprValuB_X0_I0+24:vgprValuB_X0_I0+24+3], v[vgprLocalReadAddrB] o
 ds_read_b128 v[vgprValuB_X0_I0+28:vgprValuB_X0_I0+28+3], v[vgprLocalReadAddrB] offset:448 // L -> Reg lro=0 swapByteOffset=0 ti=256 vIdx=0 eIdx=3 rIdx=1 oIdx=0 buffer=0 iui=0
 
 s_waitcnt lgkmcnt(0)
-  
+
 /******************************************/
 /* Unrolled Loop(s) - Begin               */
 /******************************************/
@@ -2822,7 +2822,7 @@ buffer_load_dwordx4 v[vgprGlobalReadOffsetB+0], s[sgprSrdB:sgprSrdB+3], s[sgprSc
 s_add_u32 m0, m0, 4224                             // Move LDS write address to next line
 buffer_load_dwordx4 v[vgprGlobalReadOffsetB+0], s[sgprSrdB:sgprSrdB+3], s[sgprScalarGlobalReadOffsetB+6] offen offset:0, lds // G -> Reg 0_0_7_0
 s_waitcnt vmcnt(0)
-  
+
 s_branch label_tail_loop_load_done
 /* NONDTL Tail loop*/
 label_tailloop_non_dtl:

@@ -36,7 +36,7 @@ BenchmarkProblems:
     #Activation: True
     ActivationType: all
     #ActivationHPA: True
-  - InitialSolutionParameters: 
+  - InitialSolutionParameters:
     BenchmarkCommonParameters:
     - KernelLanguage: [Assembly]
     ForkParameters:
@@ -49,12 +49,12 @@ BenchmarkProblems:
     - GlobalSplitU: [0]
     - StreamK: [3]
     - Groups:
-      - 
+      -
         - NonTemporalC: 0
           NonTemporalD: 0
-      - 
+      -
         - MatrixInstruction: [16, 16, 16,  1,  1,  4,  8,  4,  1] # MT 256x128
-    BenchmarkJoinParameters: 
+    BenchmarkJoinParameters:
     BenchmarkFinalParameters:
     - ProblemSizes:
       - Range: [ [256, 263, 2097], [256, 263, 2097], [1], [256, 263, 1045] ]

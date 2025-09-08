@@ -116,9 +116,9 @@ END_HIPCUB_NAMESPACE
     #define HIPCUB_DEVICE_WARP_THREADS CUB_PTX_WARP_THREADS
     #define HIPCUB_HOST_WARP_THREADS CUB_PTX_WARP_THREADS
     #define HIPCUB_ARCH CUB_PTX_ARCH
-    BEGIN_HIPCUB_NAMESPACE
-    using namespace cub;
-    END_HIPCUB_NAMESPACE
+BEGIN_HIPCUB_NAMESPACE
+using namespace cub;
+END_HIPCUB_NAMESPACE
 #endif
 
 /// Supported warp sizes
@@ -134,17 +134,17 @@ END_HIPCUB_NAMESPACE
 
 // Helper macros to disable warnings in clang
 #ifdef __clang__
-#define HIPCUB_PRAGMA_TO_STR(x) _Pragma(#x)
-#define HIPCUB_CLANG_SUPPRESS_WARNING_PUSH _Pragma("clang diagnostic push")
-#define HIPCUB_CLANG_SUPPRESS_WARNING(w) HIPCUB_PRAGMA_TO_STR(clang diagnostic ignored w)
-#define HIPCUB_CLANG_SUPPRESS_WARNING_POP _Pragma("clang diagnostic pop")
-#define HIPCUB_CLANG_SUPPRESS_WARNING_WITH_PUSH(w) \
-    HIPCUB_CLANG_SUPPRESS_WARNING_PUSH HIPCUB_CLANG_SUPPRESS_WARNING(w)
+    #define HIPCUB_PRAGMA_TO_STR(x) _Pragma(#x)
+    #define HIPCUB_CLANG_SUPPRESS_WARNING_PUSH _Pragma("clang diagnostic push")
+    #define HIPCUB_CLANG_SUPPRESS_WARNING(w) HIPCUB_PRAGMA_TO_STR(clang diagnostic ignored w)
+    #define HIPCUB_CLANG_SUPPRESS_WARNING_POP _Pragma("clang diagnostic pop")
+    #define HIPCUB_CLANG_SUPPRESS_WARNING_WITH_PUSH(w) \
+        HIPCUB_CLANG_SUPPRESS_WARNING_PUSH HIPCUB_CLANG_SUPPRESS_WARNING(w)
 #else // __clang__
-#define HIPCUB_CLANG_SUPPRESS_WARNING_PUSH
-#define HIPCUB_CLANG_SUPPRESS_WARNING(w)
-#define HIPCUB_CLANG_SUPPRESS_WARNING_POP
-#define HIPCUB_CLANG_SUPPRESS_WARNING_WITH_PUSH(w)
+    #define HIPCUB_CLANG_SUPPRESS_WARNING_PUSH
+    #define HIPCUB_CLANG_SUPPRESS_WARNING(w)
+    #define HIPCUB_CLANG_SUPPRESS_WARNING_POP
+    #define HIPCUB_CLANG_SUPPRESS_WARNING_WITH_PUSH(w)
 #endif // __clang__
 
 #define HIPCUB_CLANG_SUPPRESS_DEPRECATED_PUSH     \
@@ -154,7 +154,7 @@ END_HIPCUB_NAMESPACE
 #define HIPCUB_CLANG_SUPPRESS_DEPRECATED_POP HIPCUB_CLANG_SUPPRESS_WARNING_POP
 
 /// hipCUB error reporting macro (prints error messages to stderr)
-#if (defined(DEBUG) || defined(_DEBUG)) && !defined(HIPCUB_STDERR)
+#if(defined(DEBUG) || defined(_DEBUG)) && !defined(HIPCUB_STDERR)
     #define HIPCUB_STDERR
 #endif
 
@@ -164,18 +164,19 @@ BEGIN_HIPCUB_NAMESPACE
 /// If `error` is not `hipSuccess`, prints an error message containing the source filename and
 /// line information to the standard error output.
 /// \note This only happens if `HIPCUB_STDERR` is defined.
-inline
-hipError_t Debug(
-    hipError_t      error,
-    const char*     filename,
-    int             line)
+inline hipError_t Debug(hipError_t error, const char* filename, int line)
 {
     (void)filename;
     (void)line;
 #ifdef HIPCUB_STDERR
-    if (error)
+    if(error)
     {
-        fprintf(stderr, "HIP error %d [%s, %d]: %s\n", error, filename, line, hipGetErrorString(error));
+        fprintf(stderr,
+                "HIP error %d [%s, %d]: %s\n",
+                error,
+                filename,
+                line,
+                hipGetErrorString(error));
         fflush(stderr);
     }
 #endif

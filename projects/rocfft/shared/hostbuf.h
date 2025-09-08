@@ -62,7 +62,7 @@ public:
         std::swap(bsize_track, other.bsize_track);
         return *this;
     }
-    hostbuf_t(const hostbuf_t&) = delete;
+    hostbuf_t(const hostbuf_t&)            = delete;
     hostbuf_t& operator=(const hostbuf_t&) = delete;
 
     static hostbuf_t make_nonowned(T* p, size_t size_bytes = 0)

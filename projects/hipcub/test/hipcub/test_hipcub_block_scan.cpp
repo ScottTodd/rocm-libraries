@@ -95,7 +95,8 @@ void inclusive_scan_kernel(T* device_output)
     T                  value = device_output[index];
 
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
     bscan_t(temp_storage).InclusiveScan(value, value, hipcub::Sum());
 
     device_output[index] = value;
@@ -200,7 +201,8 @@ void inclusive_scan_initial_value_kernel(T* device_output, T initial_value)
     }
 
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
     bscan_t(temp_storage).InclusiveScan(input, output, initial_value, hipcub::Sum());
 
     for(unsigned int i = 0; i < ItemsPerThread; ++i)
@@ -295,15 +297,15 @@ TYPED_TEST(HipcubBlockScanSingleValueTests, InclusiveScanInitialValue)
 }
 
 template<unsigned int BlockSize, hipcub::BlockScanAlgorithm Algorithm, class T>
-__global__
-    __launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void inclusive_scan_reduce_kernel(T* device_output, T* device_output_reductions)
 {
-    const unsigned int                       index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
-    T                                        value = device_output[index];
-    T                                        reduction;
+    const unsigned int index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
+    T                  value = device_output[index];
+    T                  reduction;
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
     bscan_t(temp_storage).InclusiveScan(value, value, hipcub::Sum(), reduction);
     device_output[index] = value;
     if(hipThreadIdx_x == 0)
@@ -578,7 +580,8 @@ void inclusive_scan_prefix_callback_kernel(T* device_output, T* device_output_bp
     T value = device_output[index];
 
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
     bscan_t(temp_storage).InclusiveScan(value, value, hipcub::Sum(), prefix_callback);
 
     device_output[index] = value;
@@ -694,10 +697,11 @@ template<unsigned int BlockSize, hipcub::BlockScanAlgorithm Algorithm, class T>
 __global__ __launch_bounds__(BlockSize)
 void exclusive_scan_kernel(T* device_output, T init)
 {
-    const unsigned int                       index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
-    T                                        value = device_output[index];
-    using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
+    const unsigned int index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
+    T                  value = device_output[index];
+    using bscan_t            = hipcub::BlockScan<T, BlockSize, Algorithm>;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
     bscan_t(temp_storage).ExclusiveScan(value, value, init, hipcub::Sum());
     device_output[index] = value;
 }
@@ -790,11 +794,12 @@ template<unsigned int BlockSize, hipcub::BlockScanAlgorithm Algorithm, class T>
 __global__ __launch_bounds__(BlockSize)
 void exclusive_scan_reduce_kernel(T* device_output, T* device_output_reductions, T init)
 {
-    const unsigned int                       index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
-    T                                        value = device_output[index];
-    T                                        reduction;
+    const unsigned int index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
+    T                  value = device_output[index];
+    T                  reduction;
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
     bscan_t(temp_storage).ExclusiveScan(value, value, init, hipcub::Sum(), reduction);
     device_output[index] = value;
     if(hipThreadIdx_x == 0)
@@ -931,7 +936,8 @@ void exclusive_scan_prefix_callback_kernel(T* device_output, T* device_output_bp
     T value = device_output[index];
 
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
     bscan_t(temp_storage).ExclusiveScan(value, value, hipcub::Sum(), prefix_callback);
 
     device_output[index] = value;
@@ -1150,7 +1156,8 @@ void inclusive_sum_kernel(T* device_output)
     T                  value = device_output[index];
 
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
     bscan_t(temp_storage).InclusiveSum(value, value);
 
     device_output[index] = value;
@@ -1238,15 +1245,15 @@ TYPED_TEST(HipcubBlockScanSingleValueTests, InclusiveSum)
 }
 
 template<unsigned int BlockSize, hipcub::BlockScanAlgorithm Algorithm, class T>
-__global__
-    __launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void inclusive_sum_reduce_kernel(T* device_output, T* device_output_reductions)
 {
-    const unsigned int                       index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
-    T                                        value = device_output[index];
-    T                                        reduction;
+    const unsigned int index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
+    T                  value = device_output[index];
+    T                  reduction;
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
     bscan_t(temp_storage).InclusiveSum(value, value, reduction);
     device_output[index] = value;
     if(hipThreadIdx_x == 0)
@@ -1371,7 +1378,8 @@ void inclusive_sum_prefix_callback_kernel(T* device_output, T* device_output_bp,
     T value = device_output[index];
 
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
     bscan_t(temp_storage).InclusiveSum(value, value, prefix_callback);
 
     device_output[index] = value;
@@ -1487,10 +1495,11 @@ template<unsigned int BlockSize, hipcub::BlockScanAlgorithm Algorithm, class T>
 __global__ __launch_bounds__(BlockSize)
 void exclusive_sum_kernel(T* device_output)
 {
-    const unsigned int                       index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
-    T                                        value = device_output[index];
-    using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
+    const unsigned int index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
+    T                  value = device_output[index];
+    using bscan_t            = hipcub::BlockScan<T, BlockSize, Algorithm>;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
     bscan_t(temp_storage).ExclusiveSum(value, value);
     device_output[index] = value;
 }
@@ -1582,11 +1591,12 @@ template<unsigned int BlockSize, hipcub::BlockScanAlgorithm Algorithm, class T>
 __global__ __launch_bounds__(BlockSize)
 void exclusive_sum_reduce_kernel(T* device_output, T* device_output_reductions)
 {
-    const unsigned int                       index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
-    T                                        value = device_output[index];
-    T                                        reduction;
+    const unsigned int index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
+    T                  value = device_output[index];
+    T                  reduction;
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
     bscan_t(temp_storage).ExclusiveSum(value, value, reduction);
     device_output[index] = value;
     if(hipThreadIdx_x == 0)
@@ -1722,7 +1732,8 @@ void exclusive_sum_prefix_callback_kernel(T* device_output, T* device_output_bp,
     T value = device_output[index];
 
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
     bscan_t(temp_storage).ExclusiveSum(value, value, prefix_callback);
 
     device_output[index] = value;
@@ -1906,7 +1917,8 @@ void inclusive_scan_array_kernel(T* device_output)
     }
 
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
     bscan_t(temp_storage).InclusiveScan(in_out, in_out, hipcub::Sum());
 
     // store
@@ -2018,8 +2030,9 @@ void inclusive_scan_reduce_array_kernel(T* device_output, T* device_output_reduc
     }
 
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
-    T                                        reduction;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
+    T                             reduction;
     bscan_t(temp_storage).InclusiveScan(in_out, in_out, hipcub::Sum(), reduction);
 
     // store
@@ -2170,7 +2183,8 @@ void inclusive_scan_array_prefix_callback_kernel(T* device_output,
     }
 
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
     bscan_t(temp_storage).InclusiveScan(in_out, in_out, hipcub::Sum(), prefix_callback);
 
     // store
@@ -2318,7 +2332,8 @@ void exclusive_scan_array_kernel(T* device_output, T init)
     }
 
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
     bscan_t(temp_storage).ExclusiveScan(in_out, in_out, init, hipcub::Sum());
 
     // store
@@ -2438,8 +2453,9 @@ void exclusive_scan_reduce_array_kernel(T* device_output, T* device_output_reduc
     }
 
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
-    T                                        reduction;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
+    T                             reduction;
     bscan_t(temp_storage).ExclusiveScan(in_out, in_out, init, hipcub::Sum(), reduction);
 
     // store
@@ -2604,7 +2620,8 @@ void exclusive_scan_prefix_callback_array_kernel(T* device_output,
     }
 
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
     bscan_t(temp_storage).ExclusiveScan(in_out, in_out, hipcub::Sum(), prefix_callback);
 
     // store
@@ -2755,7 +2772,8 @@ void inclusive_sum_array_kernel(T* device_output)
     }
 
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
     bscan_t(temp_storage).InclusiveSum(in_out, in_out);
 
     // store
@@ -2866,8 +2884,9 @@ void inclusive_sum_reduce_array_kernel(T* device_output, T* device_output_reduct
     }
 
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
-    T                                        reduction;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
+    T                             reduction;
     bscan_t(temp_storage).InclusiveSum(in_out, in_out, reduction);
 
     // store
@@ -3018,7 +3037,8 @@ void inclusive_sum_array_prefix_callback_kernel(T* device_output,
     }
 
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
     bscan_t(temp_storage).InclusiveSum(in_out, in_out, prefix_callback);
 
     // store
@@ -3166,7 +3186,8 @@ void exclusive_sum_array_kernel(T* device_output)
     }
 
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
     bscan_t(temp_storage).ExclusiveSum(in_out, in_out);
 
     // store
@@ -3282,8 +3303,9 @@ void exclusive_sum_reduce_array_kernel(T* device_output, T* device_output_reduct
     }
 
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
-    T                                        reduction;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
+    T                             reduction;
     bscan_t(temp_storage).ExclusiveSum(in_out, in_out, reduction);
 
     // store
@@ -3445,7 +3467,8 @@ void exclusive_sum_prefix_callback_array_kernel(T* device_output,
     }
 
     using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::TempStorage temp_storage;
+    __shared__
+    typename bscan_t::TempStorage temp_storage;
     bscan_t(temp_storage).ExclusiveSum(in_out, in_out, prefix_callback);
 
     // store

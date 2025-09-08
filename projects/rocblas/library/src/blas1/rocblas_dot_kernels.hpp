@@ -130,10 +130,8 @@ rocblas_dot_kernel_inc1by2(rocblas_int n,
         // sum WIN elements per thread
         int inc = !ONE_BLOCK ? NB * gridDim.x : NB;
 
-        if constexpr(
-            std::is_same_v<
-                T,
-                rocblas_half> || std::is_same_v<T, rocblas_bfloat16> || std::is_same_v<T, rocblas_float>)
+        if constexpr(std::is_same_v<T, rocblas_half> || std::is_same_v<T, rocblas_bfloat16>
+                     || std::is_same_v<T, rocblas_float>)
         {
             i *= 2;
             inc *= 2;

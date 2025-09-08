@@ -223,14 +223,12 @@ bool bad_argument(rocblas_int n, rocblas_int incx, rocblas_int stride_x, rocblas
     if(n < 0)
     {
         argument_error = true;
-        std::cerr << "ERROR: bad argument n = " << n << " < "
-                  << "0" << std::endl;
+        std::cerr << "ERROR: bad argument n = " << n << " < " << "0" << std::endl;
     }
     if(incx < 0)
     {
         argument_error = true;
-        std::cerr << "ERROR: bad argument incx = " << incx << " < "
-                  << "0" << std::endl;
+        std::cerr << "ERROR: bad argument incx = " << incx << " < " << "0" << std::endl;
     }
     if(batch_count < 1)
     {

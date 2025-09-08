@@ -148,7 +148,8 @@ TYPED_TEST(RocprimDeviceSortTests, SortKey)
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         for(size_t size : test_utils::get_sizes(seed_value))
@@ -273,7 +274,8 @@ TYPED_TEST(RocprimDeviceSortTests, SortKeyValue)
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         for(size_t size : test_utils::get_sizes(seed_value))
@@ -393,11 +395,11 @@ TYPED_TEST(RocprimDeviceSortTests, SortKeyValue)
             const auto values_output = d_values_output.load();
 
             // Check if output values are as expected
-            std::vector<key_type> expected_key(expected.size());
+            std::vector<key_type>   expected_key(expected.size());
             std::vector<value_type> expected_value(expected.size());
             for(size_t i = 0; i < expected.size(); i++)
             {
-                expected_key[i] = expected[i].first;
+                expected_key[i]   = expected[i].first;
                 expected_value[i] = expected[i].second;
             }
 
@@ -447,7 +449,7 @@ void testLargeIndices()
         hipError_t malloc_status = common::hipMallocHelper(&d_output, size * sizeof(*d_output));
         if(malloc_status == hipErrorOutOfMemory)
         {
-            (void) hipGetLastError(); // reset internally recorded HIP error
+            (void)hipGetLastError(); // reset internally recorded HIP error
             std::cout << "Out of memory. Skipping size = " << size << std::endl;
             break;
         }
@@ -476,7 +478,7 @@ void testLargeIndices()
         malloc_status = common::hipMallocHelper(&d_temp_storage, temp_storage_size_bytes);
         if(malloc_status == hipErrorOutOfMemory)
         {
-            (void) hipGetLastError(); // reset internally recorded HIP error
+            (void)hipGetLastError(); // reset internally recorded HIP error
             std::cout << "Out of memory. Skipping size = " << size << std::endl;
             HIP_CHECK(hipFree(d_output));
             break;

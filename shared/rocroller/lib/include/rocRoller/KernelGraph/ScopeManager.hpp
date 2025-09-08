@@ -61,7 +61,7 @@ namespace rocRoller::KernelGraph
         ScopeManager() = delete;
         ScopeManager(ContextPtr context, KernelGraphPtr graph)
             : m_context(context)
-            , m_graph(graph){};
+            , m_graph(graph) {};
 
         /**
          * @brief Create a new Scope and push it onto the scope stack.

@@ -184,7 +184,7 @@ void RunBackwardWeightsCPUVerify(std::vector<Tcheck_>& dwei_host,
 
 #endif
 
-//#ifdef BACKWARD_WRW_VERIFY_GEMM
+// #ifdef BACKWARD_WRW_VERIFY_GEMM
 #if 0
     {
         assert(stride_h == stride_w);

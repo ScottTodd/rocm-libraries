@@ -27,8 +27,8 @@
 #include "TestData.hpp"
 
 #include <glob.h>
-#include <unistd.h>
 #include <memory>
+#include <unistd.h>
 
 #include <boost/version.hpp>
 

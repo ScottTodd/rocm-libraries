@@ -121,7 +121,8 @@ class warp_reduce
     // Check if VirtualWaveSize is valid for the targets
 
 public:
-    ROCPRIM_INLINE ROCPRIM_HOST_DEVICE warp_reduce()
+    ROCPRIM_INLINE ROCPRIM_HOST_DEVICE
+    warp_reduce()
     {
         detail::check_virtual_wave_size<VirtualWaveSize>();
     }

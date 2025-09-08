@@ -58,17 +58,18 @@ template<class Key,
          class NonTrivialConfig   = rocprim::default_config>
 struct params
 {
-    using key_type = Key;
-    using count_type = Count;
+    using key_type                                      = Key;
+    using count_type                                    = Count;
     using config                                        = Config;
     using non_trivial_config                            = NonTrivialConfig;
-    static constexpr unsigned int min_segment_length = MinSegmentLength;
-    static constexpr unsigned int max_segment_length = MaxSegmentLength;
-    static constexpr bool use_identity_iterator = UseIdentityIterator;
+    static constexpr unsigned int min_segment_length    = MinSegmentLength;
+    static constexpr unsigned int max_segment_length    = MaxSegmentLength;
+    static constexpr bool         use_identity_iterator = UseIdentityIterator;
 };
 
 template<class Params>
-class RocprimDeviceRunLengthEncode : public ::testing::Test {
+class RocprimDeviceRunLengthEncode : public ::testing::Test
+{
 public:
     using params = Params;
 };
@@ -117,16 +118,19 @@ using Params = ::testing::Types<
 
 TYPED_TEST_SUITE(RocprimDeviceRunLengthEncode, Params);
 
-template <class T>
-T get_random_value_no_duplicate(const T duplicate, const std::vector<T> &source, const size_t start_index)
+template<class T>
+T get_random_value_no_duplicate(const T               duplicate,
+                                const std::vector<T>& source,
+                                const size_t          start_index)
 {
-    T val;
+    T      val;
     size_t i = 0;
     do
     {
-        val = source[(start_index+i) % source.size()];
+        val = source[(start_index + i) % source.size()];
         i++;
-    } while (val == duplicate && i < source.size());
+    }
+    while(val == duplicate && i < source.size());
     return val;
 }
 
@@ -136,21 +140,22 @@ TYPED_TEST(RocprimDeviceRunLengthEncode, Encode)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using key_type = typename TestFixture::params::key_type;
+    using key_type   = typename TestFixture::params::key_type;
     using count_type = typename TestFixture::params::count_type;
     using config     = typename TestFixture::params::config;
 
     constexpr bool use_identity_iterator = TestFixture::params::use_identity_iterator;
-    const bool debug_synchronous = false;
+    const bool     debug_synchronous     = false;
 
-    const unsigned int seed = 123;
+    const unsigned int         seed = 123;
     std::default_random_engine gen(seed);
     std::vector<key_type>      random_keys
         = test_utils::get_random_data_wrapped<key_type>(64, -100, 100, seed);
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         for(size_t size : test_utils::get_sizes(seed_value))
@@ -163,9 +168,9 @@ TYPED_TEST(RocprimDeviceRunLengthEncode, Encode)
             HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
 
             // Generate data and calculate expected results
-            std::vector<key_type> unique_expected;
+            std::vector<key_type>   unique_expected;
             std::vector<count_type> counts_expected;
-            size_t runs_count_expected = 0;
+            size_t                  runs_count_expected = 0;
 
             std::vector<key_type>                    input(size);
             common::uniform_int_distribution<size_t> key_count_dis(
@@ -174,12 +179,12 @@ TYPED_TEST(RocprimDeviceRunLengthEncode, Encode)
             std::vector<count_type> values_input
                 = test_utils::get_random_data_wrapped<count_type>(size, 0, 100, seed_value);
 
-            size_t offset = 0;
+            size_t   offset      = 0;
             key_type current_key = get_random_value_no_duplicate(key_type(0), random_keys, size);
             while(offset < size)
             {
-                size_t key_count = key_count_dis(gen);
-                const size_t end = std::min(size, offset + key_count);
+                size_t       key_count = key_count_dis(gen);
+                const size_t end       = std::min(size, offset + key_count);
 
                 current_key = get_random_value_no_duplicate(current_key, random_keys, end);
 
@@ -250,13 +255,15 @@ TYPED_TEST(RocprimDeviceRunLengthEncode, Encode)
 
             std::vector<count_type> runs_count_expected_2;
             runs_count_expected_2.push_back(static_cast<count_type>(runs_count_expected));
-            ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(runs_count_output, runs_count_expected_2, 1));
+            ASSERT_NO_FATAL_FAILURE(
+                test_utils::assert_eq(runs_count_output, runs_count_expected_2, 1));
 
-            ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(unique_output, unique_expected, runs_count_expected));
-            ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(counts_output, counts_expected, runs_count_expected));
+            ASSERT_NO_FATAL_FAILURE(
+                test_utils::assert_eq(unique_output, unique_expected, runs_count_expected));
+            ASSERT_NO_FATAL_FAILURE(
+                test_utils::assert_eq(counts_output, counts_expected, runs_count_expected));
         }
     }
-
 }
 
 TYPED_TEST(RocprimDeviceRunLengthEncode, NonTrivialRuns)
@@ -265,8 +272,8 @@ TYPED_TEST(RocprimDeviceRunLengthEncode, NonTrivialRuns)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using key_type = typename TestFixture::params::key_type;
-    using count_type = typename TestFixture::params::count_type;
+    using key_type    = typename TestFixture::params::key_type;
+    using count_type  = typename TestFixture::params::count_type;
     using offset_type = typename TestFixture::params::count_type;
     using config      = typename TestFixture::params::non_trivial_config;
 
@@ -274,14 +281,15 @@ TYPED_TEST(RocprimDeviceRunLengthEncode, NonTrivialRuns)
 
     const bool debug_synchronous = false;
 
-    const unsigned int seed = 123;
+    const unsigned int         seed = 123;
     std::default_random_engine gen(seed);
     std::vector<key_type>      random_keys
         = test_utils::get_random_data_wrapped<key_type>(64, -100, 100, seed);
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         for(size_t size : test_utils::get_sizes(seed_value))
@@ -295,8 +303,8 @@ TYPED_TEST(RocprimDeviceRunLengthEncode, NonTrivialRuns)
 
             // Generate data and calculate expected results
             std::vector<offset_type> offsets_expected;
-            std::vector<count_type> counts_expected;
-            size_t runs_count_expected = 0;
+            std::vector<count_type>  counts_expected;
+            size_t                   runs_count_expected = 0;
 
             std::vector<key_type>                    input(size);
             common::uniform_int_distribution<size_t> key_count_dis(
@@ -304,7 +312,7 @@ TYPED_TEST(RocprimDeviceRunLengthEncode, NonTrivialRuns)
                 TestFixture::params::max_segment_length);
             std::bernoulli_distribution is_trivial_dis(0.1);
 
-            size_t offset = 0;
+            size_t   offset      = 0;
             key_type current_key = get_random_value_no_duplicate(key_type(0), random_keys, size);
             while(offset < size)
             {

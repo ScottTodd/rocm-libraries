@@ -21,13 +21,10 @@
 #ifndef ROCPRIM_BLOCK_BLOCK_DISCONTINUITY_HPP_
 #define ROCPRIM_BLOCK_BLOCK_DISCONTINUITY_HPP_
 
-
 #include "detail/block_adjacent_difference_impl.hpp"
 
 #include "../config.hpp"
 #include "../detail/various.hpp"
-
-
 
 /// \addtogroup blockmodule
 /// @{
@@ -73,12 +70,7 @@ BEGIN_ROCPRIM_NAMESPACE
 /// }
 /// \endcode
 /// \endparblock
-template<
-    class T,
-    unsigned int BlockSizeX,
-    unsigned int BlockSizeY = 1,
-    unsigned int BlockSizeZ = 1
->
+template<class T, unsigned int BlockSizeX, unsigned int BlockSizeY = 1, unsigned int BlockSizeZ = 1>
 class block_discontinuity
 #ifndef DOXYGEN_SHOULD_SKIP_THIS // hide implementation detail from documentation
     : private detail::block_adjacent_difference_impl<T, BlockSizeX, BlockSizeY, BlockSizeZ>
@@ -95,22 +87,21 @@ class block_discontinuity
     };
 
 public:
-
-    /// \brief Struct used to allocate a temporary memory that is required for thread
-    /// communication during operations provided by related parallel primitive.
-    ///
-    /// Depending on the implemention the operations exposed by parallel primitive may
-    /// require a temporary storage for thread communication. The storage should be allocated
-    /// using keywords <tt>__shared__</tt>. It can be aliased to
-    /// an externally allocated memory, or be a part of a union type with other storage types
-    /// to increase shared memory reusability.
-    #ifndef DOXYGEN_SHOULD_SKIP_THIS // hides storage_type implementation for Doxygen
+/// \brief Struct used to allocate a temporary memory that is required for thread
+/// communication during operations provided by related parallel primitive.
+///
+/// Depending on the implemention the operations exposed by parallel primitive may
+/// require a temporary storage for thread communication. The storage should be allocated
+/// using keywords <tt>__shared__</tt>. It can be aliased to
+/// an externally allocated memory, or be a part of a union type with other storage types
+/// to increase shared memory reusability.
+#ifndef DOXYGEN_SHOULD_SKIP_THIS // hides storage_type implementation for Doxygen
     ROCPRIM_DETAIL_SUPPRESS_DEPRECATION_WITH_PUSH
     using storage_type = detail::raw_storage<storage_type_>;
     ROCPRIM_DETAIL_SUPPRESS_DEPRECATION_POP
-    #else
+#else
     using storage_type = storage_type_;
-    #endif
+#endif
 
     /// \brief Tags \p head_flags that indicate discontinuities between items partitioned
     /// across the thread block, where the first item has no reference and is always
@@ -157,14 +148,18 @@ public:
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void flag_heads(Flag (&head_flags)[ItemsPerThread],
                     const T (&input)[ItemsPerThread],
-                    FlagOp flag_op,
+                    FlagOp        flag_op,
                     storage_type& storage)
     {
         static constexpr auto as_flags         = true;
         static constexpr auto reversed         = false;
         static constexpr auto with_predecessor = false;
         base_type::template apply_left<as_flags, reversed, with_predecessor>(
-            input, head_flags, flag_op, input[0] /* predecessor */, storage.get().left);
+            input,
+            head_flags,
+            flag_op,
+            input[0] /* predecessor */,
+            storage.get().left);
     }
 
     /// \overload
@@ -177,7 +172,8 @@ public:
                     const T (&input)[ItemsPerThread],
                     FlagOp flag_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         flag_heads(head_flags, input, flag_op, storage);
     }
 
@@ -235,14 +231,17 @@ public:
     void flag_heads(Flag (&head_flags)[ItemsPerThread],
                     T tile_predecessor_item,
                     const T (&input)[ItemsPerThread],
-                    FlagOp flag_op,
+                    FlagOp        flag_op,
                     storage_type& storage)
     {
         static constexpr auto as_flags         = true;
         static constexpr auto reversed         = false;
         static constexpr auto with_predecessor = true;
-        base_type::template apply_left<as_flags, reversed, with_predecessor>(
-            input, head_flags, flag_op, tile_predecessor_item, storage.get().left);
+        base_type::template apply_left<as_flags, reversed, with_predecessor>(input,
+                                                                             head_flags,
+                                                                             flag_op,
+                                                                             tile_predecessor_item,
+                                                                             storage.get().left);
     }
 
     /// \overload
@@ -256,7 +255,8 @@ public:
                     const T (&input)[ItemsPerThread],
                     FlagOp flag_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         flag_heads(head_flags, tile_predecessor_item, input, flag_op, storage);
     }
 
@@ -305,14 +305,18 @@ public:
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void flag_tails(Flag (&tail_flags)[ItemsPerThread],
                     const T (&input)[ItemsPerThread],
-                    FlagOp flag_op,
+                    FlagOp        flag_op,
                     storage_type& storage)
     {
         static constexpr auto as_flags       = true;
         static constexpr auto reversed       = false;
         static constexpr auto with_successor = false;
         base_type::template apply_right<as_flags, reversed, with_successor>(
-            input, tail_flags, flag_op, input[0] /* successor */, storage.get().right);
+            input,
+            tail_flags,
+            flag_op,
+            input[0] /* successor */,
+            storage.get().right);
     }
 
     /// \overload
@@ -325,7 +329,8 @@ public:
                     const T (&input)[ItemsPerThread],
                     FlagOp flag_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         flag_tails(tail_flags, input, flag_op, storage);
     }
 
@@ -383,14 +388,17 @@ public:
     void flag_tails(Flag (&tail_flags)[ItemsPerThread],
                     T tile_successor_item,
                     const T (&input)[ItemsPerThread],
-                    FlagOp flag_op,
+                    FlagOp        flag_op,
                     storage_type& storage)
     {
         static constexpr auto as_flags       = true;
         static constexpr auto reversed       = false;
         static constexpr auto with_successor = true;
-        base_type::template apply_right<as_flags, reversed, with_successor>(
-            input, tail_flags, flag_op, tile_successor_item, storage.get().right);
+        base_type::template apply_right<as_flags, reversed, with_successor>(input,
+                                                                            tail_flags,
+                                                                            flag_op,
+                                                                            tile_successor_item,
+                                                                            storage.get().right);
     }
 
     /// \overload
@@ -404,7 +412,8 @@ public:
                     const T (&input)[ItemsPerThread],
                     FlagOp flag_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         flag_tails(tail_flags, tile_successor_item, input, flag_op, storage);
     }
 
@@ -456,7 +465,7 @@ public:
     void flag_heads_and_tails(Flag (&head_flags)[ItemsPerThread],
                               Flag (&tail_flags)[ItemsPerThread],
                               const T (&input)[ItemsPerThread],
-                              FlagOp flag_op,
+                              FlagOp        flag_op,
                               storage_type& storage)
     {
         static constexpr auto as_flags         = true;
@@ -468,15 +477,23 @@ public:
         T items[ItemsPerThread];
 
         ROCPRIM_UNROLL
-        for(unsigned int i = 0; i < ItemsPerThread; ++i) {
+        for(unsigned int i = 0; i < ItemsPerThread; ++i)
+        {
             items[i] = input[i];
         }
 
         base_type::template apply_left<as_flags, reversed, with_predecessor>(
-            items, head_flags, flag_op, items[0] /*predecessor*/, storage.get().left);
+            items,
+            head_flags,
+            flag_op,
+            items[0] /*predecessor*/,
+            storage.get().left);
 
-        base_type::template apply_right<as_flags, reversed, with_successor>(
-            items, tail_flags, flag_op, items[0] /*successor*/, storage.get().right);
+        base_type::template apply_right<as_flags, reversed, with_successor>(items,
+                                                                            tail_flags,
+                                                                            flag_op,
+                                                                            items[0] /*successor*/,
+                                                                            storage.get().right);
     }
 
     /// \overload
@@ -490,7 +507,8 @@ public:
                               const T (&input)[ItemsPerThread],
                               FlagOp flag_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         flag_heads_and_tails(head_flags, tail_flags, input, flag_op, storage);
     }
 
@@ -552,7 +570,7 @@ public:
                               Flag (&tail_flags)[ItemsPerThread],
                               T tile_successor_item,
                               const T (&input)[ItemsPerThread],
-                              FlagOp flag_op,
+                              FlagOp        flag_op,
                               storage_type& storage)
     {
         static constexpr auto as_flags         = true;
@@ -564,15 +582,23 @@ public:
         T items[ItemsPerThread];
 
         ROCPRIM_UNROLL
-        for(unsigned int i = 0; i < ItemsPerThread; ++i) {
+        for(unsigned int i = 0; i < ItemsPerThread; ++i)
+        {
             items[i] = input[i];
         }
 
         base_type::template apply_left<as_flags, reversed, with_predecessor>(
-            items, head_flags, flag_op, items[0] /*predecessor*/, storage.get().left);
+            items,
+            head_flags,
+            flag_op,
+            items[0] /*predecessor*/,
+            storage.get().left);
 
-        base_type::template apply_right<as_flags, reversed, with_successor>(
-            items, tail_flags, flag_op, tile_successor_item, storage.get().right);
+        base_type::template apply_right<as_flags, reversed, with_successor>(items,
+                                                                            tail_flags,
+                                                                            flag_op,
+                                                                            tile_successor_item,
+                                                                            storage.get().right);
     }
 
     /// \overload
@@ -587,7 +613,8 @@ public:
                               const T (&input)[ItemsPerThread],
                               FlagOp flag_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         flag_heads_and_tails(head_flags, tail_flags, tile_successor_item, input, flag_op, storage);
     }
 
@@ -649,7 +676,7 @@ public:
                               T tile_predecessor_item,
                               Flag (&tail_flags)[ItemsPerThread],
                               const T (&input)[ItemsPerThread],
-                              FlagOp flag_op,
+                              FlagOp        flag_op,
                               storage_type& storage)
     {
         static constexpr auto as_flags         = true;
@@ -661,15 +688,22 @@ public:
         T items[ItemsPerThread];
 
         ROCPRIM_UNROLL
-        for(unsigned int i = 0; i < ItemsPerThread; ++i) {
+        for(unsigned int i = 0; i < ItemsPerThread; ++i)
+        {
             items[i] = input[i];
         }
 
-        base_type::template apply_left<as_flags, reversed, with_predecessor>(
-            items, head_flags, flag_op, tile_predecessor_item, storage.get().left);
+        base_type::template apply_left<as_flags, reversed, with_predecessor>(items,
+                                                                             head_flags,
+                                                                             flag_op,
+                                                                             tile_predecessor_item,
+                                                                             storage.get().left);
 
-        base_type::template apply_right<as_flags, reversed, with_successor>(
-            items, tail_flags, flag_op, items[0] /*successor*/, storage.get().right);
+        base_type::template apply_right<as_flags, reversed, with_successor>(items,
+                                                                            tail_flags,
+                                                                            flag_op,
+                                                                            items[0] /*successor*/,
+                                                                            storage.get().right);
     }
 
     /// \overload
@@ -684,8 +718,14 @@ public:
                               const T (&input)[ItemsPerThread],
                               FlagOp flag_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
-        flag_heads_and_tails(head_flags, tile_predecessor_item, tail_flags, input, flag_op, storage);
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
+        flag_heads_and_tails(head_flags,
+                             tile_predecessor_item,
+                             tail_flags,
+                             input,
+                             flag_op,
+                             storage);
     }
 
     /// \brief Tags both \p head_flags and\p tail_flags that indicate discontinuities
@@ -753,7 +793,7 @@ public:
                               Flag (&tail_flags)[ItemsPerThread],
                               T tile_successor_item,
                               const T (&input)[ItemsPerThread],
-                              FlagOp flag_op,
+                              FlagOp        flag_op,
                               storage_type& storage)
     {
         static constexpr auto as_flags         = true;
@@ -765,15 +805,22 @@ public:
         T items[ItemsPerThread];
 
         ROCPRIM_UNROLL
-        for(unsigned int i = 0; i < ItemsPerThread; ++i) {
+        for(unsigned int i = 0; i < ItemsPerThread; ++i)
+        {
             items[i] = input[i];
         }
 
-        base_type::template apply_left<as_flags, reversed, with_predecessor>(
-            items, head_flags, flag_op, tile_predecessor_item, storage.get().left);
+        base_type::template apply_left<as_flags, reversed, with_predecessor>(items,
+                                                                             head_flags,
+                                                                             flag_op,
+                                                                             tile_predecessor_item,
+                                                                             storage.get().left);
 
-        base_type::template apply_right<as_flags, reversed, with_successor>(
-            items, tail_flags, flag_op, tile_successor_item, storage.get().right);
+        base_type::template apply_right<as_flags, reversed, with_successor>(items,
+                                                                            tail_flags,
+                                                                            flag_op,
+                                                                            tile_successor_item,
+                                                                            storage.get().right);
     }
 
     /// \overload
@@ -789,11 +836,15 @@ public:
                               const T (&input)[ItemsPerThread],
                               FlagOp flag_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
-        flag_heads_and_tails(
-            head_flags, tile_predecessor_item, tail_flags, tile_successor_item,
-            input, flag_op, storage
-        );
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
+        flag_heads_and_tails(head_flags,
+                             tile_predecessor_item,
+                             tail_flags,
+                             tile_successor_item,
+                             input,
+                             flag_op,
+                             storage);
     }
 };
 

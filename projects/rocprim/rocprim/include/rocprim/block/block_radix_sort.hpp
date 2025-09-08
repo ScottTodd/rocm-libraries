@@ -275,7 +275,8 @@ public:
                                                   unsigned int end_bit    = 8 * sizeof(Key),
                                                   Decomposer   decomposer = {})
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         sort(keys, storage, begin_bit, end_bit, decomposer);
     }
 
@@ -360,7 +361,8 @@ public:
                                                        unsigned int end_bit    = 8 * sizeof(Key),
                                                        Decomposer   decomposer = {})
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         sort_desc(keys, storage, begin_bit, end_bit, decomposer);
     }
 
@@ -459,7 +461,8 @@ public:
              unsigned int end_bit    = 8 * sizeof(Key),
              Decomposer   decomposer = {})
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         sort(keys, values, storage, begin_bit, end_bit, decomposer);
     }
 
@@ -558,7 +561,8 @@ public:
                   unsigned int end_bit    = 8 * sizeof(Key),
                   Decomposer   decomposer = {})
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         sort_desc(keys, values, storage, begin_bit, end_bit, decomposer);
     }
 
@@ -645,7 +649,8 @@ public:
                                                              unsigned int end_bit = 8 * sizeof(Key),
                                                              Decomposer   decomposer = {})
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         sort_to_striped(keys, storage, begin_bit, end_bit, decomposer);
     }
 
@@ -733,7 +738,8 @@ public:
                                                                   = 8 * sizeof(Key),
                                                                   Decomposer decomposer = {})
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         sort_desc_to_striped(keys, storage, begin_bit, end_bit, decomposer);
     }
 
@@ -830,7 +836,8 @@ public:
                         unsigned int end_bit    = 8 * sizeof(Key),
                         Decomposer   decomposer = {})
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         sort_to_striped(keys, values, storage, begin_bit, end_bit, decomposer);
     }
 
@@ -928,7 +935,8 @@ public:
         unsigned int end_bit    = 8 * sizeof(Key),
         Decomposer   decomposer = {})
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         sort_desc_to_striped(keys, values, storage, begin_bit, end_bit, decomposer);
     }
 
@@ -970,7 +978,8 @@ public:
                       "'sort_warp_striped_to_striped' can only be used with "
                       "'block_radix_rank_algorithm::match'.");
 
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         sort_warp_striped_to_striped(keys, values, storage, begin_bit, end_bit, decomposer);
     }
 
@@ -1009,7 +1018,8 @@ public:
                       "'sort_warp_striped_to_striped' can only be used with "
                       "'block_radix_rank_algorithm::match'.");
 
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         sort_warp_striped_to_striped(keys, storage, begin_bit, end_bit, decomposer);
     }
 
@@ -1051,7 +1061,8 @@ public:
                       "'sort_warp_striped_to_striped' can only be used with "
                       "'block_radix_rank_algorithm::match'.");
 
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         sort_desc_warp_striped_to_striped(keys, values, storage, begin_bit, end_bit, decomposer);
     }
 
@@ -1090,7 +1101,8 @@ public:
                       "'sort_warp_striped_to_striped' can only be used with "
                       "'block_radix_rank_algorithm::match'.");
 
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         sort_desc_warp_striped_to_striped(keys, storage, begin_bit, end_bit, decomposer);
     }
 

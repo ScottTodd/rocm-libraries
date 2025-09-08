@@ -120,7 +120,7 @@ adjacent_difference(execution_policy<Derived>& policy, InputIt first, InputIt la
   const auto num_items     = static_cast<std::size_t>(thrust::distance(first, last));
   std::size_t storage_size = 0;
   hipStream_t stream       = hip_rocprim::stream(policy);
-  bool debug_sync     = THRUST_HIP_DEBUG_SYNC_FLAG;
+  bool debug_sync          = THRUST_HIP_DEBUG_SYNC_FLAG;
 
   if (num_items <= 0)
   {

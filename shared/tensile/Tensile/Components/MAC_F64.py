@@ -25,6 +25,7 @@
 from ..Component import Component, MAC
 from ..DataType import DataType
 
+
 class FMA_F64_Plain(MAC):
     asmCaps = {"v_fma_f64": True}
     kernel = {"ProblemType": {"DataType": DataType(DataType.double)}}
@@ -45,10 +46,26 @@ class FMA_F64_Plain(MAC):
                     vars["b"] = b
                     vars["a"] = a
                     vars["iui"] = iui
-                    vars["cStr"] = "v[vgprValuC+({a}+{b}*{ThreadTile0})*2:(vgprValuC+{a}+{b}*{ThreadTile0})*2+1]".format_map(vars)
-                    vars["aStr"] = "v[vgprValuA_X{m}_I{iui}+{a}*2:vgprValuA_X{m}_I{iui}+{a}*2+1]".format_map(vars)
-                    vars["bStr"] = "v[vgprValuB_X{m}_I{iui}+{b}*2:vgprValuB_X{m}_I{iui}+{b}*2+1]".format_map(vars)
-                    kStr += "v_fma_f64 {cStr}, {aStr}, {bStr}, {cStr}{endLine}".format_map(vars)
+                    vars[
+                        "cStr"
+                    ] = "v[vgprValuC+({a}+{b}*{ThreadTile0})*2:(vgprValuC+{a}+{b}*{ThreadTile0})*2+1]".format_map(
+                        vars
+                    )
+                    vars[
+                        "aStr"
+                    ] = "v[vgprValuA_X{m}_I{iui}+{a}*2:vgprValuA_X{m}_I{iui}+{a}*2+1]".format_map(
+                        vars
+                    )
+                    vars[
+                        "bStr"
+                    ] = "v[vgprValuB_X{m}_I{iui}+{b}*2:vgprValuB_X{m}_I{iui}+{b}*2+1]".format_map(
+                        vars
+                    )
+                    kStr += (
+                        "v_fma_f64 {cStr}, {aStr}, {bStr}, {cStr}{endLine}".format_map(
+                            vars
+                        )
+                    )
                     kStr += priority(writer, 1, "Raise priority while processing macs")
 
         kStr += priority(writer, 0, "Reset priority after macs")

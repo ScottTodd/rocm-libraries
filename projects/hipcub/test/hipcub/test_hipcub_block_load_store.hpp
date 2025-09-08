@@ -22,7 +22,7 @@
 
 test_suite_type_def(suite_name, name_suffix)
 
-typed_test_suite_def(HipcubBlockLoadStoreTests, name_suffix, load_store_params);
+    typed_test_suite_def(HipcubBlockLoadStoreTests, name_suffix, load_store_params);
 
 typed_test_def(HipcubBlockLoadStoreTests, name_suffix, LoadStoreClass)
 {
@@ -46,8 +46,8 @@ typed_test_def(HipcubBlockLoadStoreTests, name_suffix, LoadStoreClass)
 
     for(size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
     {
-        unsigned int seed_value =
-            seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed= " << seed_value);
 
         // Generate data
@@ -66,11 +66,11 @@ typed_test_def(HipcubBlockLoadStoreTests, name_suffix, LoadStoreClass)
         }
 
         // Preparing device
-        Type * device_input;
+        Type* device_input;
         HIP_CHECK(test_common_utils::hipMallocHelper(
             &device_input,
             input.size() * sizeof(typename decltype(input)::value_type)));
-        Type * device_output;
+        Type* device_output;
         HIP_CHECK(test_common_utils::hipMallocHelper(
             &device_output,
             output.size() * sizeof(typename decltype(output)::value_type)));
@@ -131,8 +131,8 @@ typed_test_def(HipcubBlockLoadStoreTests, name_suffix, LoadStoreClassValid)
 
     for(size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
     {
-        unsigned int seed_value =
-            seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed= " << seed_value);
 
         const size_t valid = items_per_block - 32;
@@ -155,11 +155,11 @@ typed_test_def(HipcubBlockLoadStoreTests, name_suffix, LoadStoreClassValid)
         }
 
         // Preparing device
-        Type * device_input;
+        Type* device_input;
         HIP_CHECK(test_common_utils::hipMallocHelper(
             &device_input,
             input.size() * sizeof(typename decltype(input)::value_type)));
-        Type * device_output;
+        Type* device_output;
         HIP_CHECK(test_common_utils::hipMallocHelper(
             &device_output,
             output.size() * sizeof(typename decltype(output)::value_type)));
@@ -229,8 +229,8 @@ typed_test_def(HipcubBlockLoadStoreTests, name_suffix, LoadStoreClassDefault)
 
     for(size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
     {
-        unsigned int seed_value =
-            seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed= " << seed_value);
 
         const size_t valid    = items_per_thread + 1;
@@ -254,11 +254,11 @@ typed_test_def(HipcubBlockLoadStoreTests, name_suffix, LoadStoreClassDefault)
         }
 
         // Preparing device
-        Type * device_input;
+        Type* device_input;
         HIP_CHECK(test_common_utils::hipMallocHelper(
             &device_input,
             input.size() * sizeof(typename decltype(input)::value_type)));
-        Type * device_output;
+        Type* device_output;
         HIP_CHECK(test_common_utils::hipMallocHelper(
             &device_output,
             output.size() * sizeof(typename decltype(output)::value_type)));
@@ -326,16 +326,16 @@ typed_test_def(HipcubBlockLoadStoreTests, name_suffix, LoadStoreDiscardIterator)
 
     for(size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
     {
-        unsigned int seed_value =
-            seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed= " << seed_value);
 
         const size_t unguarded_elements = size;
         const size_t guarded_elements   = size_t(fraction_valid * double(unguarded_elements));
 
         // Generate data
-        std::vector<Type> input =
-            test_utils::get_random_data<Type>(unguarded_elements, -100, 100, seed_value);
+        std::vector<Type> input
+            = test_utils::get_random_data<Type>(unguarded_elements, -100, 100, seed_value);
         std::vector<Type> unguarded(unguarded_elements, test_utils::convert_to_device<Type>(0));
         std::vector<Type> guarded(guarded_elements, test_utils::convert_to_device<Type>(0));
 
@@ -353,15 +353,15 @@ typed_test_def(HipcubBlockLoadStoreTests, name_suffix, LoadStoreDiscardIterator)
         }
 
         // Preparing device
-        Type * device_input;
+        Type* device_input;
         HIP_CHECK(test_common_utils::hipMallocHelper(
             &device_input,
             input.size() * sizeof(typename decltype(input)::value_type)));
-        Type * device_guarded_elements;
+        Type* device_guarded_elements;
         HIP_CHECK(test_common_utils::hipMallocHelper(
             &device_guarded_elements,
             guarded_expected.size() * sizeof(typename decltype(unguarded)::value_type)));
-        Type * device_unguarded_elements;
+        Type* device_unguarded_elements;
         HIP_CHECK(test_common_utils::hipMallocHelper(
             &device_unguarded_elements,
             unguarded_expected.size() * sizeof(typename decltype(guarded)::value_type)));
@@ -378,7 +378,7 @@ typed_test_def(HipcubBlockLoadStoreTests, name_suffix, LoadStoreDiscardIterator)
         hipcub::DiscardOutputIterator<size_t> discard_itr;
 
         // Running kernel
-        load_store_guarded_kernel<Type *,
+        load_store_guarded_kernel<Type*,
                                   hipcub::DiscardOutputIterator<size_t>,
                                   load_method,
                                   store_method,
@@ -390,8 +390,8 @@ typed_test_def(HipcubBlockLoadStoreTests, name_suffix, LoadStoreDiscardIterator)
                                                     guarded_elements);
         HIPCUB_CLANG_SUPPRESS_DEPRECATED_POP
         // Running kernel
-        load_store_guarded_kernel<Type *,
-                                  Type *,
+        load_store_guarded_kernel<Type*,
+                                  Type*,
                                   load_method,
                                   store_method,
                                   block_size,

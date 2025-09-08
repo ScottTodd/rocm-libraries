@@ -24,17 +24,20 @@
 
 import pytest
 
-import Tensile.Component  as Component
+import Tensile.Component as Component
 import Tensile.Components as Components
 from .test_Component import MockWriter
 
+
 @pytest.fixture
 def aggressive():
-    return {"kernel": {'AggressivePerfMode': True}}
+    return {"kernel": {"AggressivePerfMode": True}}
+
 
 @pytest.fixture
 def non_aggressive():
-    return {'kernel': {'AggressivePerfMode': False}}
+    return {"kernel": {"AggressivePerfMode": False}}
+
 
 def test_aggressive(aggressive):
     writer = MockWriter(**aggressive)
@@ -42,7 +45,7 @@ def test_aggressive(aggressive):
     found = Component.Component.Priority.find(writer)
     assert isinstance(found, Components.Priority.AggressivePriority)
 
-    firstRaise  = found(writer, 1, "comment")
+    firstRaise = found(writer, 1, "comment")
     secondRaise = found(writer, 1, "comment")
     lower = found(writer, 0)
 
@@ -51,13 +54,14 @@ def test_aggressive(aggressive):
     assert secondRaise == ""
     assert "s_setprio 0" in lower
 
+
 def test_non_aggressive(non_aggressive):
     writer = MockWriter(**non_aggressive)
 
     found = Component.Component.Priority.find(writer)
     assert isinstance(found, Components.Priority.ConstantPriority)
 
-    firstRaise  = found(writer, 1, "comment")
+    firstRaise = found(writer, 1, "comment")
     secondRaise = found(writer, 1, "comment")
     lower = found(writer, 0)
 

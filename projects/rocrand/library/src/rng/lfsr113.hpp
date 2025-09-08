@@ -45,15 +45,16 @@ namespace rocrand_impl::host
 
 typedef ::rocrand_device::lfsr113_engine lfsr113_device_engine;
 
-__host__ __device__ inline void init_lfsr113_engines(dim3 block_idx,
-                                                     dim3 thread_idx,
-                                                     dim3 /*grid_dim*/,
-                                                     dim3                   block_dim,
-                                                     lfsr113_device_engine* engines,
-                                                     const unsigned int     start_engine_id,
-                                                     const unsigned int     engines_size,
-                                                     const uint4            seeds,
-                                                     const unsigned int     offset)
+__host__ __device__
+inline void                              init_lfsr113_engines(dim3 block_idx,
+                                                              dim3 thread_idx,
+                                                              dim3 /*grid_dim*/,
+                                                              dim3                   block_dim,
+                                                              lfsr113_device_engine* engines,
+                                                              const unsigned int     start_engine_id,
+                                                              const unsigned int     engines_size,
+                                                              const uint4            seeds,
+                                                              const unsigned int     offset)
 {
     const unsigned int engine_id = block_idx.x * block_dim.x + thread_idx.x;
     if(engine_id < engines_size)
@@ -65,15 +66,16 @@ __host__ __device__ inline void init_lfsr113_engines(dim3 block_idx,
 }
 
 template<class ConfigProvider, bool IsDynamic, class T, class Distribution>
-__host__ __device__ __forceinline__ void generate_lfsr113(dim3 block_idx,
-                                                          dim3 thread_idx,
-                                                          dim3 grid_dim,
-                                                          dim3 /*block_dim*/,
-                                                          lfsr113_device_engine* engines,
-                                                          const unsigned int     start_engine_id,
-                                                          T*                     data,
-                                                          const size_t           n,
-                                                          Distribution           distribution)
+__host__ __device__ __forceinline__
+void generate_lfsr113(dim3 block_idx,
+                      dim3 thread_idx,
+                      dim3 grid_dim,
+                      dim3 /*block_dim*/,
+                      lfsr113_device_engine* engines,
+                      const unsigned int     start_engine_id,
+                      T*                     data,
+                      const size_t           n,
+                      Distribution           distribution)
 {
     static_assert(is_single_tile_config<ConfigProvider, T>(IsDynamic),
                   "This kernel should only be used with single tile configs");
@@ -94,7 +96,7 @@ __host__ __device__ __forceinline__ void generate_lfsr113(dim3 block_idx,
 
     const uintptr_t uintptr   = reinterpret_cast<uintptr_t>(data);
     const size_t misalignment = (output_width - uintptr / sizeof(T) % output_width) % output_width;
-    const unsigned int head_size    = cpp_utils::min(n, misalignment);
+    const unsigned int head_size = cpp_utils::min(n, misalignment);
     const unsigned int tail_size = (n - head_size) % output_width;
     const size_t       vec_n     = (n - head_size) / output_width;
 
@@ -252,7 +254,7 @@ public:
         if(seeds.y < ROCRAND_LFSR113_DEFAULT_SEED_Y)
             seeds.y += ROCRAND_LFSR113_DEFAULT_SEED_Y;
 
-        m_seed                = seeds;
+        m_seed = seeds;
         reset();
     }
 
@@ -270,7 +272,7 @@ public:
         if(seed.w < ROCRAND_LFSR113_DEFAULT_SEED_W)
             seed.w += ROCRAND_LFSR113_DEFAULT_SEED_W;
 
-        m_seed                = seed;
+        m_seed = seed;
         reset();
         return ROCRAND_STATUS_SUCCESS;
     }

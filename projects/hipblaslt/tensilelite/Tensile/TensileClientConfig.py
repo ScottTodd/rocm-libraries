@@ -26,8 +26,16 @@ from . import ClientWriter
 from . import LibraryIO
 from .Contractions import ProblemType as ContractionsProblemType
 from Tensile.SolutionStructs.Problem import ProblemType, ProblemSizes
-from .Common import globalParameters, print1, printExit, printWarning, assignGlobalParameters, \
-        restoreDefaultGlobalParameters, HR, __version__
+from .Common import (
+    globalParameters,
+    print1,
+    printExit,
+    printWarning,
+    assignGlobalParameters,
+    restoreDefaultGlobalParameters,
+    HR,
+    __version__,
+)
 from .Tensile import addCommonArguments, argUpdatedGlobalParameters
 
 import argparse
@@ -52,7 +60,9 @@ def getProblemDict(config):
     try:  # Tensile Config file (first entry)
         problemDict = config["BenchmarkProblems"][0][0]
         if len(config["BenchmarkProblems"]) > 1:
-            printWarning("More than one BenchmarkProblem in config file: only using first")
+            printWarning(
+                "More than one BenchmarkProblem in config file: only using first"
+            )
     except (TypeError, LookupError):
         pass
     else:
@@ -73,7 +83,9 @@ def getSizeList(config):
     """
     sizeList = None
     try:  # Tensile config file (first entry)
-        sizeList = config["BenchmarkProblems"][0][1]["BenchmarkFinalParameters"][0]["ProblemSizes"]
+        sizeList = config["BenchmarkProblems"][0][1]["BenchmarkFinalParameters"][0][
+            "ProblemSizes"
+        ]
     except (TypeError, LookupError):
         pass
     else:
@@ -142,15 +154,21 @@ def TensileClientConfig(userArgs):
             if globalParams == {} or globalParams == myGlobalParams:
                 globalParams = myGlobalParams
             else:
-                printExit("Multiple definitions for GlobalParameters found:\n{}\nand\n{}".format(
-                    globalParams, myGlobalParams))
+                printExit(
+                    "Multiple definitions for GlobalParameters found:\n{}\nand\n{}".format(
+                        globalParams, myGlobalParams
+                    )
+                )
 
         if myProblemDict is not None:
             if problemDict is None or problemDict == myProblemDict:
                 problemDict = myProblemDict
             else:
-                printExit("Multiple definitions for ProblemType found:\n{}\nand\n{}".format(
-                    problemDict, myProblemDict))
+                printExit(
+                    "Multiple definitions for ProblemType found:\n{}\nand\n{}".format(
+                        problemDict, myProblemDict
+                    )
+                )
 
         if mySizeList is not None:
             if sizeList is None or sizeList == mySizeList:
@@ -158,9 +176,12 @@ def TensileClientConfig(userArgs):
             elif args.MergeSizes:
                 sizeList += mySizeList
             else:
-                printExit("Multiple size lists found:\n{}\nand\n{}\n"
-                          "Run with --merge-sizes to keep all size lists found".format(
-                              sizeList, mySizeList))
+                printExit(
+                    "Multiple size lists found:\n{}\nand\n{}\n"
+                    "Run with --merge-sizes to keep all size lists found".format(
+                        sizeList, mySizeList
+                    )
+                )
 
     if problemDict is None:
         printExit("No ProblemType found; cannot produce output")
@@ -169,7 +190,9 @@ def TensileClientConfig(userArgs):
 
     ssProblemType = ProblemType(problemDict)
     conProblemType = ContractionsProblemType.FromOriginalState(ssProblemType)
-    sizes = ProblemSizes(ssProblemType, sizeList)  # TODO doesn't seem to work for range sizes
+    sizes = ProblemSizes(
+        ssProblemType, sizeList
+    )  # TODO doesn't seem to work for range sizes
 
     # update globals
     restoreDefaultGlobalParameters()
@@ -181,7 +204,9 @@ def TensileClientConfig(userArgs):
         globalParameters[key] = value
 
     # write output
-    ClientWriter.writeClientConfigIni(True, sizes, "", "", "", "", conProblemType, "", [], "", args.OutputConfig, None)
+    ClientWriter.writeClientConfigIni(
+        True, sizes, "", "", "", "", conProblemType, "", [], "", args.OutputConfig, None
+    )
 
 
 def main():

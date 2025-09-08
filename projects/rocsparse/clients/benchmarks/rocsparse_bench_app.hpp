@@ -44,7 +44,7 @@ public:
     {
         return this->value;
     };
-    inline constexpr rocsparse_benchfile_format(){};
+    inline constexpr rocsparse_benchfile_format() {};
     inline constexpr explicit rocsparse_benchfile_format(rocsparse_int ival)
         : value((value_type)ival)
     {
@@ -121,14 +121,14 @@ struct rocsparse_bench_timing_t
         std::vector<double>      gbs{};
         std::vector<std::string> outputs{};
         std::string              outputs_legend{};
-        item_t(){};
+        item_t() {};
 
         explicit item_t(int nruns_)
             : m_nruns(nruns_)
             , msec(nruns_)
             , gflops(nruns_)
             , gbs(nruns_)
-            , outputs(nruns_){};
+            , outputs(nruns_) {};
 
         item_t& operator()(int nruns_)
         {
@@ -285,7 +285,7 @@ public:
         return s_instance;
     }
 
-    rocsparse_bench_app(const rocsparse_bench_app&) = delete;
+    rocsparse_bench_app(const rocsparse_bench_app&)            = delete;
     rocsparse_bench_app& operator=(const rocsparse_bench_app&) = delete;
 
     static bool applies(int argc, char** argv)

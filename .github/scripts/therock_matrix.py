@@ -6,7 +6,7 @@ subtree_to_project_map = {
     "projects/rocthrust": "prim",
     "projects/hipcub": "prim",
     "projects/rocrand": "rand",
-    "projects/hiprand": "rand"
+    "projects/hiprand": "rand",
 }
 
 project_map = {

@@ -37,89 +37,74 @@ import rocslurm
 def main():
 
     conf_parser = argparse.ArgumentParser(
-        prog='rocfftslurm',
+        prog="rocfftslurm",
         epilog="For a detailed usage overview, run: %(prog)s overview",
-        add_help=False)
+        add_help=False,
+    )
 
     conf_parser.add_argument("--config_file", metavar="FILE")
 
     args, remaining_args = conf_parser.parse_known_args()
     config = {}
     # configparser can't handle lists, so we have to deal with this separately:
-    listvars = {'modules': [], 'exports': []}
+    listvars = {"modules": [], "exports": []}
     if args.config_file:
-        with open(args.config_file, 'r') as f:
+        with open(args.config_file, "r") as f:
             config = configparser.ConfigParser()
             config.read([args.config_file])
             for k in listvars:
-                if config.has_option('Defaults', '--' + k):
-                    listvars[k] = config.get('Defaults', '--' + k).split(" ")
+                if config.has_option("Defaults", "--" + k):
+                    listvars[k] = config.get("Defaults", "--" + k).split(" ")
 
     parser = argparse.ArgumentParser(
-        prog='rocfftslurm',
+        prog="rocfftslurm",
         epilog="For a detailed usage overview, run: %(prog)s overview",
-        parents=[conf_parser])
+        parents=[conf_parser],
+    )
 
     # NB: confgparser requires a value for boolean arguments, so action='store_true' isn't really an
     # option for boolean argparse arguments which are also handled by configparser.
 
-    parser.add_argument('--verbose', type=int, default=0)
-    parser.add_argument('--logdir',
-                        type=str,
-                        default=None,
-                        help='log base directory')
-    parser.add_argument('--builddir',
-                        type=str,
-                        default=None,
-                        help='build directory')
-    parser.add_argument('--build',
-                        type=lambda x: bool(x.lower() in
-                                            ("yes", "true", "t", "1")),
-                        default=False)
-    parser.add_argument('--ccache',
-                        type=lambda x: bool(x.lower() in
-                                            ("yes", "true", "t", "1")),
-                        default=False)
-    parser.add_argument('--buildcraympi',
-                        type=lambda x: bool(x.lower() in
-                                            ("yes", "true", "t", "1")),
-                        default=False)
-    parser.add_argument('--launcher',
-                        type=str,
-                        default=None,
-                        help='mpi launcher')
-    parser.add_argument('--partition',
-                        type=str,
-                        default=None,
-                        help='slurm partition')
-    parser.add_argument('--acct', type=str, default=None, help='slurm acct')
-    parser.add_argument('--modules',
-                        nargs='+',
-                        default=[],
-                        help='Modules to load')
-    parser.add_argument('--exports',
-                        nargs='+',
-                        default=[],
-                        help='Exports for test')
-    parser.add_argument('--gpuspernode',
-                        type=int,
-                        help='Gpus per node on cluster',
-                        default=1)
+    parser.add_argument("--verbose", type=int, default=0)
+    parser.add_argument("--logdir", type=str, default=None, help="log base directory")
+    parser.add_argument("--builddir", type=str, default=None, help="build directory")
     parser.add_argument(
-        '--gpuidvar',
+        "--build",
+        type=lambda x: bool(x.lower() in ("yes", "true", "t", "1")),
+        default=False,
+    )
+    parser.add_argument(
+        "--ccache",
+        type=lambda x: bool(x.lower() in ("yes", "true", "t", "1")),
+        default=False,
+    )
+    parser.add_argument(
+        "--buildcraympi",
+        type=lambda x: bool(x.lower() in ("yes", "true", "t", "1")),
+        default=False,
+    )
+    parser.add_argument("--launcher", type=str, default=None, help="mpi launcher")
+    parser.add_argument("--partition", type=str, default=None, help="slurm partition")
+    parser.add_argument("--acct", type=str, default=None, help="slurm acct")
+    parser.add_argument("--modules", nargs="+", default=[], help="Modules to load")
+    parser.add_argument("--exports", nargs="+", default=[], help="Exports for test")
+    parser.add_argument(
+        "--gpuspernode", type=int, help="Gpus per node on cluster", default=1
+    )
+    parser.add_argument(
+        "--gpuidvar",
         type=str,
-        help=
-        'Node-local environment variable for computing ROCR_VISIBLE_DEVICES')
-    parser.add_argument('--maxnodes',
-                        type=int,
-                        default=1,
-                        help='Maximum number of nodes to use')
+        help="Node-local environment variable for computing ROCR_VISIBLE_DEVICES",
+    )
+    parser.add_argument(
+        "--maxnodes", type=int, default=1, help="Maximum number of nodes to use"
+    )
 
     if args.config_file:
         for k, v in config.items("Defaults"):
             parser.parse_args([str(k), str(v)], args)
         for k in listvars:
-            if (len(listvars.get(k)) > 0):
+            if len(listvars.get(k)) > 0:
                 vars(args)[k] = listvars.get(k)
 
     args = parser.parse_args(remaining_args, args)
@@ -193,12 +178,14 @@ def main():
         buildparams.timelimit = datetime.timedelta(hours=2)
         buildparams.ntaskspernode = 1
 
-        buildjob = rocslurm.sbatch("build",
-                                   buildparams,
-                                   args.logdir,
-                                   args.builddir,
-                                   buildcmd,
-                                   verbose=args.verbose)
+        buildjob = rocslurm.sbatch(
+            "build",
+            buildparams,
+            args.logdir,
+            args.builddir,
+            buildcmd,
+            verbose=args.verbose,
+        )
 
         buildid = buildjob.jobid
 
@@ -225,25 +212,29 @@ def main():
 
     for nodes in range(1, args.maxnodes + 1):
         jobparams.nnodes = nodes
-        mpigpucmd = "export LD_LIBRARY_PATH=" + args.builddir + "/library/src/:${LD_LIBRARY_PATH}\n"
-        mpigpucmd += str(
-            Path(__file__).resolve().parent / "rocfft_mpi_test.py")
+        mpigpucmd = (
+            "export LD_LIBRARY_PATH="
+            + args.builddir
+            + "/library/src/:${LD_LIBRARY_PATH}\n"
+        )
+        mpigpucmd += str(Path(__file__).resolve().parent / "rocfft_mpi_test.py")
         mpigpucmd += " --worker " + args.builddir + "/clients/staging/rocfft_mpi_worker"
         mpigpucmd += " --rocffttest " + args.builddir + "/clients/staging/rocfft-test"
         mpigpucmd += " --launcher srun"
         if args.gpuidvar != None:
             mpigpucmd += " --gpuidvar " + args.gpuidvar
-        mpigpucmd += " --nranks " + str(
-            jobparams.ntaskspernode * jobparams.nnodes)
-        mpigpucmd += " --gpusperrank " + str(1)  #args.gpuspernode
+        mpigpucmd += " --nranks " + str(jobparams.ntaskspernode * jobparams.nnodes)
+        mpigpucmd += " --gpusperrank " + str(1)  # args.gpuspernode
 
         jobparams.ntaskspernode = 8
-        mpijob = rocslurm.sbatch("mpi" + str(nodes),
-                                 jobparams,
-                                 args.logdir,
-                                 args.builddir,
-                                 mpigpucmd,
-                                 verbose=args.verbose)
+        mpijob = rocslurm.sbatch(
+            "mpi" + str(nodes),
+            jobparams,
+            args.logdir,
+            args.builddir,
+            mpigpucmd,
+            verbose=args.verbose,
+        )
         jobs.append(mpijob)
 
     # Report on job status
@@ -252,5 +243,5 @@ def main():
     rocslurm.reportonjobs(jobparams, args.logdir, jobs, verbose=args.verbose)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

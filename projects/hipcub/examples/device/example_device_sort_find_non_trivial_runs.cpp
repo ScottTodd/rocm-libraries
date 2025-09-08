@@ -39,9 +39,9 @@
 // Ensure printing of CUDA runtime errors to console
 #define CUB_STDERR
 
-#include <stdio.h>
 #include <algorithm>
 #include <iostream>
+#include <stdio.h>
 
 #include <hipcub/device/device_radix_sort.hpp>
 #include <hipcub/device/device_run_length_encode.hpp>
@@ -50,14 +50,12 @@
 
 using namespace hipcub;
 
-
 //---------------------------------------------------------------------
 // Globals, constants and typedefs
 //---------------------------------------------------------------------
 
-bool                            g_verbose = false;  // Whether to display input/output to console
-hipcub::CachingDeviceAllocator  g_allocator;  // Caching allocator for device memory
-
+bool                           g_verbose = false; // Whether to display input/output to console
+hipcub::CachingDeviceAllocator g_allocator; // Caching allocator for device memory
 
 //---------------------------------------------------------------------
 // Test generation
@@ -66,50 +64,44 @@ hipcub::CachingDeviceAllocator  g_allocator;  // Caching allocator for device me
 /**
  * Simple key-value pairing for using std::sort on key-value pairs.
  */
-template <typename Key, typename Value>
+template<typename Key, typename Value>
 struct Pair
 {
-    Key     key;
-    Value   value;
+    Key   key;
+    Value value;
 
-    bool operator<(const Pair &b) const
+    bool operator<(const Pair& b) const
     {
         return (key < b.key);
     }
 };
 
-
 /**
  * Pair ostream operator
  */
-template <typename Key, typename Value>
+template<typename Key, typename Value>
 std::ostream& operator<<(std::ostream& os, const Pair<Key, Value>& val)
 {
     os << '<' << val.key << ',' << val.value << '>';
     return os;
 }
 
-
 /**
  * Initialize problem
  */
-template <typename Key, typename Value>
-void Initialize(
-    Key    *h_keys,
-    Value  *h_values,
-    int    num_items,
-    int    max_key)
+template<typename Key, typename Value>
+void Initialize(Key* h_keys, Value* h_values, int num_items, int max_key)
 {
     float scale = float(max_key) / float(UINT_MAX);
-    for (int i = 0; i < num_items; ++i)
+    for(int i = 0; i < num_items; ++i)
     {
         Key sample;
         RandomBits(sample);
-        h_keys[i] = (max_key == -1) ? i : (Key) (scale * sample);
+        h_keys[i]   = (max_key == -1) ? i : (Key)(scale * sample);
         h_values[i] = i;
     }
 
-    if (g_verbose)
+    if(g_verbose)
     {
         printf("Keys:\n");
         DisplayResults(h_keys, num_items);
@@ -121,31 +113,26 @@ void Initialize(
     }
 }
 
-
 /**
  * Solve sorted non-trivial subrange problem.  Returns the number
  * of non-trivial runs found.
  */
-template <typename Key, typename Value>
+template<typename Key, typename Value>
 int Solve(
-    Key     *h_keys,
-    Value   *h_values,
-    int     num_items,
-    int     *h_offsets_reference,
-    int     *h_lengths_reference)
+    Key* h_keys, Value* h_values, int num_items, int* h_offsets_reference, int* h_lengths_reference)
 {
     // Sort
 
-    Pair<Key, Value> *h_pairs = new Pair<Key, Value>[num_items];
-    for (int i = 0; i < num_items; ++i)
+    Pair<Key, Value>* h_pairs = new Pair<Key, Value>[num_items];
+    for(int i = 0; i < num_items; ++i)
     {
-        h_pairs[i].key    = h_keys[i];
-        h_pairs[i].value  = h_values[i];
+        h_pairs[i].key   = h_keys[i];
+        h_pairs[i].value = h_values[i];
     }
 
     std::stable_sort(h_pairs, h_pairs + num_items);
 
-    if (g_verbose)
+    if(g_verbose)
     {
         printf("Sorted pairs:\n");
         DisplayResults(h_pairs, num_items);
@@ -154,22 +141,22 @@ int Solve(
 
     // Find non-trivial runs
 
-    Key     previous        = h_pairs[0].key;
-    int     length          = 1;
-    int     num_runs        = 0;
-    int     run_begin       = 0;
+    Key previous  = h_pairs[0].key;
+    int length    = 1;
+    int num_runs  = 0;
+    int run_begin = 0;
 
-    for (int i = 1; i < num_items; ++i)
+    for(int i = 1; i < num_items; ++i)
     {
-        if (previous != h_pairs[i].key)
+        if(previous != h_pairs[i].key)
         {
-            if (length > 1)
+            if(length > 1)
             {
-                h_offsets_reference[num_runs]     = run_begin;
-                h_lengths_reference[num_runs]     = length;
+                h_offsets_reference[num_runs] = run_begin;
+                h_lengths_reference[num_runs] = length;
                 num_runs++;
             }
-            length = 1;
+            length    = 1;
             run_begin = i;
         }
         else
@@ -179,10 +166,10 @@ int Solve(
         previous = h_pairs[i].key;
     }
 
-    if (length > 1)
+    if(length > 1)
     {
-        h_offsets_reference[num_runs]   = run_begin;
-        h_lengths_reference[num_runs]   = length;
+        h_offsets_reference[num_runs] = run_begin;
+        h_lengths_reference[num_runs] = length;
         num_runs++;
     }
 
@@ -190,7 +177,6 @@ int Solve(
 
     return num_runs;
 }
-
 
 //---------------------------------------------------------------------
 // Main
@@ -204,9 +190,9 @@ int main(int argc, char** argv)
     using Key   = unsigned int;
     using Value = int;
 
-    int timing_iterations   = 0;
-    int num_items           = 40;
-    Key max_key             = 20;       // Max item
+    int timing_iterations = 0;
+    int num_items         = 40;
+    Key max_key           = 20; // Max item
 
     // Initialize command line
     CommandLineArgs args(argc, argv);
@@ -216,15 +202,16 @@ int main(int argc, char** argv)
     args.GetCmdLineArgument("i", timing_iterations);
 
     // Print usage
-    if (args.CheckCmdLineFlag("help"))
+    if(args.CheckCmdLineFlag("help"))
     {
         printf("%s "
-            "[--device=<device-id>] "
-            "[--i=<timing iterations> "
-            "[--n=<input items, default 40> "
-            "[--maxkey=<max key, default 20 (use -1 to test only unique keys)>]"
-            "[--v] "
-            "\n", argv[0]);
+               "[--device=<device-id>] "
+               "[--i=<timing iterations> "
+               "[--n=<input items, default 40> "
+               "[--maxkey=<max key, default 20 (use -1 to test only unique keys)>]"
+               "[--v] "
+               "\n",
+               argv[0]);
         exit(0);
     }
 
@@ -233,10 +220,10 @@ int main(int argc, char** argv)
 
     // Allocate host arrays (problem and reference solution)
 
-    Key     *h_keys                 = new Key[num_items];
-    Value   *h_values               = new Value[num_items];
-    int     *h_offsets_reference    = new int[num_items];
-    int     *h_lengths_reference    = new int[num_items];
+    Key*   h_keys              = new Key[num_items];
+    Value* h_values            = new Value[num_items];
+    int*   h_offsets_reference = new int[num_items];
+    int*   h_lengths_reference = new int[num_items];
 
     // Initialize key-value pairs and compute reference solution (sort them, and identify non-trivial runs)
     printf("Computing reference solution on CPU for %d items (max key %d)\n", num_items, max_key);
@@ -251,14 +238,14 @@ int main(int argc, char** argv)
     // Repeat for performance timing
     GpuTimer gpu_timer;
     GpuTimer gpu_rle_timer;
-    float elapsed_millis = 0.0;
-    float elapsed_rle_millis = 0.0;
-    for (int i = 0; i <= timing_iterations; ++i)
+    float    elapsed_millis     = 0.0;
+    float    elapsed_rle_millis = 0.0;
+    for(int i = 0; i <= timing_iterations; ++i)
     {
 
         // Allocate and initialize device arrays for sorting
-        DoubleBuffer<Key>       d_keys;
-        DoubleBuffer<Value>     d_values;
+        DoubleBuffer<Key>   d_keys;
+        DoubleBuffer<Value> d_values;
         HIP_CHECK(
             g_allocator.DeviceAllocate((void**)&d_keys.d_buffers[0], sizeof(Key) * num_items));
         HIP_CHECK(
@@ -281,8 +268,8 @@ int main(int argc, char** argv)
         gpu_timer.Start();
 
         // Allocate temporary storage for sorting
-        size_t  temp_storage_bytes  = 0;
-        void*   d_temp_storage      = nullptr;
+        size_t temp_storage_bytes = 0;
+        void*  d_temp_storage     = nullptr;
         HIP_CHECK(hipcub::DeviceRadixSort::SortPairs(d_temp_storage,
                                                      temp_storage_bytes,
                                                      d_keys,
@@ -348,16 +335,24 @@ int main(int argc, char** argv)
         gpu_timer.Stop();
         gpu_rle_timer.Stop();
 
-        if (i == 0)
+        if(i == 0)
         {
             // First iteration is a warmup: // Check for correctness (and display results, if specified)
 
             printf("\nRUN OFFSETS: \n");
-            int compare = CompareDeviceResults(h_offsets_reference, d_offests_out, num_runs, true, g_verbose);
+            int compare = CompareDeviceResults(h_offsets_reference,
+                                               d_offests_out,
+                                               num_runs,
+                                               true,
+                                               g_verbose);
             printf("\t\t %s ", compare ? "FAIL" : "PASS");
 
             printf("\nRUN LENGTHS: \n");
-            compare |= CompareDeviceResults(h_lengths_reference, d_lengths_out, num_runs, true, g_verbose);
+            compare |= CompareDeviceResults(h_lengths_reference,
+                                            d_lengths_out,
+                                            num_runs,
+                                            true,
+                                            g_verbose);
             printf("\t\t %s ", compare ? "FAIL" : "PASS");
 
             printf("\nNUM RUNS: \n");
@@ -387,19 +382,24 @@ int main(int argc, char** argv)
     }
 
     // Host cleanup
-    if (h_keys) delete[] h_keys;
-    if (h_values) delete[] h_values;
-    if (h_offsets_reference) delete[] h_offsets_reference;
-    if (h_lengths_reference) delete[] h_lengths_reference;
+    if(h_keys)
+        delete[] h_keys;
+    if(h_values)
+        delete[] h_values;
+    if(h_offsets_reference)
+        delete[] h_offsets_reference;
+    if(h_lengths_reference)
+        delete[] h_lengths_reference;
 
     printf("\n\n");
 
-    if (timing_iterations > 0)
+    if(timing_iterations > 0)
     {
-        printf("%d timing iterations, average time to sort and isolate non-trivial duplicates: %.3f ms (%.3f ms spent in RLE isolation)\n",
-            timing_iterations,
-            elapsed_millis / timing_iterations,
-            elapsed_rle_millis / timing_iterations);
+        printf("%d timing iterations, average time to sort and isolate non-trivial duplicates: "
+               "%.3f ms (%.3f ms spent in RLE isolation)\n",
+               timing_iterations,
+               elapsed_millis / timing_iterations,
+               elapsed_rle_millis / timing_iterations);
     }
 
     return 0;

@@ -48,7 +48,8 @@ template<class Runner,
          unsigned int ItemsPerThread,
          bool         WithTile,
          unsigned int Trials>
-__global__ __launch_bounds__(BlockSize) void kernel(const T* d_input, T* d_output)
+__global__ __launch_bounds__(BlockSize)
+void kernel(const T* d_input, T* d_output)
 {
     Runner::template run<T, BlockSize, ItemsPerThread, WithTile, Trials>(d_input, d_output);
 }
@@ -60,7 +61,8 @@ struct flag_heads
              unsigned int ItemsPerThread,
              bool         WithTile,
              unsigned int Trials>
-    __device__ static void run(const T* d_input, T* d_output)
+    __device__
+    static void run(const T* d_input, T* d_output)
     {
         const unsigned int lid          = hipThreadIdx_x;
         const unsigned int block_offset = hipBlockIdx_x * ItemsPerThread * BlockSize;
@@ -76,7 +78,8 @@ struct flag_heads
             if(WithTile)
             {
                 bdiscontinuity.FlagHeads(head_flags, input, hipcub::Equality(), T(123));
-            } else
+            }
+            else
             {
                 bdiscontinuity.FlagHeads(head_flags, input, hipcub::Equality());
             }
@@ -98,7 +101,8 @@ struct flag_tails
              unsigned int ItemsPerThread,
              bool         WithTile,
              unsigned int Trials>
-    __device__ static void run(const T* d_input, T* d_output)
+    __device__
+    static void run(const T* d_input, T* d_output)
     {
         const unsigned int lid          = hipThreadIdx_x;
         const unsigned int block_offset = hipBlockIdx_x * ItemsPerThread * BlockSize;
@@ -114,7 +118,8 @@ struct flag_tails
             if(WithTile)
             {
                 bdiscontinuity.FlagTails(tail_flags, input, hipcub::Equality(), T(123));
-            } else
+            }
+            else
             {
                 bdiscontinuity.FlagTails(tail_flags, input, hipcub::Equality());
             }
@@ -136,7 +141,8 @@ struct flag_heads_and_tails
              unsigned int ItemsPerThread,
              bool         WithTile,
              unsigned int Trials>
-    __device__ static void run(const T* d_input, T* d_output)
+    __device__
+    static void run(const T* d_input, T* d_output)
     {
         const unsigned int lid          = hipThreadIdx_x;
         const unsigned int block_offset = hipBlockIdx_x * ItemsPerThread * BlockSize;
@@ -158,7 +164,8 @@ struct flag_heads_and_tails
                                                  T(234),
                                                  input,
                                                  hipcub::Equality());
-            } else
+            }
+            else
             {
                 bdiscontinuity.FlagHeadsAndTails(head_flags, tail_flags, input, hipcub::Equality());
             }

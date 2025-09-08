@@ -57,15 +57,15 @@ namespace Tensile
             using clock = std::chrono::steady_clock;
 
             // Monitor at the maximum possible rate.
-            HardwareMonitor(int hipDeviceIndex){};
+            HardwareMonitor(int hipDeviceIndex) {};
             // Limit collection to once per minPeriod.
-            HardwareMonitor(int hipDeviceIndex, clock::duration minPeriod){};
+            HardwareMonitor(int hipDeviceIndex, clock::duration minPeriod) {};
 
-            ~HardwareMonitor(){};
+            ~HardwareMonitor() {};
 
-            void addTempMonitor(){};
-            void addClockMonitor(ClockType clockType){};
-            void addFanSpeedMonitor(uint32_t sensorIndex = 0){};
+            void addTempMonitor() {};
+            void addClockMonitor(ClockType clockType) {};
+            void addFanSpeedMonitor(uint32_t sensorIndex = 0) {};
 
             double getAverageTemp()
             {
@@ -89,21 +89,21 @@ namespace Tensile
             }
 
             /// Begins monitoring until stop() is called.
-            void start(){};
+            void start() {};
 
             /// Sends a signal to the monitoring thread to end monitoring.
-            void stop(){};
+            void stop() {};
 
             /// Begins monitoring immediately, until the event has occurred.
-            void runUntilEvent(hipEvent_t event){};
+            void runUntilEvent(hipEvent_t event) {};
 
             /// Monitoring will occur from startEvent until stopEvent.
-            void runBetweenEvents(hipEvent_t startEvent, hipEvent_t stopEvent){};
+            void runBetweenEvents(hipEvent_t startEvent, hipEvent_t stopEvent) {};
 
             /// Waits until monitoring has finished.
             /// Throws an exception if monitoring was started without a stop event
             /// and stop() has not been called.
-            void wait(){};
+            void wait() {};
         };
     } // namespace Client
 } // namespace Tensile

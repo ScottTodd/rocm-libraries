@@ -27,43 +27,51 @@ import os
 
 from Tensile.ReplacementKernels import ReplacementKernels
 
+
 def replacementDir(dirname):
     scriptDir = os.path.dirname(os.path.realpath(__file__))
-    return os.path.join(scriptDir, 'replacement', dirname)
+    return os.path.join(scriptDir, "replacement", dirname)
+
 
 def test_BadFile():
     with pytest.raises(RuntimeError):
-        obj = ReplacementKernels(replacementDir('bad_file'), 'default')
+        obj = ReplacementKernels(replacementDir("bad_file"), "default")
         obj.get("asdf")
+
 
 def test_DuplicateKernel():
     with pytest.raises(RuntimeError):
-        obj = ReplacementKernels(replacementDir('duplicate_kernel'), 'default')
+        obj = ReplacementKernels(replacementDir("duplicate_kernel"), "default")
         obj.get("asdf")
 
-goodObjs = [ReplacementKernels(replacementDir('known_kernels_v3'), "default")]
+
+goodObjs = [ReplacementKernels(replacementDir("known_kernels_v3"), "default")]
+
 
 @pytest.mark.parametrize("obj", goodObjs)
 def test_foo(obj):
-    foo = obj.get('foo')
+    foo = obj.get("foo")
     assert os.path.isfile(foo)
     assert os.path.isabs(foo)
-    assert foo.endswith('kernel_named_foo.txt')
+    assert foo.endswith("kernel_named_foo.txt")
+
 
 @pytest.mark.parametrize("obj", goodObjs)
 def test_bar(obj):
-    bar = obj.get('bar')
+    bar = obj.get("bar")
     assert os.path.isfile(bar)
     assert os.path.isabs(bar)
-    assert bar.endswith('kernel_named_bar.txt')
+    assert bar.endswith("kernel_named_bar.txt")
+
 
 @pytest.mark.parametrize("obj", goodObjs)
 def test_baz(obj):
-    baz = obj.get('baz')
+    baz = obj.get("baz")
     assert os.path.isfile(baz)
     assert os.path.isabs(baz)
-    assert baz.endswith('baz.s.txt')
+    assert baz.endswith("baz.s.txt")
+
 
 @pytest.mark.parametrize("obj", goodObjs)
 def test_unknown(obj):
-    assert obj.get('asdfds') is None
+    assert obj.get("asdfds") is None

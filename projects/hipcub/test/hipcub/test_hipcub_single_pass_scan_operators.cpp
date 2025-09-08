@@ -40,8 +40,7 @@ struct custom_key_value_pair_op
     using type = hipcub::KeyValuePair<K, V>;
 
     HIPCUB_HOST_DEVICE
-    HIPCUB_FORCEINLINE type
-        operator()(type a, type b)
+    HIPCUB_FORCEINLINE type operator()(type a, type b)
     {
         return type(OpK{}(a.key, b.key), OpV{}(a.value, b.value));
     }
@@ -52,8 +51,7 @@ struct make_value
 {
     template<typename U>
     HIPCUB_HOST_DEVICE
-    HIPCUB_FORCEINLINE T
-        operator()(U v)
+    HIPCUB_FORCEINLINE T operator()(U v)
     {
         return T(v);
     }
@@ -65,8 +63,7 @@ struct make_value<hipcub::KeyValuePair<K, V>>
     // We need a special constructor to produce key value pairs from singular values.
     template<typename U>
     HIPCUB_HOST_DEVICE
-    HIPCUB_FORCEINLINE hipcub::KeyValuePair<K, V>
-                       operator()(U v)
+    HIPCUB_FORCEINLINE hipcub::KeyValuePair<K, V> operator()(U v)
     {
         return hipcub::KeyValuePair<K, V>(make_value<K>{}(v), make_value<V>{}(v));
     }
@@ -85,7 +82,8 @@ static void PrefixKernel(TileState tile_state, T* d_input, T* d_output)
 {
     using TilePrefix = hipcub::TilePrefixCallbackOp<T, ScanOp, TileState>;
 
-    HIPCUB_SHARED_MEMORY typename TilePrefix::TempStorage prefix_share;
+    HIPCUB_SHARED_MEMORY
+    typename TilePrefix::TempStorage prefix_share;
 
     const unsigned int tile_id   = blockIdx.x;
     const unsigned int thread_id = threadIdx.x;

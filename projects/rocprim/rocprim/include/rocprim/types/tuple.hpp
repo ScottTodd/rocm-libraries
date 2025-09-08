@@ -55,32 +55,24 @@ class tuple_size;
 ///
 /// \see std::integral_constant
 template<class... Types>
-class tuple_size<::rocprim::tuple<Types...>> : public std::integral_constant<size_t, sizeof...(Types)>
+class tuple_size<::rocprim::tuple<Types...>>
+    : public std::integral_constant<size_t, sizeof...(Types)>
 {
     // All member functions of std::integral_constant are constexpr, so it should work
     // without problems on HIP
 };
 /// <tt>const T</tt> specialization of \ref tuple_size
 template<class T>
-class tuple_size<const T>
-    : public std::integral_constant<size_t, tuple_size<T>::value>
-{
-
-};
+class tuple_size<const T> : public std::integral_constant<size_t, tuple_size<T>::value>
+{};
 /// <tt>volatile T</tt> specialization of \ref tuple_size
 template<class T>
-class tuple_size<volatile T>
-    : public std::integral_constant<size_t, tuple_size<T>::value>
-{
-
-};
+class tuple_size<volatile T> : public std::integral_constant<size_t, tuple_size<T>::value>
+{};
 /// <tt>const volatile T</tt> specialization of \ref tuple_size
 template<class T>
-class tuple_size<const volatile T>
-    : public std::integral_constant<size_t, tuple_size<T>::value>
-{
-
-};
+class tuple_size<const volatile T> : public std::integral_constant<size_t, tuple_size<T>::value>
+{};
 
 // ////////////////////////
 // tuple_element
@@ -100,10 +92,8 @@ struct tuple_element_impl;
 
 template<size_t I, class T, class... Types>
 struct tuple_element_impl<I, ::rocprim::tuple<T, Types...>>
-    : tuple_element_impl<I-1, ::rocprim::tuple<Types...>>
-{
-
-};
+    : tuple_element_impl<I - 1, ::rocprim::tuple<Types...>>
+{};
 
 template<class T, class... Types>
 struct tuple_element_impl<0, ::rocprim::tuple<T, Types...>>
@@ -117,19 +107,19 @@ struct tuple_element_impl<I, ::rocprim::tuple<>>
     static_assert(I != I, "tuple_element index out of range");
 };
 
-} // end detail namespace
+} // namespace detail
 
 /// \brief For \p T that is <tt>tuple</tt>, \p tuple_element<I, T>::type is the
 /// type of <tt>I</tt>th element of that tuple.
 template<size_t I, class... Types>
 struct tuple_element<I, ::rocprim::tuple<Types...>>
 {
-    /// \brief The type of <tt>I</tt>th element of the tuple, where \p I is in <tt>[0, sizeof...(Types))</tt>
-    #ifndef DOXYGEN_SHOULD_SKIP_THIS
+/// \brief The type of <tt>I</tt>th element of the tuple, where \p I is in <tt>[0, sizeof...(Types))</tt>
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
     using type = typename detail::tuple_element_impl<I, ::rocprim::tuple<Types...>>::type;
-    #else
+#else
     typedef type;
-    #endif
+#endif
 };
 /// <tt>const T</tt> specialization of \ref tuple_element
 template<size_t I, class T>
@@ -156,7 +146,7 @@ struct tuple_element<I, const volatile T>
 /// @brief \brief This is an alias used for convenience. It represents tuple_element<I, T>::type.
 /// @tparam T - type of the elements contained in the tuple
 /// @tparam I - size of the tuple (number of elements)
-template <size_t I, class T>
+template<size_t I, class T>
 using tuple_element_t = typename tuple_element<I, T>::type;
 
 // get<I> forward declaration
@@ -181,114 +171,104 @@ tuple_element_t<I, tuple<UTypes...>>&& get(tuple<UTypes...>&&) noexcept;
 namespace detail
 {
 
-    template <class T>
+template<class T>
     ROCPRIM_HOST_DEVICE
-    inline T&& custom_forward(typename std::remove_reference<T>::type& t) noexcept
-    {
-        return static_cast<T&&>(t);
-    }
+inline T&& custom_forward(typename std::remove_reference<T>::type& t) noexcept
+{
+    return static_cast<T&&>(t);
+}
 
-    template <class T>
+template<class T>
     ROCPRIM_HOST_DEVICE
-    inline T&& custom_forward(typename std::remove_reference<T>::type&& t) noexcept
-    {
-        static_assert(!std::is_lvalue_reference<T>::value,
-                      "Can not forward an rvalue as an lvalue.");
-        return static_cast<T&&>(t);
-    }
-
+inline T&& custom_forward(typename std::remove_reference<T>::type&& t) noexcept
+{
+    static_assert(!std::is_lvalue_reference<T>::value, "Can not forward an rvalue as an lvalue.");
+    return static_cast<T&&>(t);
+}
 
 #ifdef __cpp_lib_is_final
-    template<class T>
-    using is_final = std::is_final<T>;
+template<class T>
+using is_final = std::is_final<T>;
 #elif defined(__clang__) // use clang extention
-    template<class T>
-    using is_final = std::integral_constant<bool, __is_final(T)>;
+template<class T>
+using is_final = std::integral_constant<bool, __is_final(T)>;
 #else
-    template<class T>
-    struct is_final : std::false_type
-    {
-    };
+template<class T>
+struct is_final : std::false_type
+{};
 #endif
 
 // tuple_value - represents single element in a tuple
-template<
-    size_t I,
-    class T,
-    bool /* Empty base optimization switch */ = std::is_empty<T>::value && !is_final<T>::value
->
+template<size_t I,
+         class T,
+         bool /* Empty base optimization switch */ = std::is_empty<T>::value && !is_final<T>::value>
 struct tuple_value
 {
     T value;
 
-    ROCPRIM_HOST_DEVICE inline
-    constexpr tuple_value() noexcept : value()
+    ROCPRIM_HOST_DEVICE
+    inline constexpr tuple_value() noexcept
+        : value()
     {
-        static_assert(!std::is_reference<T>::value, "can't default construct a reference element in a tuple" );
+        static_assert(!std::is_reference<T>::value,
+                      "can't default construct a reference element in a tuple");
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    tuple_value(const tuple_value&) = default;
+    ROCPRIM_HOST_DEVICE
+    inline tuple_value(const tuple_value&)
+        = default;
 
-    ROCPRIM_HOST_DEVICE inline
-    tuple_value(tuple_value&&) = default;
+    ROCPRIM_HOST_DEVICE
+    inline tuple_value(tuple_value&&)
+        = default;
 
-    template<
-        class U,
-        typename = typename std::enable_if<
-            !std::is_same<typename std::decay<U>::type, tuple_value>::value
-        >::type,
-        typename = typename std::enable_if<
-            std::is_constructible<T, const U&>::value
-        >::type
-    >
-    ROCPRIM_HOST_DEVICE inline
-    explicit tuple_value(const U& v) noexcept : value(v)
-    {
-    }
+    template<class U,
+             typename = typename std::enable_if<
+                 !std::is_same<typename std::decay<U>::type, tuple_value>::value>::type,
+             typename = typename std::enable_if<std::is_constructible<T, const U&>::value>::type>
+    ROCPRIM_HOST_DEVICE
+    inline explicit tuple_value(const U& v) noexcept
+        : value(v)
+    {}
 
-    template<
-        class U,
-        typename = typename std::enable_if<
-            // So U can't be tuple_value<T>
-            !std::is_same<typename std::decay<U>::type, tuple_value>::value
-        >::type,
-        typename = typename std::enable_if<
-            std::is_constructible<T, U&&>::value
-        >::type
-    >
-    ROCPRIM_HOST_DEVICE inline
-    explicit tuple_value(U&& v) noexcept : value(::rocprim::detail::custom_forward<U>(v))
-    {
-    }
+    template<class U,
+             typename = typename std::enable_if<
+                 // So U can't be tuple_value<T>
+                 !std::is_same<typename std::decay<U>::type, tuple_value>::value>::type,
+             typename = typename std::enable_if<std::is_constructible<T, U&&>::value>::type>
+    ROCPRIM_HOST_DEVICE
+    inline explicit tuple_value(U&& v) noexcept
+        : value(::rocprim::detail::custom_forward<U>(v))
+    {}
 
-    ROCPRIM_HOST_DEVICE inline
-    ~tuple_value() = default;
+    ROCPRIM_HOST_DEVICE
+    inline ~tuple_value()
+        = default;
 
     template<class U>
-    ROCPRIM_HOST_DEVICE inline
-    tuple_value& operator=(U&& v) noexcept
+    ROCPRIM_HOST_DEVICE
+    inline tuple_value& operator=(U&& v) noexcept
     {
         value = ::rocprim::detail::custom_forward<U>(v);
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    void swap(tuple_value& v) noexcept
+    ROCPRIM_HOST_DEVICE
+    inline void swap(tuple_value& v) noexcept
     {
-        auto tmp = std::move(v.value);
-        v.value = std::move(this->value);
+        auto tmp    = std::move(v.value);
+        v.value     = std::move(this->value);
         this->value = std::move(tmp);
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    T& get() noexcept
+    ROCPRIM_HOST_DEVICE
+    inline T& get() noexcept
     {
         return value;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    const T& get() const noexcept
+    ROCPRIM_HOST_DEVICE
+    inline const T& get() const noexcept
     {
         return value;
     }
@@ -298,209 +278,172 @@ struct tuple_value
 template<size_t I, class T>
 struct tuple_value<I, T, true> : private T
 {
-    ROCPRIM_HOST_DEVICE inline
-    constexpr tuple_value() noexcept : T()
+    ROCPRIM_HOST_DEVICE
+    inline constexpr tuple_value() noexcept
+        : T()
     {
-        static_assert(!std::is_reference<T>::value, "can't default construct a reference element in a tuple" );
+        static_assert(!std::is_reference<T>::value,
+                      "can't default construct a reference element in a tuple");
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    tuple_value(const tuple_value&) = default;
+    ROCPRIM_HOST_DEVICE
+    inline tuple_value(const tuple_value&)
+        = default;
 
-    ROCPRIM_HOST_DEVICE inline
-    tuple_value(tuple_value&&) = default;
+    ROCPRIM_HOST_DEVICE
+    inline tuple_value(tuple_value&&)
+        = default;
 
-    template<
-        class U,
-        typename = typename std::enable_if<
-            !std::is_same<typename std::decay<U>::type, tuple_value>::value
-        >::type,
-        typename = typename std::enable_if<
-            std::is_constructible<T, const U&>::value
-        >::type
-    >
-    ROCPRIM_HOST_DEVICE inline
-    explicit tuple_value(const U& v) noexcept : T(v)
-    {
-    }
+    template<class U,
+             typename = typename std::enable_if<
+                 !std::is_same<typename std::decay<U>::type, tuple_value>::value>::type,
+             typename = typename std::enable_if<std::is_constructible<T, const U&>::value>::type>
+    ROCPRIM_HOST_DEVICE
+    inline explicit tuple_value(const U& v) noexcept
+        : T(v)
+    {}
 
-    template<
-        class U,
-        typename = typename std::enable_if<
-            // So U can't be tuple_value<T>
-            !std::is_same<typename std::decay<U>::type, tuple_value>::value
-        >::type,
-        typename = typename std::enable_if<
-            std::is_constructible<T, U&&>::value
-        >::type
-    >
-    ROCPRIM_HOST_DEVICE inline
-    explicit tuple_value(U&& v) noexcept : T(::rocprim::detail::custom_forward<U>(v))
-    {
-    }
+    template<class U,
+             typename = typename std::enable_if<
+                 // So U can't be tuple_value<T>
+                 !std::is_same<typename std::decay<U>::type, tuple_value>::value>::type,
+             typename = typename std::enable_if<std::is_constructible<T, U&&>::value>::type>
+    ROCPRIM_HOST_DEVICE
+    inline explicit tuple_value(U&& v) noexcept
+        : T(::rocprim::detail::custom_forward<U>(v))
+    {}
 
-    ROCPRIM_HOST_DEVICE inline
-    ~tuple_value() = default;
+    ROCPRIM_HOST_DEVICE
+    inline ~tuple_value()
+        = default;
 
     template<class U>
-    ROCPRIM_HOST_DEVICE inline
-    tuple_value& operator=(U&& v) noexcept
+    ROCPRIM_HOST_DEVICE
+    inline tuple_value& operator=(U&& v) noexcept
     {
         T::operator=(::rocprim::detail::custom_forward<U>(v));
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    void swap(tuple_value& v) noexcept
+    ROCPRIM_HOST_DEVICE
+    inline void swap(tuple_value& v) noexcept
     {
         auto tmp = std::move(v);
-        v = std::move(*this);
-        *this = std::move(tmp);
+        v        = std::move(*this);
+        *this    = std::move(tmp);
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    T& get() noexcept
+    ROCPRIM_HOST_DEVICE
+    inline T& get() noexcept
     {
         return static_cast<T&>(*this);
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    const T& get() const noexcept
+    ROCPRIM_HOST_DEVICE
+    inline const T& get() const noexcept
     {
         return static_cast<const T&>(*this);
     }
 };
 
-template <class... Types>
-ROCPRIM_HOST_DEVICE inline
-void swallow(Types&&...) noexcept {}
+template<class... Types>
+ROCPRIM_HOST_DEVICE
+inline void swallow(Types&&...) noexcept
+{}
 
 template<class Sequences, class... Types>
 struct tuple_impl;
 
 template<size_t... Indices, class... Types>
-struct tuple_impl<::rocprim::index_sequence<Indices...>, Types...>
-    : tuple_value<Indices, Types>...
+struct tuple_impl<::rocprim::index_sequence<Indices...>, Types...> : tuple_value<Indices, Types>...
 {
-    ROCPRIM_HOST_DEVICE inline
-    constexpr tuple_impl() = default;
+    ROCPRIM_HOST_DEVICE
+    inline constexpr tuple_impl()
+        = default;
 
-    ROCPRIM_HOST_DEVICE inline
-    tuple_impl(const tuple_impl&) = default;
+    ROCPRIM_HOST_DEVICE
+    inline tuple_impl(const tuple_impl&)
+        = default;
 
-    ROCPRIM_HOST_DEVICE inline
-    tuple_impl(tuple_impl&&) = default;
+    ROCPRIM_HOST_DEVICE
+    inline tuple_impl(tuple_impl&&)
+        = default;
 
-    template<
-        class... UTypes,
-        typename = typename std::enable_if<
-            sizeof...(UTypes) == sizeof...(Types)
-        >::type,
-        typename = typename std::enable_if<
-            sizeof...(Types) >= 1
-        >::type
-    >
-    ROCPRIM_HOST_DEVICE inline
-    explicit tuple_impl(UTypes&&... values)
+    template<class... UTypes,
+             typename = typename std::enable_if<sizeof...(UTypes) == sizeof...(Types)>::type,
+             typename = typename std::enable_if<sizeof...(Types) >= 1>::type>
+    ROCPRIM_HOST_DEVICE inline explicit tuple_impl(UTypes&&... values)
         : tuple_value<Indices, Types>(::rocprim::detail::custom_forward<UTypes>(values))...
-    {
-    }
+    {}
 
-    template<
-        class... UTypes,
-        typename = typename std::enable_if<
-            sizeof...(UTypes) == sizeof...(Types)
-        >::type,
-        typename = typename std::enable_if<
-            sizeof...(Types) >= 1
-        >::type
-    >
-    ROCPRIM_HOST_DEVICE inline
-    tuple_impl(::rocprim::tuple<UTypes...>&& other)
-        : tuple_value<Indices, Types>(::rocprim::detail::custom_forward<UTypes>(::rocprim::get<Indices>(other)))...
-    {
-    }
+    template<class... UTypes,
+             typename = typename std::enable_if<sizeof...(UTypes) == sizeof...(Types)>::type,
+             typename = typename std::enable_if<sizeof...(Types) >= 1>::type>
+    ROCPRIM_HOST_DEVICE
+    inline tuple_impl(::rocprim::tuple<UTypes...>&& other)
+        : tuple_value<Indices, Types>(
+              ::rocprim::detail::custom_forward<UTypes>(::rocprim::get<Indices>(other)))...
+    {}
 
-    template<
-        class... UTypes,
-        typename = typename std::enable_if<
-            sizeof...(UTypes) == sizeof...(Types)
-        >::type,
-        typename = typename std::enable_if<
-            sizeof...(Types) >= 1
-        >::type
-    >
-    ROCPRIM_HOST_DEVICE inline
-    tuple_impl(const ::rocprim::tuple<UTypes...>& other)
+    template<class... UTypes,
+             typename = typename std::enable_if<sizeof...(UTypes) == sizeof...(Types)>::type,
+             typename = typename std::enable_if<sizeof...(Types) >= 1>::type>
+    ROCPRIM_HOST_DEVICE
+    inline tuple_impl(const ::rocprim::tuple<UTypes...>& other)
         : tuple_value<Indices, Types>(::rocprim::get<Indices>(other))...
-    {
-    }
+    {}
 
-    ROCPRIM_HOST_DEVICE inline
-    ~tuple_impl() = default;
+    ROCPRIM_HOST_DEVICE
+    inline ~tuple_impl()
+        = default;
 
-    ROCPRIM_HOST_DEVICE inline
-    tuple_impl& operator=(const tuple_impl& other) noexcept
+    ROCPRIM_HOST_DEVICE
+    inline tuple_impl& operator=(const tuple_impl& other) noexcept
     {
-        swallow(
-            tuple_value<Indices, Types>::operator=(
-                static_cast<const tuple_value<Indices, Types>&>(other).get()
-            )...
-        );
+        swallow(tuple_value<Indices, Types>::operator=(
+            static_cast<const tuple_value<Indices, Types>&>(other).get())...);
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    tuple_impl& operator=(tuple_impl&& other) noexcept
+    ROCPRIM_HOST_DEVICE
+    inline tuple_impl& operator=(tuple_impl&& other) noexcept
     {
-        swallow(
-            tuple_value<Indices, Types>::operator=(
-                static_cast<tuple_value<Indices, Types>&>(other).get()
-            )...
-        );
+        swallow(tuple_value<Indices, Types>::operator=(
+            static_cast<tuple_value<Indices, Types>&>(other).get())...);
         return *this;
     }
 
     template<class... UTypes>
-    ROCPRIM_HOST_DEVICE inline
-    tuple_impl& operator=(const ::rocprim::tuple<UTypes...>& other) noexcept
+    ROCPRIM_HOST_DEVICE
+    inline tuple_impl& operator=(const ::rocprim::tuple<UTypes...>& other) noexcept
     {
         swallow(tuple_value<Indices, Types>::operator=(::rocprim::get<Indices>(other))...);
         return *this;
     }
 
     template<class... UTypes>
-    ROCPRIM_HOST_DEVICE inline
-    tuple_impl& operator=(::rocprim::tuple<UTypes...>&& other) noexcept
+    ROCPRIM_HOST_DEVICE
+    inline tuple_impl& operator=(::rocprim::tuple<UTypes...>&& other) noexcept
     {
         swallow(
-            tuple_value<Indices, Types>::operator=(
-                ::rocprim::get<Indices>(std::move(other))
-            )...
-        );
+            tuple_value<Indices, Types>::operator=(::rocprim::get<Indices>(std::move(other)))...);
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    tuple_impl& swap(tuple_impl& other) noexcept
+    ROCPRIM_HOST_DEVICE
+    inline tuple_impl& swap(tuple_impl& other) noexcept
     {
-        swallow(
-            (static_cast<tuple_value<Indices, Types>&>(*this).swap(
-                static_cast<tuple_value<Indices, Types>&>(other)
-            ), 0)...
-        );
+        swallow((static_cast<tuple_value<Indices, Types>&>(*this).swap(
+                     static_cast<tuple_value<Indices, Types>&>(other)),
+                 0)...);
         return *this;
     }
 };
 
 template<class... Types>
-using tuple_base =
-    tuple_impl<
-        typename ::rocprim::index_sequence_for<Types...>,
-        Types...
-    >;
+using tuple_base = tuple_impl<typename ::rocprim::index_sequence_for<Types...>, Types...>;
 
-} // end detail namespace
+} // namespace detail
 
 /// \brief Fixed-size collection of heterogeneous values.
 ///
@@ -534,7 +477,7 @@ class tuple
         }
     };
 
-    #ifndef DOXYGEN_SHOULD_SKIP_THIS
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
     template<size_t I, class... UTypes>
     ROCPRIM_HOST_DEVICE
     friend const tuple_element_t<I, tuple<UTypes...>>& get(const tuple<UTypes...>&) noexcept;
@@ -546,50 +489,42 @@ class tuple
     template<size_t I, class... UTypes>
     ROCPRIM_HOST_DEVICE
     friend tuple_element_t<I, tuple<UTypes...>>&& get(tuple<UTypes...>&&) noexcept;
-    #endif
+#endif
 
 public:
-    /// \brief Default constructor. Performs value-initialization of all elements.
-    ///
-    /// This overload only participates in overload resolution if:
-    /// * <tt>std::is_default_constructible<Ti>::value</tt> is \p true for all \p i.
-    #ifndef DOXYGEN_SHOULD_SKIP_THIS
-    template<
-        class Dummy = void,
-        typename = typename std::enable_if<
-            check_constructor<Dummy>::template enable_default<Types...>()
-        >::type
-    >
-    #endif
-    ROCPRIM_HOST_DEVICE inline
-    constexpr tuple() noexcept : base() {};
+/// \brief Default constructor. Performs value-initialization of all elements.
+///
+/// This overload only participates in overload resolution if:
+/// * <tt>std::is_default_constructible<Ti>::value</tt> is \p true for all \p i.
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+    template<class Dummy = void,
+             typename    = typename std::enable_if<
+                    check_constructor<Dummy>::template enable_default<Types...>()>::type>
+#endif
+    ROCPRIM_HOST_DEVICE inline constexpr tuple() noexcept : base(){};
 
     /// \brief Implicitly-defined copy constructor.
-    ROCPRIM_HOST_DEVICE inline
-    tuple(const tuple&) = default;
+    ROCPRIM_HOST_DEVICE
+    inline tuple(const tuple&)
+        = default;
 
     /// \brief Implicitly-defined move constructor.
-    ROCPRIM_HOST_DEVICE inline
-    tuple(tuple&&) = default;
+    ROCPRIM_HOST_DEVICE
+    inline tuple(tuple&&)
+        = default;
 
-    /// \brief Direct constructor. Initializes each element of the tuple with
-    /// the corresponding input value.
-    ///
-    /// This overload only participates in overload resolution if:
-    /// * <tt>std::is_copy_constructible<Ti>::value</tt> is \p true for all \p i.
-    #ifndef DOXYGEN_SHOULD_SKIP_THIS
-    template<
-        class Dummy = void,
-        typename = typename std::enable_if<
-            check_constructor<Dummy>::template enable_copy<Types...>()
-        >::type
-    >
-    #endif
-    ROCPRIM_HOST_DEVICE inline
-    explicit tuple(const Types&... values)
-        : base(values...)
-    {
-    }
+/// \brief Direct constructor. Initializes each element of the tuple with
+/// the corresponding input value.
+///
+/// This overload only participates in overload resolution if:
+/// * <tt>std::is_copy_constructible<Ti>::value</tt> is \p true for all \p i.
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+    template<class Dummy = void,
+             typename    = typename std::enable_if<
+                    check_constructor<Dummy>::template enable_copy<Types...>()>::type>
+#endif
+    ROCPRIM_HOST_DEVICE inline explicit tuple(const Types&... values) : base(values...)
+    {}
 
     /// \brief Converting constructor. Initializes each element of the tuple
     /// with the corresponding value in \p rocprim::detail::custom_forward<UTypes>(values).
@@ -598,25 +533,18 @@ public:
     /// * <tt>sizeof...(Types) == sizeof...(UTypes)</tt>,
     /// * <tt>sizeof...(Types) >= 1</tt>, and
     /// * <tt>std::is_constructible<Ti, Ui&&>::value</tt> is \p true for all \p i.
-    template<
-        class... UTypes
-        #ifndef DOXYGEN_SHOULD_SKIP_THIS
-        ,typename = typename std::enable_if<
-            sizeof...(UTypes) == sizeof...(Types)
-        >::type,
-        typename = typename std::enable_if<
-            sizeof...(Types) >= 1
-        >::type,
-        typename = typename std::enable_if<
-            detail::all_true<std::is_constructible<Types, UTypes&&>::value...>::value
-        >::type
-        #endif
-    >
-    ROCPRIM_HOST_DEVICE inline
-    explicit tuple(UTypes&&... values) noexcept
+    template<class... UTypes
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+             ,
+             typename = typename std::enable_if<sizeof...(UTypes) == sizeof...(Types)>::type,
+             typename = typename std::enable_if<sizeof...(Types) >= 1>::type,
+             typename = typename std::enable_if<
+                 detail::all_true<std::is_constructible<Types, UTypes&&>::value...>::value>::type
+#endif
+             >
+    ROCPRIM_HOST_DEVICE inline explicit tuple(UTypes&&... values) noexcept
         : base(::rocprim::detail::custom_forward<UTypes>(values)...)
-    {
-    }
+    {}
 
     /// \brief Converting copy constructor. Initializes each element of the tuple
     /// with the corresponding value from \p other.
@@ -625,25 +553,18 @@ public:
     /// * <tt>sizeof...(Types) == sizeof...(UTypes)</tt>,
     /// * <tt>sizeof...(Types) >= 1</tt>, and
     /// * <tt>std::is_constructible<Ti, Ui&&>::value</tt> is \p true for all \p i.
-    template<
-        class... UTypes,
-        #ifndef DOXYGEN_SHOULD_SKIP_THIS
-        typename = typename std::enable_if<
-            sizeof...(UTypes) == sizeof...(Types)
-        >::type,
-        typename = typename std::enable_if<
-            sizeof...(Types) >= 1
-        >::type,
-        typename = typename std::enable_if<
-            detail::all_true<std::is_constructible<Types, const UTypes&>::value...>::value
-        >::type
-        #endif
-    >
-    ROCPRIM_HOST_DEVICE inline
-    tuple(const tuple<UTypes...>& other) noexcept
+    template<class... UTypes,
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+             typename = typename std::enable_if<sizeof...(UTypes) == sizeof...(Types)>::type,
+             typename = typename std::enable_if<sizeof...(Types) >= 1>::type,
+             typename = typename std::enable_if<detail::all_true<
+                 std::is_constructible<Types, const UTypes&>::value...>::value>::type
+#endif
+             >
+    ROCPRIM_HOST_DEVICE
+    inline tuple(const tuple<UTypes...>& other) noexcept
         : base(other)
-    {
-    }
+    {}
 
     /// \brief Converting move constructor. Initializes each element of the tuple
     /// with the corresponding value from \p other.
@@ -652,51 +573,41 @@ public:
     /// * <tt>sizeof...(Types) == sizeof...(UTypes)</tt>,
     /// * <tt>sizeof...(Types) >= 1</tt>, and
     /// * <tt>std::is_constructible<Ti, Ui&&>::value</tt> is \p true for all \p i.
-    template<
-        class... UTypes,
-        #ifndef DOXYGEN_SHOULD_SKIP_THIS
-        typename = typename std::enable_if<
-            sizeof...(UTypes) == sizeof...(Types)
-        >::type,
-        typename = typename std::enable_if<
-            sizeof...(Types) >= 1
-        >::type,
-        typename = typename std::enable_if<
-            detail::all_true<std::is_constructible<Types, UTypes&&>::value...>::value
-        >::type
-        #endif
-    >
-    ROCPRIM_HOST_DEVICE inline
-    tuple(tuple<UTypes...>&& other) noexcept
+    template<class... UTypes,
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+             typename = typename std::enable_if<sizeof...(UTypes) == sizeof...(Types)>::type,
+             typename = typename std::enable_if<sizeof...(Types) >= 1>::type,
+             typename = typename std::enable_if<
+                 detail::all_true<std::is_constructible<Types, UTypes&&>::value...>::value>::type
+#endif
+             >
+    ROCPRIM_HOST_DEVICE
+    inline tuple(tuple<UTypes...>&& other) noexcept
         : base(::rocprim::detail::custom_forward<tuple<UTypes...>>(other))
-    {
-    }
+    {}
 
     /// \brief Implicitly-defined destructor.
-    ROCPRIM_HOST_DEVICE inline
-    ~tuple() noexcept = default;
+    ROCPRIM_HOST_DEVICE
+    inline ~tuple() noexcept
+        = default;
 
-    #ifndef DOXYGEN_SHOULD_SKIP_THIS
-    template<
-        class T,
-        typename = typename std::enable_if<
-            std::is_assignable<base_type&, T>::value
-        >::type
-    >
-    ROCPRIM_HOST_DEVICE inline
-    tuple& operator=(T&& v) noexcept
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+    template<class T,
+             typename = typename std::enable_if<std::is_assignable<base_type&, T>::value>::type>
+    ROCPRIM_HOST_DEVICE
+    inline tuple& operator=(T&& v) noexcept
     {
         base = ::rocprim::detail::custom_forward<T>(v);
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    tuple& operator=(const tuple& other) noexcept
+    ROCPRIM_HOST_DEVICE
+    inline tuple& operator=(const tuple& other) noexcept
     {
         base = other.base;
         return *this;
     }
-    #else // For documentation
+#else // For documentation
     /// \brief Copy assignment operator.
     /// \param other tuple to replace the contents of this tuple
     tuple& operator=(const tuple& other) noexcept;
@@ -711,11 +622,12 @@ public:
     /// \param other tuple to replace the contents of this tuple
     template<class... UTypes>
     tuple& operator=(tuple<UTypes...>&& other) noexcept;
-    #endif
+#endif
 
     /// \brief Swaps the content of the tuple (\p *this) with the content \p other
     /// \param other tuple of values to swap
-    ROCPRIM_HOST_DEVICE void swap(tuple& other) noexcept
+    ROCPRIM_HOST_DEVICE
+    void swap(tuple& other) noexcept
     {
         base.swap(other.base);
     }
@@ -726,18 +638,17 @@ template<>
 class tuple<>
 {
 public:
-    ROCPRIM_HOST_DEVICE inline
-    constexpr tuple() noexcept
-    {
-    }
+    ROCPRIM_HOST_DEVICE
+    inline constexpr tuple() noexcept
+    {}
 
-    ROCPRIM_HOST_DEVICE inline
-    ~tuple() = default;
+    ROCPRIM_HOST_DEVICE
+    inline ~tuple()
+        = default;
 
-    ROCPRIM_HOST_DEVICE inline
-    void swap(tuple&) noexcept
-    {
-    }
+    ROCPRIM_HOST_DEVICE
+    inline void swap(tuple&) noexcept
+    {}
 };
 #endif
 
@@ -748,10 +659,10 @@ template<size_t I>
 struct tuple_equal_to
 {
     template<class T, class U>
-    ROCPRIM_HOST_DEVICE inline
-    bool operator()(const T& lhs, const U& rhs) const
+    ROCPRIM_HOST_DEVICE
+    inline bool operator()(const T& lhs, const U& rhs) const
     {
-        return tuple_equal_to<I-1>()(lhs, rhs) && get<I-1>(lhs) == get<I-1>(rhs);
+        return tuple_equal_to<I - 1>()(lhs, rhs) && get<I - 1>(lhs) == get<I - 1>(rhs);
     }
 };
 
@@ -759,8 +670,8 @@ template<>
 struct tuple_equal_to<0>
 {
     template<class T, class U>
-    ROCPRIM_HOST_DEVICE inline
-    bool operator()(const T&, const U&) const
+    ROCPRIM_HOST_DEVICE
+    inline bool operator()(const T&, const U&) const
     {
         return true;
     }
@@ -770,15 +681,15 @@ template<size_t I>
 struct tuple_less_than
 {
     template<class T, class U>
-    ROCPRIM_HOST_DEVICE inline
-    bool operator()(const T& lhs, const U& rhs) const
+    ROCPRIM_HOST_DEVICE
+    inline bool operator()(const T& lhs, const U& rhs) const
     {
         constexpr size_t idx = tuple_size<T>::value - I;
         if(get<idx>(lhs) < get<idx>(rhs))
             return true;
         if(get<idx>(rhs) < get<idx>(lhs))
             return false;
-        return tuple_less_than<I-1>()(lhs, rhs);
+        return tuple_less_than<I - 1>()(lhs, rhs);
     }
 };
 
@@ -786,8 +697,8 @@ template<>
 struct tuple_less_than<0>
 {
     template<class T, class U>
-    ROCPRIM_HOST_DEVICE inline
-    bool operator()(const T&, const U&) const
+    ROCPRIM_HOST_DEVICE
+    inline bool operator()(const T&, const U&) const
     {
         return false;
     }
@@ -808,15 +719,11 @@ struct tuple_less_than<0>
 /// \return \p true if <tt>rocprim::get<i>(lhs) == rocprim::get<i>(rhs)</tt> for all
 /// \p i in <tt>[0, sizeof...(TTypes))</tt>; otherwise - \p false. Comparing two
 /// empty tuples returns \p true.
-template<
-    class... TTypes,
-    class... UTypes,
-    typename = typename std::enable_if<
-        sizeof...(TTypes) == sizeof...(UTypes)
-    >::type
->
-ROCPRIM_HOST_DEVICE inline
-bool operator==(const tuple<TTypes...>& lhs, const tuple<UTypes...>& rhs)
+template<class... TTypes,
+         class... UTypes,
+         typename = typename std::enable_if<sizeof...(TTypes) == sizeof...(UTypes)>::type>
+ROCPRIM_HOST_DEVICE
+inline bool operator==(const tuple<TTypes...>& lhs, const tuple<UTypes...>& rhs)
 {
     return detail::tuple_equal_to<sizeof...(TTypes)>()(lhs, rhs);
 }
@@ -834,8 +741,8 @@ bool operator==(const tuple<TTypes...>& lhs, const tuple<UTypes...>& rhs)
 /// \param rhs tuple to compare with \p lhs
 /// \return <tt>!(lhr == rhs)</tt>
 template<class... TTypes, class... UTypes>
-ROCPRIM_HOST_DEVICE inline
-bool operator!=(const tuple<TTypes...>& lhs, const tuple<UTypes...>& rhs)
+ROCPRIM_HOST_DEVICE
+inline bool operator!=(const tuple<TTypes...>& lhs, const tuple<UTypes...>& rhs)
 {
     return !(lhs == rhs);
 }
@@ -853,15 +760,11 @@ bool operator!=(const tuple<TTypes...>& lhs, const tuple<UTypes...>& rhs)
 /// (!(bool)(rocprim::get<0>(rhs) < rocprim::get<0>(lhs)) && lhstail < rhstail)</tt>, where
 /// \p lhstail is \p lhs without its first element, and \p rhstail is \p rhs without its first
 /// element. For two empty tuples, it returns \p false.
-template<
-    class... TTypes,
-    class... UTypes,
-    typename = typename std::enable_if<
-        sizeof...(TTypes) == sizeof...(UTypes)
-    >::type
->
-ROCPRIM_HOST_DEVICE inline
-bool operator<(const tuple<TTypes...>& lhs, const tuple<UTypes...>& rhs)
+template<class... TTypes,
+         class... UTypes,
+         typename = typename std::enable_if<sizeof...(TTypes) == sizeof...(UTypes)>::type>
+ROCPRIM_HOST_DEVICE
+inline bool operator<(const tuple<TTypes...>& lhs, const tuple<UTypes...>& rhs)
 {
     return detail::tuple_less_than<sizeof...(TTypes)>()(lhs, rhs);
 }
@@ -877,8 +780,8 @@ bool operator<(const tuple<TTypes...>& lhs, const tuple<UTypes...>& rhs)
 /// \param rhs tuple to compare with \p lhs
 /// \return <tt>rhs < lhs</tt>
 template<class... TTypes, class... UTypes>
-ROCPRIM_HOST_DEVICE inline
-bool operator>(const tuple<TTypes...>& lhs, const tuple<UTypes...>& rhs)
+ROCPRIM_HOST_DEVICE
+inline bool operator>(const tuple<TTypes...>& lhs, const tuple<UTypes...>& rhs)
 {
     return rhs < lhs;
 }
@@ -894,8 +797,8 @@ bool operator>(const tuple<TTypes...>& lhs, const tuple<UTypes...>& rhs)
 /// \param rhs tuple to compare with \p lhs
 /// \return <tt>!(rhs < lhs)</tt>
 template<class... TTypes, class... UTypes>
-ROCPRIM_HOST_DEVICE inline
-bool operator<=(const tuple<TTypes...>& lhs, const tuple<UTypes...>& rhs)
+ROCPRIM_HOST_DEVICE
+inline bool operator<=(const tuple<TTypes...>& lhs, const tuple<UTypes...>& rhs)
 {
     return !(rhs < lhs);
 }
@@ -911,8 +814,8 @@ bool operator<=(const tuple<TTypes...>& lhs, const tuple<UTypes...>& rhs)
 /// \param rhs tuple to compare with \p lhs
 /// \return <tt>!(lhs < rhs)</tt>
 template<class... TTypes, class... UTypes>
-ROCPRIM_HOST_DEVICE inline
-bool operator>=(const tuple<TTypes...>& lhs, const tuple<UTypes...>& rhs)
+ROCPRIM_HOST_DEVICE
+inline bool operator>=(const tuple<TTypes...>& lhs, const tuple<UTypes...>& rhs)
 {
     return !(lhs < rhs);
 }
@@ -924,8 +827,8 @@ bool operator>=(const tuple<TTypes...>& lhs, const tuple<UTypes...>& rhs)
 /// \brief Swaps the content of \p lhs tuple with the content \p rhs
 /// \param lhs,rhs tuples whose contents to swap
 template<class... Types>
-ROCPRIM_HOST_DEVICE inline
-void swap(tuple<Types...>& lhs, tuple<Types...>& rhs) noexcept
+ROCPRIM_HOST_DEVICE
+inline void swap(tuple<Types...>& lhs, tuple<Types...>& rhs) noexcept
 {
     lhs.swap(rhs);
 }
@@ -939,8 +842,8 @@ void swap(tuple<Types...>& lhs, tuple<Types...>& rhs) noexcept
 /// \param t tuple whose contents to extract
 /// \return constant refernce to the selected element of input tuple \p t.
 template<size_t I, class... Types>
-ROCPRIM_HOST_DEVICE inline
-const tuple_element_t<I, tuple<Types...>>& get(const tuple<Types...>& t) noexcept
+ROCPRIM_HOST_DEVICE
+inline const tuple_element_t<I, tuple<Types...>>& get(const tuple<Types...>& t) noexcept
 {
     using type = detail::tuple_value<I, tuple_element_t<I, tuple<Types...>>>;
     return static_cast<const type&>(t.base).get();
@@ -951,8 +854,8 @@ const tuple_element_t<I, tuple<Types...>>& get(const tuple<Types...>& t) noexcep
 /// \param t tuple whose contents to extract
 /// \return refernce to the selected element of input tuple \p t.
 template<size_t I, class... Types>
-ROCPRIM_HOST_DEVICE inline
-tuple_element_t<I, tuple<Types...>>& get(tuple<Types...>& t) noexcept
+ROCPRIM_HOST_DEVICE
+inline tuple_element_t<I, tuple<Types...>>& get(tuple<Types...>& t) noexcept
 {
     using type = detail::tuple_value<I, tuple_element_t<I, tuple<Types...>>>;
     return static_cast<type&>(t.base).get();
@@ -963,11 +866,11 @@ tuple_element_t<I, tuple<Types...>>& get(tuple<Types...>& t) noexcept
 /// \param t tuple whose contents to extract
 /// \return rvalue refernce to the selected element of input tuple \p t.
 template<size_t I, class... Types>
-ROCPRIM_HOST_DEVICE inline
-tuple_element_t<I, tuple<Types...>>&& get(tuple<Types...>&& t) noexcept
+ROCPRIM_HOST_DEVICE
+inline tuple_element_t<I, tuple<Types...>>&& get(tuple<Types...>&& t) noexcept
 {
     using value_type = tuple_element_t<I, tuple<Types...>>;
-    using type = detail::tuple_value<I, tuple_element_t<I, tuple<Types...>>>;
+    using type       = detail::tuple_value<I, tuple_element_t<I, tuple<Types...>>>;
     return static_cast<value_type&&>(static_cast<type&>(t.base).get());
 }
 
@@ -990,17 +893,18 @@ struct make_tuple_return<std::reference_wrapper<T>>
     using type = T&;
 };
 
-template <class T>
+template<class T>
 using make_tuple_return_t = typename make_tuple_return<typename std::decay<T>::type>::type;
 
-} // end detail namespace
+} // namespace detail
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 template<class... Types>
-ROCPRIM_HOST_DEVICE inline
-tuple<detail::make_tuple_return_t<Types>...> make_tuple(Types&&... args) noexcept
+ROCPRIM_HOST_DEVICE
+inline tuple<detail::make_tuple_return_t<Types>...> make_tuple(Types&&... args) noexcept
 {
-    return tuple<detail::make_tuple_return_t<Types>...>(::rocprim::detail::custom_forward<Types>(args)...);
+    return tuple<detail::make_tuple_return_t<Types>...>(
+        ::rocprim::detail::custom_forward<Types>(args)...);
 }
 #else
 /// \brief Creates a tuple, returned tuple type is deduced from the types of arguments.
@@ -1026,21 +930,23 @@ namespace detail
 
 struct ignore_t
 {
-    ROCPRIM_HOST_DEVICE inline
-    ignore_t() = default;
+    ROCPRIM_HOST_DEVICE
+    inline ignore_t()
+        = default;
 
-    ROCPRIM_HOST_DEVICE inline
-    ~ignore_t() = default;
+    ROCPRIM_HOST_DEVICE
+    inline ~ignore_t()
+        = default;
 
     template<class T>
-    ROCPRIM_HOST_DEVICE inline
-    const ignore_t& operator=(const T&) const
+    ROCPRIM_HOST_DEVICE
+    inline const ignore_t& operator=(const T&) const
     {
         return *this;
     }
 };
 
-}
+} // namespace detail
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 using ignore_type = detail::ignore_t;
 #else
@@ -1065,8 +971,8 @@ const ignore_type ignore;
 ///
 /// \see std::tie
 template<class... Types>
-ROCPRIM_HOST_DEVICE inline
-tuple<Types&...> tie(Types&... args) noexcept
+ROCPRIM_HOST_DEVICE
+inline tuple<Types&...> tie(Types&... args) noexcept
 {
     return ::rocprim::tuple<Types&...>(args...);
 }

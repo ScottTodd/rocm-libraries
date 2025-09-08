@@ -32,19 +32,23 @@ from Tensile.Utilities.Toolchain import validateToolchain, ToolchainDefaults
 
 import yaml
 
-testKernelDir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "customKernels")
+testKernelDir = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "customKernels"
+)
+
 
 @pytest.mark.parametrize("objs", [("TestKernel", testKernelDir)])
 def test_FindCustomKernel(objs):
     try:
         name, directory = objs
         contents = getCustomKernelContents(name, directory)
-        assert contents #If no exception
+        assert contents  # If no exception
     except:
         assert False
 
+
 configResult = yaml.load(
-"""
+    """
 ProblemType:
     OperationType: GEMM
     DataType: s
@@ -59,7 +63,8 @@ WorkGroup: [  8, 16,  1 ]
 DepthU: 8
 VectorWidth: 4
 AssertSizeEqual: {3: 512}
-AssertSizeMultiple: {0: 128, 1: 128}""", yamlLoader
+AssertSizeMultiple: {0: 128, 1: 128}""",
+    yamlLoader,
 )
 
 # TODO when more custom kernels have been added - expand these lists
@@ -72,6 +77,7 @@ def test_ReadCustomKernelConfig(objs):
     except:
         assert False
 
+
 @pytest.mark.parametrize("objs", [("TestKernel", testKernelDir)])
 def test_CreateSolutionFromCustomKernel(objs):
     try:
@@ -81,14 +87,14 @@ def test_CreateSolutionFromCustomKernel(objs):
             assembler,
             offloadBundler,
             hipconfig,
-            deviceEnumerator
+            deviceEnumerator,
         ) = validateToolchain(
             ToolchainDefaults.CXX_COMPILER,
             ToolchainDefaults.C_COMPILER,
             ToolchainDefaults.ASSEMBLER,
             ToolchainDefaults.OFFLOAD_BUNDLER,
             ToolchainDefaults.HIP_CONFIG,
-            ToolchainDefaults.DEVICE_ENUMERATOR
+            ToolchainDefaults.DEVICE_ENUMERATOR,
         )
         params = {
             "CxxCompiler": cxxCompiler,

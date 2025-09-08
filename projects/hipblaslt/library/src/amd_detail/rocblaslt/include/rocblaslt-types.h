@@ -650,8 +650,8 @@ namespace rocblaslt
             = RocblasltContractionProblem::ScalingFormat::None;
         RocblasltContractionProblem::ScalingFormat scaling_b_type
             = RocblasltContractionProblem::ScalingFormat::None;
-        float                                      act0 = 0.f;
-        float                                      act1 = 0.f;
+        float act0 = 0.f;
+        float act1 = 0.f;
     };
 
     class RocTuningV2

@@ -25,20 +25,18 @@
 #include <hipcub/warp/warp_reduce.hpp>
 #include <type_traits>
 
-template<
-    class T,
-    unsigned int WarpSize
->
+template<class T, unsigned int WarpSize>
 struct params
 {
-    using type = T;
+    using type                              = T;
     static constexpr unsigned int warp_size = WarpSize;
 };
 
 template<class Params>
-class HipcubWarpReduceTests : public ::testing::Test {
+class HipcubWarpReduceTests : public ::testing::Test
+{
 public:
-    using type = typename Params::type;
+    using type                              = typename Params::type;
     static constexpr unsigned int warp_size = Params::warp_size;
 };
 
@@ -115,17 +113,18 @@ auto warp_reduce_kernel(T* device_input, T* device_output) ->
 {
     // Minimum size is 1
     constexpr unsigned int warps_no = test_utils::max(BlockSize / LogicalWarpSize, 1u);
-    const unsigned int warp_id = test_utils::logical_warp_id<LogicalWarpSize>();
-    unsigned int index = hipThreadIdx_x + (hipBlockIdx_x * hipBlockDim_x);
+    const unsigned int     warp_id  = test_utils::logical_warp_id<LogicalWarpSize>();
+    unsigned int           index    = hipThreadIdx_x + (hipBlockIdx_x * hipBlockDim_x);
 
     T value = device_input[index];
 
     using wreduce_t = hipcub::WarpReduce<T, LogicalWarpSize>;
-    __shared__ typename wreduce_t::TempStorage storage[warps_no];
-    auto reduce_op = hipcub::Sum();
+    __shared__
+    typename wreduce_t::TempStorage storage[warps_no];
+    auto                            reduce_op = hipcub::Sum();
     value = wreduce_t(storage[warp_id]).Reduce(value, reduce_op);
 
-    if (hipThreadIdx_x % LogicalWarpSize == 0)
+    if(hipThreadIdx_x % LogicalWarpSize == 0)
     {
         device_output[index / LogicalWarpSize] = value;
     }
@@ -177,21 +176,26 @@ TYPED_TEST(HipcubWarpReduceTests, Reduce)
     const unsigned int current_device_warp_size = HIPCUB_HOST_WARP_THREADS;
 
     const size_t block_size = current_device_warp_size == ws32 ? block_size_ws32 : block_size_ws64;
-    unsigned int grid_size = 4;
-    const size_t size = block_size * grid_size;
+    unsigned int grid_size  = 4;
+    const size_t size       = block_size * grid_size;
 
     // Check if warp size is supported
-    if( (logical_warp_size > current_device_warp_size) ||
-        (current_device_warp_size != ws32 && current_device_warp_size != ws64) ) // Only WarpSize 32 and 64 is supported
+    if((logical_warp_size > current_device_warp_size)
+       || (current_device_warp_size != ws32
+           && current_device_warp_size != ws64)) // Only WarpSize 32 and 64 is supported
     {
-        printf("Unsupported test warp size/computed block size: %zu/%zu. Current device warp size: %u.    Skipping test\n",
-            logical_warp_size, block_size, current_device_warp_size);
+        printf("Unsupported test warp size/computed block size: %zu/%zu. Current device warp size: "
+               "%u.    Skipping test\n",
+               logical_warp_size,
+               block_size,
+               current_device_warp_size);
         GTEST_SKIP();
     }
 
-    for (size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
+    for(size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed= " << seed_value);
 
         // Generate data
@@ -213,47 +217,49 @@ TYPED_TEST(HipcubWarpReduceTests, Reduce)
 
         // Writing to device memory
         T* device_input;
-        HIP_CHECK(test_common_utils::hipMallocHelper(&device_input, input.size() * sizeof(typename decltype(input)::value_type)));
+        HIP_CHECK(test_common_utils::hipMallocHelper(
+            &device_input,
+            input.size() * sizeof(typename decltype(input)::value_type)));
         T* device_output;
-        HIP_CHECK(test_common_utils::hipMallocHelper(&device_output, output.size() * sizeof(typename decltype(output)::value_type)));
+        HIP_CHECK(test_common_utils::hipMallocHelper(
+            &device_output,
+            output.size() * sizeof(typename decltype(output)::value_type)));
 
         HIP_CHECK(
-            hipMemcpy(
-                device_input, input.data(),
-                input.size() * sizeof(T),
-                hipMemcpyHostToDevice
-            )
-        );
+            hipMemcpy(device_input, input.data(), input.size() * sizeof(T), hipMemcpyHostToDevice));
 
         // Launching kernel
-        if (current_device_warp_size == ws32)
+        if(current_device_warp_size == ws32)
         {
             hipLaunchKernelGGL(
                 HIP_KERNEL_NAME(warp_reduce_kernel<T, block_size_ws32, logical_warp_size>),
-                dim3(grid_size), dim3(block_size_ws32), 0, 0,
-                device_input, device_output
-            );
+                dim3(grid_size),
+                dim3(block_size_ws32),
+                0,
+                0,
+                device_input,
+                device_output);
         }
-        else if (current_device_warp_size == ws64)
+        else if(current_device_warp_size == ws64)
         {
             hipLaunchKernelGGL(
                 HIP_KERNEL_NAME(warp_reduce_kernel<T, block_size_ws64, logical_warp_size>),
-                dim3(grid_size), dim3(block_size_ws64), 0, 0,
-                device_input, device_output
-            );
+                dim3(grid_size),
+                dim3(block_size_ws64),
+                0,
+                0,
+                device_input,
+                device_output);
         }
 
         HIP_CHECK(hipPeekAtLastError());
         HIP_CHECK(hipDeviceSynchronize());
 
         // Read from device memory
-        HIP_CHECK(
-            hipMemcpy(
-                output.data(), device_output,
-                output.size() * sizeof(T),
-                hipMemcpyDeviceToHost
-            )
-        );
+        HIP_CHECK(hipMemcpy(output.data(),
+                            device_output,
+                            output.size() * sizeof(T),
+                            hipMemcpyDeviceToHost));
 
         test_utils::assert_near(output,
                                 expected,
@@ -272,17 +278,18 @@ auto warp_reduce_valid_kernel(T* device_input, T* device_output, const int valid
 {
     // Minimum size is 1
     constexpr unsigned int warps_no = test_utils::max(BlockSize / LogicalWarpSize, 1u);
-    const unsigned int warp_id = test_utils::logical_warp_id<LogicalWarpSize>();
-    unsigned int index = hipThreadIdx_x + (hipBlockIdx_x * hipBlockDim_x);
+    const unsigned int     warp_id  = test_utils::logical_warp_id<LogicalWarpSize>();
+    unsigned int           index    = hipThreadIdx_x + (hipBlockIdx_x * hipBlockDim_x);
 
     T value = device_input[index];
 
     using wreduce_t = hipcub::WarpReduce<T, LogicalWarpSize>;
-    __shared__ typename wreduce_t::TempStorage storage[warps_no];
-    auto reduce_op = hipcub::Sum();
+    __shared__
+    typename wreduce_t::TempStorage storage[warps_no];
+    auto                            reduce_op = hipcub::Sum();
     value = wreduce_t(storage[warp_id]).Reduce(value, reduce_op, valid);
 
-    if (hipThreadIdx_x % LogicalWarpSize == 0)
+    if(hipThreadIdx_x % LogicalWarpSize == 0)
     {
         device_output[index / LogicalWarpSize] = value;
     }
@@ -333,22 +340,27 @@ TYPED_TEST(HipcubWarpReduceTests, ReduceValid)
     const unsigned int current_device_warp_size = HIPCUB_HOST_WARP_THREADS;
 
     const size_t block_size = current_device_warp_size == ws32 ? block_size_ws32 : block_size_ws64;
-    unsigned int grid_size = 4;
-    const size_t size = block_size * grid_size;
-    const int valid = logical_warp_size - 1;
+    unsigned int grid_size  = 4;
+    const size_t size       = block_size * grid_size;
+    const int    valid      = logical_warp_size - 1;
 
     // Check if warp size is supported
-    if( (logical_warp_size > current_device_warp_size) ||
-        (current_device_warp_size != ws32 && current_device_warp_size != ws64) ) // Only WarpSize 32 and 64 is supported
+    if((logical_warp_size > current_device_warp_size)
+       || (current_device_warp_size != ws32
+           && current_device_warp_size != ws64)) // Only WarpSize 32 and 64 is supported
     {
-        printf("Unsupported test warp size/computed block size: %zu/%zu. Current device warp size: %u.    Skipping test\n",
-            logical_warp_size, block_size, current_device_warp_size);
+        printf("Unsupported test warp size/computed block size: %zu/%zu. Current device warp size: "
+               "%u.    Skipping test\n",
+               logical_warp_size,
+               block_size,
+               current_device_warp_size);
         GTEST_SKIP();
     }
 
-    for (size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
+    for(size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed= " << seed_value);
 
         // Generate data
@@ -370,47 +382,51 @@ TYPED_TEST(HipcubWarpReduceTests, ReduceValid)
 
         // Writing to device memory
         T* device_input;
-        HIP_CHECK(test_common_utils::hipMallocHelper(&device_input, input.size() * sizeof(typename decltype(input)::value_type)));
+        HIP_CHECK(test_common_utils::hipMallocHelper(
+            &device_input,
+            input.size() * sizeof(typename decltype(input)::value_type)));
         T* device_output;
-        HIP_CHECK(test_common_utils::hipMallocHelper(&device_output, output.size() * sizeof(typename decltype(output)::value_type)));
+        HIP_CHECK(test_common_utils::hipMallocHelper(
+            &device_output,
+            output.size() * sizeof(typename decltype(output)::value_type)));
 
         HIP_CHECK(
-            hipMemcpy(
-                device_input, input.data(),
-                input.size() * sizeof(T),
-                hipMemcpyHostToDevice
-            )
-        );
+            hipMemcpy(device_input, input.data(), input.size() * sizeof(T), hipMemcpyHostToDevice));
 
         // Launching kernel
-        if (current_device_warp_size == ws32)
+        if(current_device_warp_size == ws32)
         {
             hipLaunchKernelGGL(
                 HIP_KERNEL_NAME(warp_reduce_valid_kernel<T, block_size_ws32, logical_warp_size>),
-                dim3(grid_size), dim3(block_size_ws32), 0, 0,
-                device_input, device_output, valid
-            );
+                dim3(grid_size),
+                dim3(block_size_ws32),
+                0,
+                0,
+                device_input,
+                device_output,
+                valid);
         }
-        else if (current_device_warp_size == ws64)
+        else if(current_device_warp_size == ws64)
         {
             hipLaunchKernelGGL(
                 HIP_KERNEL_NAME(warp_reduce_valid_kernel<T, block_size_ws64, logical_warp_size>),
-                dim3(grid_size), dim3(block_size_ws64), 0, 0,
-                device_input, device_output, valid
-            );
+                dim3(grid_size),
+                dim3(block_size_ws64),
+                0,
+                0,
+                device_input,
+                device_output,
+                valid);
         }
 
         HIP_CHECK(hipPeekAtLastError());
         HIP_CHECK(hipDeviceSynchronize());
 
         // Read from device memory
-        HIP_CHECK(
-            hipMemcpy(
-                output.data(), device_output,
-                output.size() * sizeof(T),
-                hipMemcpyDeviceToHost
-            )
-        );
+        HIP_CHECK(hipMemcpy(output.data(),
+                            device_output,
+                            output.size() * sizeof(T),
+                            hipMemcpyDeviceToHost));
 
         test_utils::assert_near(output,
                                 expected,
@@ -429,14 +445,15 @@ auto head_segmented_warp_reduce_kernel(T* input, Flag* flags, T* output) ->
 {
     // Minimum size is 1
     constexpr unsigned int warps_no = test_utils::max(BlockSize / LogicalWarpSize, 1u);
-    const unsigned int warp_id = test_utils::logical_warp_id<LogicalWarpSize>();
-    unsigned int index = hipThreadIdx_x + (hipBlockIdx_x * hipBlockDim_x);
+    const unsigned int     warp_id  = test_utils::logical_warp_id<LogicalWarpSize>();
+    unsigned int           index    = hipThreadIdx_x + (hipBlockIdx_x * hipBlockDim_x);
 
-    T value = input[index];
-    auto flag = flags[index];
+    T    value = input[index];
+    auto flag  = flags[index];
 
     using wreduce_t = hipcub::WarpReduce<T, LogicalWarpSize>;
-    __shared__ typename wreduce_t::TempStorage storage[warps_no];
+    __shared__
+    typename wreduce_t::TempStorage storage[warps_no];
     value = wreduce_t(storage[warp_id]).HeadSegmentedSum(value, flag);
 
     output[index] = value;
@@ -489,84 +506,83 @@ TYPED_TEST(HipcubWarpReduceTests, HeadSegmentedReduceSum)
     const unsigned int current_device_warp_size = HIPCUB_HOST_WARP_THREADS;
 
     const size_t block_size = current_device_warp_size == ws32 ? block_size_ws32 : block_size_ws64;
-    unsigned int grid_size = 4;
-    const size_t size = block_size * grid_size;
+    unsigned int grid_size  = 4;
+    const size_t size       = block_size * grid_size;
 
     // Check if warp size is supported
-    if( (logical_warp_size > current_device_warp_size) ||
-        (current_device_warp_size != ws32 && current_device_warp_size != ws64) ) // Only WarpSize 32 and 64 is supported
+    if((logical_warp_size > current_device_warp_size)
+       || (current_device_warp_size != ws32
+           && current_device_warp_size != ws64)) // Only WarpSize 32 and 64 is supported
     {
-        printf("Unsupported test warp size/computed block size: %zu/%zu. Current device warp size: %u.    Skipping test\n",
-            logical_warp_size, block_size, current_device_warp_size);
+        printf("Unsupported test warp size/computed block size: %zu/%zu. Current device warp size: "
+               "%u.    Skipping test\n",
+               logical_warp_size,
+               block_size,
+               current_device_warp_size);
         GTEST_SKIP();
     }
 
-
-    #ifdef HIPCUB_CUB_API
+#ifdef HIPCUB_CUB_API
     // Bug in CUB
     auto x = logical_warp_size;
-    if(x%2 != 0)
+    if(x % 2 != 0)
     {
         return;
     }
-    #endif
+#endif
 
-    for (size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
+    for(size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed= " << seed_value);
 
         // Generate data
-        std::vector<T> input = test_utils::get_random_data<T>(
-            size,
-            1,
-            10,
-            seed_value)
-        ; // used for input
-        std::vector<flag_type> flags = test_utils::get_random_data01<flag_type>(
-            size,
-            0.25f,
-            seed_value + seed_value_addition
-        );
-        for(size_t i = 0; i < flags.size(); i+= logical_warp_size)
+        std::vector<T>         input = test_utils::get_random_data<T>(size,
+                                                              1,
+                                                              10,
+                                                              seed_value); // used for input
+        std::vector<flag_type> flags
+            = test_utils::get_random_data01<flag_type>(size,
+                                                       0.25f,
+                                                       seed_value + seed_value_addition);
+        for(size_t i = 0; i < flags.size(); i += logical_warp_size)
         {
             flags[i] = 1;
         }
         std::vector<T> output(input.size());
 
-        T* device_input;
+        T*         device_input;
         flag_type* device_flags;
-        T* device_output;
-        HIP_CHECK(test_common_utils::hipMallocHelper(&device_input, input.size() * sizeof(typename decltype(input)::value_type)));
-        HIP_CHECK(test_common_utils::hipMallocHelper(&device_output, output.size() * sizeof(typename decltype(output)::value_type)));
-        HIP_CHECK(test_common_utils::hipMallocHelper(&device_flags, flags.size() * sizeof(typename decltype(flags)::value_type)));
+        T*         device_output;
+        HIP_CHECK(test_common_utils::hipMallocHelper(
+            &device_input,
+            input.size() * sizeof(typename decltype(input)::value_type)));
+        HIP_CHECK(test_common_utils::hipMallocHelper(
+            &device_output,
+            output.size() * sizeof(typename decltype(output)::value_type)));
+        HIP_CHECK(test_common_utils::hipMallocHelper(
+            &device_flags,
+            flags.size() * sizeof(typename decltype(flags)::value_type)));
         HIP_CHECK(
-            hipMemcpy(
-                device_input, input.data(),
-                input.size() * sizeof(T),
-                hipMemcpyHostToDevice
-            )
-        );
-        HIP_CHECK(
-            hipMemcpy(
-                device_flags, flags.data(),
-                flags.size() * sizeof(flag_type),
-                hipMemcpyHostToDevice
-            )
-        );
+            hipMemcpy(device_input, input.data(), input.size() * sizeof(T), hipMemcpyHostToDevice));
+        HIP_CHECK(hipMemcpy(device_flags,
+                            flags.data(),
+                            flags.size() * sizeof(flag_type),
+                            hipMemcpyHostToDevice));
         HIP_CHECK(hipDeviceSynchronize());
 
         // Calculate expected results on host
         std::vector<T> expected(output.size());
-        size_t segment_head_index = 0;
+        size_t         segment_head_index = 0;
         acc_type       reduction(input[0]);
         for(size_t i = 0; i < output.size(); i++)
         {
-            if(i%logical_warp_size == 0 || flags[i])
+            if(i % logical_warp_size == 0 || flags[i])
             {
                 expected[segment_head_index] = static_cast<T>(reduction);
-                segment_head_index = i;
-                reduction = input[i];
+                segment_head_index           = i;
+                reduction                    = input[i];
             }
             else
             {
@@ -576,38 +592,45 @@ TYPED_TEST(HipcubWarpReduceTests, HeadSegmentedReduceSum)
         expected[segment_head_index] = static_cast<T>(reduction);
 
         // Launching kernel
-        if (current_device_warp_size == ws32)
+        if(current_device_warp_size == ws32)
         {
             hipLaunchKernelGGL(
-                HIP_KERNEL_NAME(head_segmented_warp_reduce_kernel<
-                    T, flag_type, block_size_ws32, logical_warp_size
-                >),
-                dim3(size/block_size_ws32), dim3(block_size_ws32), 0, 0,
-                device_input, device_flags, device_output
-            );
+                HIP_KERNEL_NAME(head_segmented_warp_reduce_kernel<T,
+                                                                  flag_type,
+                                                                  block_size_ws32,
+                                                                  logical_warp_size>),
+                dim3(size / block_size_ws32),
+                dim3(block_size_ws32),
+                0,
+                0,
+                device_input,
+                device_flags,
+                device_output);
         }
-        else if (current_device_warp_size == ws64)
+        else if(current_device_warp_size == ws64)
         {
             hipLaunchKernelGGL(
-                HIP_KERNEL_NAME(head_segmented_warp_reduce_kernel<
-                    T, flag_type, block_size_ws64, logical_warp_size
-                >),
-                dim3(size/block_size_ws64), dim3(block_size_ws64), 0, 0,
-                device_input, device_flags, device_output
-            );
+                HIP_KERNEL_NAME(head_segmented_warp_reduce_kernel<T,
+                                                                  flag_type,
+                                                                  block_size_ws64,
+                                                                  logical_warp_size>),
+                dim3(size / block_size_ws64),
+                dim3(block_size_ws64),
+                0,
+                0,
+                device_input,
+                device_flags,
+                device_output);
         }
 
         HIP_CHECK(hipPeekAtLastError());
         HIP_CHECK(hipDeviceSynchronize());
 
         // Read from device memory
-        HIP_CHECK(
-            hipMemcpy(
-                output.data(), device_output,
-                output.size() * sizeof(T),
-                hipMemcpyDeviceToHost
-            )
-        );
+        HIP_CHECK(hipMemcpy(output.data(),
+                            device_output,
+                            output.size() * sizeof(T),
+                            hipMemcpyDeviceToHost));
         HIP_CHECK(hipDeviceSynchronize());
 
         std::vector<T> output_segment(output.size(), T(0));
@@ -638,15 +661,16 @@ auto tail_segmented_warp_reduce_kernel(T* input, Flag* flags, T* output) ->
 {
     // Minimum size is 1
     constexpr unsigned int warps_no = test_utils::max(BlockSize / LogicalWarpSize, 1u);
-    const unsigned int warp_id = test_utils::logical_warp_id<LogicalWarpSize>();
-    unsigned int index = hipThreadIdx_x + (hipBlockIdx_x * hipBlockDim_x);
+    const unsigned int     warp_id  = test_utils::logical_warp_id<LogicalWarpSize>();
+    unsigned int           index    = hipThreadIdx_x + (hipBlockIdx_x * hipBlockDim_x);
 
-    T value = input[index];
-    auto flag = flags[index];
+    T    value = input[index];
+    auto flag  = flags[index];
 
     using wreduce_t = hipcub::WarpReduce<T, LogicalWarpSize>;
-    __shared__ typename wreduce_t::TempStorage storage[warps_no];
-    auto reduce_op = hipcub::Sum();
+    __shared__
+    typename wreduce_t::TempStorage storage[warps_no];
+    auto                            reduce_op = hipcub::Sum();
     value = wreduce_t(storage[warp_id]).TailSegmentedReduce(value, flag, reduce_op);
 
     output[index] = value;
@@ -699,70 +723,70 @@ TYPED_TEST(HipcubWarpReduceTests, TailSegmentedReduceSum)
     const unsigned int current_device_warp_size = HIPCUB_HOST_WARP_THREADS;
 
     const size_t block_size = current_device_warp_size == ws32 ? block_size_ws32 : block_size_ws64;
-    unsigned int grid_size = 4;
-    const size_t size = block_size * grid_size;
+    unsigned int grid_size  = 4;
+    const size_t size       = block_size * grid_size;
 
     // Check if warp size is supported
-    if( (logical_warp_size > current_device_warp_size) ||
-        (current_device_warp_size != ws32 && current_device_warp_size != ws64) ) // Only WarpSize 32 and 64 is supported
+    if((logical_warp_size > current_device_warp_size)
+       || (current_device_warp_size != ws32
+           && current_device_warp_size != ws64)) // Only WarpSize 32 and 64 is supported
     {
-        printf("Unsupported test warp size/computed block size: %zu/%zu. Current device warp size: %u.    Skipping test\n",
-            logical_warp_size, block_size, current_device_warp_size);
+        printf("Unsupported test warp size/computed block size: %zu/%zu. Current device warp size: "
+               "%u.    Skipping test\n",
+               logical_warp_size,
+               block_size,
+               current_device_warp_size);
         GTEST_SKIP();
     }
 
-    #ifdef HIPCUB_CUB_API
+#ifdef HIPCUB_CUB_API
     // Bug in CUB
     auto x = logical_warp_size;
-    if(x%2 != 0)
+    if(x % 2 != 0)
     {
         return;
     }
-    #endif
+#endif
 
-    for (size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
+    for(size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed= " << seed_value);
 
         // Generate data
-        std::vector<T> input = test_utils::get_random_data<T>(
-            size,
-            1,
-            10,
-            seed_value
-        ); // used for input
-        std::vector<flag_type> flags = test_utils::get_random_data01<flag_type>(
-            size,
-            0.25f,
-            seed_value + seed_value_addition
-        );
-        for(size_t i = logical_warp_size - 1; i < flags.size(); i+= logical_warp_size)
+        std::vector<T>         input = test_utils::get_random_data<T>(size,
+                                                              1,
+                                                              10,
+                                                              seed_value); // used for input
+        std::vector<flag_type> flags
+            = test_utils::get_random_data01<flag_type>(size,
+                                                       0.25f,
+                                                       seed_value + seed_value_addition);
+        for(size_t i = logical_warp_size - 1; i < flags.size(); i += logical_warp_size)
         {
             flags[i] = 1;
         }
         std::vector<T> output(input.size());
 
-        T* device_input;
+        T*         device_input;
         flag_type* device_flags;
-        T* device_output;
-        HIP_CHECK(test_common_utils::hipMallocHelper(&device_input, input.size() * sizeof(typename decltype(input)::value_type)));
-        HIP_CHECK(test_common_utils::hipMallocHelper(&device_output, output.size() * sizeof(typename decltype(output)::value_type)));
-        HIP_CHECK(test_common_utils::hipMallocHelper(&device_flags, flags.size() * sizeof(typename decltype(flags)::value_type)));
+        T*         device_output;
+        HIP_CHECK(test_common_utils::hipMallocHelper(
+            &device_input,
+            input.size() * sizeof(typename decltype(input)::value_type)));
+        HIP_CHECK(test_common_utils::hipMallocHelper(
+            &device_output,
+            output.size() * sizeof(typename decltype(output)::value_type)));
+        HIP_CHECK(test_common_utils::hipMallocHelper(
+            &device_flags,
+            flags.size() * sizeof(typename decltype(flags)::value_type)));
         HIP_CHECK(
-            hipMemcpy(
-                device_input, input.data(),
-                input.size() * sizeof(T),
-                hipMemcpyHostToDevice
-            )
-        );
-        HIP_CHECK(
-            hipMemcpy(
-                device_flags, flags.data(),
-                flags.size() * sizeof(flag_type),
-                hipMemcpyHostToDevice
-            )
-        );
+            hipMemcpy(device_input, input.data(), input.size() * sizeof(T), hipMemcpyHostToDevice));
+        HIP_CHECK(hipMemcpy(device_flags,
+                            flags.data(),
+                            flags.size() * sizeof(flag_type),
+                            hipMemcpyHostToDevice));
         HIP_CHECK(hipDeviceSynchronize());
 
         // Calculate expected results on host
@@ -778,7 +802,8 @@ TYPED_TEST(HipcubWarpReduceTests, TailSegmentedReduceSum)
             {
                 expected[i] = input[i];
                 segment_indexes.push_back(i);
-            } else
+            }
+            else
             {
                 segment_index = i;
                 reduction     = input[i];
@@ -797,45 +822,52 @@ TYPED_TEST(HipcubWarpReduceTests, TailSegmentedReduceSum)
         }
 
         // Launching kernel
-        if (current_device_warp_size == ws32)
+        if(current_device_warp_size == ws32)
         {
             hipLaunchKernelGGL(
-                HIP_KERNEL_NAME(tail_segmented_warp_reduce_kernel<
-                    T, flag_type, block_size_ws32, logical_warp_size
-                >),
-                dim3(size/block_size_ws32), dim3(block_size_ws32), 0, 0,
-                device_input, device_flags, device_output
-            );
+                HIP_KERNEL_NAME(tail_segmented_warp_reduce_kernel<T,
+                                                                  flag_type,
+                                                                  block_size_ws32,
+                                                                  logical_warp_size>),
+                dim3(size / block_size_ws32),
+                dim3(block_size_ws32),
+                0,
+                0,
+                device_input,
+                device_flags,
+                device_output);
         }
-        else if (current_device_warp_size == ws64)
+        else if(current_device_warp_size == ws64)
         {
             hipLaunchKernelGGL(
-                HIP_KERNEL_NAME(tail_segmented_warp_reduce_kernel<
-                    T, flag_type, block_size_ws64, logical_warp_size
-                >),
-                dim3(size/block_size_ws64), dim3(block_size_ws64), 0, 0,
-                device_input, device_flags, device_output
-            );
+                HIP_KERNEL_NAME(tail_segmented_warp_reduce_kernel<T,
+                                                                  flag_type,
+                                                                  block_size_ws64,
+                                                                  logical_warp_size>),
+                dim3(size / block_size_ws64),
+                dim3(block_size_ws64),
+                0,
+                0,
+                device_input,
+                device_flags,
+                device_output);
         }
 
         HIP_CHECK(hipPeekAtLastError());
         HIP_CHECK(hipDeviceSynchronize());
 
         // Read from device memory
-        HIP_CHECK(
-            hipMemcpy(
-                output.data(), device_output,
-                output.size() * sizeof(T),
-                hipMemcpyDeviceToHost
-            )
-        );
+        HIP_CHECK(hipMemcpy(output.data(),
+                            device_output,
+                            output.size() * sizeof(T),
+                            hipMemcpyDeviceToHost));
         HIP_CHECK(hipDeviceSynchronize());
 
         std::vector<T> output_segment(segment_indexes.size());
         std::vector<T> expected_segment(segment_indexes.size());
         for(size_t i = 0; i < segment_indexes.size(); i++)
         {
-            auto index = segment_indexes[i];
+            auto index          = segment_indexes[i];
             output_segment[i]   = output[index];
             expected_segment[i] = expected[index];
         }

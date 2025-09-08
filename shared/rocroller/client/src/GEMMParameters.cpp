@@ -196,8 +196,7 @@ namespace rocRoller
                 s << "LDS:       " << x.loadLDSA << x.loadLDSB << x.storeLDSD << std::endl;
                 s << "Direct2LDS:       " << x.direct2LDSA << x.direct2LDSB << std::endl;
                 s << "LSDScale:  " << x.loadLDSScaleA << x.loadLDSScaleB << std::endl;
-                s << "Prefetch:  "
-                  << "enabled:" << x.prefetch << " inflight:" << x.prefetchInFlight
+                s << "Prefetch:  " << "enabled:" << x.prefetch << " inflight:" << x.prefetchInFlight
                   << " LDS:" << x.prefetchLDSFactor << std::endl;
                 s << "Unroll:    X:" << x.unrollX << " Y:" << x.unrollY << std::endl;
                 s << "Scheduler: " << x.scheduler << std::endl;

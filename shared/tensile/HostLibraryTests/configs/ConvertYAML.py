@@ -29,10 +29,11 @@ import sys
 import time
 import yaml
 
-sys.path.append('../..')
+sys.path.append("../..")
 from Tensile.SolutionStructs import Solution
 from Tensile import Utils
 from Tensile.Utilities.ConditionalImports import yamlDumper
+
 
 def merge_libraries(args):
     inFiles = args[:-1]
@@ -53,12 +54,14 @@ def merge_libraries(args):
     masterLibrary.applyMinNaming()
     outData = state(masterLibrary)
 
-    with open(outFile, 'w') as outf:
+    with open(outFile, "w") as outf:
         if True:
             yaml.dump(outData, outf, yamlDumper)
         else:
             import json
+
             json.dump(outData, outf, sort_keys=True, indent=2, separators=(",", ": "))
+
 
 def convert_one(args):
 
@@ -67,29 +70,33 @@ def convert_one(args):
 
     if True:
         masterLibrary = MasterSolutionLibrary.FromOriginalState(data)
-        #import pdb
-        #pdb.set_trace()
+        # import pdb
+        # pdb.set_trace()
         outData = state(masterLibrary)
 
     else:
         originalSolutions = data[5]
-        #print(originalSolutions)
+        # print(originalSolutions)
         newSolutions = []
         for s in originalSolutions:
             newSolutions.append(ContractionSolution.FromOriginalState(s))
 
         outData = [state(s) for s in newSolutions]
 
-    with open(args[1], 'w') as outFile:
+    with open(args[1], "w") as outFile:
         if True:
             yaml.dump(outData, outFile, yamlDumper)
         else:
             import json
-            json.dump(outData, outFile, sort_keys=True, indent=2, separators=(",", ": "))
+
+            json.dump(
+                outData, outFile, sort_keys=True, indent=2, separators=(",", ": ")
+            )
+
 
 if __name__ == "__main__":
 
-    for i in Utils.tqdm(itertools.chain([1,2,3], [4,5,6]), desc="Converting YAML"): time.sleep(1)
+    for i in Utils.tqdm(itertools.chain([1, 2, 3], [4, 5, 6]), desc="Converting YAML"):
+        time.sleep(1)
 
     merge_libraries(sys.argv[1:])
-

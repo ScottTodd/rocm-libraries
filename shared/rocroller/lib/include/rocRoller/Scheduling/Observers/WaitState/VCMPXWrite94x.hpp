@@ -50,7 +50,7 @@ namespace rocRoller
         public:
             VCMPXWrite94x() {}
             VCMPXWrite94x(ContextPtr context)
-                : WaitStateObserver<VCMPXWrite94x>(context){};
+                : WaitStateObserver<VCMPXWrite94x>(context) {};
 
             constexpr static bool required(GPUArchitectureTarget const& target)
             {

@@ -54,12 +54,11 @@ template <>
 constexpr double sum_error_tolerance_for_gfx11<float, hipblasLtHalf, float> = 1 / 100.0;
 
 template <>
-constexpr double
-    sum_error_tolerance_for_gfx11<float, hipblasLtHalf, hipblasLtHalf> = 1 / 100.0;
+constexpr double sum_error_tolerance_for_gfx11<float, hipblasLtHalf, hipblasLtHalf> = 1 / 100.0;
 
 template <>
-constexpr double
-    sum_error_tolerance_for_gfx11<hipblasLtHalf, hipblasLtHalf, hipblasLtHalf> = 1 / 100.0;
+constexpr double sum_error_tolerance_for_gfx11<hipblasLtHalf, hipblasLtHalf, hipblasLtHalf>
+    = 1 / 100.0;
 
 double sum_error_tolerance_for_gfx11_type(hipDataType Tc, hipDataType Ti, hipDataType To)
 {
@@ -195,23 +194,23 @@ inline void near_check_general(int64_t                   M,
 }
 
 template <>
-inline void near_check_general(int64_t                 M,
-                               int64_t                 N,
-                               int64_t                 lda,
+inline void near_check_general(int64_t             M,
+                               int64_t             N,
+                               int64_t             lda,
                                const hipblaslt_f8* hCPU,
                                const hipblaslt_f8* hGPU,
-                               double                  abs_error)
+                               double              abs_error)
 {
     NEAR_CHECK(M, N, lda, 0, hCPU, hGPU, 1, abs_error, NEAR_ASSERT_FP8);
 }
 
 template <>
-inline void near_check_general(int64_t                  M,
-                               int64_t                  N,
-                               int64_t                  lda,
+inline void near_check_general(int64_t              M,
+                               int64_t              N,
+                               int64_t              lda,
                                const hipblaslt_bf8* hCPU,
                                const hipblaslt_bf8* hGPU,
-                               double                   abs_error)
+                               double               abs_error)
 {
     NEAR_CHECK(M, N, lda, 0, hCPU, hGPU, 1, abs_error, NEAR_ASSERT_FP8);
 }
@@ -282,27 +281,27 @@ inline void near_check_general(int64_t                   M,
 }
 
 template <>
-inline void near_check_general(int64_t                 M,
-                               int64_t                 N,
-                               int64_t                 lda,
-                               int64_t                 strideA,
+inline void near_check_general(int64_t             M,
+                               int64_t             N,
+                               int64_t             lda,
+                               int64_t             strideA,
                                const hipblaslt_f8* hCPU,
                                const hipblaslt_f8* hGPU,
-                               int64_t                 batch_count,
-                               double                  abs_error)
+                               int64_t             batch_count,
+                               double              abs_error)
 {
     NEAR_CHECK(M, N, lda, strideA, hCPU, hGPU, batch_count, abs_error, NEAR_ASSERT_FP8);
 }
 
 template <>
-inline void near_check_general(int64_t                  M,
-                               int64_t                  N,
-                               int64_t                  lda,
-                               int64_t                  strideA,
+inline void near_check_general(int64_t              M,
+                               int64_t              N,
+                               int64_t              lda,
+                               int64_t              strideA,
                                const hipblaslt_bf8* hCPU,
                                const hipblaslt_bf8* hGPU,
-                               int64_t                  batch_count,
-                               double                   abs_error)
+                               int64_t              batch_count,
+                               double               abs_error)
 {
     NEAR_CHECK(M, N, lda, strideA, hCPU, hGPU, batch_count, abs_error, NEAR_ASSERT_FP8);
 }
@@ -367,25 +366,25 @@ inline void near_check_general(int64_t                               M,
 }
 
 template <>
-inline void near_check_general(int64_t                             M,
-                               int64_t                             N,
-                               int64_t                             lda,
+inline void near_check_general(int64_t                         M,
+                               int64_t                         N,
+                               int64_t                         lda,
                                const host_vector<hipblaslt_f8> hCPU[],
                                const host_vector<hipblaslt_f8> hGPU[],
-                               int64_t                             batch_count,
-                               double                              abs_error)
+                               int64_t                         batch_count,
+                               double                          abs_error)
 {
     NEAR_CHECK_B(M, N, lda, hCPU, hGPU, batch_count, abs_error, NEAR_ASSERT_FP8);
 }
 
 template <>
-inline void near_check_general(int64_t                              M,
-                               int64_t                              N,
-                               int64_t                              lda,
+inline void near_check_general(int64_t                          M,
+                               int64_t                          N,
+                               int64_t                          lda,
                                const host_vector<hipblaslt_bf8> hCPU[],
                                const host_vector<hipblaslt_bf8> hGPU[],
-                               int64_t                              batch_count,
-                               double                               abs_error)
+                               int64_t                          batch_count,
+                               double                           abs_error)
 {
     NEAR_CHECK_B(M, N, lda, hCPU, hGPU, batch_count, abs_error, NEAR_ASSERT_FP8);
 }
@@ -451,25 +450,25 @@ inline void near_check_general(int64_t                         M,
 }
 
 template <>
-inline void near_check_general(int64_t                       M,
-                               int64_t                       N,
-                               int64_t                       lda,
+inline void near_check_general(int64_t                   M,
+                               int64_t                   N,
+                               int64_t                   lda,
                                const hipblaslt_f8* const hCPU[],
                                const hipblaslt_f8* const hGPU[],
-                               int64_t                       batch_count,
-                               double                        abs_error)
+                               int64_t                   batch_count,
+                               double                    abs_error)
 {
     NEAR_CHECK_B(M, N, lda, hCPU, hGPU, batch_count, abs_error, NEAR_ASSERT_FP8);
 }
 
 template <>
-inline void near_check_general(int64_t                        M,
-                               int64_t                        N,
-                               int64_t                        lda,
+inline void near_check_general(int64_t                    M,
+                               int64_t                    N,
+                               int64_t                    lda,
                                const hipblaslt_bf8* const hCPU[],
                                const hipblaslt_bf8* const hGPU[],
-                               int64_t                        batch_count,
-                               double                         abs_error)
+                               int64_t                    batch_count,
+                               double                     abs_error)
 {
     NEAR_CHECK_B(M, N, lda, hCPU, hGPU, batch_count, abs_error, NEAR_ASSERT_FP8);
 }

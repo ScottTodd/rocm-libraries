@@ -127,8 +127,8 @@ THRUST_RUNTIME_FUNCTION ItemsOutputIt unique(
     "unique failed on 1st step");
 
   size_t storage_size = 0;
-  void* ptr       = nullptr;
-  void* temp_stor = nullptr;
+  void* ptr           = nullptr;
+  void* temp_stor     = nullptr;
   size_type* d_num_selected_out;
 
   auto l_part =

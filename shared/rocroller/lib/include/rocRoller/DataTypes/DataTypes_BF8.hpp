@@ -58,14 +58,15 @@ namespace rocRoller
         BF8(BF8 const& other) = default;
 
         template <typename T>
-        requires(!std::is_same_v<T, BF8> && std::is_convertible_v<T, float>) explicit BF8(
-            T const& value)
+            requires(!std::is_same_v<T, BF8> && std::is_convertible_v<T, float>)
+        explicit BF8(T const& value)
             : data(float_to_bf8(static_cast<double>(value)).data)
         {
         }
 
         template <typename T>
-        requires(std::is_convertible_v<T, float>) void operator=(T const& value)
+            requires(std::is_convertible_v<T, float>)
+        void operator=(T const& value)
         {
             data = float_to_bf8(static_cast<float>(value)).data;
         }
@@ -140,13 +141,15 @@ namespace rocRoller
     }
 
     template <typename T>
-    requires(std::is_convertible_v<T, float>) inline auto operator<=>(BF8 const& a, T const& b)
+        requires(std::is_convertible_v<T, float>)
+    inline auto operator<=>(BF8 const& a, T const& b)
     {
         return static_cast<float>(a) <=> static_cast<float>(b);
     }
 
     template <typename T>
-    requires(std::is_convertible_v<T, float>) inline bool operator==(BF8 const& a, T const& b)
+        requires(std::is_convertible_v<T, float>)
+    inline bool operator==(BF8 const& a, T const& b)
     {
         return static_cast<float>(a) == static_cast<float>(b);
     }

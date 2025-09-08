@@ -273,58 +273,32 @@ namespace TensileLite
                 PrintBufferValueClass betaPrint(
                     (void*)args[i].beta, sizeof(args[i].beta), problems[i].betaType());
                 std::cout << "Gemm " << i << ":" << std::endl;
-                std::cout << "   "
-                          << "m: " << args[i].m << std::endl;
-                std::cout << "   "
-                          << "n: " << args[i].n << std::endl;
-                std::cout << "   "
-                          << "batch: " << args[i].batch << std::endl;
-                std::cout << "   "
-                          << "k: " << args[i].k << std::endl;
-                std::cout << "   "
-                          << "D: " << args[i].d << std::endl;
-                std::cout << "   "
-                          << "C: " << args[i].c << std::endl;
-                std::cout << "   "
-                          << "A: " << args[i].a << std::endl;
-                std::cout << "   "
-                          << "B: " << args[i].b << std::endl;
-                std::cout << "   "
-                          << "strideD1: " << args[i].strideD1 << std::endl;
-                std::cout << "   "
-                          << "strideD2: " << args[i].strideD2 << std::endl;
-                std::cout << "   "
-                          << "strideC1: " << args[i].strideC1 << std::endl;
-                std::cout << "   "
-                          << "strideC2: " << args[i].strideC2 << std::endl;
-                std::cout << "   "
-                          << "strideA1: " << args[i].strideA1 << std::endl;
-                std::cout << "   "
-                          << "strideA2: " << args[i].strideA2 << std::endl;
-                std::cout << "   "
-                          << "strideB1: " << args[i].strideB1 << std::endl;
-                std::cout << "   "
-                          << "strideB2: " << args[i].strideB2 << std::endl;
-                std::cout << "   "
-                          << "Alpha: " << alphaPrint << std::endl;
-                std::cout << "   "
-                          << "Beta: " << betaPrint << std::endl;
-                std::cout << "   "
-                          << "scaleAlphaVec: " << args[i].scaleAlphaVec << std::endl;
-                std::cout << "   "
-                          << "bias: " << args[i].bias << std::endl;
-                std::cout << "   "
-                          << "e: " << args[i].e << std::endl;
-                std::cout << "   "
-                          << "strideE1: " << args[i].strideE1 << std::endl;
-                std::cout << "   "
-                          << "strideE2: " << args[i].strideE2 << std::endl;
-                std::cout << "   "
-                          << "act0: " << args[i].act0 << std::endl;
-                std::cout << "   "
-                          << "act1: " << args[i].act1 << std::endl;
-                std::cout << "   "
-                          << "activationType: " << args[i].activationType << std::endl;
+                std::cout << "   " << "m: " << args[i].m << std::endl;
+                std::cout << "   " << "n: " << args[i].n << std::endl;
+                std::cout << "   " << "batch: " << args[i].batch << std::endl;
+                std::cout << "   " << "k: " << args[i].k << std::endl;
+                std::cout << "   " << "D: " << args[i].d << std::endl;
+                std::cout << "   " << "C: " << args[i].c << std::endl;
+                std::cout << "   " << "A: " << args[i].a << std::endl;
+                std::cout << "   " << "B: " << args[i].b << std::endl;
+                std::cout << "   " << "strideD1: " << args[i].strideD1 << std::endl;
+                std::cout << "   " << "strideD2: " << args[i].strideD2 << std::endl;
+                std::cout << "   " << "strideC1: " << args[i].strideC1 << std::endl;
+                std::cout << "   " << "strideC2: " << args[i].strideC2 << std::endl;
+                std::cout << "   " << "strideA1: " << args[i].strideA1 << std::endl;
+                std::cout << "   " << "strideA2: " << args[i].strideA2 << std::endl;
+                std::cout << "   " << "strideB1: " << args[i].strideB1 << std::endl;
+                std::cout << "   " << "strideB2: " << args[i].strideB2 << std::endl;
+                std::cout << "   " << "Alpha: " << alphaPrint << std::endl;
+                std::cout << "   " << "Beta: " << betaPrint << std::endl;
+                std::cout << "   " << "scaleAlphaVec: " << args[i].scaleAlphaVec << std::endl;
+                std::cout << "   " << "bias: " << args[i].bias << std::endl;
+                std::cout << "   " << "e: " << args[i].e << std::endl;
+                std::cout << "   " << "strideE1: " << args[i].strideE1 << std::endl;
+                std::cout << "   " << "strideE2: " << args[i].strideE2 << std::endl;
+                std::cout << "   " << "act0: " << args[i].act0 << std::endl;
+                std::cout << "   " << "act1: " << args[i].act1 << std::endl;
+                std::cout << "   " << "activationType: " << args[i].activationType << std::endl;
             }
         }
     }
@@ -705,11 +679,11 @@ namespace TensileLite
 
             // Clamp minimum iters per tile to 1 to allow stream-k index calculation to work in case K==0
             // In this case no actual iterations will be run, but workgroups will be mapped correctly for beta*C
-            auto     itersPerTile = max(1, problem.getItersPerTile(sizeMapping));
-            auto     totalIters   = tiles * itersPerTile;
+            auto itersPerTile = max(1, problem.getItersPerTile(sizeMapping));
+            auto totalIters   = tiles * itersPerTile;
             args.template append<uint32_t>("itersPerTile", itersPerTile);
             args.template append<uint32_t>("totalIters", totalIters);
-            
+
             if(sizeMapping.streamK == 1) // Basic SK
             {
                 uint32_t itersPerWave = CeilDivide(totalIters, numWorkGroups.x);
@@ -746,8 +720,8 @@ namespace TensileLite
                 if(sizeMapping.customKernelName.empty())
                 {
                     args.template append<uint32_t>("SKItersPerWG", skItersPerWG);
-                    args.template append<uint32_t>("skGrid",       skGrid);
-                    args.template append<uint32_t>("skTiles",      skTiles);
+                    args.template append<uint32_t>("skGrid", skGrid);
+                    args.template append<uint32_t>("skTiles", skTiles);
                     args.template append<uint32_t>("skExtraIters", skExtraIters);
                 }
                 else
@@ -756,12 +730,13 @@ namespace TensileLite
                     // safe guard
                     if(skGrid > 65535 || skTiles > 65535)
                     {
-                        throw std::runtime_error("Packing skGrid and skTiles exceeds the capacity of a 32-bit register.");
+                        throw std::runtime_error("Packing skGrid and skTiles exceeds the capacity "
+                                                 "of a 32-bit register.");
                     }
 
-                    args.template append<uint32_t>("SKItersPerWG",   skItersPerWG);
+                    args.template append<uint32_t>("SKItersPerWG", skItersPerWG);
                     args.template append<uint32_t>("skGridAndTiles", skGridAndTiles);
-                    args.template append<uint32_t>("skExtraIters",   skExtraIters);
+                    args.template append<uint32_t>("skExtraIters", skExtraIters);
                 }
             }
         }
@@ -952,31 +927,31 @@ namespace TensileLite
 
         AMDGPU const* pAMDGPU = dynamic_cast<AMDGPU const*>(hardware);
         assert(pAMDGPU);
-        uint32_t numCUs       = pAMDGPU->computeUnitCount;
-        uint32_t numWGs       = getNumWorkGroups(problem, sizeMapping);
+        uint32_t numCUs = pAMDGPU->computeUnitCount;
+        uint32_t numWGs = getNumWorkGroups(problem, sizeMapping);
         // avoid zero division
-        if (numWGs == 0)
+        if(numWGs == 0)
         {
             autoGSU = 1;
             return;
         }
-        uint32_t MT0          = sizeMapping.macroTile.x;
-        uint32_t MT1          = sizeMapping.macroTile.y;
-        uint32_t MT2          = sizeMapping.depthU;
-        uint32_t M            = problem.freeSizeA(0);
-        uint32_t N            = problem.freeSizeB(0);
-        uint32_t B            = problem.batchSize(0);
-        uint32_t K            = problem.boundSize(0);
-        uint32_t GSULimit1    = max(1, (uint32_t)std::floor(numCUs / numWGs));
-        uint32_t GSULimit2    = max(1, (uint32_t)std::floor((float)K / (float)MT2 / 3.0));
-        autoGSU               = min(GSULimit2, max(1, GSULimit1));
+        uint32_t MT0       = sizeMapping.macroTile.x;
+        uint32_t MT1       = sizeMapping.macroTile.y;
+        uint32_t MT2       = sizeMapping.depthU;
+        uint32_t M         = problem.freeSizeA(0);
+        uint32_t N         = problem.freeSizeB(0);
+        uint32_t B         = problem.batchSize(0);
+        uint32_t K         = problem.boundSize(0);
+        uint32_t GSULimit1 = max(1, (uint32_t)std::floor(numCUs / numWGs));
+        uint32_t GSULimit2 = max(1, (uint32_t)std::floor((float)K / (float)MT2 / 3.0));
+        autoGSU            = min(GSULimit2, max(1, GSULimit1));
 
         // WorkgroupNumberCheck
 #define MAX_WORKGROUP_NUMBER 16777216
         if(autoGSU > 1)
             autoGSU = min(autoGSU,
-                        MAX_WORKGROUP_NUMBER / std::ceil(static_cast<float>(M) / MT0)
-                            / std::ceil(static_cast<float>(N) / MT1) / B);
+                          MAX_WORKGROUP_NUMBER / std::ceil(static_cast<float>(M) / MT0)
+                              / std::ceil(static_cast<float>(N) / MT1) / B);
 
         // GlobalSplitUCheckMinK
         if(autoGSU > 1)
@@ -984,7 +959,10 @@ namespace TensileLite
 
         // SynchronizerSizeCheck
         if(autoGSU > 1)
-            autoGSU = min(autoGSU, 409600/(sizeMapping.synchronizerSizePerWG * problem.getNumTiles(sizeMapping, 1) * B));
+            autoGSU = min(autoGSU,
+                          409600
+                              / (sizeMapping.synchronizerSizePerWG
+                                 * problem.getNumTiles(sizeMapping, 1) * B));
 
         // avoid gsu < 1
         autoGSU = max(autoGSU, 1);
@@ -1079,9 +1057,9 @@ namespace TensileLite
             uint32_t       staggerU        = mask8 & sizeMapping.staggerU;
             if(Debug::Instance().disableStaggerU())
                 staggerU = 0;
-            staggerU                       = staggerU | staggerUShift;
-            staggerU                       = staggerU | staggerUMapping;
-            internalArg0                   = internalArg0 | (staggerU << 16);
+            staggerU     = staggerU | staggerUShift;
+            staggerU     = staggerU | staggerUMapping;
+            internalArg0 = internalArg0 | (staggerU << 16);
         }
         else if(T_Debug && Debug::Instance().disableStaggerU())
             std::cout << "solution doesn't support configurable staggerU" << std::endl;
@@ -2838,7 +2816,7 @@ namespace TensileLite
             auto       tiles     = problem.getNumTiles(sizeMapping, gsu);
             if(tiles > 0) // Grouped GEMM reports 0 tiles
             {
-                size_t     skGrid    = getSKGrid(problem, hardware, tiles);
+                size_t skGrid = getSKGrid(problem, hardware, tiles);
                 // Get space required for partial tiles
                 if(skGrid > 0 && tiles % skGrid != 0 && !streamKDP)
                     size += partialTileSize(skGrid);
@@ -2935,7 +2913,8 @@ namespace TensileLite
         return h_args.size();
     }
 
-    size_t ContractionSolution::requiredSynchronizerSize(Problem const& problem, Hardware const& hardware) const
+    size_t ContractionSolution::requiredSynchronizerSize(Problem const&  problem,
+                                                         Hardware const& hardware) const
     {
         if(sizeMapping.globalAccumulation == 3)
         {
@@ -2950,43 +2929,43 @@ namespace TensileLite
     {
         switch(type)
         {
-            case rocisa::DataType::Float:
-                return TensileLite::analytical::DataType::Float;
-            case rocisa::DataType::Double:
-                return TensileLite::analytical::DataType::Double;
-            case rocisa::DataType::Half:
-                return TensileLite::analytical::DataType::Half;
-            case rocisa::DataType::Int8x4:
-                return TensileLite::analytical::DataType::Int8x4;
-            case rocisa::DataType::Int32:
-                return TensileLite::analytical::DataType::Int32;
-            case rocisa::DataType::BFloat16:
-                return TensileLite::analytical::DataType::BFloat16;
-            case rocisa::DataType::Int8:
-                return TensileLite::analytical::DataType::Int8;
-            case rocisa::DataType::Int64:
-                return TensileLite::analytical::DataType::Int64;
-            case rocisa::DataType::XFloat32:
-                return TensileLite::analytical::DataType::XFloat32;
-            case rocisa::DataType::Float8_fnuz:
-                return TensileLite::analytical::DataType::Float8_fnuz;
-            case rocisa::DataType::BFloat8_fnuz:
-                return TensileLite::analytical::DataType::BFloat8_fnuz;
-            case rocisa::DataType::Float8BFloat8_fnuz:
-                return TensileLite::analytical::DataType::Float8BFloat8_fnuz;
-            case rocisa::DataType::BFloat8Float8_fnuz:
-                return TensileLite::analytical::DataType::BFloat8Float8_fnuz;
-            case rocisa::DataType::Float8:
-                return TensileLite::analytical::DataType::Float8;
-            case rocisa::DataType::BFloat8:
-                return TensileLite::analytical::DataType::BFloat8;
-            case rocisa::DataType::Float8BFloat8:
-                return TensileLite::analytical::DataType::Float8BFloat8;
-            case rocisa::DataType::BFloat8Float8:
-                return TensileLite::analytical::DataType::BFloat8Float8;
+        case rocisa::DataType::Float:
+            return TensileLite::analytical::DataType::Float;
+        case rocisa::DataType::Double:
+            return TensileLite::analytical::DataType::Double;
+        case rocisa::DataType::Half:
+            return TensileLite::analytical::DataType::Half;
+        case rocisa::DataType::Int8x4:
+            return TensileLite::analytical::DataType::Int8x4;
+        case rocisa::DataType::Int32:
+            return TensileLite::analytical::DataType::Int32;
+        case rocisa::DataType::BFloat16:
+            return TensileLite::analytical::DataType::BFloat16;
+        case rocisa::DataType::Int8:
+            return TensileLite::analytical::DataType::Int8;
+        case rocisa::DataType::Int64:
+            return TensileLite::analytical::DataType::Int64;
+        case rocisa::DataType::XFloat32:
+            return TensileLite::analytical::DataType::XFloat32;
+        case rocisa::DataType::Float8_fnuz:
+            return TensileLite::analytical::DataType::Float8_fnuz;
+        case rocisa::DataType::BFloat8_fnuz:
+            return TensileLite::analytical::DataType::BFloat8_fnuz;
+        case rocisa::DataType::Float8BFloat8_fnuz:
+            return TensileLite::analytical::DataType::Float8BFloat8_fnuz;
+        case rocisa::DataType::BFloat8Float8_fnuz:
+            return TensileLite::analytical::DataType::BFloat8Float8_fnuz;
+        case rocisa::DataType::Float8:
+            return TensileLite::analytical::DataType::Float8;
+        case rocisa::DataType::BFloat8:
+            return TensileLite::analytical::DataType::BFloat8;
+        case rocisa::DataType::Float8BFloat8:
+            return TensileLite::analytical::DataType::Float8BFloat8;
+        case rocisa::DataType::BFloat8Float8:
+            return TensileLite::analytical::DataType::BFloat8Float8;
 
-            default:
-                return TensileLite::analytical::DataType::None;
+        default:
+            return TensileLite::analytical::DataType::None;
         }
     }
 
@@ -2994,7 +2973,7 @@ namespace TensileLite
                                           Hardware const& hardware,
                                           size_t          tiles) const
     {
-        size_t skGrid = tiles; // Fallback
+        size_t     skGrid    = tiles; // Fallback
         const bool streamKDP = Debug::Instance().useStreamKDataParrallel();
         if(streamKDP)
             skGrid = tiles;
@@ -3018,7 +2997,7 @@ namespace TensileLite
         {
             skGrid = pAMDGPU->skFixedGrid;
         }
-        else if (pAMDGPU->skDynamicGrid > 0)
+        else if(pAMDGPU->skDynamicGrid > 0)
         {
             size_t x     = 1;
             size_t y     = 1;
@@ -3035,7 +3014,8 @@ namespace TensileLite
             {
                 batch *= problem.batchSize(i);
             }
-            analytical::DataType miDataType = datatypeToAnalyticalDatatype(problem.computeInputType());
+            analytical::DataType miDataType
+                = datatypeToAnalyticalDatatype(problem.computeInputType());
             hip::HipAMDGPU const* hipAMDGPU = dynamic_cast<hip::HipAMDGPU const*>(&hardware);
 
             skGrid = analytical::streamk::select_streamk_grid(x,

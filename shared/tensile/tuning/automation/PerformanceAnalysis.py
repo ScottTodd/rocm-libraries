@@ -34,6 +34,7 @@ from TuningConfiguration import *
 
 headers = ""
 
+
 def MatchLine(headerPattern, linePattern, line):
 
     global headers
@@ -50,6 +51,7 @@ def MatchLine(headerPattern, linePattern, line):
 
         return matched
 
+
 def ResultsFilesList(inputPath, resultsName):
 
     resultsFilePattern = re.compile(resultsName + "\.[0-9]*")
@@ -58,6 +60,7 @@ def ResultsFilesList(inputPath, resultsName):
     filteredFiles = [f for f in resultsFiles if resultsFilePattern.match(f)]
 
     return filteredFiles
+
 
 def ParseResults(inputPath, outputPath, resultsName):
 
@@ -73,14 +76,17 @@ def ParseResults(inputPath, outputPath, resultsName):
     outfilename = resultsName + ".csv"
 
     outputFilePath = os.path.join(outputPath, outfilename)
-    outfile = open(outputFilePath,'w')
+    outfile = open(outputFilePath, "w")
 
     for fl in filteredFiles:
-        flPath = os.path.join(inputPath,fl)
-        filteredLines = [ line for line in open(flPath) if MatchLine(headerPattern, linePattern, line)]
+        flPath = os.path.join(inputPath, fl)
+        filteredLines = [
+            line for line in open(flPath) if MatchLine(headerPattern, linePattern, line)
+        ]
         outfile.writelines(filteredLines)
     outfile.flush()
     outfile.close()
+
 
 def getMultiplier(xdl):
 
@@ -89,14 +95,24 @@ def getMultiplier(xdl):
 
     return 1
 
+
 def getCuCount(gpu):
 
-    gpuMap = {'vega10':64, 'mi25':64, 'vega20':64, 'v340l':56,'mi50':60,'arcturus':120,'mi60':64}
+    gpuMap = {
+        "vega10": 64,
+        "mi25": 64,
+        "vega20": 64,
+        "v340l": 56,
+        "mi50": 60,
+        "arcturus": 120,
+        "mi60": 64,
+    }
     for key in gpuMap.keys():
         if gpu == key:
             return gpuMap[key]
 
     return 64
+
 
 def fillCallCounts(problemMapper, callCounts, callCount, callCountStrided, isOne):
 
@@ -104,7 +120,12 @@ def fillCallCounts(problemMapper, callCounts, callCount, callCountStrided, isOne
         for klist in i:
             midList = list()
             for key in klist:
-                if key == "transposeA" or key == "transposeB" or key == "f" or key == "i":
+                if (
+                    key == "transposeA"
+                    or key == "transposeB"
+                    or key == "f"
+                    or key == "i"
+                ):
                     if klist[key] == 10 and isOne:
                         klist[key] = 1
                     midList.append(klist[key])
@@ -117,12 +138,16 @@ def fillCallCounts(problemMapper, callCounts, callCount, callCountStrided, isOne
         elif "gemm_strided_batched" in line[0]:
             callCountStrided.append(line[3])
 
+
 def chooseCallCount(resultsName, callCount, callCountStrided):
     if "strided" in resultsName:
         return callCountStrided
     return callCount
 
-def ProcessResults(outputPath, resultsName, freqM, sz, call_count, gpu = 'vega20', xdl = False):
+
+def ProcessResults(
+    outputPath, resultsName, freqM, sz, call_count, gpu="vega20", xdl=False
+):
 
     global headers
     resultsFilename = resultsName + ".csv"
@@ -136,52 +161,59 @@ def ProcessResults(outputPath, resultsName, freqM, sz, call_count, gpu = 'vega20
 
     headerValues = headers.strip().split(",")
     headerLength = len(headerValues)
-    key = headerValues[0:headerLength-2]
-    key.append('us')
+    key = headerValues[0 : headerLength - 2]
+    key.append("us")
 
     performanceField = "rocblas-Gflops"
     timingField = "us"
 
-    df = data.groupby(key,sort=False)
+    df = data.groupby(key, sort=False)
 
     results = df[performanceField].mean().to_frame()
     timingResults = df[timingField].mean().to_frame()
 
-    freq=freqM
-    factor=sz * 64 * multiplier * cus
-    results['eff'] = 100*1e3*results['rocblas-Gflops'] / (factor * freq)
-    results['us_w'] = timingResults['us']*call_count
+    freq = freqM
+    factor = sz * 64 * multiplier * cus
+    results["eff"] = 100 * 1e3 * results["rocblas-Gflops"] / (factor * freq)
+    results["us_w"] = timingResults["us"] * call_count
 
     aggregateFileName = resultsName + "-aggregated.csv"
     aggregateFilePath = os.path.join(outputPath, aggregateFileName)
 
     results.to_csv(aggregateFilePath, header=True)
 
-    resultsBad = results[results['eff'] < 70]
+    resultsBad = results[results["eff"] < 70]
     badResultsFileName = resultsName + "-bad.csv"
     badResultsFilePath = os.path.join(outputPath, badResultsFileName)
-    resultsBad.sort_values(by='us_w',ascending=False).to_csv(badResultsFilePath, header=True)
+    resultsBad.sort_values(by="us_w", ascending=False).to_csv(
+        badResultsFilePath, header=True
+    )
 
     large1 = data
-    large1['N'] = pd.to_numeric(large1['N'])
-    large1['M'] = pd.to_numeric(large1['M'])
-    large2 = large1[large1['N']>1000]
-    large = large2[large2['M']>1000]
+    large1["N"] = pd.to_numeric(large1["N"])
+    large1["M"] = pd.to_numeric(large1["M"])
+    large2 = large1[large1["N"] > 1000]
+    large = large2[large2["M"] > 1000]
 
     largeAgg = large.groupby(key)
     largeResults = largeAgg[performanceField].mean().to_frame()
     largeResultsTime = largeAgg[timingField].mean().to_frame()
-    largeResults['eff'] = 100*1e3*largeResults['rocblas-Gflops'] / (factor * freq)
-    largeResults['us_w'] = largeResultsTime['us']
+    largeResults["eff"] = 100 * 1e3 * largeResults["rocblas-Gflops"] / (factor * freq)
+    largeResults["us_w"] = largeResultsTime["us"]
 
     resultsFileName = resultsName + "-large.csv"
     resultsFilePath = os.path.join(outputPath, resultsFileName)
-    largeResults.sort_values(by='us_w',ascending=False).to_csv(resultsFilePath, header=True)
+    largeResults.sort_values(by="us_w", ascending=False).to_csv(
+        resultsFilePath, header=True
+    )
 
-    resultsBad = largeResults[largeResults['eff'] < 70]
+    resultsBad = largeResults[largeResults["eff"] < 70]
     badResultsFileName = resultsName + "-bad-large.csv"
     badResultsFilePath = os.path.join(outputPath, badResultsFileName)
-    resultsBad.sort_values(by='eff',ascending=True).to_csv(badResultsFilePath, header=True)
+    resultsBad.sort_values(by="eff", ascending=True).to_csv(
+        badResultsFilePath, header=True
+    )
+
 
 def RunMain():
 
@@ -192,13 +224,24 @@ def RunMain():
 
     argParser = argparse.ArgumentParser()
     argParser.add_argument("input_path", help="path where the results are located")
-    argParser.add_argument("output_path", help="path where the processed files are to go")
-    argParser.add_argument("frequency", help="frequecy in megahertz used in testing", type=int,default=1301)
-    argParser.add_argument("data_size", help="data size",type=int,default=2)
+    argParser.add_argument(
+        "output_path", help="path where the processed files are to go"
+    )
+    argParser.add_argument(
+        "frequency",
+        help="frequecy in megahertz used in testing",
+        type=int,
+        default=1301,
+    )
+    argParser.add_argument("data_size", help="data size", type=int, default=2)
     argParser.add_argument("input_file_name", help="configuration file path")
-    argParser.add_argument("gpu", help="which gpu was used", type=str,default="vega20")
-    argParser.add_argument("mfma", help="were mfma instructions enabled", type=strbool,default=False)
-    argParser.add_argument("is_count_1", help="were mfma instructions enabled", type=strbool,default=False) # duplicated parameter?
+    argParser.add_argument("gpu", help="which gpu was used", type=str, default="vega20")
+    argParser.add_argument(
+        "mfma", help="were mfma instructions enabled", type=strbool, default=False
+    )
+    argParser.add_argument(
+        "is_count_1", help="were mfma instructions enabled", type=strbool, default=False
+    )  # duplicated parameter?
 
     args = argParser.parse_args(userArgs)
 
@@ -218,7 +261,9 @@ def RunMain():
 
     fillCallCounts(problemMapper, callCounts, callCount, callCountStrided, isOne)
 
-    resultsFiles = [f for f in os.listdir(inputPath) if (os.path.isfile(os.path.join(inputPath, f)))]
+    resultsFiles = [
+        f for f in os.listdir(inputPath) if (os.path.isfile(os.path.join(inputPath, f)))
+    ]
     resultsNameSet = set()
 
     for resultsFile in resultsFiles:

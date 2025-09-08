@@ -176,13 +176,14 @@ static void hipsparselt_set_listener()
 // Print Version
 static void hipsparselt_print_version()
 {
-    static int version;
+    static int               version;
     hipsparselt_local_handle handle;
     hipsparseLtGetVersion(handle, &version);
 
     char rev[128];
     hipsparseLtGetGitRevision(handle, &rev[0]);
-    hipsparselt_cout << "hipSPARSELt version: " << version << " revision: " << rev << "\n" << std::endl;
+    hipsparselt_cout << "hipSPARSELt version: " << version << " revision: " << rev << "\n"
+                     << std::endl;
 }
 
 static void hipsparselt_print_usage_warning()

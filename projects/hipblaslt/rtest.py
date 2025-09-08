@@ -35,18 +35,37 @@ import subprocess
 
 def parse_args():
     """Parse command-line arguments"""
-    parser = argparse.ArgumentParser(description="""
+    parser = argparse.ArgumentParser(
+        description="""
     Checks build arguments
-    """)
+    """
+    )
 
     # Mutually exclusive group for --test and --emulation
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument('-e',  '--emulation', type=str, choices=['smoke', 'regression', 'extended'],
-                        help='Enable specific emulation test mode, e.g. smoke test')
-    parser.add_argument('-i', '--install_dir', type=str, required=False, default="",
-                        help='Installation directory where build or release folders are (optional, default: $PWD)')
-    parser.add_argument('-o', '--output', type=str, required=False, default="xml", 
-                        help='Test output file (optional, default: test_detail.xml)')
+    group.add_argument(
+        "-e",
+        "--emulation",
+        type=str,
+        choices=["smoke", "regression", "extended"],
+        help="Enable specific emulation test mode, e.g. smoke test",
+    )
+    parser.add_argument(
+        "-i",
+        "--install_dir",
+        type=str,
+        required=False,
+        default="",
+        help="Installation directory where build or release folders are (optional, default: $PWD)",
+    )
+    parser.add_argument(
+        "-o",
+        "--output",
+        type=str,
+        required=False,
+        default="xml",
+        help="Test output file (optional, default: test_detail.xml)",
+    )
     args = parser.parse_args()
 
     return args
@@ -55,7 +74,7 @@ def parse_args():
 def run_cmd(args, filter):
 
     test_binary = ""
-    if args.install_dir :
+    if args.install_dir:
         test_binary = os.path.join(args.install_dir, "hipblaslt-test")
     else:
         test_binary = os.path.join(pathlib.os.curdir, "hipblaslt-test")
@@ -65,9 +84,9 @@ def run_cmd(args, filter):
 
     sub_env = os.environ.copy()
     sub_env["PATH"] = os.getcwd() + os.pathsep + sub_env["PATH"]
-    
+
     output_file = "--gtest_output=" + args.output if args.output else ""
-    
+
     cmd = [test_binary, filter, output_file]
     test_proc = subprocess.run(cmd, stdout=sys.stdout, stderr=sys.stderr, env=sub_env)
 
@@ -85,10 +104,11 @@ def run_test(args):
     elif args.emulation == "extended":
         run_cmd(args, "--gtest_filter=*pre_checkin*:*nightly*")
 
-    if (os.curdir != cwd):
-        os.chdir( cwd )
+    if os.curdir != cwd:
+        os.chdir(cwd)
 
     return 0
+
 
 def main():
 
@@ -99,5 +119,5 @@ def main():
     sys.exit
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

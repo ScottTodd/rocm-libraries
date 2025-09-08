@@ -36,7 +36,8 @@ template<class Benchmark,
          unsigned int ItemsPerThread,
          bool         WithTile,
          typename... Args>
-__global__ __launch_bounds__(BlockSize) void kernel(Args... args)
+__global__ __launch_bounds__(BlockSize)
+void kernel(Args... args)
 {
     Benchmark::template run<BlockSize, ItemsPerThread, WithTile>(args...);
 }
@@ -44,7 +45,8 @@ __global__ __launch_bounds__(BlockSize) void kernel(Args... args)
 template<class T>
 struct minus
 {
-    HIPCUB_HOST_DEVICE inline constexpr T operator()(const T& a, const T& b) const
+    HIPCUB_HOST_DEVICE
+    inline constexpr T operator()(const T& a, const T& b) const
     {
         return a - b;
     }
@@ -53,7 +55,8 @@ struct minus
 struct subtract_left
 {
     template<unsigned int BlockSize, unsigned int ItemsPerThread, bool WithTile, typename T>
-    __device__ static void run(const T* d_input, T* d_output, unsigned int trials)
+    __device__
+    static void run(const T* d_input, T* d_output, unsigned int trials)
     {
         const unsigned int lid          = threadIdx.x;
         const unsigned int block_offset = blockIdx.x * ItemsPerThread * BlockSize;
@@ -70,7 +73,8 @@ struct subtract_left
             if(WithTile)
             {
                 adjacent_difference.SubtractLeft(input, output, minus<T>{}, T(123));
-            } else
+            }
+            else
             {
                 adjacent_difference.SubtractLeft(input, output, minus<T>{});
             }
@@ -90,8 +94,8 @@ struct subtract_left
 struct subtract_left_partial_tile
 {
     template<unsigned int BlockSize, unsigned int ItemsPerThread, bool WithTile, typename T>
-    __device__ static void
-        run(const T* d_input, const int* tile_sizes, T* d_output, unsigned int trials)
+    __device__
+    static void run(const T* d_input, const int* tile_sizes, T* d_output, unsigned int trials)
     {
         const unsigned int lid          = threadIdx.x;
         const unsigned int block_offset = blockIdx.x * ItemsPerThread * BlockSize;
@@ -118,7 +122,8 @@ struct subtract_left_partial_tile
                                                             minus<T>{},
                                                             tile_size,
                                                             T(123));
-            } else
+            }
+            else
             {
                 adjacent_difference.SubtractLeftPartialTile(input, output, minus<T>{}, tile_size);
             }
@@ -140,7 +145,8 @@ struct subtract_left_partial_tile
 struct subtract_right
 {
     template<unsigned int BlockSize, unsigned int ItemsPerThread, bool WithTile, typename T>
-    __device__ static void run(const T* d_input, T* d_output, unsigned int trials)
+    __device__
+    static void run(const T* d_input, T* d_output, unsigned int trials)
     {
         const unsigned int lid          = threadIdx.x;
         const unsigned int block_offset = blockIdx.x * ItemsPerThread * BlockSize;
@@ -157,7 +163,8 @@ struct subtract_right
             if(WithTile)
             {
                 adjacent_difference.SubtractRight(input, output, minus<T>{}, T(123));
-            } else
+            }
+            else
             {
                 adjacent_difference.SubtractRight(input, output, minus<T>{});
             }
@@ -177,8 +184,8 @@ struct subtract_right
 struct subtract_right_partial_tile
 {
     template<unsigned int BlockSize, unsigned int ItemsPerThread, bool WithTile, typename T>
-    __device__ static void
-        run(const T* d_input, const int* tile_sizes, T* d_output, unsigned int trials)
+    __device__
+    static void run(const T* d_input, const int* tile_sizes, T* d_output, unsigned int trials)
     {
         const unsigned int lid          = threadIdx.x;
         const unsigned int block_offset = blockIdx.x * ItemsPerThread * BlockSize;
@@ -391,7 +398,10 @@ int main(int argc, char* argv[])
     std::vector<benchmark::internal::Benchmark*> benchmarks;
     add_benchmarks<subtract_left>("subtract_left", benchmarks, stream, size);
     add_benchmarks<subtract_right>("subtract_right", benchmarks, stream, size);
-    add_benchmarks<subtract_left_partial_tile>("subtract_left_partial_tile", benchmarks, stream, size);
+    add_benchmarks<subtract_left_partial_tile>("subtract_left_partial_tile",
+                                               benchmarks,
+                                               stream,
+                                               size);
     add_benchmarks<subtract_right_partial_tile>("subtract_right_partial_tile",
                                                 benchmarks,
                                                 stream,

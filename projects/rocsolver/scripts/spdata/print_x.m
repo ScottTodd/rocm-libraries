@@ -1,10 +1,13 @@
 % ********************************************************************
-% Copyright (C) 2023 Advanced Micro Devices, Inc. All rights reserved.
-% ********************************************************************
+    % Copyright(C) 2023 Advanced Micro Devices,
+    Inc.All rights reserved.
+    % ********************************************************************
 
-function isok = print_x( matname, X )
+    function isok
+    = print_x(matname, X)
 
-%{
+    %
+{
 -----------------------------------------------------------
   This function prints into file the contents of full matrix M.
 
@@ -23,50 +26,48 @@ function isok = print_x( matname, X )
   rocSOLVER library interface and could change or be removed
   without any notice)
 -----------------------------------------------------------
-%}
+%
+}
 
-
-[vec,msg] = fopen( matname , 'w');
+[ vec, msg ] = fopen(matname, 'w');
 isok = (vec >= 0);
-if (!isok),
-  error( sprintf('print_x: fopen returns %s', msg));
-  return;
+if (!isok)
+    , error(sprintf('print_x: fopen returns %s', msg));
+return;
 end;
 
-m = size(X,1);
-n = size(X,2);
+m = size(X, 1);
+n = size(X, 2);
 for i=1:m,
   for j=1:n-1,
     istat = fprintf(vec,'%1.17g ',X(i,j));
-    isok = (istat >= 0);
-    if (!isok),
-      error(sprintf('print_x: fprintf returns istat=%d',istat));
-      return;
-    end;
-  end;
+isok = (istat >= 0);
+if (!isok)
+    , error(sprintf('print_x: fprintf returns istat=%d', istat));
+return;
+end;
+end;
 
-  istat = fprintf(vec,'%1.17g',X(i,n));
-  isok = (istat >= 0);
-  if (!isok),
-    error(sprintf('print_x: fprintf returns istat=%d',istat));
-    return;
-  end;
+istat = fprintf(vec, '%1.17g', X(i, n));
+isok = (istat >= 0);
+if (!isok)
+    , error(sprintf('print_x: fprintf returns istat=%d', istat));
+return;
+end;
 
-  istat = fprintf(vec,'\n');
-  isok = (istat >= 0);
-  if (!isok),
-    error(sprintf('print_x: fprintf returns istat=%d',istat));
-    return;
-  end;
+istat = fprintf(vec, '\n');
+isok = (istat >= 0);
+if (!isok)
+    , error(sprintf('print_x: fprintf returns istat=%d', istat));
+return;
+end;
 end;
 
 istat = fclose(vec);
 isok = (istat == 0);
-if (!isok),
-  error(sprintf('print_x: fclose returns istat=%d',istat));
-  return;
+if (!isok)
+    , error(sprintf('print_x: fclose returns istat=%d', istat));
+return;
 end;
 
-
 end
-

@@ -64,8 +64,7 @@ struct BlockScanRunningPrefixOp
     ///
     /// \param block_aggregate The aggregate sum of the BlockScan inputs
     HIPCUB_DEVICE
-    HIPCUB_FORCEINLINE T
-        operator()(const T& block_aggregate)
+    HIPCUB_FORCEINLINE T operator()(const T& block_aggregate)
     {
         T retval      = running_total;
         running_total = op(running_total, block_aggregate);
@@ -99,14 +98,16 @@ public:
     using value_type           = typename ScanTileState::StatusValueT;
     using flag_underlying_type = typename ScanTileState::StatusWord;
 
-    HIPCUB_FORCEINLINE HIPCUB_HOST_DEVICE ScanTileStateAsInternal(ScanTileState to_be_wrapped)
+    HIPCUB_FORCEINLINE HIPCUB_HOST_DEVICE
+    ScanTileStateAsInternal(ScanTileState to_be_wrapped)
         : wrapped(to_be_wrapped)
     {}
 
-    HIPCUB_FORCEINLINE HIPCUB_HOST hipError_t static create(ScanTileStateAsInternal& state,
-                                                            void*                    temp_storage,
-                                                            const unsigned int       num_tiles,
-                                                            const hipStream_t /* stream */)
+    HIPCUB_FORCEINLINE HIPCUB_HOST
+    hipError_t static create(ScanTileStateAsInternal& state,
+                             void*                    temp_storage,
+                             const unsigned int       num_tiles,
+                             const hipStream_t /* stream */)
     {
         return state.wrapped.Init(num_tiles, temp_storage, 0);
     }
@@ -204,14 +205,14 @@ enum class MemoryOrder
 
 /**
  * \brief Tile status, which consists of a scan status and a prefix value packed together.
- * 
+ *
  * \par Overview
  * - rocPRIM has its own implementation of the decoupled look-back, and therefore hipCUB exposes
  * this API exclusively for compatibility. That is, it is not internally used by any algorithm.
  * - Beware that some member variables may not be present and some member methods may not behave
  * as expected yet, as not all of rocPRIM's internal implementation of the decoupled look-back
  * is accesible from hipCUB.
- * 
+ *
  * \tparam T           Type of the values scanned.
  * \tparam SINGLE_WORD Whether the scan status and value type fit into one machine word that can
  * be loaded/stored using single atomic instructions.
@@ -325,7 +326,7 @@ public:
 
 /**
  * \brief (Block) Scan prefix functor for retrieving the current tile prefix.
- * 
+ *
  * \par Overview
  * - rocPRIM has its own implementation of the decoupled look-back, and therefore hipCUB exposes
  * this API exclusively for compatibility. That is, it is not internally used by any algorithm.
@@ -407,10 +408,11 @@ public:
     /// \brief Inclusive prefix for this tile.
     T inclusive_prefix;
 
-    HIPCUB_FORCEINLINE HIPCUB_DEVICE TilePrefixCallbackOp(ScanTileStateT& tile_status,
-                                                          TempStorage&    temp_storage,
-                                                          ScanOpT         scan_op,
-                                                          int             tile_idx)
+    HIPCUB_FORCEINLINE HIPCUB_DEVICE
+    TilePrefixCallbackOp(ScanTileStateT& tile_status,
+                         TempStorage&    temp_storage,
+                         ScanOpT         scan_op,
+                         int             tile_idx)
         : tile_idx(tile_idx)
         , scan_op(scan_op)
         , temp_storage(temp_storage)
@@ -420,9 +422,8 @@ public:
     {}
 
     /// \brief Constructs prefix functor for a given tile index.
-    HIPCUB_FORCEINLINE HIPCUB_DEVICE TilePrefixCallbackOp(ScanTileStateT& tile_status,
-                                                          TempStorage&    temp_storage,
-                                                          ScanOpT         scan_op)
+    HIPCUB_FORCEINLINE HIPCUB_DEVICE
+    TilePrefixCallbackOp(ScanTileStateT& tile_status, TempStorage& temp_storage, ScanOpT scan_op)
         : TilePrefixCallbackOp(tile_status, temp_storage, scan_op, tile_idx)
     {}
 

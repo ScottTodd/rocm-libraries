@@ -214,7 +214,8 @@ BatchCopyData<ValueType, BufferSizeType> prepare_data(const int32_t num_tlev_buf
     {
         src_offsets = shuffled_exclusive_scan<offset_type>(h_buffer_num_elements, rng);
         dst_offsets = shuffled_exclusive_scan<offset_type>(h_buffer_num_elements, rng);
-    } else
+    }
+    else
     {
         src_offsets = std::vector<offset_type>(num_buffers);
         dst_offsets = std::vector<offset_type>(num_buffers);
@@ -372,7 +373,7 @@ int32_t main(int32_t argc, char* argv[])
 
     hipDeviceProp_t devProp;
     int             device_id = 0;
-    
+
     HIP_CHECK(hipGetDevice(&device_id));
     HIP_CHECK(hipGetDeviceProperties(&devProp, device_id));
 
@@ -392,8 +393,6 @@ int32_t main(int32_t argc, char* argv[])
                   BENCHMARK_TYPE(2, 2),
                   BENCHMARK_TYPE(4, 4),
                   BENCHMARK_TYPE(8, 8)};
-
-            
 
     // Use manual timing
     for(auto& b : benchmarks)

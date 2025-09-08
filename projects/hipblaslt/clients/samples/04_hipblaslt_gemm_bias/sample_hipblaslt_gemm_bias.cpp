@@ -12,21 +12,21 @@
 #include "helper.h"
 
 void simpleGemmBias(hipblasLtHandle_t  handle,
-                hipblasOperation_t trans_a,
-                hipblasOperation_t trans_b,
-                int64_t            m,
-                int64_t            n,
-                int64_t            k,
-                int64_t            batch_count,
-                float&             alpha,
-                float&             beta,
-                void*              d_a,
-                void*              d_b,
-                void*              d_c,
-                void*              d_d,
-                void*              d_workspace,
-                int64_t            max_workspace_size,
-                hipStream_t        stream);
+                    hipblasOperation_t trans_a,
+                    hipblasOperation_t trans_b,
+                    int64_t            m,
+                    int64_t            n,
+                    int64_t            k,
+                    int64_t            batch_count,
+                    float&             alpha,
+                    float&             beta,
+                    void*              d_a,
+                    void*              d_b,
+                    void*              d_c,
+                    void*              d_d,
+                    void*              d_workspace,
+                    int64_t            max_workspace_size,
+                    hipStream_t        stream);
 
 int main()
 {
@@ -40,42 +40,42 @@ int main()
 
     runner.run([&runner] {
         simpleGemmBias(runner.handle,
-                   HIPBLAS_OP_N,
-                   HIPBLAS_OP_N,
-                   runner.m,
-                   runner.n,
-                   runner.k,
-                   runner.batch_count,
-                   runner.alpha,
-                   runner.beta,
-                   runner.d_a,
-                   runner.d_b,
-                   runner.d_c,
-                   runner.d_d,
-                   runner.d_workspace,
-                   runner.max_workspace_size,
-                   runner.stream);
+                       HIPBLAS_OP_N,
+                       HIPBLAS_OP_N,
+                       runner.m,
+                       runner.n,
+                       runner.k,
+                       runner.batch_count,
+                       runner.alpha,
+                       runner.beta,
+                       runner.d_a,
+                       runner.d_b,
+                       runner.d_c,
+                       runner.d_d,
+                       runner.d_workspace,
+                       runner.max_workspace_size,
+                       runner.stream);
     });
 
     return 0;
 }
 
 void simpleGemmBias(hipblasLtHandle_t  handle,
-                hipblasOperation_t trans_a,
-                hipblasOperation_t trans_b,
-                int64_t            m,
-                int64_t            n,
-                int64_t            k,
-                int64_t            batch_count,
-                float&             alpha,
-                float&             beta,
-                void*              d_a,
-                void*              d_b,
-                void*              d_c,
-                void*              d_d,
-                void*              d_workspace,
-                int64_t            max_workspace_size,
-                hipStream_t        stream)
+                    hipblasOperation_t trans_a,
+                    hipblasOperation_t trans_b,
+                    int64_t            m,
+                    int64_t            n,
+                    int64_t            k,
+                    int64_t            batch_count,
+                    float&             alpha,
+                    float&             beta,
+                    void*              d_a,
+                    void*              d_b,
+                    void*              d_c,
+                    void*              d_d,
+                    void*              d_workspace,
+                    int64_t            max_workspace_size,
+                    hipStream_t        stream)
 {
     hipblasLtMatrixLayout_t matA, matB, matC, matD;
     CHECK_HIPBLASLT_ERROR(hipblasLtMatrixLayoutCreate(&matA, HIP_R_16F, m, k, m));
@@ -119,13 +119,17 @@ void simpleGemmBias(hipblasLtHandle_t  handle,
         matmul, HIPBLASLT_MATMUL_DESC_EPILOGUE, &epilogue, sizeof(epilogue)));
 
     hipDataType bias_data_type = HIP_R_16F;
-    CHECK_HIPBLASLT_ERROR(hipblasLtMatmulDescSetAttribute(matmul, HIPBLASLT_MATMUL_DESC_BIAS_DATA_TYPE, &bias_data_type, sizeof(hipDataType)));
+    CHECK_HIPBLASLT_ERROR(hipblasLtMatmulDescSetAttribute(
+        matmul, HIPBLASLT_MATMUL_DESC_BIAS_DATA_TYPE, &bias_data_type, sizeof(hipDataType)));
 
     // Allocate and set the bias tensor
     std::vector<hipblasLtHalf> h_bias(m, 1.0f); // Example bias values, adjust as needed
-    void* d_bias;
+    void*                      d_bias;
     CHECK_HIP_ERROR(hipMalloc(&d_bias, m * sizeof(hipblasLtHalf))); // Allocate memory for bias
-    CHECK_HIP_ERROR(hipMemcpy(d_bias, h_bias.data(), m * sizeof(hipblasLtHalf), hipMemcpyHostToDevice)); // Copy bias to device
+    CHECK_HIP_ERROR(hipMemcpy(d_bias,
+                              h_bias.data(),
+                              m * sizeof(hipblasLtHalf),
+                              hipMemcpyHostToDevice)); // Copy bias to device
 
     CHECK_HIPBLASLT_ERROR(hipblasLtMatmulDescSetAttribute(
         matmul, HIPBLASLT_MATMUL_DESC_BIAS_POINTER, &d_bias, sizeof(void*)));

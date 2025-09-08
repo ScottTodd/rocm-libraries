@@ -31,7 +31,7 @@
 #else
 #include <hipblas/hipblas.h>
 #endif
-#include <rocblaslt.h>
 #include <Debug.hpp>
+#include <rocblaslt.h>
 
 hipblasStatus_t RocBlasLtStatusToHIPStatus(rocblaslt_status_ status);

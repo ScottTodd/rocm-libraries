@@ -18,8 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include <stdio.h>
 #include <gtest/gtest.h>
+#include <stdio.h>
 
 #include <hip/hip_runtime.h>
 #include <hiprand/hiprand.hpp>
@@ -139,14 +139,17 @@ void hiprand_rng_ctor_template()
     T x(generator);
     ASSERT_EQ(generator, (hiprandGenerator_t)NULL);
 
-    try {
+    try
+    {
         T y(generator);
         FAIL() << "Expected hiprand_cpp::error";
     }
-    catch(const hiprand_cpp::error& err) {
+    catch(const hiprand_cpp::error& err)
+    {
         EXPECT_EQ(err.error_code(), HIPRAND_STATUS_NOT_INITIALIZED);
     }
-    catch(...) {
+    catch(...)
+    {
         FAIL() << "Expected hiprand_cpp::error";
     }
 }
@@ -236,14 +239,17 @@ void hiprand_qrng_ctor_template()
     T(11U, 2ULL); // dimensions, offset
     T(20000, 2ULL); // dimensions, offset
 
-    try {
+    try
+    {
         T(20001, 2ULL);
         FAIL() << "Expected hiprand_cpp::error";
     }
-    catch(const hiprand_cpp::error& err) {
+    catch(const hiprand_cpp::error& err)
+    {
         EXPECT_EQ(err.error_code(), HIPRAND_STATUS_OUT_OF_RANGE);
     }
-    catch(...) {
+    catch(...)
+    {
         FAIL() << "Expected hiprand_cpp::error";
     }
 }
@@ -275,14 +281,17 @@ void hiprand_qrng_dims_template()
     engine.dimensions(11U);
     engine.dimensions(20000U);
 
-    try {
+    try
+    {
         engine.dimensions(20001U);
         FAIL() << "Expected hiprand_cpp::error";
     }
-    catch(const hiprand_cpp::error& err) {
+    catch(const hiprand_cpp::error& err)
+    {
         EXPECT_EQ(err.error_code(), HIPRAND_STATUS_OUT_OF_RANGE);
     }
-    catch(...) {
+    catch(...)
+    {
         FAIL() << "Expected hiprand_cpp::error";
     }
 }
@@ -310,7 +319,7 @@ TYPED_TEST(hiprand_cpp_wrapper_offset, hiprand_rng_offset)
 template<class T>
 void hiprand_rng_stream_template()
 {
-    T engine;
+    T           engine;
     hipStream_t stream;
     HIP_CHECK(hipStreamCreate(&stream));
     engine.stream(stream);
@@ -327,15 +336,12 @@ TYPED_TEST(hiprand_cpp_wrapper, hiprand_rng_stream)
 template<class T, class IntType>
 void hiprand_uniform_int_dist_template()
 {
-    T engine;
+    T                                              engine;
     hiprand_cpp::uniform_int_distribution<IntType> d;
 
     const size_t output_size = 8192;
-    IntType * output;
-    HIP_CHECK(
-        hipMallocHelper((void **)&output,
-        output_size * sizeof(IntType))
-    );
+    IntType*     output;
+    HIP_CHECK(hipMallocHelper((void**)&output, output_size * sizeof(IntType)));
     HIP_CHECK(hipDeviceSynchronize());
 
     // generate
@@ -374,15 +380,12 @@ TYPED_TEST(hiprand_cpp_wrapper_64, hiprand_uniform_int_dist_64)
 template<class T, class RealType>
 void hiprand_uniform_real_dist_template()
 {
-    T engine;
+    T                                                engine;
     hiprand_cpp::uniform_real_distribution<RealType> d;
 
     const size_t output_size = 8192;
-    RealType * output;
-    HIP_CHECK(
-        hipMallocHelper((void **)&output,
-        output_size * sizeof(RealType))
-    );
+    RealType*    output;
+    HIP_CHECK(hipMallocHelper((void**)&output, output_size * sizeof(RealType)));
     HIP_CHECK(hipDeviceSynchronize());
 
     // generate
@@ -390,13 +393,10 @@ void hiprand_uniform_real_dist_template()
     HIP_CHECK(hipDeviceSynchronize());
 
     std::vector<RealType> output_host(output_size);
-    HIP_CHECK(
-        hipMemcpy(
-            output_host.data(), output,
-            output_size * sizeof(RealType),
-            hipMemcpyDeviceToHost
-        )
-    );
+    HIP_CHECK(hipMemcpy(output_host.data(),
+                        output,
+                        output_size * sizeof(RealType),
+                        hipMemcpyDeviceToHost));
     HIP_CHECK(hipDeviceSynchronize());
     HIP_CHECK(hipFree(output));
 
@@ -424,15 +424,12 @@ TYPED_TEST(hiprand_cpp_wrapper, hiprand_uniform_real_dist_double)
 template<class T, class RealType>
 void hiprand_normal_dist_template()
 {
-    T engine;
+    T                                          engine;
     hiprand_cpp::normal_distribution<RealType> d;
 
     const size_t output_size = 8192;
-    RealType * output;
-    HIP_CHECK(
-        hipMallocHelper((void **)&output,
-        output_size * sizeof(RealType))
-    );
+    RealType*    output;
+    HIP_CHECK(hipMallocHelper((void**)&output, output_size * sizeof(RealType)));
     HIP_CHECK(hipDeviceSynchronize());
 
     // generate
@@ -440,13 +437,10 @@ void hiprand_normal_dist_template()
     HIP_CHECK(hipDeviceSynchronize());
 
     std::vector<RealType> output_host(output_size);
-    HIP_CHECK(
-        hipMemcpy(
-            output_host.data(), output,
-            output_size * sizeof(RealType),
-            hipMemcpyDeviceToHost
-        )
-    );
+    HIP_CHECK(hipMemcpy(output_host.data(),
+                        output,
+                        output_size * sizeof(RealType),
+                        hipMemcpyDeviceToHost));
     HIP_CHECK(hipDeviceSynchronize());
     HIP_CHECK(hipFree(output));
 
@@ -496,15 +490,12 @@ TEST(hiprand_cpp_wrapper, hiprand_normal_dist_param)
 template<class T, class RealType>
 void hiprand_lognormal_dist_template()
 {
-    T engine;
+    T                                             engine;
     hiprand_cpp::lognormal_distribution<RealType> d(1.6, 0.25);
 
     const size_t output_size = 8192;
-    RealType * output;
-    HIP_CHECK(
-        hipMallocHelper((void **)&output,
-        output_size * sizeof(RealType))
-    );
+    RealType*    output;
+    HIP_CHECK(hipMallocHelper((void**)&output, output_size * sizeof(RealType)));
     HIP_CHECK(hipDeviceSynchronize());
 
     // generate
@@ -512,13 +503,10 @@ void hiprand_lognormal_dist_template()
     HIP_CHECK(hipDeviceSynchronize());
 
     std::vector<RealType> output_host(output_size);
-    HIP_CHECK(
-        hipMemcpy(
-            output_host.data(), output,
-            output_size * sizeof(RealType),
-            hipMemcpyDeviceToHost
-        )
-    );
+    HIP_CHECK(hipMemcpy(output_host.data(),
+                        output,
+                        output_size * sizeof(RealType),
+                        hipMemcpyDeviceToHost));
     HIP_CHECK(hipDeviceSynchronize());
     HIP_CHECK(hipFree(output));
 
@@ -537,7 +525,7 @@ void hiprand_lognormal_dist_template()
     stddev = std::sqrt(stddev / output_size);
 
     double logmean = std::log(mean * mean / std::sqrt(stddev + mean * mean));
-    double logstd = std::sqrt(std::log(1.0f + stddev/(mean * mean)));
+    double logstd  = std::sqrt(std::log(1.0f + stddev / (mean * mean)));
 
     EXPECT_NEAR(1.6, logmean, 1.6 * 0.2);
     EXPECT_NEAR(0.25, logstd, 0.25 * 0.2);
@@ -577,10 +565,10 @@ TEST(hiprand_cpp_wrapper, hiprand_lognormal_dist_param)
 template<class T>
 void hiprand_poisson_dist_template(const double lambda)
 {
-    T engine;
+    T                                               engine;
     hiprand_cpp::poisson_distribution<unsigned int> d(lambda);
 
-    const size_t output_size = 8192;
+    const size_t  output_size = 8192;
     unsigned int* output;
     HIP_CHECK(hipMallocHelper((void**)&output, output_size * sizeof(unsigned int)));
     HIP_CHECK(hipDeviceSynchronize());

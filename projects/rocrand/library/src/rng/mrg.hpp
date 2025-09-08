@@ -45,15 +45,16 @@ namespace rocrand_impl::host
 {
 
 template<class Engine>
-__host__ __device__ void init_engines_mrg(dim3               block_idx,
-                                          dim3               thread_idx,
-                                          dim3               grid_dim,
-                                          dim3               block_dim,
-                                          Engine*            engines,
-                                          const unsigned int start_engine_id,
-                                          const unsigned int engines_size,
-                                          unsigned long long seed,
-                                          unsigned long long offset)
+__host__ __device__
+void init_engines_mrg(dim3               block_idx,
+                      dim3               thread_idx,
+                      dim3               grid_dim,
+                      dim3               block_dim,
+                      Engine*            engines,
+                      const unsigned int start_engine_id,
+                      const unsigned int engines_size,
+                      unsigned long long seed,
+                      unsigned long long offset)
 {
     (void)grid_dim;
     const unsigned int engine_id = block_idx.x * block_dim.x + thread_idx.x;
@@ -65,15 +66,16 @@ __host__ __device__ void init_engines_mrg(dim3               block_idx,
 }
 
 template<class ConfigProvider, bool IsDynamic, class Engine, class T, class Distribution>
-__host__ __device__ __forceinline__ void generate_mrg(dim3 block_idx,
-                                      dim3 thread_idx,
-                                      dim3 grid_dim,
-                                      dim3 /*block_dim*/,
-                                      Engine*            engines,
-                                      const unsigned int start_engine_id,
-                                      T*                 data,
-                                      const size_t       n,
-                                      Distribution       distribution)
+__host__ __device__ __forceinline__
+void generate_mrg(dim3 block_idx,
+                  dim3 thread_idx,
+                  dim3 grid_dim,
+                  dim3 /*block_dim*/,
+                  Engine*            engines,
+                  const unsigned int start_engine_id,
+                  T*                 data,
+                  const size_t       n,
+                  Distribution       distribution)
 {
     static_assert(is_single_tile_config<ConfigProvider, T>(IsDynamic),
                   "This kernel should only be used with single tile configs");
@@ -94,7 +96,7 @@ __host__ __device__ __forceinline__ void generate_mrg(dim3 block_idx,
 
     const uintptr_t uintptr   = reinterpret_cast<uintptr_t>(data);
     const size_t misalignment = (output_width - uintptr / sizeof(T) % output_width) % output_width;
-    const unsigned int head_size    = cpp_utils::min(n, misalignment);
+    const unsigned int head_size = cpp_utils::min(n, misalignment);
     const unsigned int tail_size = (n - head_size) % output_width;
     const size_t       vec_n     = (n - head_size) / output_width;
 

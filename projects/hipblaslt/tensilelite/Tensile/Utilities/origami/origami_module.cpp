@@ -47,9 +47,7 @@ PYBIND11_MODULE(origami, m)
         .value("Float4", Origami::DataType::Float4)
         .export_values();
 
-    m.def("intToDataType",
-          &Origami::intToDataType,
-          "Convert int to DataType.");
+    m.def("intToDataType", &Origami::intToDataType, "Convert int to DataType.");
 
     pybind11::class_<Hardware>(m, "Hardware")
         .def(pybind11::init<Hardware::Architecture,
@@ -82,11 +80,15 @@ PYBIND11_MODULE(origami, m)
           "This gets a hardware object for a device.");
 
     m.def("datatype_to_bits", &Origami::dataTypeToBits, "Return the number of bits in a datatype");
-    m.def("string_to_datatype", &Origami::stringToDatatype, "Convert a string representation of a datatype into DataType enum");
+    m.def("string_to_datatype",
+          &Origami::stringToDatatype,
+          "Convert a string representation of a datatype into DataType enum");
     m.def("select_best_macro_tile_size",
           &Origami::select_best_macro_tile_size,
           "Get best macro tile sizes.");
-    m.def("select_streamk_grid", &Origami::streamk::select_streamk_grid, "Select Best StreamK Grid Size");
+    m.def("select_streamk_grid",
+          &Origami::streamk::select_streamk_grid,
+          "Select Best StreamK Grid Size");
     m.def("compute_total_latency", &Origami::compute_total_latency, "compute_total_latency");
     m.def("select_best_wgm", &Origami::select_best_wgm, "Get best workgroup mapping.");
 }

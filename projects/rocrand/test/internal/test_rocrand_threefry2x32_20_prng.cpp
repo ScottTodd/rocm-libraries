@@ -65,7 +65,10 @@ INSTANTIATE_TYPED_TEST_SUITE_P(threefry2x32_20_generator,
 class threefry2x32_engine_type_test : public threefry2x32_20_generator::engine_type
 {
 public:
-    __host__ threefry2x32_engine_type_test() : threefry2x32_20_generator::engine_type(0, 0, 0) {}
+    __host__
+    threefry2x32_engine_type_test()
+        : threefry2x32_20_generator::engine_type(0, 0, 0)
+    {}
 
     __host__
     state_type& internal_state_ref()

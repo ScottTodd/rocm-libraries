@@ -31,8 +31,7 @@ struct increment_by
 {
     template<typename T>
     __host__ __device__
-    T constexpr
-        operator()(const T& value) const
+    T constexpr operator()(const T& value) const
     {
         return value + T{V};
     }

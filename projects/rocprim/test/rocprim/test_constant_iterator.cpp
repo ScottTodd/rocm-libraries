@@ -48,7 +48,7 @@ template<class Params>
 class RocprimConstantIteratorTests : public ::testing::Test
 {
 public:
-    using input_type = typename Params::input_type;
+    using input_type             = typename Params::input_type;
     const bool debug_synchronous = false;
 };
 
@@ -161,9 +161,9 @@ TYPED_TEST(RocprimConstantIteratorTests, Transform)
     int device_id = test_common_utils::obtain_device_from_ctest();
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
-    
-    using T = typename TestFixture::input_type;
-    using Iterator = typename rocprim::constant_iterator<T>;
+
+    using T                      = typename TestFixture::input_type;
+    using Iterator               = typename rocprim::constant_iterator<T>;
     const bool debug_synchronous = TestFixture::debug_synchronous;
 
     const size_t size = 1024;
@@ -172,14 +172,15 @@ TYPED_TEST(RocprimConstantIteratorTests, Transform)
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Create constant_iterator<U> with random starting point
         const auto value = test_utils::get_random_value<T>(0, 200, seed_value);
-        Iterator input_begin(value);
+        Iterator   input_begin(value);
 
-        std::vector<T> output(size);
+        std::vector<T>        output(size);
         common::device_ptr<T> d_output(output.size());
 
         // Calculate expected results on host
@@ -201,5 +202,4 @@ TYPED_TEST(RocprimConstantIteratorTests, Transform)
         // Validating results
         test_utils::assert_near(output, expected, test_utils::precision<T>);
     }
-
 }

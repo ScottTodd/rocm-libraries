@@ -52,8 +52,7 @@ namespace rocrand_impl
 #if defined(__CUDACC__) || defined(__HIP__)
 __host__ __device__
 #endif
-    inline static void
-    unreachable_internal(const char* msg, const char* file, unsigned line)
+inline static void unreachable_internal(const char* msg, const char* file, unsigned line)
 {
 #if defined(__CUDA_ARCH__) || defined(__HIP_DEVICE_COMPILE__)
     (void)msg;

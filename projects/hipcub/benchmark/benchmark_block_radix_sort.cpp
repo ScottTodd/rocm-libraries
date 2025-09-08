@@ -40,28 +40,31 @@ enum class benchmark_kinds
 struct helper_blocked_blocked
 {
     template<unsigned int BlockSize, class T, unsigned int ItemsPerThread, typename InputIteratorT>
-    HIPCUB_DEVICE static void
-        load(int linear_id, InputIteratorT block_iter, T (&items)[ItemsPerThread])
+    HIPCUB_DEVICE
+    static void load(int linear_id, InputIteratorT block_iter, T (&items)[ItemsPerThread])
     {
         hipcub::LoadDirectStriped<BlockSize>(linear_id, block_iter, items);
     }
 
     template<unsigned int BlockSize, class T, unsigned int ItemsPerThread>
-    HIPCUB_DEVICE static void sort(T (&keys)[ItemsPerThread])
+    HIPCUB_DEVICE
+    static void sort(T (&keys)[ItemsPerThread])
     {
         hipcub::BlockRadixSort<T, BlockSize, ItemsPerThread> sort;
         sort.Sort(keys);
     }
 
     template<unsigned int BlockSize, class T, unsigned int ItemsPerThread>
-    HIPCUB_DEVICE static void sort(T (&keys)[ItemsPerThread], T (&values)[ItemsPerThread])
+    HIPCUB_DEVICE
+    static void sort(T (&keys)[ItemsPerThread], T (&values)[ItemsPerThread])
     {
         hipcub::BlockRadixSort<T, BlockSize, ItemsPerThread, T> sort;
         sort.Sort(keys, values);
     }
 
     template<unsigned int BlockSize, class T, unsigned int ItemsPerThread>
-    HIPCUB_DEVICE static void sort(benchmark_utils::custom_type<T> (&keys)[ItemsPerThread])
+    HIPCUB_DEVICE
+    static void sort(benchmark_utils::custom_type<T> (&keys)[ItemsPerThread])
     {
         using custom_t = benchmark_utils::custom_type<T>;
         hipcub::BlockRadixSort<custom_t, BlockSize, ItemsPerThread> sort;
@@ -69,8 +72,9 @@ struct helper_blocked_blocked
     }
 
     template<unsigned int BlockSize, class T, unsigned int ItemsPerThread>
-    HIPCUB_DEVICE static void sort(benchmark_utils::custom_type<T> (&keys)[ItemsPerThread],
-                                   benchmark_utils::custom_type<T> (&values)[ItemsPerThread])
+    HIPCUB_DEVICE
+    static void sort(benchmark_utils::custom_type<T> (&keys)[ItemsPerThread],
+                     benchmark_utils::custom_type<T> (&values)[ItemsPerThread])
     {
         using custom_t = benchmark_utils::custom_type<T>;
         hipcub::BlockRadixSort<custom_t, BlockSize, ItemsPerThread, custom_t> sort;
@@ -81,28 +85,31 @@ struct helper_blocked_blocked
 struct helper_blocked_striped
 {
     template<unsigned int BlockSize, class T, unsigned int ItemsPerThread, typename InputIteratorT>
-    HIPCUB_DEVICE static void
-        load(int linear_id, InputIteratorT block_iter, T (&items)[ItemsPerThread])
+    HIPCUB_DEVICE
+    static void load(int linear_id, InputIteratorT block_iter, T (&items)[ItemsPerThread])
     {
         hipcub::LoadDirectBlocked(linear_id, block_iter, items);
     }
 
     template<unsigned int BlockSize, class T, unsigned int ItemsPerThread>
-    HIPCUB_DEVICE static void sort(T (&keys)[ItemsPerThread])
+    HIPCUB_DEVICE
+    static void sort(T (&keys)[ItemsPerThread])
     {
         hipcub::BlockRadixSort<T, BlockSize, ItemsPerThread> sort;
         sort.SortBlockedToStriped(keys);
     }
 
     template<unsigned int BlockSize, class T, unsigned int ItemsPerThread>
-    HIPCUB_DEVICE static void sort(T (&keys)[ItemsPerThread], T (&values)[ItemsPerThread])
+    HIPCUB_DEVICE
+    static void sort(T (&keys)[ItemsPerThread], T (&values)[ItemsPerThread])
     {
         hipcub::BlockRadixSort<T, BlockSize, ItemsPerThread, T> sort;
         sort.SortBlockedToStriped(keys, values);
     }
 
     template<unsigned int BlockSize, class T, unsigned int ItemsPerThread>
-    HIPCUB_DEVICE static void sort(benchmark_utils::custom_type<T> (&keys)[ItemsPerThread])
+    HIPCUB_DEVICE
+    static void sort(benchmark_utils::custom_type<T> (&keys)[ItemsPerThread])
     {
         using custom_t = benchmark_utils::custom_type<T>;
         hipcub::BlockRadixSort<custom_t, BlockSize, ItemsPerThread> sort;
@@ -110,8 +117,9 @@ struct helper_blocked_striped
     }
 
     template<unsigned int BlockSize, class T, unsigned int ItemsPerThread>
-    HIPCUB_DEVICE static void sort(benchmark_utils::custom_type<T> (&keys)[ItemsPerThread],
-                                   benchmark_utils::custom_type<T> (&values)[ItemsPerThread])
+    HIPCUB_DEVICE
+    static void sort(benchmark_utils::custom_type<T> (&keys)[ItemsPerThread],
+                     benchmark_utils::custom_type<T> (&values)[ItemsPerThread])
     {
         using custom_t = benchmark_utils::custom_type<T>;
         hipcub::BlockRadixSort<custom_t, BlockSize, ItemsPerThread, custom_t> sort;
@@ -126,7 +134,8 @@ template<class Helper,
          unsigned int BlockSize,
          unsigned int ItemsPerThread,
          unsigned int Trials>
-__global__ __launch_bounds__(BlockSize) void sort_keys_kernel(const T* input, T* output)
+__global__ __launch_bounds__(BlockSize)
+void sort_keys_kernel(const T* input, T* output)
 {
     const unsigned int lid          = threadIdx.x;
     const unsigned int block_offset = blockIdx.x * ItemsPerThread * BlockSize;
@@ -148,7 +157,8 @@ template<class Helper,
          unsigned int BlockSize,
          unsigned int ItemsPerThread,
          unsigned int Trials>
-__global__ __launch_bounds__(BlockSize) void sort_pairs_kernel(const T* input, T* output)
+__global__ __launch_bounds__(BlockSize)
+void sort_pairs_kernel(const T* input, T* output)
 {
     const unsigned int lid          = threadIdx.x;
     const unsigned int block_offset = blockIdx.x * ItemsPerThread * BlockSize;
@@ -209,7 +219,8 @@ void run_benchmark(benchmark::State& state,
         {
             sort_keys_kernel<Helper, T, BlockSize, ItemsPerThread, Trials>
                 <<<dim3(size / items_per_block), dim3(BlockSize), 0, stream>>>(d_input, d_output);
-        } else if(benchmark_kind == benchmark_kinds::sort_pairs)
+        }
+        else if(benchmark_kind == benchmark_kinds::sort_pairs)
         {
             sort_pairs_kernel<Helper, T, BlockSize, ItemsPerThread, Trials>
                 <<<dim3(size / items_per_block), dim3(BlockSize), 0, stream>>>(d_input, d_output);

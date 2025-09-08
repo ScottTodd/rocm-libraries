@@ -32,9 +32,9 @@ from .utils import find_library
 
 # Finalize is only supported by python >= 3.4
 try:
-  from weakref import finalize
+    from weakref import finalize
 except ImportError:
-  from backports.weakref import finalize
+    from backports.weakref import finalize
 
 
 class HipError(Exception):
@@ -46,12 +46,15 @@ class HipError(Exception):
     def __str__(self):
         return str(self.value)
 
+
 hipSuccess = 0
 hipMemcpyDeviceToHost = 2
+
 
 def check_hip(status):
     if status != hipSuccess:
         raise HipError(status)
+
 
 hip = None
 
@@ -59,11 +62,11 @@ HIP_PATHS = [
     os.getenv("ROCM_PATH"),
     os.getenv("HIP_PATH"),
     "/opt/rocm",
-    "/opt/rocm/hip"]
+    "/opt/rocm/hip",
+]
 
-CUDA_PATHS = [
-    os.getenv("CUDA_PATH"),
-    "/opt/cuda"]
+CUDA_PATHS = [os.getenv("CUDA_PATH"), "/opt/cuda"]
+
 
 def load_hip():
     global hip
@@ -89,8 +92,11 @@ def load_hip():
             hip.hipStreamSynchronize = cuda.cudaStreamSynchronize
 
     if hip is None:
-        raise ImportError("both libcudart.so and libamdhip64.so cannot be loaded: " +
-                ", ".join(loading_errors))
+        raise ImportError(
+            "both libcudart.so and libamdhip64.so cannot be loaded: "
+            + ", ".join(loading_errors)
+        )
+
 
 class MemoryPointer(object):
     def __init__(self, nbytes):
@@ -102,8 +108,10 @@ class MemoryPointer(object):
     def _finalize(cls, ptr):
         check_hip(hip.hipFree(ptr))
 
+
 def device_pointer(dary):
     return dary.data.ptr
+
 
 class DeviceNDArray(object):
     def __init__(self, shape, dtype, data=None):
@@ -162,6 +170,7 @@ class DeviceNDArray(object):
 
         return ary
 
+
 def empty(shape, dtype):
     """Create a new device-side array of given shape and type, without initializing entries.
 
@@ -186,6 +195,7 @@ def empty(shape, dtype):
     :param dtype: Type of the array (see :attr:`numpy.ndarray.dtype`)
     """
     return DeviceNDArray(shape, dtype)
+
 
 def stream_synchronize(stream):
     """Blocks until all previously queued operations on the provided stream complete.

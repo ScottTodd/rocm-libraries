@@ -389,8 +389,8 @@ void testLargeIndices()
         offsets.push_back(size);
 
         // Device inputs
-        const Iterator            values_input{0};
-        common::device_ptr<T>     d_offsets(offsets);
+        const Iterator        values_input{0};
+        common::device_ptr<T> d_offsets(offsets);
 
         // Device outputs
         common::device_ptr<T> d_aggregates_output(segments_count);

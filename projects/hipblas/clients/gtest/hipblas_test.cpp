@@ -265,13 +265,13 @@ bool hipblas_client_global_filters(const Arguments& args)
 #ifdef WIN32
     static constexpr hipblas_client_os os = hipblas_client_os::WINDOWS;
 #else
-    static constexpr hipblas_client_os os      = hipblas_client_os::LINUX;
+    static constexpr hipblas_client_os os = hipblas_client_os::LINUX;
 #endif
 
 #ifdef __HIP_PLATFORM_NVCC__
     static constexpr hipblas_backend backend = hipblas_backend::NVIDIA;
 #else
-    static constexpr hipblas_backend   backend = hipblas_backend::AMD;
+    static constexpr hipblas_backend backend = hipblas_backend::AMD;
 #endif
 
 #if defined(__HIP_PLATFORM_NVCC__) && CUBLAS_VER_MAJOR < 12

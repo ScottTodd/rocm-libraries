@@ -24,6 +24,7 @@ Structure of the expected JSON:
 from typing import List
 from pydantic import BaseModel
 
+
 class RepoEntry(BaseModel):
     """
     Represents a single repository entry in the repos-config.json file.
@@ -34,12 +35,14 @@ class RepoEntry(BaseModel):
         branch   : The base branch of the sub-repo to target (e.g., "develop").
         category : Directory category in the monorepo (e.g., "projects" or "shared").
     """
+
     name: str
     url: str
     branch: str
     category: str
     auto_subtree_pull: bool
     auto_subtree_push: bool
+
 
 class RepoConfig(BaseModel):
     """
@@ -48,4 +51,5 @@ class RepoConfig(BaseModel):
     Fields:
         repositories : List of RepoEntry items.
     """
+
     repositories: List[RepoEntry]

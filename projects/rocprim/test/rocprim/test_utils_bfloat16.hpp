@@ -28,14 +28,14 @@ namespace test_utils
 {
 
 // Support bfloat16 operators on host side
-ROCPRIM_HOST inline
-    rocprim::native_bfloat16 bfloat16_to_native(const rocprim::bfloat16& x)
+ROCPRIM_HOST
+inline rocprim::native_bfloat16 bfloat16_to_native(const rocprim::bfloat16& x)
 {
     return rocprim::native_bfloat16(x);
 }
 
-ROCPRIM_HOST inline
-    rocprim::bfloat16 native_to_bfloat16(const rocprim::native_bfloat16& x)
+ROCPRIM_HOST
+inline rocprim::bfloat16 native_to_bfloat16(const rocprim::native_bfloat16& x)
 {
     return rocprim::bfloat16(x);
 }

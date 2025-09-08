@@ -44,7 +44,7 @@ struct rocrand_generator_base_type
     virtual rocrand_ordering get_order() const                 = 0;
     virtual rocrand_status   set_order(rocrand_ordering order) = 0;
 
-    virtual hipStream_t get_stream() const             = 0;
+    virtual hipStream_t    get_stream() const             = 0;
     virtual rocrand_status set_stream(hipStream_t stream) = 0;
 
     virtual rocrand_status set_dimensions(unsigned int dimensions) = 0;

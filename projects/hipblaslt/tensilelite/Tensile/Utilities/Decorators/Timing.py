@@ -33,9 +33,9 @@ TIMING_ENV_VAR: str = "TENSILE_PRINT_TIMING"
 def timing(func: Callable) -> Callable:
     f"""Timing decorator to measure execution time of a function.
 
-  Add ``@timing`` to mark a function for timing; set the environment variable
-  {TIMING_ENV_VAR}=ON to enable timing decorated functions.
-  """
+    Add ``@timing`` to mark a function for timing; set the environment variable
+    {TIMING_ENV_VAR}=ON to enable timing decorated functions.
+    """
     if not envVariableIsSet(TIMING_ENV_VAR):
         return func
 

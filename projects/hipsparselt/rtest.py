@@ -35,16 +35,27 @@ import subprocess
 
 def parse_args():
     """Parse command-line arguments"""
-    parser = argparse.ArgumentParser(description="""
+    parser = argparse.ArgumentParser(
+        description="""
     Checks build arguments
-    """)
+    """
+    )
 
     # Mutually exclusive group for --test and --emulation
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument(      '--emulation', type=str, choices=['smoke', 'regression', 'extended'],
-                        help='Enable specific emulation test mode, e.g. smoke test')
-    parser.add_argument(      '--install_dir', type=str, required=False, default="",
-                        help='Installation directory where build or release folders are (optional, default: $PWD)')
+    group.add_argument(
+        "--emulation",
+        type=str,
+        choices=["smoke", "regression", "extended"],
+        help="Enable specific emulation test mode, e.g. smoke test",
+    )
+    parser.add_argument(
+        "--install_dir",
+        type=str,
+        required=False,
+        default="",
+        help="Installation directory where build or release folders are (optional, default: $PWD)",
+    )
 
     args = parser.parse_args()
 
@@ -54,7 +65,7 @@ def parse_args():
 def run_cmd(args, filter):
 
     test_binary = ""
-    if args.install_dir :
+    if args.install_dir:
         test_binary = os.path.join(args.install_dir, "hipsparselt-test")
     else:
         test_binary = os.path.join(pathlib.os.curdir, "hipsparselt-test")
@@ -80,12 +91,13 @@ def run_test(args):
     elif args.emulation == "regression":
         run_cmd(args, "--gtest_filter=*quick*")
     elif args.emulation == "extended":
-         print("There is no test for extended test cases.")
+        print("There is no test for extended test cases.")
 
-    if (os.curdir != cwd):
-        os.chdir( cwd )
+    if os.curdir != cwd:
+        os.chdir(cwd)
 
     return 0
+
 
 def main():
 
@@ -96,5 +108,5 @@ def main():
     sys.exit
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

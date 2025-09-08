@@ -37,7 +37,11 @@ from . import LibraryIO
 
 from . import ClientWriter
 from Tensile.Common import ensurePath, printExit
-from Tensile.Common.Architectures import isaToGfx, gfxToSwCodename, detectGlobalCurrentISA
+from Tensile.Common.Architectures import (
+    isaToGfx,
+    gfxToSwCodename,
+    detectGlobalCurrentISA,
+)
 from Tensile.Common.GlobalParameters import assignGlobalParameters
 from .SolutionStructs import ProblemSizes
 from .Toolchain.Validators import ToolchainDefaults, validateToolchain
@@ -50,25 +54,37 @@ def createLibraryForBenchmark(logicPath, libraryPath, currentPath):
     Selection.
     """
 
-    pythonExePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "bin", "TensileCreateLibrary")
-    args = [pythonExePath, \
-        "--new-client-only", "--no-short-file-names", \
-        "--architecture=all", "--code-object-version=default", "--library-format=yaml", \
-        logicPath, libraryPath, "HIP"]
+    pythonExePath = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), "bin", "TensileCreateLibrary"
+    )
+    args = [
+        pythonExePath,
+        "--new-client-only",
+        "--no-short-file-names",
+        "--architecture=all",
+        "--code-object-version=default",
+        "--library-format=yaml",
+        logicPath,
+        libraryPath,
+        "HIP",
+    ]
 
     try:
         subprocess.run(args, check=True, cwd=currentPath)
     except (subprocess.CalledProcessError, OSError) as e:
         printExit("ClientWriter Benchmark Process exited with error: {}".format(e))
 
+
 def GenerateSummations(userArgs):
 
     inputLogicPath = userArgs[0]
     outputPath = userArgs[1]
     isaInfoMap = assignGlobalParameters({})
-    cxxCompiler, cCompiler, enumerator = validateToolchain(ToolchainDefaults.CXX_COMPILER, 
-                                                           ToolchainDefaults.C_COMPILER,
-                                                           ToolchainDefaults.DEVICE_ENUMERATOR)
+    cxxCompiler, cCompiler, enumerator = validateToolchain(
+        ToolchainDefaults.CXX_COMPILER,
+        ToolchainDefaults.C_COMPILER,
+        ToolchainDefaults.DEVICE_ENUMERATOR,
+    )
 
     currentISA = detectGlobalCurrentISA(0, enumerator)
     gfxName = isaToGfx(currentISA)
@@ -81,7 +97,7 @@ def GenerateSummations(userArgs):
 
         logicFileBaseName = os.path.basename(logicFileName)
         logicFileStem, ext = os.path.splitext(logicFileBaseName)
-        if (ext != ".yaml"):
+        if ext != ".yaml":
             continue
 
         currentPath = ensurePath(os.path.join(outputPath, logicFileStem))
@@ -96,26 +112,47 @@ def GenerateSummations(userArgs):
         # same as the initial logic with the summation model added. To preseve the original
         # logic we also read in the raw unaltered version of the logic and stage the content
         # to write the final logic.
-        logic    = LibraryIO.parseLibraryLogicFile(logicFileName, cxxCompiler, isaInfoMap)
+        logic = LibraryIO.parseLibraryLogicFile(logicFileName, cxxCompiler, isaInfoMap)
         rawLogic = LibraryIO.rawLibraryLogic(logicFileName)
 
         # If we cannot read the logic file then skip it
         if rawLogic == None or logic == None:
             printExit("Error reading the file: %s. skipping." % logicFileName)
 
-        (versionStringR, scheduleNameR, architectureNameR, deviceNamesR, problemTypeStateR,\
-            solutionStatesR, indexOrderR, exactLogicR, rangeLogicR, otherFieldsR) =\
-            rawLogic
+        (
+            versionStringR,
+            scheduleNameR,
+            architectureNameR,
+            deviceNamesR,
+            problemTypeStateR,
+            solutionStatesR,
+            indexOrderR,
+            exactLogicR,
+            rangeLogicR,
+            otherFieldsR,
+        ) = rawLogic
 
         copyfile(logicFileName, localLogicFilePath)
         createLibraryForBenchmark(localLogicPath, libPath, currentPath)
 
         exactList = []
 
-        solutionSummationSizes = [32,64,96,128,256,512,1024,2048,4096,8192,16384]
+        solutionSummationSizes = [
+            32,
+            64,
+            96,
+            128,
+            256,
+            512,
+            1024,
+            2048,
+            4096,
+            8192,
+            16384,
+        ]
 
         for K in solutionSummationSizes:
-            e = {"Exact" : [8192, 4096, 1, K]}
+            e = {"Exact": [8192, 4096, 1, K]}
             exactList.append(e)
 
         libraryPath = libPath
@@ -129,8 +166,12 @@ def GenerateSummations(userArgs):
         configFile = os.path.join(configFilePath, "ClientParameters.ini")
         scriptPath = ensurePath(os.path.join(outputPath, logicFileStem, "script"))
 
-        ClientWriter.CreateBenchmarkClientParametersForSizes(libraryPath, problemSizes, dataFilePath, configFile, problemTypeObj)
-        ClientWriter.runNewClient(scriptPath, configFile, clientBuildDir, cxxCompiler, cCompiler)
+        ClientWriter.CreateBenchmarkClientParametersForSizes(
+            libraryPath, problemSizes, dataFilePath, configFile, problemTypeObj
+        )
+        ClientWriter.runNewClient(
+            scriptPath, configFile, clientBuildDir, cxxCompiler, cCompiler
+        )
 
         tensileLibraryFile = os.path.join(libPath, "library", "TensileLibrary.yaml")
 
@@ -142,13 +183,13 @@ def GenerateSummations(userArgs):
 
         libSolutionNames = []
         for s in libSolutions:
-            kernelName=s["name"]
+            kernelName = s["name"]
             libSolutionNames.append(kernelName)
 
-        working_data=pd.read_csv(dataFilePath).rename(str.strip,axis='columns')
+        working_data = pd.read_csv(dataFilePath).rename(str.strip, axis="columns")
 
         index_keys = working_data.SizeL.unique()
-        solutionsDF = working_data.filter(like='Cij')
+        solutionsDF = working_data.filter(like="Cij")
 
         perf_max = solutionsDF.max().max().item()
 
@@ -156,7 +197,7 @@ def GenerateSummations(userArgs):
         for s_stateR, kernelName in zip(solutionStatesR, libSolutionNames):
             solutionIndex += 1
             perf_raw = working_data[kernelName]
-            perf = (1000*index_keys) / perf_raw
+            perf = (1000 * index_keys) / perf_raw
             model = np.polyfit(x=index_keys, y=perf, deg=1)
             slope = model[0].item()
             intercept = model[1].item()

@@ -282,7 +282,7 @@ void run_multi_range_benchmark(benchmark_utils::state&& state, size_t bins)
                                               seed.get_0());
 
     common::device_ptr<T> d_input(input);
-    level_type*   d_levels[ActiveChannels];
+    level_type*           d_levels[ActiveChannels];
     counter_type*         d_histogram[ActiveChannels];
     for(unsigned int channel = 0; channel < ActiveChannels; ++channel)
     {

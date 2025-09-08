@@ -60,9 +60,9 @@ public:
         m_val  = val;
         return *this;
     }
-    size_t   size() const;
-             operator T*();
-             operator const T*() const;
+    size_t size() const;
+    operator T*();
+    operator const T*() const;
     T*       data();
     const T* data() const;
     ~dense_vector_t();
@@ -296,7 +296,7 @@ private:
 
 public:
     dense_vector()
-        : dense_vector_t<MODE, T>(0, nullptr){};
+        : dense_vector_t<MODE, T>(0, nullptr) {};
     ~dense_vector()
     {
 #ifdef GOOGLE_TEST

@@ -21,8 +21,8 @@
 #ifndef ROCPRIM_ITERATOR_TRANSFORM_ITERATOR_HPP_
 #define ROCPRIM_ITERATOR_TRANSFORM_ITERATOR_HPP_
 
-#include <iterator>
 #include <cstddef>
+#include <iterator>
 #include <type_traits>
 
 #include "../config.hpp"
@@ -76,140 +76,138 @@ public:
     using self_type = transform_iterator;
 #endif
 
-    ROCPRIM_HOST_DEVICE inline
-    ~transform_iterator() = default;
+    ROCPRIM_HOST_DEVICE
+    inline ~transform_iterator()
+        = default;
 
     /// \brief Creates a new transform_iterator.
     ///
     /// \param iterator input iterator to iterate over and transform.
     /// \param transform unary function used to transform values obtained
     /// from range pointed by \p iterator.
-    ROCPRIM_HOST_DEVICE inline
-    transform_iterator(InputIterator iterator, UnaryFunction transform)
+    ROCPRIM_HOST_DEVICE
+    inline transform_iterator(InputIterator iterator, UnaryFunction transform)
         : iterator_(iterator), transform_(transform)
-    {
-    }
+    {}
 
-    #ifndef DOXYGEN_SHOULD_SKIP_THIS
-    ROCPRIM_HOST_DEVICE inline
-    transform_iterator& operator++()
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+    ROCPRIM_HOST_DEVICE
+    inline transform_iterator& operator++()
     {
         iterator_++;
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    transform_iterator operator++(int)
+    ROCPRIM_HOST_DEVICE
+    inline transform_iterator operator++(int)
     {
         transform_iterator old = *this;
         iterator_++;
         return old;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    transform_iterator& operator--()
+    ROCPRIM_HOST_DEVICE
+    inline transform_iterator& operator--()
     {
         iterator_--;
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    transform_iterator operator--(int)
+    ROCPRIM_HOST_DEVICE
+    inline transform_iterator operator--(int)
     {
         transform_iterator old = *this;
         iterator_--;
         return old;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    value_type operator*() const
+    ROCPRIM_HOST_DEVICE
+    inline value_type operator*() const
     {
         return transform_(*iterator_);
     }
 
     ROCPRIM_HOST_DEVICE
-    inline pointer
-        operator->() const
+    inline pointer operator->() const
     {
         return pointer(transform_(*iterator_));
     }
 
     ROCPRIM_HOST_DEVICE
-    inline value_type
-        operator[](difference_type distance) const
+    inline value_type operator[](difference_type distance) const
     {
         transform_iterator i = (*this) + distance;
         return *i;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    transform_iterator operator+(difference_type distance) const
+    ROCPRIM_HOST_DEVICE
+    inline transform_iterator operator+(difference_type distance) const
     {
         return transform_iterator(iterator_ + distance, transform_);
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    transform_iterator& operator+=(difference_type distance)
+    ROCPRIM_HOST_DEVICE
+    inline transform_iterator& operator+=(difference_type distance)
     {
         iterator_ += distance;
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    transform_iterator operator-(difference_type distance) const
+    ROCPRIM_HOST_DEVICE
+    inline transform_iterator operator-(difference_type distance) const
     {
         return transform_iterator(iterator_ - distance, transform_);
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    transform_iterator& operator-=(difference_type distance)
+    ROCPRIM_HOST_DEVICE
+    inline transform_iterator& operator-=(difference_type distance)
     {
         iterator_ -= distance;
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    difference_type operator-(transform_iterator other) const
+    ROCPRIM_HOST_DEVICE
+    inline difference_type operator-(transform_iterator other) const
     {
         return iterator_ - other.iterator_;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    bool operator==(transform_iterator other) const
+    ROCPRIM_HOST_DEVICE
+    inline bool operator==(transform_iterator other) const
     {
         return iterator_ == other.iterator_;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    bool operator!=(transform_iterator other) const
+    ROCPRIM_HOST_DEVICE
+    inline bool operator!=(transform_iterator other) const
     {
         return iterator_ != other.iterator_;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    bool operator<(transform_iterator other) const
+    ROCPRIM_HOST_DEVICE
+    inline bool operator<(transform_iterator other) const
     {
         return iterator_ < other.iterator_;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    bool operator<=(transform_iterator other) const
+    ROCPRIM_HOST_DEVICE
+    inline bool operator<=(transform_iterator other) const
     {
         return iterator_ <= other.iterator_;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    bool operator>(transform_iterator other) const
+    ROCPRIM_HOST_DEVICE
+    inline bool operator>(transform_iterator other) const
     {
         return iterator_ > other.iterator_;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    bool operator>=(transform_iterator other) const
+    ROCPRIM_HOST_DEVICE
+    inline bool operator>=(transform_iterator other) const
     {
         return iterator_ >= other.iterator_;
     }
-    #endif // DOXYGEN_SHOULD_SKIP_THIS
+#endif // DOXYGEN_SHOULD_SKIP_THIS
 
 private:
     InputIterator iterator_;
@@ -217,15 +215,11 @@ private:
 };
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-template<
-    class InputIterator,
-    class UnaryFunction,
-    class ValueType
->
-ROCPRIM_HOST_DEVICE inline
-transform_iterator<InputIterator, UnaryFunction, ValueType>
-operator+(typename transform_iterator<InputIterator, UnaryFunction, ValueType>::difference_type distance,
-          const transform_iterator<InputIterator, UnaryFunction, ValueType>& iterator)
+template<class InputIterator, class UnaryFunction, class ValueType>
+ROCPRIM_HOST_DEVICE
+inline transform_iterator<InputIterator, UnaryFunction, ValueType> operator+(
+    typename transform_iterator<InputIterator, UnaryFunction, ValueType>::difference_type distance,
+    const transform_iterator<InputIterator, UnaryFunction, ValueType>&                    iterator)
 {
     return iterator + distance;
 }
@@ -241,13 +235,10 @@ operator+(typename transform_iterator<InputIterator, UnaryFunction, ValueType>::
 /// \param transform transform functor to use in created transform_iterator.
 /// \return A new transform_iterator object which transforms the range pointed
 /// by \p iterator using \p transform functor.
-template<
-    class InputIterator,
-    class UnaryFunction
->
-ROCPRIM_HOST_DEVICE inline
-transform_iterator<InputIterator, UnaryFunction>
-make_transform_iterator(InputIterator iterator, UnaryFunction transform)
+template<class InputIterator, class UnaryFunction>
+ROCPRIM_HOST_DEVICE
+inline transform_iterator<InputIterator, UnaryFunction>
+    make_transform_iterator(InputIterator iterator, UnaryFunction transform)
 {
     return transform_iterator<InputIterator, UnaryFunction>(iterator, transform);
 }

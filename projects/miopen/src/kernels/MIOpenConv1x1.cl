@@ -325,7 +325,7 @@ MIOpenConv1x1(const __global _FLOAT* __restrict in_ptr,
 							if ( in_stage[ib][ilc][i] * wei_stage!= 0 && out_grp_block * MLO_N_LCL_OUT_MAPS + olc == 0 && i == 0 && get_global_id(0) == 0 && get_global_id(1) == 0 && get_global_id(2) == 0)
 							{
 								printf("K:c: %d %d %d %d   %f %f %f %f\n",
-								wc, 
+								wc,
 								MLO_IN_LOOP,
 								MLO_WEIGHTS_PER_LOOP,
 								MLO_WEIGHTS_ROW,

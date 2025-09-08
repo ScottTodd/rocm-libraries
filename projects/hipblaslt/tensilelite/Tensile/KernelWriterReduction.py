@@ -28,8 +28,8 @@ from .Common import INDEX_CHARS
 from .Common.DataType import DataType
 from .KernelWriterBase import KernelWriterBase
 
-class KernelWriterReduction(KernelWriterBase):
 
+class KernelWriterReduction(KernelWriterBase):
     def __init__(self, state):
         super().__init__()
 
@@ -44,9 +44,15 @@ class KernelWriterReduction(KernelWriterBase):
         # derive parameter
         self.language = "HIP"
         self.kernelName = self.getKernelName()
-        self.datatype = self.state["ProblemType"]["ComputeDataType"].toDevice(self.language)
-        if self.state["ProblemType"]["DataType"].isInt8() and self.state["ProblemType"]["ComputeDataType"].isSingle() and self.state["ProblemType"]["HighPrecisionAccumulate"]:
-            self.datatype = DataType('int32').toDevice(self.language)
+        self.datatype = self.state["ProblemType"]["ComputeDataType"].toDevice(
+            self.language
+        )
+        if (
+            self.state["ProblemType"]["DataType"].isInt8()
+            and self.state["ProblemType"]["ComputeDataType"].isSingle()
+            and self.state["ProblemType"]["HighPrecisionAccumulate"]
+        ):
+            self.datatype = DataType("int32").toDevice(self.language)
 
     # Currently dummy
     def kernelBody(self):
@@ -64,41 +70,68 @@ class KernelWriterReduction(KernelWriterBase):
             indicesStr += indexChars[i].lower()
         name = "D"
         name += indicesStr
-        name += "_%s%s"%(btype.toChar(), state["ProblemType"]["ComputeDataType"].toChar())
+        name += "_%s%s" % (
+            btype.toChar(),
+            state["ProblemType"]["ComputeDataType"].toChar(),
+        )
         name += "_Reduction"
         return name
 
-
     def getKernelName(self):
-        return KernelWriterReduction.kernelName(self, self.state["ProblemType"]["BiasDataType"])
-
+        return KernelWriterReduction.kernelName(
+            self, self.state["ProblemType"]["BiasDataType"]
+        )
 
     def getHeaderFileString(self):
-        fileString = "" # CHeader
+        fileString = ""  # CHeader
 
         # C dimensions
         indicesStr = ""
         for i in range(0, self.state["ProblemType"]["NumIndicesC"]):
             c = INDEX_CHARS[i].lower()
-            if c == 'k':
+            if c == "k":
                 continue
             indicesStr += INDEX_CHARS[i].lower()
 
-        computeStr  = self.state["ProblemType"]["ComputeDataType"].toDevice(self.language)
+        computeStr = self.state["ProblemType"]["ComputeDataType"].toDevice(
+            self.language
+        )
         computeChar = self.state["ProblemType"]["ComputeDataType"].toChar()
-        MTVW = [[256, 1, 1], [128, 2, 1], [64, 4, 1], [32, 8, 1], [16, 16, 1], [8, 32, 1], [32, 32, 4]]
-        dstStr  = self.state["ProblemType"]["BiasDataType"].toDevice(self.language)
+        MTVW = [
+            [256, 1, 1],
+            [128, 2, 1],
+            [64, 4, 1],
+            [32, 8, 1],
+            [16, 16, 1],
+            [8, 32, 1],
+            [32, 32, 4],
+        ]
+        dstStr = self.state["ProblemType"]["BiasDataType"].toDevice(self.language)
         dstChar = self.state["ProblemType"]["BiasDataType"].toChar()
         for mtvw in MTVW:
-            fileString += "extern \"C\" __global__ void D%s_%s%s_MT%dx%d_VW%d_Reduction(%s *in, %s* out, int m, int n, int strideJ)\n"%(self.indicesStr, dstChar, computeChar, mtvw[0], mtvw[1], mtvw[2], computeStr, dstStr)
+            fileString += (
+                'extern "C" __global__ void D%s_%s%s_MT%dx%d_VW%d_Reduction(%s *in, %s* out, int m, int n, int strideJ)\n'
+                % (
+                    self.indicesStr,
+                    dstChar,
+                    computeChar,
+                    mtvw[0],
+                    mtvw[1],
+                    mtvw[2],
+                    computeStr,
+                    dstStr,
+                )
+            )
             fileString += "{\n"
-            fileString += "    reductionKernel_%s<%s, %s, %d, %d, %d>(in, out, m, n, strideJ);\n"%(self.indicesStr, computeStr, dstStr, mtvw[0], mtvw[1], mtvw[2])
+            fileString += (
+                "    reductionKernel_%s<%s, %s, %d, %d, %d>(in, out, m, n, strideJ);\n"
+                % (self.indicesStr, computeStr, dstStr, mtvw[0], mtvw[1], mtvw[2])
+            )
             fileString += "}\n"
 
         fileString += "\n"
 
         return fileString
-
 
     def getSourceFileString(self):
         fileString = ""

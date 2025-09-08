@@ -32,52 +32,68 @@ from . import SOURCE_PATH
 from Tensile.Common import print2, ClientExecutionLock, ensurePath, CLIENT_BUILD_DIR
 from Tensile.Common.GlobalParameters import globalParameters
 
+
 class CMakeEnvironment:
     def __init__(self, sourceDir, buildDir, **options):
         self.sourceDir = sourceDir
-        self.buildDir  = buildDir
+        self.buildDir = buildDir
         self.options = options
 
     def generate(self):
 
-        args = ['cmake']
-        args += itertools.chain.from_iterable([ ['-D', '{}={}'.format(key, value)] for key,value in self.options.items()])
+        args = ["cmake"]
+        args += itertools.chain.from_iterable(
+            [["-D", "{}={}".format(key, value)] for key, value in self.options.items()]
+        )
         args += [self.sourceDir]
 
-        print2(' '.join(args))
+        print2(" ".join(args))
         with ClientExecutionLock(globalParameters["ClientExecutionLockPath"]):
             subprocess.check_call(args, cwd=ensurePath(self.buildDir))
 
     def build(self):
-        args = ['make', '-j']
-        print2(' '.join(args))
+        args = ["make", "-j"]
+        print2(" ".join(args))
         with ClientExecutionLock(globalParameters["ClientExecutionLockPath"]):
             subprocess.check_call(args, cwd=self.buildDir)
 
     def builtPath(self, path, *paths):
         return os.path.join(self.buildDir, path, *paths)
 
-def clientExecutableEnvironment(builddir: Optional[str], cxxCompiler: str, cCompiler: str):
+
+def clientExecutableEnvironment(
+    builddir: Optional[str], cxxCompiler: str, cCompiler: str
+):
     sourcedir = SOURCE_PATH
 
     builddir = ensurePath(builddir)
 
-    options = {'CMAKE_BUILD_TYPE': globalParameters["CMakeBuildType"],
-               'TENSILE_USE_MSGPACK': 'ON',
-               'TENSILE_USE_LLVM': 'OFF' if (os.name == "nt") else 'ON',
-               'Tensile_LIBRARY_FORMAT': globalParameters["LibraryFormat"],
-               'Tensile_ENABLE_MARKER' : globalParameters["EnableMarker"],
-               'CMAKE_CXX_COMPILER': os.path.join(globalParameters["ROCmBinPath"], cxxCompiler),
-               'CMAKE_C_COMPILER': os.path.join(globalParameters["ROCmBinPath"], cCompiler)}
+    options = {
+        "CMAKE_BUILD_TYPE": globalParameters["CMakeBuildType"],
+        "TENSILE_USE_MSGPACK": "ON",
+        "TENSILE_USE_LLVM": "OFF" if (os.name == "nt") else "ON",
+        "Tensile_LIBRARY_FORMAT": globalParameters["LibraryFormat"],
+        "Tensile_ENABLE_MARKER": globalParameters["EnableMarker"],
+        "CMAKE_CXX_COMPILER": os.path.join(
+            globalParameters["ROCmBinPath"], cxxCompiler
+        ),
+        "CMAKE_C_COMPILER": os.path.join(globalParameters["ROCmBinPath"], cCompiler),
+    }
 
     if "CCACHE_BASEDIR" in os.environ:
-        options.update({'CMAKE_C_COMPILER_LAUNCHER': 'ccache', 'CMAKE_CXX_COMPILER_LAUNCHER': 'ccache'})
-        print('Is Using CCACHE')
+        options.update(
+            {
+                "CMAKE_C_COMPILER_LAUNCHER": "ccache",
+                "CMAKE_CXX_COMPILER_LAUNCHER": "ccache",
+            }
+        )
+        print("Is Using CCACHE")
 
     return CMakeEnvironment(sourcedir, builddir, **options)
 
 
 buildEnv = None
+
 
 def getClientExecutable(cxxCompiler: str, cCompiler: str, builddir: Path):
     if "PrebuiltClient" in globalParameters:
@@ -86,7 +102,9 @@ def getClientExecutable(cxxCompiler: str, cCompiler: str, builddir: Path):
     global buildEnv
 
     if buildEnv is None:
-        buildEnv = clientExecutableEnvironment(builddir / CLIENT_BUILD_DIR, cxxCompiler, cCompiler)
+        buildEnv = clientExecutableEnvironment(
+            builddir / CLIENT_BUILD_DIR, cxxCompiler, cCompiler
+        )
         buildEnv.generate()
         buildEnv.build()
 

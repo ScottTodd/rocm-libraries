@@ -91,8 +91,8 @@ namespace rocRoller
 
         if(dst != nullptr && !dst->isSCC())
         {
-            co_yield(Instruction::Lock(Scheduling::Dependency::SCC,
-                                       "Start Compare writing to non-SCC dest"));
+            co_yield (Instruction::Lock(Scheduling::Dependency::SCC,
+                                        "Start Compare writing to non-SCC dest"));
         }
 
         co_yield_(Instruction("s_cmp_ge_i32", {}, {lhs, rhs}, {}, ""));
@@ -100,7 +100,7 @@ namespace rocRoller
         if(dst != nullptr && !dst->isSCC())
         {
             co_yield m_context->copier()->copy(dst, m_context->getSCC(), "");
-            co_yield(Instruction::Unlock("End Compare writing to non-SCC dest"));
+            co_yield (Instruction::Unlock("End Compare writing to non-SCC dest"));
         }
     }
 
@@ -117,8 +117,8 @@ namespace rocRoller
 
         if(dst != nullptr && !dst->isSCC())
         {
-            co_yield(Instruction::Lock(Scheduling::Dependency::SCC,
-                                       "Start Compare writing to non-SCC dest"));
+            co_yield (Instruction::Lock(Scheduling::Dependency::SCC,
+                                        "Start Compare writing to non-SCC dest"));
         }
 
         co_yield_(Instruction("s_cmp_ge_u32", {}, {lhs, rhs}, {}, ""));
@@ -126,7 +126,7 @@ namespace rocRoller
         if(dst != nullptr && !dst->isSCC())
         {
             co_yield m_context->copier()->copy(dst, m_context->getSCC(), "");
-            co_yield(Instruction::Unlock("End Compare writing to non-SCC dest"));
+            co_yield (Instruction::Unlock("End Compare writing to non-SCC dest"));
         }
     }
 

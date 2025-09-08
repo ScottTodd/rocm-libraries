@@ -27,95 +27,93 @@ from copy import deepcopy
 from .Common import globalParameters, CHeader
 from .KernelWriterBase import KernelWriterBase
 
+
 class KernelWriterStreamKInit(KernelWriterBase):
+    def __init__(self, state):
+        super().__init__()
 
-  def __init__(self, state):
-    super().__init__()
+        self.state["ProblemType"] = deepcopy(state["ProblemType"])
+        self.state["_GlobalAccumulation"] = state["_GlobalAccumulation"]
 
-    self.state["ProblemType"] = deepcopy(state["ProblemType"])
-    self.state["_GlobalAccumulation"] = state["_GlobalAccumulation"]
+        # derive parameter
+        self.language = "HIP"
+        self.kernelName = self.getKernelName()
 
-    # derive parameter
-    self.language = "HIP"
-    self.kernelName = self.getKernelName()
+    def functionSignature(self):
+        kStr = ""
 
+        # self.state name
+        kStr += self.endLine
+        kStr += 'extern "C"' + self.endLine
+        kStr += "__global__ "
+        kStr += "void %s" % (self.kernelName)
+        kStr += "(" + self.endLine
 
-  def functionSignature(self):
-    kStr = ""
+        # pointers
+        kStr += (
+            " unsigned int * Flags," + self.endLine
+        )  # Already offset to start of flags section in workspace
 
-    # self.state name
-    kStr += self.endLine
-    kStr += "extern \"C\"" + self.endLine
-    kStr += "__global__ "
-    kStr += "void %s" % ( self.kernelName )
-    kStr += "(" + self.endLine
+        kStr += " unsigned int const flagCount" + self.endLine
 
-    # pointers
-    kStr += " unsigned int * Flags," + self.endLine # Already offset to start of flags section in workspace
+        kStr += " )%s" % (self.endLine)
 
-    kStr += " unsigned int const flagCount" + self.endLine
+        return kStr
 
-    kStr += " )%s" % (self.endLine)
+    ##############################################################################
+    # Kernel Body Stream-K Init
+    ##############################################################################
+    def kernelBodyStreamKInit(self):
+        kStr = ""
+        kStr += "{%s" % self.endLine
 
-    return kStr
+        ########################################
+        # Stream-K initialize flags to 0
+        kStr += "  uint64_t id = %s(0);%s" % (self.getGlobalIdStr, self.endLine)
+        kStr += "  if (id >= (flagCount))" + self.endLine
+        kStr += "    return;%s" % self.endLine
+        kStr += self.endLine
 
+        kStr += "  Flags[id] = 0;" + self.endLine
 
-  ##############################################################################
-  # Kernel Body Stream-K Init
-  ##############################################################################
-  def kernelBodyStreamKInit(self):
-    kStr = ""
-    kStr += "{%s" % self.endLine
+        ########################################
+        # end
+        kStr += "}%s" % self.endLine
 
-    ########################################
-    # Stream-K initialize flags to 0
-    kStr += "  uint64_t id = %s(0);%s" % (self.getGlobalIdStr, self.endLine)
-    kStr += "  if (id >= (flagCount))" + self.endLine
-    kStr += "    return;%s" % self.endLine
-    kStr += self.endLine
+        return kStr
 
-    kStr += "  Flags[id] = 0;" + self.endLine
-    
-    ########################################
-    # end
-    kStr += "}%s" % self.endLine
+    def getKernelName(self):
+        # Output to workspace flags
+        name = "WSFlags"
+        # name += "_"
+        # name += self.state["ProblemType"]["DestDataType"].toChar()
+        return name
 
-    return kStr
+    def getSourceFileString(self):
+        fileString = ""
 
+        if not globalParameters["MergeFiles"]:
+            fileString += "\n"
+            fileString += '#include "%s.h"\n' % self.kernelName
+            fileString += "\n"
 
-  def getKernelName(self):
-    # Output to workspace flags
-    name = "WSFlags"
-    # name += "_"
-    # name += self.state["ProblemType"]["DestDataType"].toChar()
-    return name
+        fileString += self.functionSignature()
+        fileString += self.kernelBodyStreamKInit()
 
+        return (0, fileString)
 
-  def getSourceFileString(self):
-    fileString = ""
+    def getHeaderFileString(self):
+        fileString = ""  # CHeader
+        if not globalParameters["MergeFiles"]:
+            fileString += CHeader
+            fileString += "#pragma once\n\n"
+            fileString += "\n"
+            fileString += "#include <KernelHeader.h>\n\n"
+            fileString += "#include <hip/hip_runtime.h>\n"
+            fileString += "#include <hip/hip_fp16.h>\n"
+            fileString += "\n"
 
-    if not globalParameters["MergeFiles"]:
-      fileString += "\n"
-      fileString += "#include \"%s.h\"\n" % self.kernelName
-      fileString += "\n"
+        fileString += self.functionSignature()
+        fileString += ";\n"
 
-    fileString += self.functionSignature()
-    fileString += self.kernelBodyStreamKInit()
-
-    return (0, fileString)
-
-  def getHeaderFileString(self):
-    fileString = "" # CHeader
-    if not globalParameters["MergeFiles"]:
-      fileString += CHeader
-      fileString += "#pragma once\n\n"
-      fileString += "\n"
-      fileString += "#include <KernelHeader.h>\n\n"
-      fileString += "#include <hip/hip_runtime.h>\n"
-      fileString += "#include <hip/hip_fp16.h>\n"
-      fileString += "\n"
-
-    fileString += self.functionSignature()
-    fileString += ";\n"
-
-    return fileString
+        return fileString

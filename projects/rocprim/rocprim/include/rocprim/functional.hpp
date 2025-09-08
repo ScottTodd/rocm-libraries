@@ -51,28 +51,28 @@ ROCPRIM_PRAGMA_MESSAGE("GPU printf warnings for invalid rocPRIM warp operations 
 
 /// \brief Returns the maximum of its arguments.
 template<class T>
-ROCPRIM_HOST_DEVICE inline
-constexpr T max(const T& a, const T& b)
+ROCPRIM_HOST_DEVICE
+inline constexpr T max(const T& a, const T& b)
 {
     return a < b ? b : a;
 }
 
 /// \brief Returns the minimum of its arguments.
 template<class T>
-ROCPRIM_HOST_DEVICE inline
-constexpr T min(const T& a, const T& b)
+ROCPRIM_HOST_DEVICE
+inline constexpr T min(const T& a, const T& b)
 {
     return a < b ? a : b;
 }
 
 /// \brief Swaps two values.
 template<class T>
-ROCPRIM_HOST_DEVICE inline
-void swap(T& a, T& b)
+ROCPRIM_HOST_DEVICE
+inline void swap(T& a, T& b)
 {
     T c = a;
-    a = b;
-    b = c;
+    a   = b;
+    b   = c;
 }
 
 /// \brief Returns true if a < b. Otherwise returns false.
@@ -80,8 +80,8 @@ template<class T = void>
 struct less
 {
     /// \brief Invocation operator
-    ROCPRIM_HOST_DEVICE inline
-    constexpr bool operator()(const T& a, const T& b) const
+    ROCPRIM_HOST_DEVICE
+    inline constexpr bool operator()(const T& a, const T& b) const
     {
         return a < b;
     }
@@ -94,8 +94,8 @@ struct less<void>
 {
     /// \brief Invocation operator
     template<class T, class U>
-    ROCPRIM_HOST_DEVICE inline
-    constexpr bool operator()(const T& a, const U& b) const
+    ROCPRIM_HOST_DEVICE
+    inline constexpr bool operator()(const T& a, const U& b) const
     {
         return a < b;
     }
@@ -106,8 +106,8 @@ template<class T = void>
 struct less_equal
 {
     /// \brief Invocation operator
-    ROCPRIM_HOST_DEVICE inline
-    constexpr bool operator()(const T& a, const T& b) const
+    ROCPRIM_HOST_DEVICE
+    inline constexpr bool operator()(const T& a, const T& b) const
     {
         return a <= b;
     }
@@ -119,9 +119,9 @@ template<>
 struct less_equal<void>
 {
     /// \brief Invocation operator
-    template <typename T>
-    ROCPRIM_HOST_DEVICE inline
-    constexpr bool operator()(const T& a, const T& b) const
+    template<typename T>
+    ROCPRIM_HOST_DEVICE
+    inline constexpr bool operator()(const T& a, const T& b) const
     {
         return a <= b;
     }
@@ -132,8 +132,8 @@ template<class T = void>
 struct greater
 {
     /// \brief Invocation operator
-    ROCPRIM_HOST_DEVICE inline
-    constexpr bool operator()(const T& a, const T& b) const
+    ROCPRIM_HOST_DEVICE
+    inline constexpr bool operator()(const T& a, const T& b) const
     {
         return a > b;
     }
@@ -145,9 +145,9 @@ template<>
 struct greater<void>
 {
     /// \brief Invocation operator
-    template <typename T>
-    ROCPRIM_HOST_DEVICE inline
-    constexpr bool operator()(const T& a, const T& b) const
+    template<typename T>
+    ROCPRIM_HOST_DEVICE
+    inline constexpr bool operator()(const T& a, const T& b) const
     {
         return a > b;
     }
@@ -158,8 +158,8 @@ template<class T = void>
 struct greater_equal
 {
     /// \brief Invocation operator
-    ROCPRIM_HOST_DEVICE inline
-    constexpr bool operator()(const T& a, const T& b) const
+    ROCPRIM_HOST_DEVICE
+    inline constexpr bool operator()(const T& a, const T& b) const
     {
         return a >= b;
     }
@@ -171,9 +171,9 @@ template<>
 struct greater_equal<void>
 {
     /// \brief Invocation operator
-    template <typename T>
-    ROCPRIM_HOST_DEVICE inline
-    constexpr bool operator()(const T& a, const T& b) const
+    template<typename T>
+    ROCPRIM_HOST_DEVICE
+    inline constexpr bool operator()(const T& a, const T& b) const
     {
         return a >= b;
     }
@@ -184,8 +184,8 @@ template<class T = void>
 struct equal_to
 {
     /// \brief Invocation operator
-    ROCPRIM_HOST_DEVICE inline
-    constexpr bool operator()(const T& a, const T& b) const
+    ROCPRIM_HOST_DEVICE
+    inline constexpr bool operator()(const T& a, const T& b) const
     {
         return a == b;
     }
@@ -197,9 +197,9 @@ template<>
 struct equal_to<void>
 {
     /// \brief Invocation operator
-    template <typename T>
-    ROCPRIM_HOST_DEVICE inline
-    constexpr bool operator()(const T& a, const T& b) const
+    template<typename T>
+    ROCPRIM_HOST_DEVICE
+    inline constexpr bool operator()(const T& a, const T& b) const
     {
         return a == b;
     }
@@ -210,8 +210,8 @@ template<class T = void>
 struct not_equal_to
 {
     /// \brief Invocation operator
-    ROCPRIM_HOST_DEVICE inline
-    constexpr bool operator()(const T& a, const T& b) const
+    ROCPRIM_HOST_DEVICE
+    inline constexpr bool operator()(const T& a, const T& b) const
     {
         return a != b;
     }
@@ -223,9 +223,9 @@ template<>
 struct not_equal_to<void>
 {
     /// \brief Invocation operator
-    template <typename T>
-    ROCPRIM_HOST_DEVICE inline
-    constexpr bool operator()(const T& a, const T& b) const
+    template<typename T>
+    ROCPRIM_HOST_DEVICE
+    inline constexpr bool operator()(const T& a, const T& b) const
     {
         return a != b;
     }
@@ -236,8 +236,8 @@ template<class T = void>
 struct plus
 {
     /// \brief Invocation operator
-    ROCPRIM_HOST_DEVICE inline
-    constexpr T operator()(const T& a, const T& b) const
+    ROCPRIM_HOST_DEVICE
+    inline constexpr T operator()(const T& a, const T& b) const
     {
         return a + b;
     }
@@ -249,9 +249,9 @@ template<>
 struct plus<void>
 {
     /// \brief Invocation operator
-    template <typename T>
-    ROCPRIM_HOST_DEVICE inline
-    constexpr T operator()(const T& a, const T& b) const
+    template<typename T>
+    ROCPRIM_HOST_DEVICE
+    inline constexpr T operator()(const T& a, const T& b) const
     {
         return a + b;
     }
@@ -262,8 +262,8 @@ template<class T = void>
 struct minus
 {
     /// \brief Invocation operator
-    ROCPRIM_HOST_DEVICE inline
-    constexpr T operator()(const T& a, const T& b) const
+    ROCPRIM_HOST_DEVICE
+    inline constexpr T operator()(const T& a, const T& b) const
     {
         return a - b;
     }
@@ -275,9 +275,9 @@ template<>
 struct minus<void>
 {
     /// \brief Invocation operator
-    template <typename T>
-    ROCPRIM_HOST_DEVICE inline
-    constexpr T operator()(const T& a, const T& b) const
+    template<typename T>
+    ROCPRIM_HOST_DEVICE
+    inline constexpr T operator()(const T& a, const T& b) const
     {
         return a - b;
     }
@@ -288,8 +288,8 @@ template<class T = void>
 struct multiplies
 {
     /// \brief Invocation operator
-    ROCPRIM_HOST_DEVICE inline
-    constexpr T operator()(const T& a, const T& b) const
+    ROCPRIM_HOST_DEVICE
+    inline constexpr T operator()(const T& a, const T& b) const
     {
         return a * b;
     }
@@ -301,9 +301,9 @@ template<>
 struct multiplies<void>
 {
     /// \brief Invocation operator
-    template <typename T>
-    ROCPRIM_HOST_DEVICE inline
-    constexpr T operator()(const T& a, const T& b) const
+    template<typename T>
+    ROCPRIM_HOST_DEVICE
+    inline constexpr T operator()(const T& a, const T& b) const
     {
         return a * b;
     }
@@ -314,8 +314,8 @@ template<class T = void>
 struct maximum
 {
     /// \brief Invocation operator
-    ROCPRIM_HOST_DEVICE inline
-    constexpr T operator()(const T& a, const T& b) const
+    ROCPRIM_HOST_DEVICE
+    inline constexpr T operator()(const T& a, const T& b) const
     {
         return a < b ? b : a;
     }
@@ -327,9 +327,9 @@ template<>
 struct maximum<void>
 {
     /// \brief Invocation operator
-    template <typename T>
-    ROCPRIM_HOST_DEVICE inline
-    constexpr T operator()(const T& a, const T& b) const
+    template<typename T>
+    ROCPRIM_HOST_DEVICE
+    inline constexpr T operator()(const T& a, const T& b) const
     {
         return a < b ? b : a;
     }
@@ -340,8 +340,8 @@ template<class T = void>
 struct minimum
 {
     /// \brief Invocation operator
-    ROCPRIM_HOST_DEVICE inline
-    constexpr T operator()(const T& a, const T& b) const
+    ROCPRIM_HOST_DEVICE
+    inline constexpr T operator()(const T& a, const T& b) const
     {
         return a < b ? a : b;
     }
@@ -353,9 +353,9 @@ template<>
 struct minimum<void>
 {
     /// \brief Invocation operator
-    template <typename T>
-    ROCPRIM_HOST_DEVICE inline
-    constexpr T operator()(const T& a, const T& b) const
+    template<typename T>
+    ROCPRIM_HOST_DEVICE
+    inline constexpr T operator()(const T& a, const T& b) const
     {
         return a < b ? a : b;
     }
@@ -366,8 +366,8 @@ template<class T = void>
 struct identity
 {
     /// \brief Invocation operator
-    ROCPRIM_HOST_DEVICE inline
-    constexpr T operator()(const T& a) const
+    ROCPRIM_HOST_DEVICE
+    inline constexpr T operator()(const T& a) const
     {
         return a;
     }
@@ -379,9 +379,9 @@ template<>
 struct identity<void>
 {
     /// \brief Invocation operator
-    template <typename T>
-    ROCPRIM_HOST_DEVICE inline
-    constexpr T operator()(const T& a) const
+    template<typename T>
+    ROCPRIM_HOST_DEVICE
+    inline constexpr T operator()(const T& a) const
     {
         return a;
     }
@@ -394,21 +394,27 @@ struct identity<void>
  *     Log2<8>::VALUE   // 3
  *     Log2<3>::VALUE   // 2
  */
-template <int N, int CURRENT_VAL = N, int COUNT = 0>
+template<int N, int CURRENT_VAL = N, int COUNT = 0>
 struct Log2
 {
     /// Static logarithm value
-    enum { VALUE = Log2<N, (CURRENT_VAL >> 1), COUNT + 1>::VALUE };         // Inductive case
+    enum
+    {
+        VALUE = Log2<N, (CURRENT_VAL >> 1), COUNT + 1>::VALUE
+    }; // Inductive case
 };
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS    // Do not document
+#ifndef DOXYGEN_SHOULD_SKIP_THIS // Do not document
 
-template <int N, int COUNT>
+template<int N, int COUNT>
 struct Log2<N, 0, COUNT>
 {
-    enum {VALUE = (1 << (COUNT - 1) < N) ?                                  // Base case
-        COUNT :
-        COUNT - 1 };
+    enum
+    {
+        VALUE = (1 << (COUNT - 1) < N) ? // Base case
+                    COUNT
+                                       : COUNT - 1
+    };
 };
 
 #endif // DOXYGEN_SHOULD_SKIP_THIS
@@ -420,30 +426,35 @@ struct Log2<N, 0, COUNT>
 /**
  * \brief Type equality test
  */
-template <typename A, typename B>
+template<typename A, typename B>
 struct Equals
 {
-    enum {
-        VALUE = 0,
+    enum
+    {
+        VALUE  = 0,
         NEGATE = 1
     };
 };
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS    // Do not document
+#ifndef DOXYGEN_SHOULD_SKIP_THIS // Do not document
 
-template <typename A>
-struct Equals <A, A>
+template<typename A>
+struct Equals<A, A>
 {
-    enum {
-        VALUE = 1,
+    enum
+    {
+        VALUE  = 1,
         NEGATE = 0
     };
 };
 
-template <int A>
+template<int A>
 struct Int2Type
 {
-   enum {VALUE = A};
+    enum
+    {
+        VALUE = A
+    };
 };
 
 #endif // DOXYGEN_SHOULD_SKIP_THIS

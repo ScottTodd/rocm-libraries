@@ -36,7 +36,8 @@ template<unsigned                     BlockSize,
          unsigned                     LogicalWarpSize,
          ::hipcub::WarpStoreAlgorithm Algorithm,
          class T>
-__device__ auto warp_store_benchmark(T* d_output)
+__device__
+auto warp_store_benchmark(T* d_output)
     -> std::enable_if_t<benchmark_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {
     T thread_data[ItemsPerThread];
@@ -47,11 +48,12 @@ __device__ auto warp_store_benchmark(T* d_output)
     }
 
     using WarpStoreT = ::hipcub::WarpStore<T, ItemsPerThread, Algorithm, LogicalWarpSize>;
-    constexpr unsigned                          warps_in_block = BlockSize / LogicalWarpSize;
-    constexpr int                               tile_size      = ItemsPerThread * LogicalWarpSize;
-    __shared__ typename WarpStoreT::TempStorage temp_storage[warps_in_block];
-    const unsigned                              warp_id = threadIdx.x / LogicalWarpSize;
-    const unsigned global_warp_id                       = blockIdx.x * warps_in_block + warp_id;
+    constexpr unsigned               warps_in_block = BlockSize / LogicalWarpSize;
+    constexpr int                    tile_size      = ItemsPerThread * LogicalWarpSize;
+    __shared__
+    typename WarpStoreT::TempStorage temp_storage[warps_in_block];
+    const unsigned                   warp_id        = threadIdx.x / LogicalWarpSize;
+    const unsigned                   global_warp_id = blockIdx.x * warps_in_block + warp_id;
 
     WarpStoreT(temp_storage[warp_id]).Store(d_output + global_warp_id * tile_size, thread_data);
 }
@@ -61,7 +63,8 @@ template<unsigned                     BlockSize,
          unsigned                     LogicalWarpSize,
          ::hipcub::WarpStoreAlgorithm Algorithm,
          class T>
-__device__ auto warp_store_benchmark(T* /*d_output*/)
+__device__
+auto warp_store_benchmark(T* /*d_output*/)
     -> std::enable_if_t<!benchmark_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {}
 
@@ -70,7 +73,8 @@ template<unsigned                     BlockSize,
          unsigned                     LogicalWarpSize,
          ::hipcub::WarpStoreAlgorithm Algorithm,
          class T>
-__global__ __launch_bounds__(BlockSize) void warp_store_kernel(T* d_output)
+__global__ __launch_bounds__(BlockSize)
+void warp_store_kernel(T* d_output)
 {
     warp_store_benchmark<BlockSize, ItemsPerThread, LogicalWarpSize, Algorithm>(d_output);
 }

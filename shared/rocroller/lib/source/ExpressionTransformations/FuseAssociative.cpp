@@ -163,8 +163,8 @@ namespace rocRoller
             }
 
             template <CBinary Expr>
-            requires(!CAssociativeBinary<Expr> && !CShift<Expr>) ExpressionPtr
-                operator()(Expr const& expr) const
+                requires(!CAssociativeBinary<Expr> && !CShift<Expr>)
+            ExpressionPtr operator()(Expr const& expr) const
             {
                 Expr cpy = expr;
                 if(expr.lhs)

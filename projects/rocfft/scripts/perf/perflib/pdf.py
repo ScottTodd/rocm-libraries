@@ -52,47 +52,46 @@ class BaseFigure:
 
 
 class PDFFigure(BaseFigure):
-
     def asycmd(self):
-        asycmd = ['asy', '-f', 'pdf']
+        asycmd = ["asy", "-f", "pdf"]
 
         ndata = 0
         for filename in self.primary:
-            df = pandas.read_csv(filename, sep="\t", comment='#')
+            df = pandas.read_csv(filename, sep="\t", comment="#")
             ndata = max(ndata, len(df.index))
 
         if ndata > 1 and self.figtype == "linegraph":
             asycmd.append(str(top / "datagraphs.asy"))
-            scaling = self.metadata.get('scaling')
+            scaling = self.metadata.get("scaling")
         elif ndata == 1 or self.figtype == "bargraph":
             asycmd.append(str(top / "bargraph.asy"))
 
-        ivariable = self.metadata.get('ivariable')
+        ivariable = self.metadata.get("ivariable")
         if ivariable == None:
-            scaling = self.metadata.get('scaling')
+            scaling = self.metadata.get("scaling")
             if scaling != None:
-                ivariable = 'ndev'
-                asycmd.extend(['-u', f'scaling="{scaling}"'])
+                ivariable = "ndev"
+                asycmd.extend(["-u", f'scaling="{scaling}"'])
         if ivariable != None:
-            asycmd.extend(['-u', f'ivariable="{ivariable}"'])
+            asycmd.extend(["-u", f'ivariable="{ivariable}"'])
 
         primary = [x.resolve() for x in self.primary]
-        asycmd.extend(['-u', f'filenames="{cjoin(primary)}"'])
+        asycmd.extend(["-u", f'filenames="{cjoin(primary)}"'])
 
         if self.labels is not None:
-            asycmd.extend(['-u', f'legendlist="{cjoin(self.labels)}"'])
+            asycmd.extend(["-u", f'legendlist="{cjoin(self.labels)}"'])
 
         if self.secondary is not None:
             secondary = [x for x in self.secondary]
-            asycmd.extend(['-u', f'secondary_filenames="{cjoin(secondary)}"'])
+            asycmd.extend(["-u", f'secondary_filenames="{cjoin(secondary)}"'])
 
-        asycmd.extend(['-o', self.filename])
+        asycmd.extend(["-o", self.filename])
 
         return [str(x) for x in asycmd]
 
     def runasy(self):
         asycommand = self.asycmd()
-        logging.info('ASY: ' + sjoin(asycommand))
+        logging.info("ASY: " + sjoin(asycommand))
 
         fout = tempfile.TemporaryFile(mode="w+")
         ferr = tempfile.TemporaryFile(mode="w+")
@@ -114,7 +113,7 @@ class PDFFigure(BaseFigure):
             print(cerr)
 
         if proc.returncode != 0:
-            logging.warn('ASY command failed: ' + sjoin(asycommand))
+            logging.warn("ASY command failed: " + sjoin(asycommand))
 
             fout.seek(0)
             ferr.seek(0)
@@ -125,37 +124,31 @@ class PDFFigure(BaseFigure):
             print(cerr)
 
     def make(self, significance):
-        self.filename = (Path(self.docdir) / (self.tag + '.pdf')).resolve()
+        self.filename = (Path(self.docdir) / (self.tag + ".pdf")).resolve()
 
 
-gflopstext = '''\
+gflopstext = """\
 GFLOP/s are computed based on the Cooley--Tukey operation count \
 for a radix-2 transform, and half that for in the case of \
 real-complex transforms.  The rocFFT operation count may differ from \
-this value: GFLOP/s is provided for the sake of comparison only.'''
+this value: GFLOP/s is provided for the sake of comparison only."""
 
-efficiencytext = '''\
+efficiencytext = """\
 Efficiency is computed for an idealised FFT which requires exactly \
 one read and one write to global memory.  In practice, this \
 isn't possible for most problem sizes, as the data does \
 not fit into cache, and one must use global memory to store \
 intermediary results.  As FFTs are bandwidth-limited on modern hardware, \
 the efficiency is measured against the theoretical maximum bandwidth \
-for the device.'''
+for the device."""
 
 
-def make_tex(figs,
-             docdir,
-             outdirs,
-             label,
-             significance,
-             ncompare,
-             secondtype=None):
+def make_tex(figs, docdir, outdirs, label, significance, ncompare, secondtype=None):
     """Generate PDF containing performance figures."""
 
     docdir = Path(docdir)
 
-    header = '''\
+    header = """\
 \\documentclass[12pt]{article}
 \\usepackage[margin=1in]{geometry}
 \\usepackage{graphicx}
@@ -170,7 +163,7 @@ def make_tex(figs,
   citecolor=blue,
   urlcolor=blue
 }
-'''
+"""
     globalgeomean = perflib.utils.find_geomean(outdirs, False)
     print("geomean:", globalgeomean)
 
@@ -223,27 +216,31 @@ def make_tex(figs,
     figtex = ""
 
     for idx, fig in enumerate(figs):
-        figtex += '''
+        figtex += """
 \\centering
 \\begin{figure}[H]
-   \\includegraphics[width=\\textwidth]{'''
+   \\includegraphics[width=\\textwidth]{"""
         figtex += str(fig.filename.name)
-        figtex += '''}
-   \\caption{''' + fig.caption + '''}
+        figtex += (
+            """}
+   \\caption{"""
+            + fig.caption
+            + """}
 \\end{figure}
-'''
+"""
+        )
         for p in fig.secondary:
-            df = pandas.read_csv(p, sep="\t", comment='#')
+            df = pandas.read_csv(p, sep="\t", comment="#")
 
             for row in df.itertuples(index=False):
                 speedups.append(row.speedup)
 
             # Significant results:
-            df_sig = df.loc[df['speedup_pval'] <= significance]
+            df_sig = df.loc[df["speedup_pval"] <= significance]
 
             # Significant results that are good or bad:
-            df_good = df_sig.loc[df_sig['speedup'] > 1]
-            df_bad = df_sig.loc[df_sig['speedup'] < 1]
+            df_good = df_sig.loc[df_sig["speedup"] > 1]
+            df_bad = df_sig.loc[df_sig["speedup"] < 1]
 
             if not df_good.empty:
 
@@ -253,19 +250,24 @@ def make_tex(figs,
                 figtex += "transform & speedup \% & significance\\\\ \n"
                 figtex += "\\hline\n"
                 for row in df_good.itertuples(index=False):
-                    #figtex += str(row.token).replace("_", "\\_")
-                    #figtex += "token"
-                    transform_type, placeness, length, batch, precision = perflib.utils.parse_token(
-                        row.token)
-                    figtex += "$" + "\\times{}".join(str(x)
-                                                     for x in length) + "$"
+                    # figtex += str(row.token).replace("_", "\\_")
+                    # figtex += "token"
+                    (
+                        transform_type,
+                        placeness,
+                        length,
+                        batch,
+                        precision,
+                    ) = perflib.utils.parse_token(row.token)
+                    figtex += "$" + "\\times{}".join(str(x) for x in length) + "$"
 
                     if np.prod(batch) > 1:
-                        figtex += " by $" + "\\times{}".join(
-                            str(x) for x in batch) + "$"
+                        figtex += (
+                            " by $" + "\\times{}".join(str(x) for x in batch) + "$"
+                        )
 
-                    speedup = '{0:.3f}'.format((row.speedup - 1) * 100)
-                    pval = '{0:.3f}'.format(row.speedup_pval)
+                    speedup = "{0:.3f}".format((row.speedup - 1) * 100)
+                    pval = "{0:.3f}".format(row.speedup_pval)
                     figtex += " & " + str(speedup) + " & " + str(pval) + "\\\\"
                 figtex += "\\hline\n"
                 figtex += "\\caption{Improvements for " + fig.caption + "}\n"
@@ -279,20 +281,25 @@ def make_tex(figs,
                 figtex += "transform & slowdown \% & significance\\\\ \n"
                 figtex += "\\hline\n"
                 for row in df_bad.itertuples(index=False):
-                    #figtex += str(row.token).replace("_", "\\_")
-                    #figtex += "token"
-                    transform_type, placeness, length, batch, precision = perflib.utils.parse_token(
-                        row.token)
-                    figtex += "$" + "\\times{}".join(str(x)
-                                                     for x in length) + "$"
+                    # figtex += str(row.token).replace("_", "\\_")
+                    # figtex += "token"
+                    (
+                        transform_type,
+                        placeness,
+                        length,
+                        batch,
+                        precision,
+                    ) = perflib.utils.parse_token(row.token)
+                    figtex += "$" + "\\times{}".join(str(x) for x in length) + "$"
 
                     if np.prod(batch) > 1:
-                        figtex += " by $" + "\\times{}".join(
-                            str(x) for x in batch) + "$"
+                        figtex += (
+                            " by $" + "\\times{}".join(str(x) for x in batch) + "$"
+                        )
 
-                    speedup = '{0:.3f}'.format((1 - 1 / row.speedup) * 100)
+                    speedup = "{0:.3f}".format((1 - 1 / row.speedup) * 100)
 
-                    pval = '{0:.3f}'.format(row.speedup_pval)
+                    pval = "{0:.3f}".format(row.speedup_pval)
                     figtex += " & " + str(speedup) + " & " + str(pval) + "\\\\"
                 figtex += "\\hline\n"
                 figtex += "\\caption{Regressions for " + fig.caption + "}\n"
@@ -305,11 +312,19 @@ def make_tex(figs,
 
     if len(outdirs) > 1:
         print(
-            "nspeedup  (" + label[1] + " is faster): " +
-            " " * max(len(label[0]) - len(label[1]), 0), nspeedup)
+            "nspeedup  ("
+            + label[1]
+            + " is faster): "
+            + " " * max(len(label[0]) - len(label[1]), 0),
+            nspeedup,
+        )
         print(
-            "nslowdown (" + label[0] + " is faster): " +
-            " " * max(len(label[1]) - len(label[0]), 0), nslowdown)
+            "nslowdown ("
+            + label[0]
+            + " is faster): "
+            + " " * max(len(label[1]) - len(label[0]), 0),
+            nslowdown,
+        )
         tex += "geometric mean overall cases: " + str(globalgeomean) + "\n"
 
         if ncompare > 0:
@@ -320,15 +335,37 @@ def make_tex(figs,
             tex += "\\begin{table}[H]\n"
             tex += "\\centering\n"
             tex += "\\begin{tabular}{l|p{5cm}|p{5cm}|l|}\n"
-            tex += "ncompare & nspeedup " + "(" + label[
-                1] + " faster)" + " & nslowdown (" + label[
-                    0] + " faster)" + " & gmean\\\\ \n"
+            tex += (
+                "ncompare & nspeedup "
+                + "("
+                + label[1]
+                + " faster)"
+                + " & nslowdown ("
+                + label[0]
+                + " faster)"
+                + " & gmean\\\\ \n"
+            )
             tex += "\\hline\n"
-            tex += str(ncompare) + "&" + str(nspeedup) + "&" + str(
-                nslowdown) + "&" + '{0:.3f}'.format(geometric_mean) + "\\\\\n"
-            tex += "100\\%" + "&" + '{0:.3f}'.format(
-                100 * nspeedup / ncompare) + "\\% " + "&" + '{0:.3f}'.format(
-                    100 * nslowdown / ncompare) + "\\% " + "&\\\\\n"
+            tex += (
+                str(ncompare)
+                + "&"
+                + str(nspeedup)
+                + "&"
+                + str(nslowdown)
+                + "&"
+                + "{0:.3f}".format(geometric_mean)
+                + "\\\\\n"
+            )
+            tex += (
+                "100\\%"
+                + "&"
+                + "{0:.3f}".format(100 * nspeedup / ncompare)
+                + "\\% "
+                + "&"
+                + "{0:.3f}".format(100 * nslowdown / ncompare)
+                + "\\% "
+                + "&\\\\\n"
+            )
             tex += "\\hline\n"
             tex += "\\end{tabular}\n"
             tex += "\\caption{Overall Performance Changes}\n"
@@ -343,7 +380,7 @@ def make_tex(figs,
 
             histdatname = os.path.join(docdir, "histogram.dat")
 
-            with open(histdatname, 'w') as f:
+            with open(histdatname, "w") as f:
                 f.write("\t".join(str(x) for x in vals))
                 f.write("\n")
 
@@ -351,13 +388,10 @@ def make_tex(figs,
             ferr = tempfile.TemporaryFile(mode="w+")
 
             asycmd = ["asy", "-f", "pdf", "histogram.asy"]
-            asycmd.extend(['-u', 'filename="' + histdatname + '"'])
-            asycmd.extend(['-o', os.path.join(docdir, "histogram.pdf")])
+            asycmd.extend(["-u", 'filename="' + histdatname + '"'])
+            asycmd.extend(["-o", os.path.join(docdir, "histogram.pdf")])
 
-            asyproc = subprocess.Popen(asycmd,
-                                       cwd=top,
-                                       stdout=fout,
-                                       stderr=ferr)
+            asyproc = subprocess.Popen(asycmd, cwd=top, stdout=fout, stderr=ferr)
             try:
                 asyproc.wait(timeout=20)
             except subprocess.TimeoutExpired:
@@ -365,7 +399,7 @@ def make_tex(figs,
                 asyproc.kill()
 
             if asyproc.returncode != 0:
-                logging.warn('ASY command failed: ' + sjoin(asycmd))
+                logging.warn("ASY command failed: " + sjoin(asycmd))
 
                 fout.seek(0)
                 ferr.seek(0)
@@ -375,12 +409,16 @@ def make_tex(figs,
                 print(cout)
                 print(cerr)
 
-            tex += '''\\centering
+            tex += """\\centering
     \\begin{figure}[H]
-    \\includegraphics[width=\\textwidth]{'''
+    \\includegraphics[width=\\textwidth]{"""
             tex += "histogram.pdf"
-            tex += '''}
-    \\caption{''' + "Histogram of performance changes" + '''}\n\\end{figure}'''
+            tex += (
+                """}
+    \\caption{"""
+                + "Histogram of performance changes"
+                + """}\n\\end{figure}"""
+            )
 
         tex += "\\clearpage\n"
 
@@ -392,11 +430,11 @@ def make_tex(figs,
         tex += "\\begin{tiny}"
         tex += "\\begin{verbatim}"
         for row in df_all_good.itertuples(index=False):
-            #print(row.token)
+            # print(row.token)
 
             tex += str(row.token) + "\n"
-            #tex += "\\small\\texttt{" + str(row.token).replace("_", "\\_") + "}\n"
-            #tex += str(row.token).replace("_", "\\_") + "\n"
+            # tex += "\\small\\texttt{" + str(row.token).replace("_", "\\_") + "}\n"
+            # tex += str(row.token).replace("_", "\\_") + "\n"
         tex += "\\end{verbatim}"
         tex += "\\end{tiny}"
 
@@ -409,23 +447,20 @@ def make_tex(figs,
         for row in df_all_bad.itertuples(index=False):
             print(row.token, row.speedup)
             tex += str(row.token) + "\n"
-            #tex += "\\small\\texttt{" + str(row.token).replace("_", "\\_") + "}\n"
+            # tex += "\\small\\texttt{" + str(row.token).replace("_", "\\_") + "}\n"
         tex += "\\end{verbatim}"
         tex += "\\end{tiny}"
 
     tex += "\n\\end{document}\n"
 
-    fname = docdir / 'figs.tex'
+    fname = docdir / "figs.tex"
     fname.write_text(tex)
 
-    log = docdir / 'tex.log'
-    with log.open('w') as f:
-        #latexcmd = ['latexmk','-pdf', fname.name]
-        latexcmd = ['latexmk', '-interaction=batchmode', '-pdf', fname.name]
-        texproc = subprocess.Popen(latexcmd,
-                                   cwd=fname.parent,
-                                   stdout=f,
-                                   stderr=f)
+    log = docdir / "tex.log"
+    with log.open("w") as f:
+        # latexcmd = ['latexmk','-pdf', fname.name]
+        latexcmd = ["latexmk", "-interaction=batchmode", "-pdf", fname.name]
+        texproc = subprocess.Popen(latexcmd, cwd=fname.parent, stdout=f, stderr=f)
         try:
             texproc.wait(timeout=60)
         except subprocess.TimeoutExpired:

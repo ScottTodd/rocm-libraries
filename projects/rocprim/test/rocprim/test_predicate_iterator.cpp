@@ -60,8 +60,7 @@ struct set_to
 {
     template<class T>
     __device__ __host__
-    constexpr T
-        operator()(const T&) const
+    constexpr T operator()(const T&) const
     {
         return V;
     }

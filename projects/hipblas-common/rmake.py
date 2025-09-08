@@ -46,6 +46,7 @@ def parse_args():
     return parser.parse_args()
 # yapf: enable
 
+
 def os_detect():
     global OS_info
     if os.name == "nt":
@@ -57,7 +58,8 @@ def os_detect():
                 for line in f:
                     if "=" in line:
                         k, v = line.strip().split("=")
-                        OS_info[k] = v.replace('"', '')
+                        OS_info[k] = v.replace('"', "")
+
 
 def create_dir(dir_path):
     full_path = ""
@@ -68,8 +70,9 @@ def create_dir(dir_path):
     pathlib.Path(full_path).mkdir(parents=True, exist_ok=True)
     return
 
+
 def delete_dir(dir_path):
-    if (not os.path.exists(dir_path)):
+    if not os.path.exists(dir_path):
         return
     if os.name == "nt":
         run_cmd("RMDIR", f"/S /Q {dir_path}")
@@ -82,6 +85,7 @@ def cmake_path(os_path):
         return os_path.replace("\\", "/")
     else:
         return os.path.realpath(os_path)
+
 
 def config_cmd():
     global args
@@ -96,15 +100,17 @@ def config_cmd():
         cmake_options.append(generator)
 
         # CMAKE_PREFIX_PATH set to rocm_path and HIP_PATH set BY SDK Installer
-        raw_rocm_path = cmake_path(os.getenv('HIP_PATH', "C:/hip"))
-        rocm_path = f'"{raw_rocm_path}"' # guard against spaces in path
+        raw_rocm_path = cmake_path(os.getenv("HIP_PATH", "C:/hip"))
+        rocm_path = f'"{raw_rocm_path}"'  # guard against spaces in path
         # CPACK_PACKAGING_INSTALL_PREFIX= defined as blank as it is appended to end of path for archive creation
         cmake_platform_opts.append(f"-DCPACK_PACKAGING_INSTALL_PREFIX=")
         cmake_platform_opts.append(f'-DCMAKE_INSTALL_PREFIX="C:/hipSDK"')
     else:
-        rocm_raw_path = os.getenv('ROCM_PATH', "/opt/rocm")
+        rocm_raw_path = os.getenv("ROCM_PATH", "/opt/rocm")
         rocm_path = rocm_raw_path
-        cmake_platform_opts.append(f"-DROCM_DIR:PATH={rocm_path} -DCPACK_PACKAGING_INSTALL_PREFIX={rocm_path}")
+        cmake_platform_opts.append(
+            f"-DROCM_DIR:PATH={rocm_path} -DCPACK_PACKAGING_INSTALL_PREFIX={rocm_path}"
+        )
 
     print(f"Build source path: {src_path}")
 
@@ -143,7 +149,9 @@ def make_cmd():
         make_executable = f"ninja.exe"
         make_options.append("all")  # for cmake "--target all" )
         if args.install:
-            make_options.append("package install")  # for cmake "--target package --target install" )
+            make_options.append(
+                "package install"
+            )  # for cmake "--target package --target install" )
     else:
         make_executable = f"make package"
         if args.install:
@@ -180,5 +188,5 @@ def main():
         fatal("Build failed. Not continuing.")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

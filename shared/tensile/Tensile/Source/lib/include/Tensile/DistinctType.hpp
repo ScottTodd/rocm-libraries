@@ -58,7 +58,7 @@ namespace Tensile
         }
 
         DistinctType& operator=(DistinctType const& other) = default;
-        DistinctType& operator                             =(T const& other)
+        DistinctType& operator=(T const& other)
         {
             value = other;
             return *this;

@@ -231,7 +231,8 @@ namespace Tensile
             virtual ReturnValue findBestMatch(Object const& problem, Transform transform) const = 0;
 
             virtual std::set<ReturnValue> matchesInOrder(Object const& problem,
-                                                         Transform     transform) const = 0;
+                                                         Transform     transform) const
+                = 0;
 
             virtual std::string description() const = 0;
 

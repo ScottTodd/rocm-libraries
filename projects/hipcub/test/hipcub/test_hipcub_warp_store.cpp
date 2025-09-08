@@ -26,15 +26,11 @@
 
 #include <type_traits>
 
-template<
-    class T,
-    unsigned WarpSize,
-    ::hipcub::WarpStoreAlgorithm Algorithm
->
+template<class T, unsigned WarpSize, ::hipcub::WarpStoreAlgorithm Algorithm>
 struct Params
 {
-    using type = T;
-    static constexpr unsigned warp_size = WarpSize;
+    using type                                              = T;
+    static constexpr unsigned                     warp_size = WarpSize;
     static constexpr ::hipcub::WarpStoreAlgorithm algorithm = Algorithm;
 };
 
@@ -45,48 +41,49 @@ public:
     using params = Params;
 };
 
-using HipcubWarpStoreTestParams = ::testing::Types<
-    Params<int, 1U, ::hipcub::WARP_STORE_DIRECT>,
-    Params<int, 1U, ::hipcub::WARP_STORE_STRIPED>,
-    Params<int, 1U, ::hipcub::WARP_STORE_VECTORIZE>,
-    Params<int, 1U, ::hipcub::WARP_STORE_TRANSPOSE>,
+using HipcubWarpStoreTestParams
+    = ::testing::Types<Params<int, 1U, ::hipcub::WARP_STORE_DIRECT>,
+                       Params<int, 1U, ::hipcub::WARP_STORE_STRIPED>,
+                       Params<int, 1U, ::hipcub::WARP_STORE_VECTORIZE>,
+                       Params<int, 1U, ::hipcub::WARP_STORE_TRANSPOSE>,
 
-    Params<int, 16U, ::hipcub::WARP_STORE_DIRECT>,
-    Params<int, 16U, ::hipcub::WARP_STORE_STRIPED>,
-    Params<int, 16U, ::hipcub::WARP_STORE_VECTORIZE>,
-    Params<int, 16U, ::hipcub::WARP_STORE_TRANSPOSE>,
+                       Params<int, 16U, ::hipcub::WARP_STORE_DIRECT>,
+                       Params<int, 16U, ::hipcub::WARP_STORE_STRIPED>,
+                       Params<int, 16U, ::hipcub::WARP_STORE_VECTORIZE>,
+                       Params<int, 16U, ::hipcub::WARP_STORE_TRANSPOSE>,
 
-    Params<int, 32U, ::hipcub::WARP_STORE_DIRECT>,
-    Params<int, 32U, ::hipcub::WARP_STORE_STRIPED>,
-    Params<int, 32U, ::hipcub::WARP_STORE_VECTORIZE>,
-    Params<int, 32U, ::hipcub::WARP_STORE_TRANSPOSE>,
+                       Params<int, 32U, ::hipcub::WARP_STORE_DIRECT>,
+                       Params<int, 32U, ::hipcub::WARP_STORE_STRIPED>,
+                       Params<int, 32U, ::hipcub::WARP_STORE_VECTORIZE>,
+                       Params<int, 32U, ::hipcub::WARP_STORE_TRANSPOSE>,
 
-    Params<int, 64U, ::hipcub::WARP_STORE_DIRECT>,
-    Params<int, 64U, ::hipcub::WARP_STORE_STRIPED>,
-    Params<int, 64U, ::hipcub::WARP_STORE_VECTORIZE>,
-    Params<int, 64U, ::hipcub::WARP_STORE_TRANSPOSE>
->;
+                       Params<int, 64U, ::hipcub::WARP_STORE_DIRECT>,
+                       Params<int, 64U, ::hipcub::WARP_STORE_STRIPED>,
+                       Params<int, 64U, ::hipcub::WARP_STORE_VECTORIZE>,
+                       Params<int, 64U, ::hipcub::WARP_STORE_TRANSPOSE>>;
 
 template<unsigned                     BlockSize,
          unsigned                     ItemsPerThread,
          unsigned                     LogicalWarpSize,
          ::hipcub::WarpStoreAlgorithm Algorithm,
          class T>
-__device__ auto warp_store_test(T* d_input, T* d_output)
+__device__
+auto warp_store_test(T* d_input, T* d_output)
     -> std::enable_if_t<test_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {
     T thread_data[ItemsPerThread];
-    for (unsigned i = 0; i < ItemsPerThread; ++i)
+    for(unsigned i = 0; i < ItemsPerThread; ++i)
     {
         thread_data[i] = d_input[threadIdx.x * ItemsPerThread + i];
     }
 
     using WarpStoreT = ::hipcub::WarpStore<T, ItemsPerThread, Algorithm, LogicalWarpSize>;
     constexpr unsigned warps_in_block = BlockSize / LogicalWarpSize;
-    constexpr int tile_size = ItemsPerThread * LogicalWarpSize;
+    constexpr int      tile_size      = ItemsPerThread * LogicalWarpSize;
 
-    const unsigned                              warp_id = threadIdx.x / LogicalWarpSize;
-    __shared__ typename WarpStoreT::TempStorage temp_storage[warps_in_block];
+    const unsigned                   warp_id = threadIdx.x / LogicalWarpSize;
+    __shared__
+    typename WarpStoreT::TempStorage temp_storage[warps_in_block];
 
     WarpStoreT(temp_storage[warp_id]).Store(d_output + warp_id * tile_size, thread_data);
 }
@@ -96,7 +93,8 @@ template<unsigned                     BlockSize,
          unsigned                     LogicalWarpSize,
          ::hipcub::WarpStoreAlgorithm Algorithm,
          class T>
-__device__ auto warp_store_test(T* /*d_input*/, T* /*d_output*/)
+__device__
+auto warp_store_test(T* /*d_input*/, T* /*d_output*/)
     -> std::enable_if_t<!test_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {}
 
@@ -105,7 +103,8 @@ template<unsigned                     BlockSize,
          unsigned                     LogicalWarpSize,
          ::hipcub::WarpStoreAlgorithm Algorithm,
          class T>
-__global__ __launch_bounds__(BlockSize) void warp_store_kernel(T* d_input, T* d_output)
+__global__ __launch_bounds__(BlockSize)
+void warp_store_kernel(T* d_input, T* d_output)
 {
     warp_store_test<BlockSize, ItemsPerThread, LogicalWarpSize, Algorithm>(d_input, d_output);
 }
@@ -115,27 +114,26 @@ template<unsigned                     BlockSize,
          unsigned                     LogicalWarpSize,
          ::hipcub::WarpStoreAlgorithm Algorithm,
          class T>
-__device__ auto warp_store_guarded_test(T* d_input, T* d_output, int valid_items)
+__device__
+auto warp_store_guarded_test(T* d_input, T* d_output, int valid_items)
     -> std::enable_if_t<test_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {
     T thread_data[ItemsPerThread];
-    for (unsigned i = 0; i < ItemsPerThread; ++i)
+    for(unsigned i = 0; i < ItemsPerThread; ++i)
     {
         thread_data[i] = d_input[threadIdx.x * ItemsPerThread + i];
     }
 
     using WarpStoreT = ::hipcub::WarpStore<T, ItemsPerThread, Algorithm, LogicalWarpSize>;
     constexpr unsigned warps_in_block = BlockSize / LogicalWarpSize;
-    constexpr int tile_size = ItemsPerThread * LogicalWarpSize;
+    constexpr int      tile_size      = ItemsPerThread * LogicalWarpSize;
 
-    const unsigned                              warp_id = threadIdx.x / LogicalWarpSize;
-    __shared__ typename WarpStoreT::TempStorage temp_storage[warps_in_block];
+    const unsigned                   warp_id = threadIdx.x / LogicalWarpSize;
+    __shared__
+    typename WarpStoreT::TempStorage temp_storage[warps_in_block];
 
-    WarpStoreT(temp_storage[warp_id]).Store(
-        d_output + warp_id * tile_size,
-        thread_data,
-        valid_items
-    );
+    WarpStoreT(temp_storage[warp_id])
+        .Store(d_output + warp_id * tile_size, thread_data, valid_items);
 }
 
 template<unsigned                     BlockSize,
@@ -143,7 +141,8 @@ template<unsigned                     BlockSize,
          unsigned                     LogicalWarpSize,
          ::hipcub::WarpStoreAlgorithm Algorithm,
          class T>
-__device__ auto warp_store_guarded_test(T* /*d_input*/, T* /*d_output*/, int /*valid_items*/)
+__device__
+auto warp_store_guarded_test(T* /*d_input*/, T* /*d_output*/, int /*valid_items*/)
     -> std::enable_if_t<!test_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {}
 
@@ -152,9 +151,8 @@ template<unsigned                     BlockSize,
          unsigned                     LogicalWarpSize,
          ::hipcub::WarpStoreAlgorithm Algorithm,
          class T>
-__global__ __launch_bounds__(BlockSize) void warp_store_guarded_kernel(T*  d_input,
-                                                                       T*  d_output,
-                                                                       int valid_items)
+__global__ __launch_bounds__(BlockSize)
+void warp_store_guarded_kernel(T* d_input, T* d_output, int valid_items)
 {
     warp_store_guarded_test<BlockSize, ItemsPerThread, LogicalWarpSize, Algorithm>(d_input,
                                                                                    d_output,
@@ -162,16 +160,17 @@ __global__ __launch_bounds__(BlockSize) void warp_store_guarded_kernel(T*  d_inp
 }
 
 template<class T>
-std::vector<T> stripe_vector(const std::vector<T>& v, const size_t warp_size, const size_t items_per_thread)
+std::vector<T>
+    stripe_vector(const std::vector<T>& v, const size_t warp_size, const size_t items_per_thread)
 {
-    const size_t period = warp_size * items_per_thread;
+    const size_t   period = warp_size * items_per_thread;
     std::vector<T> striped(v.size());
-    for (size_t i = 0; i < v.size(); ++i)
+    for(size_t i = 0; i < v.size(); ++i)
     {
-        const size_t i_base = i % period;
+        const size_t i_base         = i % period;
         const size_t other_idx_base = ((items_per_thread * i_base) % period) + i_base / warp_size;
-        const size_t other_idx = other_idx_base + period * (i / period);
-        striped[i] = v[other_idx];
+        const size_t other_idx      = other_idx_base + period * (i / period);
+        striped[i]                  = v[other_idx];
     }
     return striped;
 }
@@ -184,12 +183,12 @@ TYPED_TEST(HipcubWarpStoreTest, WarpStore)
     SCOPED_TRACE(testing::Message() << "with device_id= " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using T = typename TestFixture::params::type;
-    constexpr unsigned warp_size = TestFixture::params::warp_size;
-    constexpr ::hipcub::WarpStoreAlgorithm algorithm = TestFixture::params::algorithm;
-    constexpr unsigned items_per_thread = 4;
-    constexpr unsigned block_size = 1024;
-    constexpr unsigned items_count = items_per_thread * block_size;
+    using T                                                 = typename TestFixture::params::type;
+    constexpr unsigned                     warp_size        = TestFixture::params::warp_size;
+    constexpr ::hipcub::WarpStoreAlgorithm algorithm        = TestFixture::params::algorithm;
+    constexpr unsigned                     items_per_thread = 4;
+    constexpr unsigned                     block_size       = 1024;
+    constexpr unsigned                     items_count      = items_per_thread * block_size;
 
     SKIP_IF_UNSUPPORTED_WARP_SIZE(warp_size);
 
@@ -214,7 +213,7 @@ TYPED_TEST(HipcubWarpStoreTest, WarpStore)
     HIP_CHECK(hipFree(d_output));
 
     auto expected = input;
-    if (algorithm == ::hipcub::WarpStoreAlgorithm::WARP_STORE_STRIPED)
+    if(algorithm == ::hipcub::WarpStoreAlgorithm::WARP_STORE_STRIPED)
     {
         expected = stripe_vector(input, warp_size, items_per_thread);
     }
@@ -228,13 +227,13 @@ TYPED_TEST(HipcubWarpStoreTest, WarpStoreGuarded)
     SCOPED_TRACE(testing::Message() << "with device_id= " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using T = typename TestFixture::params::type;
-    constexpr unsigned warp_size = TestFixture::params::warp_size;
-    constexpr ::hipcub::WarpStoreAlgorithm algorithm = TestFixture::params::algorithm;
-    constexpr unsigned items_per_thread = 4;
-    constexpr unsigned block_size = 1024;
-    constexpr unsigned items_count = items_per_thread * block_size;
-    constexpr int valid_items = warp_size / 4;
+    using T                                                 = typename TestFixture::params::type;
+    constexpr unsigned                     warp_size        = TestFixture::params::warp_size;
+    constexpr ::hipcub::WarpStoreAlgorithm algorithm        = TestFixture::params::algorithm;
+    constexpr unsigned                     items_per_thread = 4;
+    constexpr unsigned                     block_size       = 1024;
+    constexpr unsigned                     items_count      = items_per_thread * block_size;
+    constexpr int                          valid_items      = warp_size / 4;
 
     SKIP_IF_UNSUPPORTED_WARP_SIZE(warp_size);
 
@@ -260,14 +259,15 @@ TYPED_TEST(HipcubWarpStoreTest, WarpStoreGuarded)
     HIP_CHECK(hipFree(d_output));
 
     auto expected = input;
-    if (algorithm == ::hipcub::WarpStoreAlgorithm::WARP_STORE_STRIPED)
+    if(algorithm == ::hipcub::WarpStoreAlgorithm::WARP_STORE_STRIPED)
     {
         expected = stripe_vector(expected, warp_size, items_per_thread);
     }
-    for (size_t warp_idx = 0; warp_idx < block_size / warp_size; ++warp_idx)
+    for(size_t warp_idx = 0; warp_idx < block_size / warp_size; ++warp_idx)
     {
         auto segment_begin = std::next(expected.begin(), warp_idx * warp_size * items_per_thread);
-        auto segment_end = std::next(expected.begin(), (warp_idx + 1) * warp_size * items_per_thread);
+        auto segment_end
+            = std::next(expected.begin(), (warp_idx + 1) * warp_size * items_per_thread);
         std::fill(std::next(segment_begin, valid_items), segment_end, static_cast<T>(0));
     }
 

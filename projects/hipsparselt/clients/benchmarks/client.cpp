@@ -112,7 +112,7 @@ struct perf_sparse<
             && std::is_same<Tc, float>{})
 #endif
 #endif
-	>> : hipsparselt_test_valid
+        >> : hipsparselt_test_valid
 {
     void operator()(const Arguments& arg)
     {
@@ -536,7 +536,8 @@ try
 
         char rev[128];
         hipsparseLtGetGitRevision(handle, &rev[0]);
-        hipsparselt_cout << "hipSPARSELt version: " << version << " revision: " << rev << "\n" << std::endl;
+        hipsparselt_cout << "hipSPARSELt version: " << version << " revision: " << rev << "\n"
+                         << std::endl;
         return 0;
     }
 
@@ -610,8 +611,7 @@ try
         }
 #endif
 #ifdef __HIP_PLATFORM_NVIDIA__
-        arg.bias_type
-            = (arg.a_type == HIP_R_8I ? HIP_R_32F : arg.c_type);
+        arg.bias_type = (arg.a_type == HIP_R_8I ? HIP_R_32F : arg.c_type);
 #endif
     }
     else
@@ -632,8 +632,8 @@ try
         }
 #endif
 #ifdef __HIP_PLATFORM_NVIDIA__
-        valid = (arg.a_type == HIP_R_8I && arg.bias_type == HIP_R_32F) ||
-                (arg.a_type != HIP_R_8I && arg.bias_type == arg.c_type);
+        valid = (arg.a_type == HIP_R_8I && arg.bias_type == HIP_R_32F)
+                || (arg.a_type != HIP_R_8I && arg.bias_type == arg.c_type);
 #endif
         if(!valid)
             throw std::invalid_argument("Invalid value for --bias_type " + bias_type);

@@ -20,7 +20,7 @@ GlobalParameters:
 
 BenchmarkProblems:
   ########################################
-  # NN - Single LDS Buffer - BBS 
+  # NN - Single LDS Buffer - BBS
   ########################################
   -
     - # ProblemType
@@ -44,12 +44,12 @@ BenchmarkProblems:
       ForkParameters:
         #        - AssertSummationElementMultiple: [32]
         - MatrixInstruction:
-          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]  
-          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]  
-          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]  
-          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]  
+          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]
+          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]
+          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]
+          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]
+          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]
+          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]
         - PrefetchGlobalRead: [2]
         - PrefetchLocalRead: [1]
           #        - ClusterLocalRead: [1]
@@ -83,7 +83,7 @@ BenchmarkProblems:
           - Exact: [2053, 2053, 1, 2053]
 
   ########################################
-  # NN - Multiple LDS Buffers - BBS 
+  # NN - Multiple LDS Buffers - BBS
   ########################################
   -
     - # ProblemType
@@ -107,12 +107,12 @@ BenchmarkProblems:
       ForkParameters:
         #        - AssertSummationElementMultiple: [32]
         - MatrixInstruction:
-          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]  
-          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]  
-          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]  
-          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]  
+          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]
+          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]
+          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]
+          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]
+          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]
+          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]
         - PrefetchGlobalRead: [2]
         - PrefetchLocalRead: [1]
           #        - ClusterLocalRead: [1]
@@ -146,7 +146,7 @@ BenchmarkProblems:
           - Exact: [2053, 2053, 1, 2053]
 
   ########################################
-  # NN - Single LDS buffer - HHS 
+  # NN - Single LDS buffer - HHS
   ########################################
   -
     - # ProblemType
@@ -170,12 +170,12 @@ BenchmarkProblems:
       ForkParameters:
         #        - AssertSummationElementMultiple: [32]
         - MatrixInstruction:
-          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]  
-          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]  
-          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]  
-          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]  
+          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]
+          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]
+          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]
+          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]
+          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]
+          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]
         - PrefetchGlobalRead: [2]
         - PrefetchLocalRead: [1]
           #        - ClusterLocalRead: [1]
@@ -209,7 +209,7 @@ BenchmarkProblems:
           - Exact: [2053, 2053, 1, 2053]
 
   ########################################
-  # NN - Multiple LDS buffers - HHS 
+  # NN - Multiple LDS buffers - HHS
   ########################################
   -
     - # ProblemType
@@ -233,12 +233,12 @@ BenchmarkProblems:
       ForkParameters:
         #        - AssertSummationElementMultiple: [32]
         - MatrixInstruction:
-          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]  
-          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]  
-          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]  
-          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]  
+          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]
+          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]
+          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]
+          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]
+          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]
+          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]
         - PrefetchGlobalRead: [2]
         - PrefetchLocalRead: [1]
           #        - ClusterLocalRead: [1]
@@ -296,13 +296,13 @@ BenchmarkProblems:
       ForkParameters:
         #        - AssertSummationElementMultiple: [32]
         - MatrixInstruction:
-          #          - [16, 16, 16, 1, 1, 8, 8, 2, 2 ]  
-          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]  
-          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]  
-          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]  
-          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]  
+          #          - [16, 16, 16, 1, 1, 8, 8, 2, 2 ]
+          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]
+          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]
+          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]
+          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]
+          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]
+          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]
         - PrefetchGlobalRead: [2]
         - PrefetchLocalRead: [1]
           #        - ClusterLocalRead: [1]
@@ -361,13 +361,13 @@ BenchmarkProblems:
       ForkParameters:
         #        - AssertSummationElementMultiple: [32]
         - MatrixInstruction:
-          #          - [16, 16, 16, 1, 1, 8, 8, 2, 2 ]  
-          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]  
-          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]  
-          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]  
-          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]  
+          #          - [16, 16, 16, 1, 1, 8, 8, 2, 2 ]
+          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]
+          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]
+          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]
+          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]
+          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]
+          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]
         - PrefetchGlobalRead: [2]
         - PrefetchLocalRead: [1]
           #        - ClusterLocalRead: [1]
@@ -426,13 +426,13 @@ BenchmarkProblems:
       ForkParameters:
         #        - AssertSummationElementMultiple: [32]
         - MatrixInstruction:
-          #          - [16, 16, 16, 1, 1, 8, 8, 2, 2 ]  
-          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]  
-          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]  
-          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]  
-          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]  
+          #          - [16, 16, 16, 1, 1, 8, 8, 2, 2 ]
+          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]
+          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]
+          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]
+          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]
+          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]
+          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]
         - PrefetchGlobalRead: [2]
         - PrefetchLocalRead: [1]
           #        - ClusterLocalRead: [1]
@@ -491,13 +491,13 @@ BenchmarkProblems:
       ForkParameters:
         #        - AssertSummationElementMultiple: [32]
         - MatrixInstruction:
-          #          - [16, 16, 16, 1, 1, 8, 8, 2, 2 ]  
-          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]  
-          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]  
-          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]  
-          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]  
+          #          - [16, 16, 16, 1, 1, 8, 8, 2, 2 ]
+          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]
+          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]
+          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]
+          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]
+          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]
+          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]
         - PrefetchGlobalRead: [2]
         - PrefetchLocalRead: [1]
           #        - ClusterLocalRead: [1]
@@ -556,12 +556,12 @@ BenchmarkProblems:
       ForkParameters:
         #        - AssertSummationElementMultiple: [32]
         - MatrixInstruction:
-          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]  
-          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]  
-          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]  
-          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]  
+          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]
+          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]
+          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]
+          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]
+          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]
+          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]
         - PrefetchGlobalRead: [2]
         - PrefetchLocalRead: [1]
           #        - ClusterLocalRead: [1]
@@ -620,12 +620,12 @@ BenchmarkProblems:
       ForkParameters:
         #        - AssertSummationElementMultiple: [32]
         - MatrixInstruction:
-          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]  
-          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]  
-          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]  
-          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]  
+          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]
+          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]
+          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]
+          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]
+          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]
+          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]
         - PrefetchGlobalRead: [2]
         - PrefetchLocalRead: [1]
           #        - ClusterLocalRead: [1]
@@ -684,12 +684,12 @@ BenchmarkProblems:
       ForkParameters:
         #        - AssertSummationElementMultiple: [32]
         - MatrixInstruction:
-          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]  
-          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]  
-          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]  
-          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]  
+          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]
+          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]
+          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]
+          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]
+          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]
+          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]
         - PrefetchGlobalRead: [2]
         - PrefetchLocalRead: [1]
           #        - ClusterLocalRead: [1]
@@ -748,12 +748,12 @@ BenchmarkProblems:
       ForkParameters:
         #        - AssertSummationElementMultiple: [32]
         - MatrixInstruction:
-          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]  
-          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]  
-          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]  
-          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]  
-          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]  
+          - [16, 16, 32, 1, 1, 4, 4, 2, 2 ]
+          - [16, 16, 32, 1, 1, 2, 8, 4, 1 ]
+          - [16, 16, 32, 1, 1, 8, 2, 1, 4 ]
+          - [32, 32, 16, 1, 1, 2, 2, 2, 2 ]
+          - [32, 32, 16, 1, 1, 4, 1, 1, 4 ]
+          - [32, 32, 16, 1, 1, 1, 4, 4, 1 ]
         - PrefetchGlobalRead: [2]
         - PrefetchLocalRead: [1]
           #        - ClusterLocalRead: [1]
@@ -809,7 +809,7 @@ BenchmarkProblems:
         - KernelLanguage: ["Assembly"]
       ForkParameters:
         - MatrixInstruction:
-          - [32, 32, 16, 1, 1, 5, 3, 2, 2 ]  
+          - [32, 32, 16, 1, 1, 5, 3, 2, 2 ]
         - PrefetchGlobalRead: [1]
         - PrefetchLocalRead: [1]
         - ClusterLocalRead: [0]
@@ -825,7 +825,7 @@ BenchmarkProblems:
         - StaggerU: [0]
         - StaggerUStride: [64]
         - 1LDSBuffer: [0]
-        - LDSTrInst: [1] 
+        - LDSTrInst: [1]
         - SourceSwap: [1]
       BenchmarkJoinParameters:
       BenchmarkFinalParameters:
@@ -850,7 +850,7 @@ BenchmarkProblems:
       Batched: True
       #Activation: True
       #ActivationHPA: True
-    - InitialSolutionParameters: 
+    - InitialSolutionParameters:
       BenchmarkCommonParameters:
       - KernelLanguage: [Assembly]
       ForkParameters:
@@ -890,7 +890,7 @@ BenchmarkProblems:
             LDSTrInst: 1 # Default Value: [False] # Range: [False, True]
               #- ClusterLocalRead: 1 # Default Value: [1] # Range: [0, 1]
               #LDSTrInst: 0 # Default Value: [False] # Range: [False, True]
-      BenchmarkJoinParameters: 
+      BenchmarkJoinParameters:
       BenchmarkFinalParameters:
       - ProblemSizes:
         - Exact: [ 40960, 192, 1, 256 ]

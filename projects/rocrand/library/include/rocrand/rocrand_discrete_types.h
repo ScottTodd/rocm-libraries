@@ -30,14 +30,14 @@ struct rocrand_discrete_distribution_st
     unsigned int offset;
 
     /// Alias table
-    unsigned int * alias;
+    unsigned int* alias;
     ///Probability data for the alias table
-    double * probability;
+    double* probability;
 
     /// Cumulative distribution function
-    double * cdf;
+    double* cdf;
 };
 
-typedef struct rocrand_discrete_distribution_st * rocrand_discrete_distribution;
+typedef struct rocrand_discrete_distribution_st* rocrand_discrete_distribution;
 
 #endif // ROCRAND_DISCRETE_TYPES_H_

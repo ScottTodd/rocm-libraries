@@ -347,21 +347,21 @@ rocfft_status RTCCache::deserialize(const void* buffer, size_t buffer_len_bytes)
     // update the real db with the temp contents.
     sql_err           = sqlite3_exec(db_user.get(),
                            "INSERT OR REPLACE INTO cache_v1 ("
-                           "    kernel_name,"
-                           "    arch,"
-                           "    hip_version,"
-                           "    generator_sum,"
-                           "    timestamp,"
-                           "    code"
-                           ")"
-                           "SELECT"
-                           "    kernel_name,"
-                           "    arch,"
-                           "    hip_version,"
-                           "    generator_sum,"
-                           "    timestamp,"
-                           "    code "
-                           "FROM deserialized.cache_v1",
+                                     "    kernel_name,"
+                                     "    arch,"
+                                     "    hip_version,"
+                                     "    generator_sum,"
+                                     "    timestamp,"
+                                     "    code"
+                                     ")"
+                                     "SELECT"
+                                     "    kernel_name,"
+                                     "    arch,"
+                                     "    hip_version,"
+                                     "    generator_sum,"
+                                     "    timestamp,"
+                                     "    code "
+                                     "FROM deserialized.cache_v1",
                            nullptr,
                            nullptr,
                            nullptr);

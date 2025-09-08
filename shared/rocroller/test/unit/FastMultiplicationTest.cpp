@@ -207,7 +207,7 @@ namespace FastMultiplicationTest
 
             co_yield v_result->allocate();
 
-            co_yield(m_context->copier()->copy(v_result, s_result));
+            co_yield (m_context->copier()->copy(v_result, s_result));
 
             auto a = s_a->expression();
 
@@ -217,7 +217,7 @@ namespace FastMultiplicationTest
             Register::ValuePtr s_c;
             co_yield Expression::generate(s_c, expr, m_context);
 
-            co_yield(m_context->copier()->copy(v_c, s_c));
+            co_yield (m_context->copier()->copy(v_c, s_c));
             co_yield m_context->mem()->storeGlobal(v_result, v_c, 0, 4);
         };
 
@@ -301,7 +301,7 @@ namespace FastMultiplicationTest
 
             co_yield v_result->allocate();
 
-            co_yield(m_context->copier()->copy(v_result, s_result));
+            co_yield (m_context->copier()->copy(v_result, s_result));
 
             auto a = s_a->expression();
 
@@ -311,7 +311,7 @@ namespace FastMultiplicationTest
             Register::ValuePtr s_c;
             co_yield Expression::generate(s_c, expr, m_context);
 
-            co_yield(m_context->copier()->copy(v_c, s_c));
+            co_yield (m_context->copier()->copy(v_c, s_c));
             co_yield m_context->mem()->storeGlobal(v_result, v_c, 0, 8);
         };
 

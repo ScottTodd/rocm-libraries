@@ -48,8 +48,11 @@ __global__ void prune_check_kernel(const Ti* in,
 {
     constexpr unsigned int MT0I = SG0I * TT0I;
     constexpr unsigned int MT1J = SG1J * TT1J;
-    using c_type = std::conditional_t<std::is_same<__hip_fp8_e4m3, Ti>::value || std::is_same<__hip_fp8_e5m2, Ti>::value, float, Ti>;
-    const c_type ZERO_C = static_cast<c_type>(0.0f);
+    using c_type                = std::conditional_t<std::is_same<__hip_fp8_e4m3, Ti>::value
+                                                         || std::is_same<__hip_fp8_e5m2, Ti>::value,
+                                                     float,
+                                                     Ti>;
+    const c_type ZERO_C         = static_cast<c_type>(0.0f);
 
     unsigned int serial = hc_get_workitem_id(0);
     unsigned int sg0I   = serial % SG0I;

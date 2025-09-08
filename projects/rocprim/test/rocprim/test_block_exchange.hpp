@@ -22,12 +22,12 @@
 
 test_suite_type_def(suite_name, name_suffix)
 
-typed_test_suite_def(suite_name, name_suffix, block_params);
+    typed_test_suite_def(suite_name, name_suffix, block_params);
 
 typed_test_def(suite_name, name_suffix, BlockedToStriped)
 {
-    using type = typename TestFixture::params::input_type;
-    using output_type = typename TestFixture::params::output_type;
+    using type                  = typename TestFixture::params::input_type;
+    using output_type           = typename TestFixture::params::output_type;
     constexpr size_t block_size = TestFixture::params::block_size;
 
     static_for<0, 4, type, output_type, 0, block_size>::run();
@@ -35,8 +35,8 @@ typed_test_def(suite_name, name_suffix, BlockedToStriped)
 
 typed_test_def(suite_name, name_suffix, StripedToBlocked)
 {
-    using type = typename TestFixture::params::input_type;
-    using output_type = typename TestFixture::params::output_type;
+    using type                  = typename TestFixture::params::input_type;
+    using output_type           = typename TestFixture::params::output_type;
     constexpr size_t block_size = TestFixture::params::block_size;
 
     static_for<0, 4, type, output_type, 1, block_size>::run();
@@ -44,8 +44,8 @@ typed_test_def(suite_name, name_suffix, StripedToBlocked)
 
 typed_test_def(suite_name, name_suffix, BlockedToWarpStriped)
 {
-    using type = typename TestFixture::params::input_type;
-    using output_type = typename TestFixture::params::output_type;
+    using type                  = typename TestFixture::params::input_type;
+    using output_type           = typename TestFixture::params::output_type;
     constexpr size_t block_size = TestFixture::params::block_size;
 
     static_for<0, 4, type, output_type, 2, block_size>::run();
@@ -53,8 +53,8 @@ typed_test_def(suite_name, name_suffix, BlockedToWarpStriped)
 
 typed_test_def(suite_name, name_suffix, WarpStripedToBlocked)
 {
-    using type = typename TestFixture::params::input_type;
-    using output_type = typename TestFixture::params::output_type;
+    using type                  = typename TestFixture::params::input_type;
+    using output_type           = typename TestFixture::params::output_type;
     constexpr size_t block_size = TestFixture::params::block_size;
 
     static_for<0, 4, type, output_type, 3, block_size>::run();
@@ -62,8 +62,8 @@ typed_test_def(suite_name, name_suffix, WarpStripedToBlocked)
 
 typed_test_def(suite_name, name_suffix, ScatterToBlocked)
 {
-    using type = typename TestFixture::params::input_type;
-    using output_type = typename TestFixture::params::output_type;
+    using type                  = typename TestFixture::params::input_type;
+    using output_type           = typename TestFixture::params::output_type;
     constexpr size_t block_size = TestFixture::params::block_size;
 
     static_for<0, 4, type, output_type, 4, block_size>::run();
@@ -71,8 +71,8 @@ typed_test_def(suite_name, name_suffix, ScatterToBlocked)
 
 typed_test_def(suite_name, name_suffix, ScatterToStriped)
 {
-    using type = typename TestFixture::params::input_type;
-    using output_type = typename TestFixture::params::output_type;
+    using type                  = typename TestFixture::params::input_type;
+    using output_type           = typename TestFixture::params::output_type;
     constexpr size_t block_size = TestFixture::params::block_size;
 
     static_for<0, 4, type, output_type, 5, block_size>::run();

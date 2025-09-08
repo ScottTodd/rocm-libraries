@@ -199,7 +199,8 @@ namespace rocRoller
 
             // a & b are different operator/value classes
             template <class T, class U>
-            requires(!std::same_as<T, U>) constexpr bool operator()(T const& a, U const& b)
+                requires(!std::same_as<T, U>)
+            constexpr bool operator()(T const& a, U const& b)
             {
                 return false;
             }
@@ -405,7 +406,8 @@ namespace rocRoller
 
             // a & b are different operator/value classes
             template <class T, class U>
-            requires(!std::same_as<T, U>) bool operator()(T const& a, U const& b)
+                requires(!std::same_as<T, U>)
+            bool operator()(T const& a, U const& b)
             {
                 return false;
             }
@@ -445,7 +447,8 @@ namespace rocRoller
             bool        throwIfNotSupported = true;
 
             template <typename Expr>
-            requires(CUnary<Expr> || CBinary<Expr> || CTernary<Expr>) void operator()(Expr& expr)
+                requires(CUnary<Expr> || CBinary<Expr> || CTernary<Expr>)
+            void operator()(Expr& expr)
             {
                 expr.comment = std::move(comment);
             }
@@ -522,8 +525,8 @@ namespace rocRoller
             bool includeRegisterComments = true;
 
             template <typename Expr>
-            requires(CUnary<Expr> || CBinary<Expr> || CTernary<Expr>) std::string
-                operator()(Expr const& expr) const
+                requires(CUnary<Expr> || CBinary<Expr> || CTernary<Expr>)
+            std::string operator()(Expr const& expr) const
             {
                 return expr.comment;
             }

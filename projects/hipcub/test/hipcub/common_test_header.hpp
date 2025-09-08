@@ -47,20 +47,22 @@
 #define TEST_UTILS_INCLUDE_GAURD
 #include "test_utils.hpp"
 
-#define HIP_CHECK(condition)         \
-{                                    \
-    hipError_t error = condition;    \
-    if(error != hipSuccess){         \
-        std::cout << "HIP error: " << hipGetErrorString(error) << " line: " << __LINE__ << std::endl; \
-        exit(error); \
-    } \
-}
+#define HIP_CHECK(condition)                                                                \
+    {                                                                                       \
+        hipError_t error = condition;                                                       \
+        if(error != hipSuccess)                                                             \
+        {                                                                                   \
+            std::cout << "HIP error: " << hipGetErrorString(error) << " line: " << __LINE__ \
+                      << std::endl;                                                         \
+            exit(error);                                                                    \
+        }                                                                                   \
+    }
 
-#define INSTANTIATE_TYPED_TEST_EXPANDED_1(line, test_suite_name, ...) \
-    namespace Id##line {                                              \
-        using test_type = __VA_ARGS__;                                \
-        INSTANTIATE_TYPED_TEST_SUITE_P(                               \
-            Id##line, test_suite_name, test_type);                    \
+#define INSTANTIATE_TYPED_TEST_EXPANDED_1(line, test_suite_name, ...)         \
+    namespace Id##line                                                        \
+    {                                                                         \
+        using test_type = __VA_ARGS__;                                        \
+        INSTANTIATE_TYPED_TEST_SUITE_P(Id##line, test_suite_name, test_type); \
     }
 
 #define INSTANTIATE_TYPED_TEST_EXPANDED(line, test_suite_name, ...) \
@@ -136,10 +138,10 @@ inline bool use_hmm()
 }
 
 // Helper for HMM allocations: HMM is requested through HIPCUB_USE_HMM environment variable
-template <class T>
+template<class T>
 hipError_t hipMallocHelper(T** devPtr, size_t size)
 {
-    if (use_hmm())
+    if(use_hmm())
     {
         return hipMallocManaged((void**)devPtr, size);
     }
@@ -150,4 +152,4 @@ hipError_t hipMallocHelper(T** devPtr, size_t size)
     return hipSuccess;
 }
 
-}
+} // namespace test_common_utils

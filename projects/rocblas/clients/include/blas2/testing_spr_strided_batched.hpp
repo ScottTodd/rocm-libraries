@@ -279,9 +279,8 @@ void testing_spr_strided_batched(const Arguments& arg)
         {
             if(arg.unit_check)
             {
-                if(std::is_same_v<
-                       T,
-                       rocblas_float_complex> || std::is_same_v<T, rocblas_double_complex>)
+                if(std::is_same_v<T, rocblas_float_complex>
+                   || std::is_same_v<T, rocblas_double_complex>)
                 {
                     const double tol = N * sum_error_tolerance<T>;
                     near_check_general<T>(1, size_A, 1, stride_A, hAp_gold, hAp, batch_count, tol);
@@ -303,9 +302,8 @@ void testing_spr_strided_batched(const Arguments& arg)
             CHECK_HIP_ERROR(hAp.transfer_from(dAp));
             if(arg.unit_check)
             {
-                if(std::is_same_v<
-                       T,
-                       rocblas_float_complex> || std::is_same_v<T, rocblas_double_complex>)
+                if(std::is_same_v<T, rocblas_float_complex>
+                   || std::is_same_v<T, rocblas_double_complex>)
                 {
                     const double tol = N * sum_error_tolerance<T>;
                     near_check_general<T>(1, size_A, 1, stride_A, hAp_gold, hAp, batch_count, tol);

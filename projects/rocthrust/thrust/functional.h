@@ -1386,8 +1386,8 @@ struct project1st<void, void>
   /// \brief Invocation operator - returns its first argument.
   THRUST_EXEC_CHECK_DISABLE
   template <typename T1, typename T2>
-  THRUST_HOST_DEVICE constexpr auto operator()(T1&& t1, T2&&) const noexcept(noexcept(THRUST_FWD(t1)))
-    -> decltype(THRUST_FWD(t1))
+  THRUST_HOST_DEVICE constexpr auto operator()(T1&& t1, T2&&) const
+    noexcept(noexcept(THRUST_FWD(t1))) -> decltype(THRUST_FWD(t1))
   {
     return THRUST_FWD(t1);
   }
@@ -1451,8 +1451,8 @@ struct project2nd<void, void>
   /// \brief Invocation operator - returns its second argument.
   THRUST_EXEC_CHECK_DISABLE
   template <typename T1, typename T2>
-  THRUST_HOST_DEVICE constexpr auto operator()(T1&&, T2&& t2) const noexcept(noexcept(THRUST_FWD(t2)))
-    -> decltype(THRUST_FWD(t2))
+  THRUST_HOST_DEVICE constexpr auto operator()(T1&&, T2&& t2) const
+    noexcept(noexcept(THRUST_FWD(t2))) -> decltype(THRUST_FWD(t2))
   {
     return THRUST_FWD(t2);
   }
@@ -1535,7 +1535,7 @@ THRUST_SUPPRESS_DEPRECATED_PUSH
  */
 template <typename Predicate>
 THRUST_HOST_DEVICE
-  THRUST_DEPRECATED_BECAUSE("Use thrust::not_fn instead") unary_negate<Predicate> not1(const Predicate& pred);
+THRUST_DEPRECATED_BECAUSE("Use thrust::not_fn instead") unary_negate<Predicate> not1(const Predicate& pred);
 THRUST_SUPPRESS_DEPRECATED_POP
 
 /*! \p binary_negate is a function object adaptor: it is an Adaptable Binary
@@ -1620,15 +1620,15 @@ struct not_fun_t
   F f;
 
   template <typename... Ts>
-  THRUST_HOST_DEVICE auto operator()(Ts&&... args) noexcept(noexcept(!f(std::forward<Ts>(args)...)))
-    -> decltype(!f(std::forward<Ts>(args)...))
+  THRUST_HOST_DEVICE auto
+  operator()(Ts&&... args) noexcept(noexcept(!f(std::forward<Ts>(args)...))) -> decltype(!f(std::forward<Ts>(args)...))
   {
     return !f(std::forward<Ts>(args)...);
   }
 
   template <typename... Ts>
-  THRUST_HOST_DEVICE auto operator()(Ts&&... args) const noexcept(noexcept(!f(std::forward<Ts>(args)...)))
-    -> decltype(!f(std::forward<Ts>(args)...))
+  THRUST_HOST_DEVICE auto operator()(Ts&&... args) const
+    noexcept(noexcept(!f(std::forward<Ts>(args)...))) -> decltype(!f(std::forward<Ts>(args)...))
   {
     return !f(std::forward<Ts>(args)...);
   }

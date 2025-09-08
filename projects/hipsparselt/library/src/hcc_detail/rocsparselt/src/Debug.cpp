@@ -23,9 +23,9 @@
  * SOFTWARE.
  *
  *******************************************************************************/
+#include "hipsparselt_ostream.hpp"
 #include <Debug.hpp>
 #include <mutex>
-#include "hipsparselt_ostream.hpp"
 
 #ifndef DEBUG_SM
 #define DEBUG_SM 0
@@ -48,7 +48,8 @@ namespace rocsparselt
 #ifndef HIPSPARSELT_ENABLE_MARKER
             if(m_printMarker)
             {
-                hipsparselt_cerr << "HIPSPARSELT_ENABLE_MARKER is not defined. Please rebuild with -DHIPSPARSELT_ENABLE_MARKER=ON\n";
+                hipsparselt_cerr << "HIPSPARSELT_ENABLE_MARKER is not defined. Please rebuild with "
+                                    "-DHIPSPARSELT_ENABLE_MARKER=ON\n";
             }
 #endif
         }

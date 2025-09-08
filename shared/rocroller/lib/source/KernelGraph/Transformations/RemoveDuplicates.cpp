@@ -447,8 +447,8 @@ namespace rocRoller
             removeRedundantSequenceEdges(graph);
 
             auto                         orderedNodes = getOrderedNodes<ControlGraph::LoadTiled,
-                                                ControlGraph::StoreLDSTile,
-                                                ControlGraph::LoadLDSTile>(graph);
+                                                                        ControlGraph::StoreLDSTile,
+                                                                        ControlGraph::LoadLDSTile>(graph);
             std::unordered_map<int, int> nodeOrders;
             for(int i = 0; i < orderedNodes.size(); i++)
                 nodeOrders.emplace(orderedNodes[i], i);

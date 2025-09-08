@@ -191,7 +191,8 @@ OutputIt host_exclusive_scan_by_key(InputIt         first,
         if(key_compare_op(*k_first, *++k_first))
         {
             sum = op(sum, static_cast<result_type>(*first));
-        } else
+        }
+        else
         {
             sum = initial_value;
         }
@@ -210,60 +211,81 @@ struct custom_type
     T x;
     U y;
 
-    HIPCUB_HOST_DEVICE inline constexpr custom_type() : x(T()), y(U()) {}
+    HIPCUB_HOST_DEVICE
+    inline constexpr custom_type()
+        : x(T()), y(U())
+    {}
 
-    HIPCUB_HOST_DEVICE inline constexpr custom_type(T xx, U yy) : x(xx), y(yy) {}
+    HIPCUB_HOST_DEVICE
+    inline constexpr custom_type(T xx, U yy)
+        : x(xx), y(yy)
+    {}
 
-    HIPCUB_HOST_DEVICE inline constexpr custom_type(T xy) : x(xy), y(xy) {}
+    HIPCUB_HOST_DEVICE
+    inline constexpr custom_type(T xy)
+        : x(xy), y(xy)
+    {}
 
     template<class V, class W = V>
-    HIPCUB_HOST_DEVICE inline custom_type(const custom_type<V, W>& other) : x(other.x), y(other.y)
+    HIPCUB_HOST_DEVICE
+    inline custom_type(const custom_type<V, W>& other)
+        : x(other.x), y(other.y)
     {}
 
 #ifndef HIPCUB_CUB_API
-    HIPCUB_HOST_DEVICE inline ~custom_type() = default;
+    HIPCUB_HOST_DEVICE
+    inline ~custom_type()
+        = default;
 #endif
 
-    HIPCUB_HOST_DEVICE inline custom_type& operator=(const custom_type& other)
+    HIPCUB_HOST_DEVICE
+    inline custom_type& operator=(const custom_type& other)
     {
         x = other.x;
         y = other.y;
         return *this;
     }
 
-    HIPCUB_HOST_DEVICE inline custom_type operator+(const custom_type& rhs) const
+    HIPCUB_HOST_DEVICE
+    inline custom_type operator+(const custom_type& rhs) const
     {
         return custom_type(x + rhs.x, y + rhs.y);
     }
 
-    HIPCUB_HOST_DEVICE inline custom_type operator-(const custom_type& other) const
+    HIPCUB_HOST_DEVICE
+    inline custom_type operator-(const custom_type& other) const
     {
         return custom_type(x - other.x, y - other.y);
     }
 
-    HIPCUB_HOST_DEVICE inline bool operator<(const custom_type& rhs) const
+    HIPCUB_HOST_DEVICE
+    inline bool operator<(const custom_type& rhs) const
     {
         // intentionally suboptimal choice for short-circuting,
         // required to generate more performant device code
         return ((x == rhs.x && y < rhs.y) || x < rhs.x);
     }
 
-    HIPCUB_HOST_DEVICE inline bool operator>(const custom_type& other) const
+    HIPCUB_HOST_DEVICE
+    inline bool operator>(const custom_type& other) const
     {
         return (x > other.x || (x == other.x && y > other.y));
     }
 
-    HIPCUB_HOST_DEVICE inline bool operator==(const custom_type& rhs) const
+    HIPCUB_HOST_DEVICE
+    inline bool operator==(const custom_type& rhs) const
     {
         return x == rhs.x && y == rhs.y;
     }
 
-    HIPCUB_HOST_DEVICE inline bool operator!=(const custom_type& other) const
+    HIPCUB_HOST_DEVICE
+    inline bool operator!=(const custom_type& other) const
     {
         return !(*this == other);
     }
 
-    HIPCUB_HOST_DEVICE custom_type& operator+=(const custom_type& rhs)
+    HIPCUB_HOST_DEVICE
+    custom_type& operator+=(const custom_type& rhs)
     {
         this->x += rhs.x;
         this->y += rhs.y;
@@ -289,7 +311,8 @@ struct custom_type_decomposer
     using T = typename CustomType::first_type;
     using U = typename CustomType::second_type;
 
-    HIPCUB_HOST_DEVICE ::hipcub::tuple<T&, U&> operator()(CustomType& key) const
+    HIPCUB_HOST_DEVICE
+    ::hipcub::tuple<T&, U&> operator()(CustomType& key) const
     {
         return ::hipcub::tuple<T&, U&>{key.x, key.y};
     }
@@ -406,7 +429,8 @@ bool is_warp_size_supported(const unsigned required_warp_size)
 }
 
 template<unsigned int LogicalWarpSize>
-__device__ constexpr bool device_test_enabled_for_warp_size_v
+__device__
+constexpr bool device_test_enabled_for_warp_size_v
     = HIPCUB_DEVICE_WARP_THREADS >= LogicalWarpSize;
 
 template<class T>
@@ -425,9 +449,13 @@ using engine_type = std::default_random_engine;
 // generate_random_data_n() generates only part of sequence and replicates it,
 // because benchmarks usually do not need "true" random sequence.
 template<class OutputIter, class U, class V, class Generator>
-inline auto generate_random_data_n(
-    OutputIter it, size_t size, U min, V max, Generator& gen, size_t max_random_size = 1024 * 1024)
-    -> typename std::enable_if_t<std::is_integral<it_value_t<OutputIter>>::value, OutputIter>
+inline auto generate_random_data_n(OutputIter it,
+                                   size_t     size,
+                                   U          min,
+                                   V          max,
+                                   Generator& gen,
+                                   size_t     max_random_size = 1024 * 1024) ->
+    typename std::enable_if_t<std::is_integral<it_value_t<OutputIter>>::value, OutputIter>
 {
     using T = it_value_t<OutputIter>;
 

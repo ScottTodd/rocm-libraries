@@ -113,7 +113,7 @@ public:
 
 inline unsigned char generate_metadata(int a, int b, int c, int d)
 {
-    unsigned char metadata = (a)&0x03;
+    unsigned char metadata = (a) & 0x03;
     metadata |= (b << 2) & 0x0C;
     metadata |= ((c - 4) << 4) & 0x30;
     metadata |= (((d - 4) << 6)) & 0xC0;

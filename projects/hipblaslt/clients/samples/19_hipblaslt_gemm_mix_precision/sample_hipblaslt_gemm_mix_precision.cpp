@@ -31,21 +31,21 @@
 #include "helper.h"
 
 void simpleGemmMixPrecision(hipblasLtHandle_t  handle,
-                hipblasOperation_t trans_a,
-                hipblasOperation_t trans_b,
-                int64_t            m,
-                int64_t            n,
-                int64_t            k,
-                int64_t            batch_count,
-                float&             alpha,
-                float&             beta,
-                void*              d_a,
-                void*              d_b,
-                void*              d_c,
-                void*              d_d,
-                void*              d_workspace,
-                int64_t            max_workspace_size,
-                hipStream_t        stream);
+                            hipblasOperation_t trans_a,
+                            hipblasOperation_t trans_b,
+                            int64_t            m,
+                            int64_t            n,
+                            int64_t            k,
+                            int64_t            batch_count,
+                            float&             alpha,
+                            float&             beta,
+                            void*              d_a,
+                            void*              d_b,
+                            void*              d_c,
+                            void*              d_d,
+                            void*              d_workspace,
+                            int64_t            max_workspace_size,
+                            hipStream_t        stream);
 
 int main()
 {
@@ -60,42 +60,42 @@ int main()
 
     runner.run([&runner] {
         simpleGemmMixPrecision(runner.handle,
-                   HIPBLAS_OP_N,
-                   HIPBLAS_OP_N,
-                   runner.m,
-                   runner.n,
-                   runner.k,
-                   runner.batch_count,
-                   runner.alpha,
-                   runner.beta,
-                   runner.d_a,
-                   runner.d_b,
-                   runner.d_c,
-                   runner.d_d,
-                   runner.d_workspace,
-                   runner.max_workspace_size,
-                   runner.stream);
+                               HIPBLAS_OP_N,
+                               HIPBLAS_OP_N,
+                               runner.m,
+                               runner.n,
+                               runner.k,
+                               runner.batch_count,
+                               runner.alpha,
+                               runner.beta,
+                               runner.d_a,
+                               runner.d_b,
+                               runner.d_c,
+                               runner.d_d,
+                               runner.d_workspace,
+                               runner.max_workspace_size,
+                               runner.stream);
     });
 
     return 0;
 }
 
 void simpleGemmMixPrecision(hipblasLtHandle_t  handle,
-                hipblasOperation_t trans_a,
-                hipblasOperation_t trans_b,
-                int64_t            m,
-                int64_t            n,
-                int64_t            k,
-                int64_t            batch_count,
-                float&             alpha,
-                float&             beta,
-                void*              d_a,
-                void*              d_b,
-                void*              d_c,
-                void*              d_d,
-                void*              d_workspace,
-                int64_t            max_workspace_size,
-                hipStream_t        stream)
+                            hipblasOperation_t trans_a,
+                            hipblasOperation_t trans_b,
+                            int64_t            m,
+                            int64_t            n,
+                            int64_t            k,
+                            int64_t            batch_count,
+                            float&             alpha,
+                            float&             beta,
+                            void*              d_a,
+                            void*              d_b,
+                            void*              d_c,
+                            void*              d_d,
+                            void*              d_workspace,
+                            int64_t            max_workspace_size,
+                            hipStream_t        stream)
 {
     // Use half precision for input matrices
     hipblasLtMatrixLayout_t matA, matB, matC, matD;
@@ -129,16 +129,18 @@ void simpleGemmMixPrecision(hipblasLtHandle_t  handle,
     }
 
     hipblasLtMatmulDesc_t matmul;
-    CHECK_HIPBLASLT_ERROR(hipblasLtMatmulDescCreate(&matmul, HIPBLAS_COMPUTE_32F_FAST_16F, HIP_R_32F));
+    CHECK_HIPBLASLT_ERROR(
+        hipblasLtMatmulDescCreate(&matmul, HIPBLAS_COMPUTE_32F_FAST_16F, HIP_R_32F));
     CHECK_HIPBLASLT_ERROR(hipblasLtMatmulDescSetAttribute(
         matmul, HIPBLASLT_MATMUL_DESC_TRANSA, &trans_a, sizeof(int32_t)));
     CHECK_HIPBLASLT_ERROR(hipblasLtMatmulDescSetAttribute(
         matmul, HIPBLASLT_MATMUL_DESC_TRANSB, &trans_b, sizeof(int32_t)));
 
-    float h_scale_a = 2.f;
+    float  h_scale_a = 2.f;
     float* d_scale_a;
     CHECK_HIP_ERROR(hipMalloc(&d_scale_a, sizeof(float)));
-    CHECK_HIP_ERROR(hipMemcpyAsync(d_scale_a, &h_scale_a, sizeof(float), hipMemcpyHostToDevice, stream));
+    CHECK_HIP_ERROR(
+        hipMemcpyAsync(d_scale_a, &h_scale_a, sizeof(float), hipMemcpyHostToDevice, stream));
     CHECK_HIPBLASLT_ERROR(hipblasLtMatmulDescSetAttribute(
         matmul, HIPBLASLT_MATMUL_DESC_A_SCALE_POINTER, &d_scale_a, sizeof(float*)));
 

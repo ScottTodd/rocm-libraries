@@ -58,10 +58,10 @@ namespace
         std::enable_if_t<std::is_same<Ti, __half>{} || std::is_same<Ti, hip_bfloat16>{}
                          || std::is_same<Ti, int8_t>{}
 #ifdef HIPSPARSELT_CLIENT_ENABLE_FP8_OCP
-			 || std::is_same<Ti, hipsparselt_fp8_e4m3>{}
+                         || std::is_same<Ti, hipsparselt_fp8_e4m3>{}
                          || std::is_same<Ti, hipsparselt_fp8_e5m2>{}
 #endif
-			 >> : hipsparselt_test_valid
+                         >> : hipsparselt_test_valid
     {
         void operator()(const Arguments& arg)
         {
@@ -76,7 +76,7 @@ namespace
             else if(!strcmp(arg.function, "aux_plan_assign"))
                 testing_aux_plan_assign<Ti, To, Tc>(arg);
             else if(!strcmp(arg.function, "spmm_logging"))
-                testing_spmm_logging<Ti, To, Tc, TBias>(arg);        
+                testing_spmm_logging<Ti, To, Tc, TBias>(arg);
             else
                 FAIL() << "Internal error: Test called with unknown function: " << arg.function;
         }
@@ -113,7 +113,7 @@ namespace
             {
                 if(arg.search)
                 {
-                    name << "_search"  << arg.search_iters;
+                    name << "_search" << arg.search_iters;
                 }
 
                 name << '_' << (arg.sparse_b ? "SB" : "SA");

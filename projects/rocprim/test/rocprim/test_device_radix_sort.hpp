@@ -255,7 +255,7 @@ void sort_keys()
     constexpr bool         check_large_sizes = TestFixture::params::check_large_sizes;
 
     hipStream_t stream = 0;
-    if (TestFixture::params::use_graphs)
+    if(TestFixture::params::use_graphs)
     {
         // Default stream does not support hipGraph stream capture, so create one
         HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -554,7 +554,7 @@ void sort_pairs()
     constexpr bool         check_large_sizes = TestFixture::params::check_large_sizes;
 
     hipStream_t stream = 0;
-    if (TestFixture::params::use_graphs)
+    if(TestFixture::params::use_graphs)
     {
         // Default stream does not support hipGraph stream capture, so create one
         HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -837,7 +837,7 @@ void sort_keys_double_buffer()
     constexpr bool         check_large_sizes = TestFixture::params::check_large_sizes;
 
     hipStream_t stream = 0;
-    if (TestFixture::params::use_graphs)
+    if(TestFixture::params::use_graphs)
     {
         // Default stream does not support hipGraph stream capture, so create one
         HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -1081,7 +1081,7 @@ void sort_pairs_double_buffer()
     constexpr bool         check_large_sizes = TestFixture::params::check_large_sizes;
 
     hipStream_t stream = 0;
-    if (TestFixture::params::use_graphs)
+    if(TestFixture::params::use_graphs)
     {
         // Default stream does not support hipGraph stream capture, so create one
         HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -1227,8 +1227,8 @@ void sort_keys_over_4g()
     constexpr bool         debug_synchronous       = false;
     constexpr size_t       size                    = (1ull << 32) + 32;
     constexpr size_t       number_of_possible_keys = 1ull << (8ull * sizeof(key_type));
-    hipStream_t stream = 0;
-    if (UseGraphs)
+    hipStream_t            stream                  = 0;
+    if(UseGraphs)
     {
         // Default stream does not support hipGraph stream capture, so create one
         HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -1252,7 +1252,7 @@ void sort_keys_over_4g()
     std::for_each(keys_input.begin(), keys_input.end(), [&](const key_type& a) { histogram[a]++; });
 
     common::device_ptr<key_type> d_keys_input_output(keys_input);
-    size_t key_type_storage_bytes = size * sizeof(key_type);
+    size_t                       key_type_storage_bytes = size * sizeof(key_type);
 
     size_t temporary_storage_bytes;
     HIP_CHECK(rocprim::radix_sort_keys(nullptr,
@@ -1270,51 +1270,51 @@ void sort_keys_over_4g()
     hipDeviceProp_t prop;
     HIP_CHECK(hipGetDeviceProperties(&prop, device_id));
 
-   size_t total_storage_bytes = key_type_storage_bytes +  temporary_storage_bytes;
-   if(total_storage_bytes > (static_cast<size_t>(prop.totalGlobalMem * 0.90)))
-   {
-       GTEST_SKIP() << "Test case device memory requirement (" << total_storage_bytes
-                    << " bytes) exceeds available memory on current device (" << prop.totalGlobalMem
-                    << " bytes). Skipping test";
-   }
+    size_t total_storage_bytes = key_type_storage_bytes + temporary_storage_bytes;
+    if(total_storage_bytes > (static_cast<size_t>(prop.totalGlobalMem * 0.90)))
+    {
+        GTEST_SKIP() << "Test case device memory requirement (" << total_storage_bytes
+                     << " bytes) exceeds available memory on current device ("
+                     << prop.totalGlobalMem << " bytes). Skipping test";
+    }
 
-   common::device_ptr<void> d_temporary_storage(temporary_storage_bytes);
+    common::device_ptr<void> d_temporary_storage(temporary_storage_bytes);
 
-   test_utils::GraphHelper gHelper;
-   if(UseGraphs)
-   {
-       gHelper.startStreamCapture(stream);
-   }
+    test_utils::GraphHelper gHelper;
+    if(UseGraphs)
+    {
+        gHelper.startStreamCapture(stream);
+    }
 
-   HIP_CHECK(rocprim::radix_sort_keys(d_temporary_storage.get(),
-                                      temporary_storage_bytes,
-                                      d_keys_input_output.get(),
-                                      d_keys_input_output.get(),
-                                      size,
-                                      start_bit,
-                                      end_bit,
-                                      stream,
-                                      debug_synchronous));
+    HIP_CHECK(rocprim::radix_sort_keys(d_temporary_storage.get(),
+                                       temporary_storage_bytes,
+                                       d_keys_input_output.get(),
+                                       d_keys_input_output.get(),
+                                       size,
+                                       start_bit,
+                                       end_bit,
+                                       stream,
+                                       debug_synchronous));
 
-   if(UseGraphs)
-   {
-       gHelper.createAndLaunchGraph(stream);
-   }
+    if(UseGraphs)
+    {
+        gHelper.createAndLaunchGraph(stream);
+    }
 
-   const auto output = d_keys_input_output.load();
+    const auto output = d_keys_input_output.load();
 
-   size_t counter = 0;
-   for(size_t i = 0; i <= rocprim::numeric_limits<key_type>::max(); ++i)
-   {
-       for(size_t j = 0; j < histogram[i]; ++j)
-       {
-           ASSERT_EQ(static_cast<size_t>(output[counter]), i);
-           ++counter;
-       }
-   }
+    size_t counter = 0;
+    for(size_t i = 0; i <= rocprim::numeric_limits<key_type>::max(); ++i)
+    {
+        for(size_t j = 0; j < histogram[i]; ++j)
+        {
+            ASSERT_EQ(static_cast<size_t>(output[counter]), i);
+            ++counter;
+        }
+    }
     ASSERT_EQ(counter, size);
 
-    if (UseGraphs)
+    if(UseGraphs)
     {
         gHelper.cleanupGraphHelper();
         HIP_CHECK(hipStreamDestroy(stream));

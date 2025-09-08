@@ -18,11 +18,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <iomanip>
 #include <cstring>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -108,14 +108,16 @@ void mod_mat_sq(unsigned int* A, unsigned int m)
 void init_matrices(unsigned int* matrix, unsigned int* A, int n, unsigned int m)
 {
     unsigned int x[9];
-    for (int i = 0; i < 9; i++)
+    for(int i = 0; i < 9; i++)
         x[i] = A[i];
 
-    for (int i = 0 ; i < n ; i++) {
-        if (i > 0) {
+    for(int i = 0; i < n; i++)
+    {
+        if(i > 0)
+        {
             mod_mat_sq(x, m);
         }
-        for (int j = 0; j < 9; j++)
+        for(int j = 0; j < 9; j++)
             matrix[j + (i * 9)] = x[j];
     }
 }
@@ -128,10 +130,10 @@ void write_matrices(
          << std::endl;
     fout << "    // clang-format off" << std::endl;
     fout << "    ";
-    for (int k = 0; k < n; k++)
+    for(int k = 0; k < n; k++)
     {
         fout << a[k] << ", ";
-        if ((k + 1) % bits == 0 && k != 1)
+        if((k + 1) % bits == 0 && k != 1)
             fout << std::endl << "    ";
     }
     fout << "// clang-format on" << std::endl;
@@ -139,16 +141,18 @@ void write_matrices(
     fout << std::endl;
 }
 
-int main(int argc, char const *argv[])
+int main(int argc, char const* argv[])
 {
-    if (argc != 2 || std::string(argv[1]) == "--help")
+    if(argc != 2 || std::string(argv[1]) == "--help")
     {
         std::cout << "Usage:" << std::endl;
-        std::cout << "  ./mrg32k3a_precomputed_generator ../../library/include/rocrand/rocrand_mrg32k3a_precomputed.h" << std::endl;
+        std::cout << "  ./mrg32k3a_precomputed_generator "
+                     "../../library/include/rocrand/rocrand_mrg32k3a_precomputed.h"
+                  << std::endl;
         return -1;
     }
 
-    unsigned int MRG323A_DIM = 64;
+    unsigned int  MRG323A_DIM = 64;
     unsigned int  MRG323A_N   = MRG323A_DIM * 9;
     unsigned int* A1          = new unsigned int[MRG323A_N];
     unsigned int* A2          = new unsigned int[MRG323A_N];
@@ -164,7 +168,7 @@ int main(int argc, char const *argv[])
     init_matrices(A1P127, A1p127, MRG323A_DIM, ROCRAND_MRG32K3A_M1);
     init_matrices(A2P127, A2p127, MRG323A_DIM, ROCRAND_MRG32K3A_M2);
     const std::string file_path(argv[1]);
-    std::ofstream fout(file_path, std::ios_base::out | std::ios_base::trunc);
+    std::ofstream     fout(file_path, std::ios_base::out | std::ios_base::trunc);
     fout << R"(// Copyright (c) 2017-2022 Advanced Micro Devices, Inc. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -213,7 +217,6 @@ int main(int argc, char const *argv[])
     fout << R"(
 #endif // ROCRAND_MRG32K3A_PRECOMPUTED_H_
 )";
-
 
     delete[] A1;
     delete[] A2;

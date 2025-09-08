@@ -708,12 +708,12 @@ void common_inst(nb::module_ m_common)
 
     nb::class_<rocisa::SWaitCnt, rocisa::CompositeInstruction>(m_common, "SWaitCnt")
         .def(nb::init<int, int, int, int, const std::string&, bool>(),
-             nb::arg("vlcnt")    = -1,
-             nb::arg("vscnt")    = -1,
-             nb::arg("dscnt")    = -1,
-             nb::arg("kmcnt")    = -1,
-             nb::arg("comment")  = "",
-             nb::arg("waitAll")  = false)
+             nb::arg("vlcnt")   = -1,
+             nb::arg("vscnt")   = -1,
+             nb::arg("dscnt")   = -1,
+             nb::arg("kmcnt")   = -1,
+             nb::arg("comment") = "",
+             nb::arg("waitAll") = false)
         .def_rw("vlcnt", &rocisa::SWaitCnt::vlcnt)
         .def_rw("vscnt", &rocisa::SWaitCnt::vscnt)
         .def_rw("dscnt", &rocisa::SWaitCnt::dscnt)

@@ -40,15 +40,16 @@ BEGIN_HIPCUB_NAMESPACE
 struct DeviceHistogram
 {
     template<typename SampleIteratorT, typename CounterT, typename LevelT, typename OffsetT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t HistogramEven(void*           d_temp_storage,
-                                                            size_t&         temp_storage_bytes,
-                                                            SampleIteratorT d_samples,
-                                                            CounterT*       d_histogram,
-                                                            int             num_levels,
-                                                            LevelT          lower_level,
-                                                            LevelT          upper_level,
-                                                            OffsetT         num_samples,
-                                                            hipStream_t     stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t HistogramEven(void*           d_temp_storage,
+                                    size_t&         temp_storage_bytes,
+                                    SampleIteratorT d_samples,
+                                    CounterT*       d_histogram,
+                                    int             num_levels,
+                                    LevelT          lower_level,
+                                    LevelT          upper_level,
+                                    OffsetT         num_samples,
+                                    hipStream_t     stream = 0)
     {
         return hipCUDAErrorTohipError(::cub::DeviceHistogram::HistogramEven(d_temp_storage,
                                                                             temp_storage_bytes,
@@ -62,17 +63,17 @@ struct DeviceHistogram
     }
 
     template<typename SampleIteratorT, typename CounterT, typename LevelT, typename OffsetT>
-    HIPCUB_RUNTIME_FUNCTION HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS static hipError_t
-        HistogramEven(void*           d_temp_storage,
-                      size_t&         temp_storage_bytes,
-                      SampleIteratorT d_samples,
-                      CounterT*       d_histogram,
-                      int             num_levels,
-                      LevelT          lower_level,
-                      LevelT          upper_level,
-                      OffsetT         num_samples,
-                      hipStream_t     stream,
-                      bool            debug_synchronous)
+    HIPCUB_RUNTIME_FUNCTION HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS
+    static hipError_t HistogramEven(void*           d_temp_storage,
+                                    size_t&         temp_storage_bytes,
+                                    SampleIteratorT d_samples,
+                                    CounterT*       d_histogram,
+                                    int             num_levels,
+                                    LevelT          lower_level,
+                                    LevelT          upper_level,
+                                    OffsetT         num_samples,
+                                    hipStream_t     stream,
+                                    bool            debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return HistogramEven(d_temp_storage,
@@ -87,17 +88,18 @@ struct DeviceHistogram
     }
 
     template<typename SampleIteratorT, typename CounterT, typename LevelT, typename OffsetT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t HistogramEven(void*           d_temp_storage,
-                                                            size_t&         temp_storage_bytes,
-                                                            SampleIteratorT d_samples,
-                                                            CounterT*       d_histogram,
-                                                            int             num_levels,
-                                                            LevelT          lower_level,
-                                                            LevelT          upper_level,
-                                                            OffsetT         num_row_samples,
-                                                            OffsetT         num_rows,
-                                                            size_t          row_stride_bytes,
-                                                            hipStream_t     stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t HistogramEven(void*           d_temp_storage,
+                                    size_t&         temp_storage_bytes,
+                                    SampleIteratorT d_samples,
+                                    CounterT*       d_histogram,
+                                    int             num_levels,
+                                    LevelT          lower_level,
+                                    LevelT          upper_level,
+                                    OffsetT         num_row_samples,
+                                    OffsetT         num_rows,
+                                    size_t          row_stride_bytes,
+                                    hipStream_t     stream = 0)
     {
         return hipCUDAErrorTohipError(::cub::DeviceHistogram::HistogramEven(d_temp_storage,
                                                                             temp_storage_bytes,
@@ -113,19 +115,19 @@ struct DeviceHistogram
     }
 
     template<typename SampleIteratorT, typename CounterT, typename LevelT, typename OffsetT>
-    HIPCUB_RUNTIME_FUNCTION HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS static hipError_t
-        HistogramEven(void*           d_temp_storage,
-                      size_t&         temp_storage_bytes,
-                      SampleIteratorT d_samples,
-                      CounterT*       d_histogram,
-                      int             num_levels,
-                      LevelT          lower_level,
-                      LevelT          upper_level,
-                      OffsetT         num_row_samples,
-                      OffsetT         num_rows,
-                      size_t          row_stride_bytes,
-                      hipStream_t     stream,
-                      bool            debug_synchronous)
+    HIPCUB_RUNTIME_FUNCTION HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS
+    static hipError_t HistogramEven(void*           d_temp_storage,
+                                    size_t&         temp_storage_bytes,
+                                    SampleIteratorT d_samples,
+                                    CounterT*       d_histogram,
+                                    int             num_levels,
+                                    LevelT          lower_level,
+                                    LevelT          upper_level,
+                                    OffsetT         num_row_samples,
+                                    OffsetT         num_rows,
+                                    size_t          row_stride_bytes,
+                                    hipStream_t     stream,
+                                    bool            debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return HistogramEven(d_temp_storage,
@@ -147,16 +149,16 @@ struct DeviceHistogram
              typename CounterT,
              typename LevelT,
              typename OffsetT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t
-        MultiHistogramEven(void*           d_temp_storage,
-                           size_t&         temp_storage_bytes,
-                           SampleIteratorT d_samples,
-                           CounterT*       d_histogram[NUM_ACTIVE_CHANNELS],
-                           int             num_levels[NUM_ACTIVE_CHANNELS],
-                           LevelT          lower_level[NUM_ACTIVE_CHANNELS],
-                           LevelT          upper_level[NUM_ACTIVE_CHANNELS],
-                           OffsetT         num_pixels,
-                           hipStream_t     stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t MultiHistogramEven(void*           d_temp_storage,
+                                         size_t&         temp_storage_bytes,
+                                         SampleIteratorT d_samples,
+                                         CounterT*       d_histogram[NUM_ACTIVE_CHANNELS],
+                                         int             num_levels[NUM_ACTIVE_CHANNELS],
+                                         LevelT          lower_level[NUM_ACTIVE_CHANNELS],
+                                         LevelT          upper_level[NUM_ACTIVE_CHANNELS],
+                                         OffsetT         num_pixels,
+                                         hipStream_t     stream = 0)
     {
         return hipCUDAErrorTohipError(
             ::cub::DeviceHistogram::MultiHistogramEven<NUM_CHANNELS, NUM_ACTIVE_CHANNELS>(
@@ -177,17 +179,17 @@ struct DeviceHistogram
              typename CounterT,
              typename LevelT,
              typename OffsetT>
-    HIPCUB_RUNTIME_FUNCTION HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS static hipError_t
-        MultiHistogramEven(void*           d_temp_storage,
-                           size_t&         temp_storage_bytes,
-                           SampleIteratorT d_samples,
-                           CounterT*       d_histogram[NUM_ACTIVE_CHANNELS],
-                           int             num_levels[NUM_ACTIVE_CHANNELS],
-                           LevelT          lower_level[NUM_ACTIVE_CHANNELS],
-                           LevelT          upper_level[NUM_ACTIVE_CHANNELS],
-                           OffsetT         num_pixels,
-                           hipStream_t     stream,
-                           bool            debug_synchronous)
+    HIPCUB_RUNTIME_FUNCTION HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS
+    static hipError_t MultiHistogramEven(void*           d_temp_storage,
+                                         size_t&         temp_storage_bytes,
+                                         SampleIteratorT d_samples,
+                                         CounterT*       d_histogram[NUM_ACTIVE_CHANNELS],
+                                         int             num_levels[NUM_ACTIVE_CHANNELS],
+                                         LevelT          lower_level[NUM_ACTIVE_CHANNELS],
+                                         LevelT          upper_level[NUM_ACTIVE_CHANNELS],
+                                         OffsetT         num_pixels,
+                                         hipStream_t     stream,
+                                         bool            debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return MultiHistogramEven<NUM_CHANNELS>(d_temp_storage,
@@ -207,18 +209,18 @@ struct DeviceHistogram
              typename CounterT,
              typename LevelT,
              typename OffsetT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t
-        MultiHistogramEven(void*           d_temp_storage,
-                           size_t&         temp_storage_bytes,
-                           SampleIteratorT d_samples,
-                           CounterT*       d_histogram[NUM_ACTIVE_CHANNELS],
-                           int             num_levels[NUM_ACTIVE_CHANNELS],
-                           LevelT          lower_level[NUM_ACTIVE_CHANNELS],
-                           LevelT          upper_level[NUM_ACTIVE_CHANNELS],
-                           OffsetT         num_row_pixels,
-                           OffsetT         num_rows,
-                           size_t          row_stride_bytes,
-                           hipStream_t     stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t MultiHistogramEven(void*           d_temp_storage,
+                                         size_t&         temp_storage_bytes,
+                                         SampleIteratorT d_samples,
+                                         CounterT*       d_histogram[NUM_ACTIVE_CHANNELS],
+                                         int             num_levels[NUM_ACTIVE_CHANNELS],
+                                         LevelT          lower_level[NUM_ACTIVE_CHANNELS],
+                                         LevelT          upper_level[NUM_ACTIVE_CHANNELS],
+                                         OffsetT         num_row_pixels,
+                                         OffsetT         num_rows,
+                                         size_t          row_stride_bytes,
+                                         hipStream_t     stream = 0)
     {
         return hipCUDAErrorTohipError(
             ::cub::DeviceHistogram::MultiHistogramEven<NUM_CHANNELS, NUM_ACTIVE_CHANNELS>(
@@ -241,19 +243,19 @@ struct DeviceHistogram
              typename CounterT,
              typename LevelT,
              typename OffsetT>
-    HIPCUB_RUNTIME_FUNCTION HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS static hipError_t
-        MultiHistogramEven(void*           d_temp_storage,
-                           size_t&         temp_storage_bytes,
-                           SampleIteratorT d_samples,
-                           CounterT*       d_histogram[NUM_ACTIVE_CHANNELS],
-                           int             num_levels[NUM_ACTIVE_CHANNELS],
-                           LevelT          lower_level[NUM_ACTIVE_CHANNELS],
-                           LevelT          upper_level[NUM_ACTIVE_CHANNELS],
-                           OffsetT         num_row_pixels,
-                           OffsetT         num_rows,
-                           size_t          row_stride_bytes,
-                           hipStream_t     stream,
-                           bool            debug_synchronous)
+    HIPCUB_RUNTIME_FUNCTION HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS
+    static hipError_t MultiHistogramEven(void*           d_temp_storage,
+                                         size_t&         temp_storage_bytes,
+                                         SampleIteratorT d_samples,
+                                         CounterT*       d_histogram[NUM_ACTIVE_CHANNELS],
+                                         int             num_levels[NUM_ACTIVE_CHANNELS],
+                                         LevelT          lower_level[NUM_ACTIVE_CHANNELS],
+                                         LevelT          upper_level[NUM_ACTIVE_CHANNELS],
+                                         OffsetT         num_row_pixels,
+                                         OffsetT         num_rows,
+                                         size_t          row_stride_bytes,
+                                         hipStream_t     stream,
+                                         bool            debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return MultiHistogramEven<NUM_CHANNELS>(d_temp_storage,
@@ -270,14 +272,15 @@ struct DeviceHistogram
     }
 
     template<typename SampleIteratorT, typename CounterT, typename LevelT, typename OffsetT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t HistogramRange(void*           d_temp_storage,
-                                                             size_t&         temp_storage_bytes,
-                                                             SampleIteratorT d_samples,
-                                                             CounterT*       d_histogram,
-                                                             int             num_levels,
-                                                             LevelT*         d_levels,
-                                                             OffsetT         num_samples,
-                                                             hipStream_t     stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t HistogramRange(void*           d_temp_storage,
+                                     size_t&         temp_storage_bytes,
+                                     SampleIteratorT d_samples,
+                                     CounterT*       d_histogram,
+                                     int             num_levels,
+                                     LevelT*         d_levels,
+                                     OffsetT         num_samples,
+                                     hipStream_t     stream = 0)
     {
         return hipCUDAErrorTohipError(::cub::DeviceHistogram::HistogramRange(d_temp_storage,
                                                                              temp_storage_bytes,
@@ -290,16 +293,16 @@ struct DeviceHistogram
     }
 
     template<typename SampleIteratorT, typename CounterT, typename LevelT, typename OffsetT>
-    HIPCUB_RUNTIME_FUNCTION HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS static hipError_t
-        HistogramRange(void*           d_temp_storage,
-                       size_t&         temp_storage_bytes,
-                       SampleIteratorT d_samples,
-                       CounterT*       d_histogram,
-                       int             num_levels,
-                       LevelT*         d_levels,
-                       OffsetT         num_samples,
-                       hipStream_t     stream,
-                       bool            debug_synchronous)
+    HIPCUB_RUNTIME_FUNCTION HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS
+    static hipError_t HistogramRange(void*           d_temp_storage,
+                                     size_t&         temp_storage_bytes,
+                                     SampleIteratorT d_samples,
+                                     CounterT*       d_histogram,
+                                     int             num_levels,
+                                     LevelT*         d_levels,
+                                     OffsetT         num_samples,
+                                     hipStream_t     stream,
+                                     bool            debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return HistogramRange(d_temp_storage,
@@ -313,16 +316,17 @@ struct DeviceHistogram
     }
 
     template<typename SampleIteratorT, typename CounterT, typename LevelT, typename OffsetT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t HistogramRange(void*           d_temp_storage,
-                                                             size_t&         temp_storage_bytes,
-                                                             SampleIteratorT d_samples,
-                                                             CounterT*       d_histogram,
-                                                             int             num_levels,
-                                                             LevelT*         d_levels,
-                                                             OffsetT         num_row_samples,
-                                                             OffsetT         num_rows,
-                                                             size_t          row_stride_bytes,
-                                                             hipStream_t     stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t HistogramRange(void*           d_temp_storage,
+                                     size_t&         temp_storage_bytes,
+                                     SampleIteratorT d_samples,
+                                     CounterT*       d_histogram,
+                                     int             num_levels,
+                                     LevelT*         d_levels,
+                                     OffsetT         num_row_samples,
+                                     OffsetT         num_rows,
+                                     size_t          row_stride_bytes,
+                                     hipStream_t     stream = 0)
     {
         return hipCUDAErrorTohipError(::cub::DeviceHistogram::HistogramRange(d_temp_storage,
                                                                              temp_storage_bytes,
@@ -337,18 +341,18 @@ struct DeviceHistogram
     }
 
     template<typename SampleIteratorT, typename CounterT, typename LevelT, typename OffsetT>
-    HIPCUB_RUNTIME_FUNCTION HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS static hipError_t
-        HistogramRange(void*           d_temp_storage,
-                       size_t&         temp_storage_bytes,
-                       SampleIteratorT d_samples,
-                       CounterT*       d_histogram,
-                       int             num_levels,
-                       LevelT*         d_levels,
-                       OffsetT         num_row_samples,
-                       OffsetT         num_rows,
-                       size_t          row_stride_bytes,
-                       hipStream_t     stream,
-                       bool            debug_synchronous)
+    HIPCUB_RUNTIME_FUNCTION HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS
+    static hipError_t HistogramRange(void*           d_temp_storage,
+                                     size_t&         temp_storage_bytes,
+                                     SampleIteratorT d_samples,
+                                     CounterT*       d_histogram,
+                                     int             num_levels,
+                                     LevelT*         d_levels,
+                                     OffsetT         num_row_samples,
+                                     OffsetT         num_rows,
+                                     size_t          row_stride_bytes,
+                                     hipStream_t     stream,
+                                     bool            debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return HistogramRange(d_temp_storage,
@@ -369,15 +373,15 @@ struct DeviceHistogram
              typename CounterT,
              typename LevelT,
              typename OffsetT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t
-        MultiHistogramRange(void*           d_temp_storage,
-                            size_t&         temp_storage_bytes,
-                            SampleIteratorT d_samples,
-                            CounterT*       d_histogram[NUM_ACTIVE_CHANNELS],
-                            int             num_levels[NUM_ACTIVE_CHANNELS],
-                            LevelT*         d_levels[NUM_ACTIVE_CHANNELS],
-                            OffsetT         num_pixels,
-                            hipStream_t     stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t MultiHistogramRange(void*           d_temp_storage,
+                                          size_t&         temp_storage_bytes,
+                                          SampleIteratorT d_samples,
+                                          CounterT*       d_histogram[NUM_ACTIVE_CHANNELS],
+                                          int             num_levels[NUM_ACTIVE_CHANNELS],
+                                          LevelT*         d_levels[NUM_ACTIVE_CHANNELS],
+                                          OffsetT         num_pixels,
+                                          hipStream_t     stream = 0)
     {
         return hipCUDAErrorTohipError(
             ::cub::DeviceHistogram::MultiHistogramRange<NUM_CHANNELS, NUM_ACTIVE_CHANNELS>(
@@ -397,16 +401,16 @@ struct DeviceHistogram
              typename CounterT,
              typename LevelT,
              typename OffsetT>
-    HIPCUB_RUNTIME_FUNCTION HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS static hipError_t
-        MultiHistogramRange(void*           d_temp_storage,
-                            size_t&         temp_storage_bytes,
-                            SampleIteratorT d_samples,
-                            CounterT*       d_histogram[NUM_ACTIVE_CHANNELS],
-                            int             num_levels[NUM_ACTIVE_CHANNELS],
-                            LevelT*         d_levels[NUM_ACTIVE_CHANNELS],
-                            OffsetT         num_pixels,
-                            hipStream_t     stream,
-                            bool            debug_synchronous)
+    HIPCUB_RUNTIME_FUNCTION HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS
+    static hipError_t MultiHistogramRange(void*           d_temp_storage,
+                                          size_t&         temp_storage_bytes,
+                                          SampleIteratorT d_samples,
+                                          CounterT*       d_histogram[NUM_ACTIVE_CHANNELS],
+                                          int             num_levels[NUM_ACTIVE_CHANNELS],
+                                          LevelT*         d_levels[NUM_ACTIVE_CHANNELS],
+                                          OffsetT         num_pixels,
+                                          hipStream_t     stream,
+                                          bool            debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return MultiHistogramRange<NUM_CHANNELS>(d_temp_storage,
@@ -425,17 +429,17 @@ struct DeviceHistogram
              typename CounterT,
              typename LevelT,
              typename OffsetT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t
-        MultiHistogramRange(void*           d_temp_storage,
-                            size_t&         temp_storage_bytes,
-                            SampleIteratorT d_samples,
-                            CounterT*       d_histogram[NUM_ACTIVE_CHANNELS],
-                            int             num_levels[NUM_ACTIVE_CHANNELS],
-                            LevelT*         d_levels[NUM_ACTIVE_CHANNELS],
-                            OffsetT         num_row_pixels,
-                            OffsetT         num_rows,
-                            size_t          row_stride_bytes,
-                            hipStream_t     stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t MultiHistogramRange(void*           d_temp_storage,
+                                          size_t&         temp_storage_bytes,
+                                          SampleIteratorT d_samples,
+                                          CounterT*       d_histogram[NUM_ACTIVE_CHANNELS],
+                                          int             num_levels[NUM_ACTIVE_CHANNELS],
+                                          LevelT*         d_levels[NUM_ACTIVE_CHANNELS],
+                                          OffsetT         num_row_pixels,
+                                          OffsetT         num_rows,
+                                          size_t          row_stride_bytes,
+                                          hipStream_t     stream = 0)
     {
         return hipCUDAErrorTohipError(
             ::cub::DeviceHistogram::MultiHistogramRange<NUM_CHANNELS, NUM_ACTIVE_CHANNELS>(
@@ -457,18 +461,18 @@ struct DeviceHistogram
              typename CounterT,
              typename LevelT,
              typename OffsetT>
-    HIPCUB_RUNTIME_FUNCTION HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS static hipError_t
-        MultiHistogramRange(void*           d_temp_storage,
-                            size_t&         temp_storage_bytes,
-                            SampleIteratorT d_samples,
-                            CounterT*       d_histogram[NUM_ACTIVE_CHANNELS],
-                            int             num_levels[NUM_ACTIVE_CHANNELS],
-                            LevelT*         d_levels[NUM_ACTIVE_CHANNELS],
-                            OffsetT         num_row_pixels,
-                            OffsetT         num_rows,
-                            size_t          row_stride_bytes,
-                            hipStream_t     stream,
-                            bool            debug_synchronous)
+    HIPCUB_RUNTIME_FUNCTION HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS
+    static hipError_t MultiHistogramRange(void*           d_temp_storage,
+                                          size_t&         temp_storage_bytes,
+                                          SampleIteratorT d_samples,
+                                          CounterT*       d_histogram[NUM_ACTIVE_CHANNELS],
+                                          int             num_levels[NUM_ACTIVE_CHANNELS],
+                                          LevelT*         d_levels[NUM_ACTIVE_CHANNELS],
+                                          OffsetT         num_row_pixels,
+                                          OffsetT         num_rows,
+                                          size_t          row_stride_bytes,
+                                          hipStream_t     stream,
+                                          bool            debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return MultiHistogramRange<NUM_CHANNELS>(d_temp_storage,

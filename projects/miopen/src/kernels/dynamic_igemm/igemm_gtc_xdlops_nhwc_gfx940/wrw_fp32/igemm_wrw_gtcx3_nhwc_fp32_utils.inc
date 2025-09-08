@@ -340,4 +340,3 @@ Label_cas_loop_end_\@:
     buffer_atomic_pk_add_f16 \data, \addr, \base, \other
 .endif
 .endm
-

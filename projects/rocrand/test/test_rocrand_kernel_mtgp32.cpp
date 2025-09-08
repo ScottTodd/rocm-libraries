@@ -42,7 +42,8 @@ void rocrand_kernel(GeneratorState* states, unsigned int* output, const size_t s
     unsigned int       index    = blockIdx.x * blockDim.x + threadIdx.x;
     unsigned int       stride   = gridDim.x * blockDim.x;
 
-    __shared__ GeneratorState state;
+    __shared__
+    GeneratorState     state;
     rocrand_mtgp32_block_copy(&states[state_id], &state);
 
     const size_t r               = size % blockDim.x;
@@ -69,7 +70,8 @@ void rocrand_uniform_kernel(GeneratorState* states, float* output, const size_t 
     unsigned int       index     = blockIdx.x * blockDim.x + threadIdx.x;
     unsigned int       stride    = gridDim.x * blockDim.x;
 
-    __shared__ GeneratorState state;
+    __shared__
+    GeneratorState     state;
     if(thread_id == 0)
         state = states[state_id];
     __syncthreads();
@@ -99,7 +101,8 @@ void rocrand_normal_kernel(GeneratorState* states, float* output, const size_t s
     unsigned int       index     = blockIdx.x * blockDim.x + threadIdx.x;
     unsigned int       stride    = gridDim.x * blockDim.x;
 
-    __shared__ GeneratorState state;
+    __shared__
+    GeneratorState     state;
     if(thread_id == 0)
         state = states[state_id];
     __syncthreads();
@@ -137,7 +140,8 @@ void rocrand_normal_double_kernel(GeneratorState* states, double* output, const 
     unsigned int       index     = blockIdx.x * blockDim.x + threadIdx.x;
     unsigned int       stride    = gridDim.x * blockDim.x;
 
-    __shared__ GeneratorState state;
+    __shared__
+    GeneratorState     state;
     if(thread_id == 0)
         state = states[state_id];
     __syncthreads();
@@ -175,7 +179,8 @@ void rocrand_log_normal_kernel(GeneratorState* states, float* output, const size
     unsigned int       index     = blockIdx.x * blockDim.x + threadIdx.x;
     unsigned int       stride    = gridDim.x * blockDim.x;
 
-    __shared__ GeneratorState state;
+    __shared__
+    GeneratorState     state;
     if(thread_id == 0)
         state = states[state_id];
     __syncthreads();
@@ -213,7 +218,8 @@ void rocrand_log_normal_double_kernel(GeneratorState* states, double* output, co
     unsigned int       index     = blockIdx.x * blockDim.x + threadIdx.x;
     unsigned int       stride    = gridDim.x * blockDim.x;
 
-    __shared__ GeneratorState state;
+    __shared__
+    GeneratorState     state;
     if(thread_id == 0)
         state = states[state_id];
     __syncthreads();
@@ -254,7 +260,8 @@ void rocrand_poisson_kernel(GeneratorState* states,
     unsigned int       index     = blockIdx.x * blockDim.x + threadIdx.x;
     unsigned int       stride    = gridDim.x * blockDim.x;
 
-    __shared__ GeneratorState state;
+    __shared__
+    GeneratorState     state;
     if(thread_id == 0)
         state = states[state_id];
     __syncthreads();
@@ -285,9 +292,10 @@ void rocrand_discrete_kernel(GeneratorState*               states,
     const unsigned int state_id  = blockIdx.x;
     const unsigned int thread_id = threadIdx.x;
     unsigned int       index     = blockIdx.x * blockDim.x + threadIdx.x;
-    unsigned int stride          = gridDim.x * blockDim.x;
+    unsigned int       stride    = gridDim.x * blockDim.x;
 
-    __shared__ GeneratorState state;
+    __shared__
+    GeneratorState     state;
     if(thread_id == 0)
         state = states[state_id];
     __syncthreads();

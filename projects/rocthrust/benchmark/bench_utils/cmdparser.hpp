@@ -604,8 +604,7 @@ protected:
 
       if (command->required == false)
       {
-        ss << "\n   "
-           << "This parameter is optional. The default value is '" + command->print_value() << "'.";
+        ss << "\n   " << "This parameter is optional. The default value is '" + command->print_value() << "'.";
       }
 
       ss << "\n\n";

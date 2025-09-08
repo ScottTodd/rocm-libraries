@@ -374,12 +374,12 @@ void testing_prune_bad_arg(const Arguments& arg)
     device_vector<Ti> dA(safe_size);
     CHECK_DEVICE_ALLOCATION(dA.memcheck());
 
-    hipsparselt_local_handle handle{arg};
-    hipsparseLtHandle_t      handle_;
+    hipsparselt_local_handle      handle{arg};
+    hipsparseLtHandle_t           handle_;
     hipsparseLtMatmulDescriptor_t matmul_;
-    hipsparseLtMatDescriptor_t matA_;
-    hipsparseOrder_t            order = HIPSPARSE_ORDER_COL;
-    hipsparselt_local_mat_descr matA(
+    hipsparseLtMatDescriptor_t    matA_;
+    hipsparseOrder_t              order = HIPSPARSE_ORDER_COL;
+    hipsparselt_local_mat_descr   matA(
         hipsparselt_matrix_type_structured, handle, M, K, lda, arg.a_type, order);
     hipsparselt_local_mat_descr matB(
         hipsparselt_matrix_type_dense, handle, K, N, ldb, arg.b_type, order);
@@ -412,18 +412,20 @@ void testing_prune_bad_arg(const Arguments& arg)
             HIPSPARSE_STATUS_INVALID_VALUE);
 
         EXPECT_HIPSPARSE_STATUS(
-            hipsparseLtSpMMAPrune(handle, matmul, nullptr, dA, HIPSPARSELT_PRUNE_SPMMA_STRIP, stream),
+            hipsparseLtSpMMAPrune(
+                handle, matmul, nullptr, dA, HIPSPARSELT_PRUNE_SPMMA_STRIP, stream),
             HIPSPARSE_STATUS_INVALID_VALUE);
 
         EXPECT_HIPSPARSE_STATUS(
-            hipsparseLtSpMMAPrune(handle, matmul, dA, nullptr, HIPSPARSELT_PRUNE_SPMMA_STRIP, stream),
+            hipsparseLtSpMMAPrune(
+                handle, matmul, dA, nullptr, HIPSPARSELT_PRUNE_SPMMA_STRIP, stream),
             HIPSPARSE_STATUS_INVALID_VALUE);
 
         EXPECT_HIPSPARSE_STATUS(
             hipsparseLtSpMMAPrune(handle, matmul, dA, dA, (hipsparseLtPruneAlg_t)3, stream),
             HIPSPARSE_STATUS_NOT_SUPPORTED);
     }
-    else if (arg.func_version == 2)
+    else if(arg.func_version == 2)
     {
         // test version 2
         EXPECT_HIPSPARSE_STATUS(
@@ -492,12 +494,12 @@ void testing_prune_check_bad_arg(const Arguments& arg)
 
     device_vector<int> d_valid(1, 1);
 
-    hipsparselt_local_handle handle{arg};
-    hipsparseLtHandle_t      handle_;
+    hipsparselt_local_handle      handle{arg};
+    hipsparseLtHandle_t           handle_;
     hipsparseLtMatmulDescriptor_t matmul_;
-    hipsparseLtMatDescriptor_t matA_;
-    hipsparseOrder_t            order = HIPSPARSE_ORDER_COL;
-    hipsparselt_local_mat_descr matA(
+    hipsparseLtMatDescriptor_t    matA_;
+    hipsparseOrder_t              order = HIPSPARSE_ORDER_COL;
+    hipsparselt_local_mat_descr   matA(
         hipsparselt_matrix_type_structured, handle, M, K, lda, arg.a_type, order);
     hipsparselt_local_mat_descr matB(
         hipsparselt_matrix_type_dense, handle, K, N, ldb, arg.b_type, order);
@@ -512,31 +514,26 @@ void testing_prune_check_bad_arg(const Arguments& arg)
 
     if(arg.func_version == 1)
     {
-        EXPECT_HIPSPARSE_STATUS(
-            hipsparseLtSpMMAPruneCheck(&handle_, matmul, dA, d_valid, stream),
-            HIPSPARSE_STATUS_INVALID_VALUE);
+        EXPECT_HIPSPARSE_STATUS(hipsparseLtSpMMAPruneCheck(&handle_, matmul, dA, d_valid, stream),
+                                HIPSPARSE_STATUS_INVALID_VALUE);
+
+        EXPECT_HIPSPARSE_STATUS(hipsparseLtSpMMAPruneCheck(nullptr, matmul, dA, d_valid, stream),
+                                HIPSPARSE_STATUS_INVALID_VALUE);
+
+        EXPECT_HIPSPARSE_STATUS(hipsparseLtSpMMAPruneCheck(handle, &matmul_, dA, d_valid, stream),
+                                HIPSPARSE_STATUS_INVALID_VALUE);
+
+        EXPECT_HIPSPARSE_STATUS(hipsparseLtSpMMAPruneCheck(handle, nullptr, dA, d_valid, stream),
+                                HIPSPARSE_STATUS_INVALID_VALUE);
 
         EXPECT_HIPSPARSE_STATUS(
-            hipsparseLtSpMMAPruneCheck(nullptr, matmul, dA, d_valid, stream),
+            hipsparseLtSpMMAPruneCheck(handle, matmul, nullptr, d_valid, stream),
             HIPSPARSE_STATUS_INVALID_VALUE);
 
-        EXPECT_HIPSPARSE_STATUS(
-            hipsparseLtSpMMAPruneCheck(handle, &matmul_,  dA, d_valid, stream),
-            HIPSPARSE_STATUS_INVALID_VALUE);
-
-        EXPECT_HIPSPARSE_STATUS(
-            hipsparseLtSpMMAPruneCheck(handle, nullptr,  dA, d_valid, stream),
-            HIPSPARSE_STATUS_INVALID_VALUE);
-
-        EXPECT_HIPSPARSE_STATUS(
-            hipsparseLtSpMMAPruneCheck(handle, matmul,  nullptr, d_valid, stream),
-            HIPSPARSE_STATUS_INVALID_VALUE);
-
-        EXPECT_HIPSPARSE_STATUS(
-            hipsparseLtSpMMAPruneCheck(handle, matmul,  dA, nullptr, stream),
-            HIPSPARSE_STATUS_INVALID_VALUE);
+        EXPECT_HIPSPARSE_STATUS(hipsparseLtSpMMAPruneCheck(handle, matmul, dA, nullptr, stream),
+                                HIPSPARSE_STATUS_INVALID_VALUE);
     }
-    else if (arg.func_version == 2)
+    else if(arg.func_version == 2)
     {
         EXPECT_HIPSPARSE_STATUS(
             hipsparseLtSpMMAPruneCheck2(&handle_, matA, true, transA, dA, d_valid, stream),
@@ -690,21 +687,21 @@ void testing_prune(const Arguments& arg)
                                      arg.b_type,
                                      orderB);
     hipsparselt_local_mat_descr matAv2(arg.sparse_b ? hipsparselt_matrix_type_dense
-                                                  : hipsparselt_matrix_type_structured,
-                                     handle,
-                                     A_row,
-                                     A_col,
-                                     lda,
-                                     arg.a_type,
-                                     orderA);
+                                                    : hipsparselt_matrix_type_structured,
+                                       handle,
+                                       A_row,
+                                       A_col,
+                                       lda,
+                                       arg.a_type,
+                                       orderA);
     hipsparselt_local_mat_descr matBv2(arg.sparse_b ? hipsparselt_matrix_type_structured
-                                                  : hipsparselt_matrix_type_dense,
-                                     handle,
-                                     B_row,
-                                     B_col,
-                                     ldb,
-                                     arg.b_type,
-                                     orderB);
+                                                    : hipsparselt_matrix_type_dense,
+                                       handle,
+                                       B_row,
+                                       B_col,
+                                       ldb,
+                                       arg.b_type,
+                                       orderB);
     hipsparselt_local_mat_descr matC(
         hipsparselt_matrix_type_dense, handle, M, N, ldc, arg.c_type, orderC);
     hipsparselt_local_mat_descr matD(
@@ -882,7 +879,8 @@ void testing_prune(const Arguments& arg)
     {
         if(arg.func_version == 1)
             EXPECT_HIPSPARSE_STATUS(
-                hipsparseLtSpMMAPrune(handle, matmul, arg.inEqualOut ? dT_pruned : dT, dT_pruned, prune_algo, stream),
+                hipsparseLtSpMMAPrune(
+                    handle, matmul, arg.inEqualOut ? dT_pruned : dT, dT_pruned, prune_algo, stream),
                 HIPSPARSE_STATUS_SUCCESS);
         else if(arg.func_version == 2)
             EXPECT_HIPSPARSE_STATUS(hipsparseLtSpMMAPrune2(handle,

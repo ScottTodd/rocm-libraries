@@ -122,7 +122,7 @@ public:
         }
 
         // Generate a new buffer
-        std::vector<T> data = gen();
+        std::vector<T>        data = gen();
         common::device_ptr<T> d_buffer;
         if(total_cache_size >= max_default_bytes_count)
         {
@@ -151,9 +151,9 @@ public:
     }
 
 private:
-    std::string                  main_key;
+    std::string                                  main_key;
     std::map<std::string, common::device_ptr<T>> cache;
-    short                        total_cache_size = 0;
+    short                                        total_cache_size = 0;
 };
 
 template<typename Config>

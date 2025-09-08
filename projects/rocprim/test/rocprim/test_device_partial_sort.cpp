@@ -187,12 +187,12 @@ TYPED_TEST(RocprimDevicePartialSortTests, PartialSort)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using key_type                              = std::remove_cv_t<typename TestFixture::key_type>;
-    using compare_function                      = typename TestFixture::compare_function;
-    using config                                = typename TestFixture::config;
-    using decomposer                            = typename TestFixture::decomposer;
-    const bool            debug_synchronous     = TestFixture::debug_synchronous;
-    constexpr bool        use_indirect_iterator = TestFixture::use_indirect_iterator;
+    using key_type                       = std::remove_cv_t<typename TestFixture::key_type>;
+    using compare_function               = typename TestFixture::compare_function;
+    using config                         = typename TestFixture::config;
+    using decomposer                     = typename TestFixture::decomposer;
+    const bool     debug_synchronous     = TestFixture::debug_synchronous;
+    constexpr bool use_indirect_iterator = TestFixture::use_indirect_iterator;
 
     for(size_t seed_index = 0; seed_index < number_of_runs; ++seed_index)
     {
@@ -365,13 +365,13 @@ TYPED_TEST(RocprimDevicePartialSortTests, PartialSortCopy)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using key_type                              = std::remove_cv_t<typename TestFixture::key_type>;
-    using compare_function                      = typename TestFixture::compare_function;
-    using config                                = typename TestFixture::config;
-    using decomposer                            = typename TestFixture::decomposer;
-    const bool            debug_synchronous     = TestFixture::debug_synchronous;
-    constexpr bool        input_is_const        = std::is_const_v<typename TestFixture::key_type>;
-    constexpr bool        use_indirect_iterator = TestFixture::use_indirect_iterator;
+    using key_type                       = std::remove_cv_t<typename TestFixture::key_type>;
+    using compare_function               = typename TestFixture::compare_function;
+    using config                         = typename TestFixture::config;
+    using decomposer                     = typename TestFixture::decomposer;
+    const bool     debug_synchronous     = TestFixture::debug_synchronous;
+    constexpr bool input_is_const        = std::is_const_v<typename TestFixture::key_type>;
+    constexpr bool use_indirect_iterator = TestFixture::use_indirect_iterator;
 
     for(size_t seed_index = 0; seed_index < number_of_runs; ++seed_index)
     {

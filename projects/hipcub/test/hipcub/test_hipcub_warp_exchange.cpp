@@ -31,11 +31,10 @@
 template<class T, unsigned ItemsPerThread, unsigned WarpSize>
 struct Params
 {
-    using type = T;
+    using type                                 = T;
     static constexpr unsigned items_per_thread = ItemsPerThread;
-    static constexpr unsigned warp_size = WarpSize;
+    static constexpr unsigned warp_size        = WarpSize;
 };
-
 
 template<class Params>
 class HipcubWarpExchangeTest : public ::testing::Test
@@ -101,8 +100,8 @@ TYPED_TEST_SUITE(HipcubWarpExchangeTest, HipcubWarpExchangeTestParams);
 struct BlockedToStripedOp
 {
     template<class WarpExchange, class T, unsigned ItemsPerThread>
-    HIPCUB_DEVICE void operator()(WarpExchange& warp_exchange,
-                                  T (&thread_data)[ItemsPerThread]) const
+    HIPCUB_DEVICE
+    void operator()(WarpExchange& warp_exchange, T (&thread_data)[ItemsPerThread]) const
     {
         warp_exchange.BlockedToStriped(thread_data, thread_data);
     }
@@ -111,8 +110,8 @@ struct BlockedToStripedOp
 struct StripedToBlockedOp
 {
     template<class WarpExchange, class T, unsigned ItemsPerThread>
-    HIPCUB_DEVICE void operator()(WarpExchange& warp_exchange,
-                                  T (&thread_data)[ItemsPerThread]) const
+    HIPCUB_DEVICE
+    void operator()(WarpExchange& warp_exchange, T (&thread_data)[ItemsPerThread]) const
     {
         warp_exchange.StripedToBlocked(thread_data, thread_data);
     }
@@ -124,28 +123,30 @@ template<unsigned                        BlockSize,
          ::hipcub::WarpExchangeAlgorithm Algorithm,
          class Op,
          class T>
-__device__ auto warp_exchange_test(T* d_input, T* d_output)
+__device__
+auto warp_exchange_test(T* d_input, T* d_output)
     -> std::enable_if_t<test_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {
     T thread_data[ItemsPerThread];
-    for (unsigned i = 0; i < ItemsPerThread; ++i)
+    for(unsigned i = 0; i < ItemsPerThread; ++i)
     {
         thread_data[i] = d_input[threadIdx.x * ItemsPerThread + i];
     }
 
-    using WarpExchangeT                                           = ::hipcub::WarpExchange<T,
-                                                 ItemsPerThread,
-                                                 LogicalWarpSize,
-                                                 1, // ARCH
-                                                 Algorithm>;
-    constexpr unsigned warps_in_block = BlockSize / LogicalWarpSize;
-    __shared__ typename WarpExchangeT::TempStorage temp_storage[warps_in_block];
-    const unsigned                                 warp_id = threadIdx.x / LogicalWarpSize;
+    using WarpExchangeT                                = ::hipcub::WarpExchange<T,
+                                                                                ItemsPerThread,
+                                                                                LogicalWarpSize,
+                                                                                1, // ARCH
+                                                                                Algorithm>;
+    constexpr unsigned                  warps_in_block = BlockSize / LogicalWarpSize;
+    __shared__
+    typename WarpExchangeT::TempStorage temp_storage[warps_in_block];
+    const unsigned                      warp_id = threadIdx.x / LogicalWarpSize;
 
     WarpExchangeT warp_exchange(temp_storage[warp_id]);
     Op{}(warp_exchange, thread_data);
 
-    for (unsigned i = 0; i < ItemsPerThread; ++i)
+    for(unsigned i = 0; i < ItemsPerThread; ++i)
     {
         d_output[threadIdx.x * ItemsPerThread + i] = thread_data[i];
     }
@@ -157,7 +158,8 @@ template<unsigned                        BlockSize,
          ::hipcub::WarpExchangeAlgorithm Algorithm,
          class Op,
          class T>
-__device__ auto warp_exchange_test(T* /*d_input*/, T* /*d_output*/)
+__device__
+auto warp_exchange_test(T* /*d_input*/, T* /*d_output*/)
     -> std::enable_if_t<!test_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {}
 
@@ -167,26 +169,25 @@ template<unsigned                        BlockSize,
          ::hipcub::WarpExchangeAlgorithm Algorithm,
          class Op,
          class T>
-__global__ __launch_bounds__(BlockSize) void warp_exchange_kernel(T* d_input, T* d_output)
+__global__ __launch_bounds__(BlockSize)
+void warp_exchange_kernel(T* d_input, T* d_output)
 {
     warp_exchange_test<BlockSize, ItemsPerThread, LogicalWarpSize, Algorithm, Op>(d_input,
                                                                                   d_output);
 }
 
 template<class T>
-std::vector<T> stripe_vector(
-    const std::vector<T>& v,
-    const size_t warp_size,
-    const size_t items_per_thread)
+std::vector<T>
+    stripe_vector(const std::vector<T>& v, const size_t warp_size, const size_t items_per_thread)
 {
-    const size_t period = warp_size * items_per_thread;
+    const size_t   period = warp_size * items_per_thread;
     std::vector<T> striped(v.size());
-    for (size_t i = 0; i < v.size(); ++i)
+    for(size_t i = 0; i < v.size(); ++i)
     {
-        const size_t i_base = i % period;
+        const size_t i_base         = i % period;
         const size_t other_idx_base = ((items_per_thread * i_base) % period) + i_base / warp_size;
-        const size_t other_idx = other_idx_base + period * (i / period);
-        striped[i] = v[other_idx];
+        const size_t other_idx      = other_idx_base + period * (i / period);
+        striped[i]                  = v[other_idx];
     }
     return striped;
 }
@@ -211,8 +212,8 @@ std::enable_if_t<is_warp_exchange_test_enabled<Params, Algorithm>> run_warp_exch
     using T                             = typename Params::type;
     constexpr unsigned warp_size        = Params::warp_size;
     constexpr unsigned items_per_thread = Params::items_per_thread;
-    constexpr unsigned block_size = 1024;
-    constexpr unsigned items_count = items_per_thread * block_size;
+    constexpr unsigned block_size       = 1024;
+    constexpr unsigned items_count      = items_per_thread * block_size;
 
     SKIP_IF_UNSUPPORTED_WARP_SIZE(warp_size);
 
@@ -226,7 +227,8 @@ std::enable_if_t<is_warp_exchange_test_enabled<Params, Algorithm>> run_warp_exch
     {
         expected = input;
         input    = stripe_vector(input, warp_size, items_per_thread);
-    } else
+    }
+    else
     {
         expected = stripe_vector(input, warp_size, items_per_thread);
     }
@@ -301,7 +303,8 @@ template<unsigned BlockSize,
          unsigned LogicalWarpSize,
          class T,
          class OffsetT>
-__device__ auto warp_exchange_scatter_to_striped_test(T* d_input, T* d_output, OffsetT* d_ranks)
+__device__
+auto warp_exchange_scatter_to_striped_test(T* d_input, T* d_output, OffsetT* d_ranks)
     -> std::enable_if_t<test_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {
     T       thread_data[ItemsPerThread];
@@ -313,9 +316,10 @@ __device__ auto warp_exchange_scatter_to_striped_test(T* d_input, T* d_output, O
     }
 
     using WarpExchangeT = ::hipcub::WarpExchange<T, ItemsPerThread, LogicalWarpSize>;
-    constexpr unsigned                             warps_in_block = BlockSize / LogicalWarpSize;
-    __shared__ typename WarpExchangeT::TempStorage temp_storage[warps_in_block];
-    const unsigned                                 warp_id = threadIdx.x / LogicalWarpSize;
+    constexpr unsigned                  warps_in_block = BlockSize / LogicalWarpSize;
+    __shared__
+    typename WarpExchangeT::TempStorage temp_storage[warps_in_block];
+    const unsigned                      warp_id = threadIdx.x / LogicalWarpSize;
 
     WarpExchangeT(temp_storage[warp_id]).ScatterToStriped(thread_data, thread_ranks);
 
@@ -330,9 +334,9 @@ template<unsigned BlockSize,
          unsigned LogicalWarpSize,
          class T,
          class OffsetT>
-__device__ auto
-    warp_exchange_scatter_to_striped_test(T* /*d_input*/, T* /*d_output*/, OffsetT* /*d_ranks*/)
-        -> std::enable_if_t<!test_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
+__device__
+auto warp_exchange_scatter_to_striped_test(T* /*d_input*/, T* /*d_output*/, OffsetT* /*d_ranks*/)
+    -> std::enable_if_t<!test_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {}
 
 template<unsigned BlockSize,
@@ -340,8 +344,8 @@ template<unsigned BlockSize,
          unsigned LogicalWarpSize,
          class T,
          class OffsetT>
-__global__ __launch_bounds__(BlockSize) void warp_exchange_scatter_to_striped_kernel(
-    T* d_input, T* d_output, OffsetT* d_ranks)
+__global__ __launch_bounds__(BlockSize)
+void warp_exchange_scatter_to_striped_kernel(T* d_input, T* d_output, OffsetT* d_ranks)
 {
     warp_exchange_scatter_to_striped_test<BlockSize, ItemsPerThread, LogicalWarpSize>(d_input,
                                                                                       d_output,
@@ -381,14 +385,14 @@ TYPED_TEST(HipcubWarpExchangeTest, WarpExchangeScatterToStriped)
     SCOPED_TRACE(testing::Message() << "with device_id= " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using T = typename TestFixture::params::type;
-    using OffsetT = int;
-    constexpr unsigned warp_size = TestFixture::params::warp_size;
+    using T                             = typename TestFixture::params::type;
+    using OffsetT                       = int;
+    constexpr unsigned warp_size        = TestFixture::params::warp_size;
     constexpr unsigned items_per_thread = 4;
-    constexpr unsigned block_size = 1024;
-    constexpr unsigned items_count = items_per_thread * block_size;
-    constexpr unsigned items_per_warp = warp_size * items_per_thread;
-    constexpr int random_seed = 347268;
+    constexpr unsigned block_size       = 1024;
+    constexpr unsigned items_count      = items_per_thread * block_size;
+    constexpr unsigned items_per_warp   = warp_size * items_per_thread;
+    constexpr int      random_seed      = 347268;
 
     SKIP_IF_UNSUPPORTED_WARP_SIZE(warp_size);
 
@@ -399,10 +403,10 @@ TYPED_TEST(HipcubWarpExchangeTest, WarpExchangeScatterToStriped)
     }
 
     std::vector<OffsetT> ranks(items_count);
-    for (size_t i = 0; i < items_count / items_per_warp; ++i)
+    for(size_t i = 0; i < items_count / items_per_warp; ++i)
     {
         auto segment_begin = std::next(ranks.begin(), i * items_per_warp);
-        auto segment_end = std::next(ranks.begin(), (i + 1) * items_per_warp);
+        auto segment_end   = std::next(ranks.begin(), (i + 1) * items_per_warp);
         std::iota(segment_begin, segment_end, 0);
         std::shuffle(segment_begin, segment_end, std::default_random_engine(random_seed));
     }
@@ -412,7 +416,8 @@ TYPED_TEST(HipcubWarpExchangeTest, WarpExchangeScatterToStriped)
     HIP_CHECK(hipMemcpy(d_input, input.data(), items_count * sizeof(T), hipMemcpyHostToDevice));
     OffsetT* d_ranks{};
     HIP_CHECK(test_common_utils::hipMallocHelper(&d_ranks, items_count * sizeof(OffsetT)));
-    HIP_CHECK(hipMemcpy(d_ranks, ranks.data(), items_count * sizeof(OffsetT), hipMemcpyHostToDevice));
+    HIP_CHECK(
+        hipMemcpy(d_ranks, ranks.data(), items_count * sizeof(OffsetT), hipMemcpyHostToDevice));
     T* d_output{};
     HIP_CHECK(test_common_utils::hipMallocHelper(&d_output, items_count * sizeof(T)));
     HIP_CHECK(hipMemset(d_output, 0, items_count * sizeof(T)));

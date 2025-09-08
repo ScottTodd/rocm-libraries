@@ -341,8 +341,8 @@ public:
         return std::move(name);
     }
 
-    RocBLAS_TestName()                        = default;
-    RocBLAS_TestName(const RocBLAS_TestName&) = delete;
+    RocBLAS_TestName()                                   = default;
+    RocBLAS_TestName(const RocBLAS_TestName&)            = delete;
     RocBLAS_TestName& operator=(const RocBLAS_TestName&) = delete;
 };
 
@@ -431,8 +431,8 @@ struct rocblas_test_invalid
         FAIL() << msg;
 #else
         rocblas_cerr << msg << std::endl;
-        rocblas_cerr << "function: " << arg.function << " types: "
-                     << " a: " << rocblas_datatype2string(arg.a_type)
+        rocblas_cerr << "function: " << arg.function
+                     << " types: " << " a: " << rocblas_datatype2string(arg.a_type)
                      << " b: " << rocblas_datatype2string(arg.b_type)
                      << " c: " << rocblas_datatype2string(arg.c_type)
                      << " d: " << rocblas_datatype2string(arg.d_type)

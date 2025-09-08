@@ -36,9 +36,8 @@ template<class Runner,
          unsigned int BlockSize,
          unsigned int ItemsPerThread,
          unsigned int Trials>
-__global__ __launch_bounds__(BlockSize) void kernel(const T*            d_input,
-                                                    const unsigned int* d_ranks,
-                                                    T*                  d_output)
+__global__ __launch_bounds__(BlockSize)
+void kernel(const T* d_input, const unsigned int* d_ranks, T* d_output)
 {
     Runner::template run<T, BlockSize, ItemsPerThread, Trials>(d_input, d_ranks, d_output);
 }
@@ -46,7 +45,8 @@ __global__ __launch_bounds__(BlockSize) void kernel(const T*            d_input,
 struct blocked_to_striped
 {
     template<class T, unsigned int BlockSize, unsigned int ItemsPerThread, unsigned int Trials>
-    __device__ static void run(const T* d_input, const unsigned int*, T* d_output)
+    __device__
+    static void run(const T* d_input, const unsigned int*, T* d_output)
     {
         const unsigned int lid          = hipThreadIdx_x;
         const unsigned int block_offset = hipBlockIdx_x * ItemsPerThread * BlockSize;
@@ -70,7 +70,8 @@ struct blocked_to_striped
 struct striped_to_blocked
 {
     template<class T, unsigned int BlockSize, unsigned int ItemsPerThread, unsigned int Trials>
-    __device__ static void run(const T* d_input, const unsigned int*, T* d_output)
+    __device__
+    static void run(const T* d_input, const unsigned int*, T* d_output)
     {
         const unsigned int lid          = hipThreadIdx_x;
         const unsigned int block_offset = hipBlockIdx_x * ItemsPerThread * BlockSize;
@@ -94,7 +95,8 @@ struct striped_to_blocked
 struct blocked_to_warp_striped
 {
     template<class T, unsigned int BlockSize, unsigned int ItemsPerThread, unsigned int Trials>
-    __device__ static void run(const T* d_input, const unsigned int*, T* d_output)
+    __device__
+    static void run(const T* d_input, const unsigned int*, T* d_output)
     {
         const unsigned int lid          = hipThreadIdx_x;
         const unsigned int block_offset = hipBlockIdx_x * ItemsPerThread * BlockSize;
@@ -118,7 +120,8 @@ struct blocked_to_warp_striped
 struct warp_striped_to_blocked
 {
     template<class T, unsigned int BlockSize, unsigned int ItemsPerThread, unsigned int Trials>
-    __device__ static void run(const T* d_input, const unsigned int*, T* d_output)
+    __device__
+    static void run(const T* d_input, const unsigned int*, T* d_output)
     {
         const unsigned int lid          = hipThreadIdx_x;
         const unsigned int block_offset = hipBlockIdx_x * ItemsPerThread * BlockSize;
@@ -142,7 +145,8 @@ struct warp_striped_to_blocked
 struct scatter_to_blocked
 {
     template<class T, unsigned int BlockSize, unsigned int ItemsPerThread, unsigned int Trials>
-    __device__ static void run(const T* d_input, const unsigned int* d_ranks, T* d_output)
+    __device__
+    static void run(const T* d_input, const unsigned int* d_ranks, T* d_output)
     {
         const unsigned int lid          = hipThreadIdx_x;
         const unsigned int block_offset = hipBlockIdx_x * ItemsPerThread * BlockSize;
@@ -168,7 +172,8 @@ struct scatter_to_blocked
 struct scatter_to_striped
 {
     template<class T, unsigned int BlockSize, unsigned int ItemsPerThread, unsigned int Trials>
-    __device__ static void run(const T* d_input, const unsigned int* d_ranks, T* d_output)
+    __device__
+    static void run(const T* d_input, const unsigned int* d_ranks, T* d_output)
     {
         const unsigned int lid          = hipThreadIdx_x;
         const unsigned int block_offset = hipBlockIdx_x * ItemsPerThread * BlockSize;

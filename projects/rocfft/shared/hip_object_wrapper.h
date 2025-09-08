@@ -68,7 +68,7 @@ struct hip_object_wrapper_t
         free();
     }
 
-    hip_object_wrapper_t(const hip_object_wrapper_t&) = delete;
+    hip_object_wrapper_t(const hip_object_wrapper_t&)            = delete;
     hip_object_wrapper_t& operator=(const hip_object_wrapper_t&) = delete;
     hip_object_wrapper_t(hip_object_wrapper_t&& other)
         : obj(other.obj)

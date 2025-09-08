@@ -30,21 +30,21 @@
 #ifndef HIBCUB_ROCPRIM_THREAD_THREAD_SCAN_HPP_
 #define HIBCUB_ROCPRIM_THREAD_THREAD_SCAN_HPP_
 
-
 #include "../../../config.hpp"
 #include "../util_type.hpp"
 
 BEGIN_HIPCUB_NAMESPACE
 
 /// Internal namespace (to prevent ADL mishaps between static functions when mixing different CUB installations)
-namespace internal {
+namespace internal
+{
 
- /**
+/**
   * \addtogroup UtilModule
   * @{
   */
 
- /**
+/**
   * \name Sequential prefix scan over statically-sized array types
   * @{
   */
@@ -72,9 +72,9 @@ HIPCUB_FORCEINLINE
     return inclusive;
 }
 
- #ifndef DOXYGEN_SHOULD_SKIP_THIS    // Do not document
+#ifndef DOXYGEN_SHOULD_SKIP_THIS // Do not document
 
- /**
+/**
   * \brief Perform a sequential exclusive prefix scan over \p LENGTH elements of the \p input array, seeded with the specified \p prefix.  The aggregate is returned.
   *
   * \tparam LENGTH     LengthT of \p input and \p output arrays
@@ -109,7 +109,7 @@ HIPCUB_FORCEINLINE T ThreadScanExclusive(
                                detail::int_constant_t<LENGTH - 1>());
 }
 
- /**
+/**
   * \brief Perform a sequential exclusive prefix scan over the statically-sized \p input array, seeded with the specified \p prefix.  The aggregate is returned.
   *
   * \tparam LENGTH     <b>[inferred]</b> LengthT of \p input and \p output arrays
@@ -131,7 +131,7 @@ HIPCUB_FORCEINLINE T ThreadScanExclusive(
     return ThreadScanExclusive<LENGTH>((T*)input, (T*)output, scan_op, prefix, apply_prefix);
 }
 
- #endif
+#endif
 
 template<int LENGTH,
          typename T,
@@ -154,9 +154,9 @@ HIPCUB_FORCEINLINE
     return inclusive;
 }
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS    // Do not document
+#ifndef DOXYGEN_SHOULD_SKIP_THIS // Do not document
 
- /**
+/**
   * \brief Perform a sequential inclusive prefix scan over \p LENGTH elements of the \p input array.  The aggregate is returned.
   *
   * \tparam LENGTH     LengthT of \p input and \p output arrays
@@ -183,7 +183,7 @@ HIPCUB_FORCEINLINE
                                detail::int_constant_t<LENGTH - 1>());
 }
 
- /**
+/**
   * \brief Perform a sequential inclusive prefix scan over the statically-sized \p input array.  The aggregate is returned.
   *
   * \tparam LENGTH     <b>[inferred]</b> LengthT of \p input and \p output arrays
@@ -202,7 +202,7 @@ HIPCUB_FORCEINLINE
     return ThreadScanInclusive<LENGTH>((T*)input, (T*)output, scan_op);
 }
 
- /**
+/**
   * \brief Perform a sequential inclusive prefix scan over \p LENGTH elements of the \p input array, seeded with the specified \p prefix.  The aggregate is returned.
   *
   * \tparam LENGTH     LengthT of \p input and \p output arrays
@@ -236,7 +236,7 @@ HIPCUB_FORCEINLINE T ThreadScanInclusive(
                                detail::int_constant_t<LENGTH - 1>());
 }
 
- /**
+/**
   * \brief Perform a sequential inclusive prefix scan over the statically-sized \p input array, seeded with the specified \p prefix.  The aggregate is returned.
   *
   * \tparam LENGTH     <b>[inferred]</b> LengthT of \p input and \p output arrays
@@ -258,15 +258,14 @@ HIPCUB_FORCEINLINE T ThreadScanInclusive(
     return ThreadScanInclusive<LENGTH>((T*)input, (T*)output, scan_op, prefix, apply_prefix);
 }
 
- #endif
+#endif
 
- //@}  end member group
+//@}  end member group
 
- /** @} */       // end group UtilModule
+/** @} */ // end group UtilModule
 
+} // namespace internal
 
- }               // internal namespace
+END_HIPCUB_NAMESPACE
 
- END_HIPCUB_NAMESPACE
-
- #endif // HIBCUB_ROCPRIM_THREAD_THREAD_SCAN_HPP_
+#endif // HIBCUB_ROCPRIM_THREAD_THREAD_SCAN_HPP_

@@ -29,7 +29,8 @@ BEGIN_ROCPRIM_NAMESPACE
 /// \brief Padding hints for algorithms. Padding can be used to reduce bank
 /// conflicts at the cost of increasing LDS usage and potentially reducing
 /// occupancy.
-enum class block_padding_hint {
+enum class block_padding_hint
+{
     /// Use padding to avoid bank conflicts, if applicable. This allows an
     /// algorithm to use more shared memory to reduce bank conflicts.
     avoid_conflicts = 0,

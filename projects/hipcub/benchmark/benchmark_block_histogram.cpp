@@ -35,7 +35,8 @@ template<class Runner,
          unsigned int ItemsPerThread,
          unsigned int BinSize,
          unsigned int Trials>
-__global__ __launch_bounds__(BlockSize) void kernel(const T* input, T* output)
+__global__ __launch_bounds__(BlockSize)
+void kernel(const T* input, T* output)
 {
     Runner::template run<T, BlockSize, ItemsPerThread, BinSize, Trials>(input, output);
 }
@@ -48,7 +49,8 @@ struct histogram
              unsigned int ItemsPerThread,
              unsigned int BinSize,
              unsigned int Trials>
-    __device__ static void run(const T* input, T* output)
+    __device__
+    static void run(const T* input, T* output)
     {
         const unsigned int index = ((hipBlockIdx_x * BlockSize) + hipThreadIdx_x) * ItemsPerThread;
         unsigned int       global_offset = hipBlockIdx_x * BinSize;
@@ -61,8 +63,10 @@ struct histogram
 
         using bhistogram_t
             = hipcub::BlockHistogram<T, BlockSize, ItemsPerThread, BinSize, algorithm>;
-        __shared__ T                                  histogram[BinSize];
-        __shared__ typename bhistogram_t::TempStorage storage;
+        __shared__
+        T                                  histogram[BinSize];
+        __shared__
+        typename bhistogram_t::TempStorage storage;
 
 #pragma nounroll
         for(unsigned int trial = 0; trial < Trials; trial++)

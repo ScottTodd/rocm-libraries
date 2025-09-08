@@ -88,9 +88,9 @@ namespace
         ((BLAS1 == blas1::iamax || BLAS1 == blas1::iamax_batched
           || BLAS1 == blas1::iamax_strided_batched || BLAS1 == blas1::iamin
           || BLAS1 == blas1::iamin_batched || BLAS1 == blas1::iamin_strided_batched)
-         && std::is_same_v<
-             Ti,
-             To> && std::is_same_v<To, Tc> && (std::is_same_v<Ti, std::complex<float>> || std::is_same_v<Ti, std::complex<double>> || std::is_same_v<Ti, float> || std::is_same_v<Ti, double>))>;
+         && std::is_same_v<Ti, To> && std::is_same_v<To, Tc>
+         && (std::is_same_v<Ti, std::complex<float>> || std::is_same_v<Ti, std::complex<double>>
+             || std::is_same_v<Ti, float> || std::is_same_v<Ti, double>))>;
 
 // Creates tests for one of the BLAS 1 functions
 // ARG passes 1-3 template arguments to the testing_* function

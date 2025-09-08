@@ -52,7 +52,8 @@ namespace rocRoller
 
             // Fast Multiplication for when rhs is power of two
             template <typename T>
-            requires(std::integral<T> && !std::same_as<bool, T>) ExpressionPtr operator()(T rhs)
+                requires(std::integral<T> && !std::same_as<bool, T>)
+            ExpressionPtr operator()(T rhs)
             {
                 if(resultVariableType(lhs) != resultType)
                 {
@@ -81,7 +82,8 @@ namespace rocRoller
 
             // If the rhs is not an integer, return a nullptr to indicate we can't optimize.
             template <typename T>
-            requires(!std::integral<T> || std::same_as<bool, T>) ExpressionPtr operator()(T rhs)
+                requires(!std::integral<T> || std::same_as<bool, T>)
+            ExpressionPtr operator()(T rhs)
             {
                 return nullptr;
             }

@@ -456,10 +456,7 @@ bool TuningBenchmarker::ExportCSV(bool append_data)
                 << info.gflops << "," << info.num_blocks << "," << info.workgroup_size << ","
                 << info.threads_per_trans[0] << "," << info.threads_per_trans[1] << ","
                 << info.trans_per_block << "," << info.LDS_bytes << "," << info.globalRW_per_thread
-                << ","
-                << "\"" << info.util_rate << "\""
-                << ","
-                << "\"" << info.factors_str << "\""
+                << "," << "\"" << info.util_rate << "\"" << "," << "\"" << info.factors_str << "\""
                 << "," << info.occupancy << "," << info.numCUs << "," << info.granularity << ","
                 << info.bw_eff << "," << info.kernel_name << std::endl;
     }

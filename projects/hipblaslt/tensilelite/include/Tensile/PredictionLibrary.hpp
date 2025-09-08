@@ -156,18 +156,16 @@ namespace TensileLite
                 batch *= problem.batchSize(i);
             }
 
-            bool                  debug   = Debug::Instance().printPropertyEvaluation();
-            hip::HipAMDGPU const* pAMDGPU = dynamic_cast<hip::HipAMDGPU const*>(&hardware);
-            size_t elementSizeA_bits
-                = problem.a().elementBytes() * 8;
-            size_t elementSizeB_bits
-                = problem.b().elementBytes() * 8;
-            size_t elementSizeC_bits
-                = problem.c().elementBytes() * 8;
+            bool                        debug   = Debug::Instance().printPropertyEvaluation();
+            hip::HipAMDGPU const*       pAMDGPU = dynamic_cast<hip::HipAMDGPU const*>(&hardware);
+            size_t                      elementSizeA_bits    = problem.a().elementBytes() * 8;
+            size_t                      elementSizeB_bits    = problem.b().elementBytes() * 8;
+            size_t                      elementSizeC_bits    = problem.c().elementBytes() * 8;
             const analytical::Hardware& analaytical_hardware = *(pAMDGPU->analyticalHardware);
-            int WGM
+            int                         WGM
                 = std::sqrt(std::floor(analaytical_hardware.N_CU / analaytical_hardware.NUM_XCD));
-            analytical::DataType miDataType = static_cast<analytical::DataType>(problem.computeInputType());
+            analytical::DataType miDataType
+                = static_cast<analytical::DataType>(problem.computeInputType());
             if(problem.f32XdlMathOp() == rocisa::DataType::XFloat32) // Check F32 compute type
                 miDataType = analytical::DataType::XFloat32;
             auto selected_tiles = analytical::select_best_macro_tile_size(
@@ -191,12 +189,12 @@ namespace TensileLite
             for(const auto& tile : selected_tiles)
             {
                 auto mapiter  = tile_map.find(std::make_tuple(std::get<1>(tile),
-                                                              std::get<2>(tile),
-                                                              std::get<3>(tile),
-                                                              std::get<4>(tile),
-                                                              std::get<5>(tile),
-                                                              std::get<6>(tile),
-                                                              std::get<7>(tile)));
+                                                             std::get<2>(tile),
+                                                             std::get<3>(tile),
+                                                             std::get<4>(tile),
+                                                             std::get<5>(tile),
+                                                             std::get<6>(tile),
+                                                             std::get<7>(tile)));
                 auto smapiter = solutionmap.find(mapiter->second);
                 if(mapiter != tile_map.end() && smapiter != solutionmap.end())
                 {

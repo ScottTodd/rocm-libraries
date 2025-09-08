@@ -88,8 +88,8 @@ struct CKArgs
         epsilon      = problem.GetEpsilon();
     }
 
-    CKArgs(const CKArgs&) = default;
-    CKArgs(CKArgs&&)      = default;
+    CKArgs(const CKArgs&)            = default;
+    CKArgs(CKArgs&&)                 = default;
     CKArgs& operator=(const CKArgs&) = default;
 
     template <typename LNPtr>

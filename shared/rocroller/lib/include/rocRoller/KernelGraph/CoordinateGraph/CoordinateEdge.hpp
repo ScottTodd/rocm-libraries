@@ -439,10 +439,9 @@ namespace rocRoller
         }
 
         template <typename T>
-        requires(
-            std::constructible_from<
-                CoordinateTransformEdge,
-                T> || std::constructible_from<DataFlowEdge, T>) inline bool isEdge(const Edge& x)
+            requires(std::constructible_from<CoordinateTransformEdge, T>
+                     || std::constructible_from<DataFlowEdge, T>)
+        inline bool isEdge(const Edge& x)
         {
             if constexpr(std::is_same_v<DataFlowEdge, T>)
             {

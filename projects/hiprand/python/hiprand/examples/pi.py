@@ -24,6 +24,7 @@ import numpy as np
 interactive = True
 if not interactive:
     import matplotlib
+
     matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
@@ -54,9 +55,9 @@ for col in range(cols):
         xy = np.empty(shape=(2, n))
         gen.uniform(xy)
 
-    inside = xy[0]**2 + xy[1]**2 <= 1.0
+    inside = xy[0] ** 2 + xy[1] ** 2 <= 1.0
 
-    in_xy  = xy[:,  inside]
+    in_xy = xy[:, inside]
     out_xy = xy[:, ~inside]
 
     trials = np.arange(1, n + 1)
@@ -65,7 +66,7 @@ for col in range(cols):
 
     plt.subplot(2, 3, col + 1, aspect="equal")
     plt.title(title)
-    plt.scatter(*in_xy,  c="g", marker=".", s=0.5)
+    plt.scatter(*in_xy, c="g", marker=".", s=0.5)
     plt.scatter(*out_xy, c="r", marker=".", s=0.5)
 
     plt.subplot(2, 3, cols + col + 1)

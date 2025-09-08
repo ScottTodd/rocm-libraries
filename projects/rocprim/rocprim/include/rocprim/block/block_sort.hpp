@@ -26,8 +26,8 @@
 #include "../config.hpp"
 #include "../detail/various.hpp"
 
-#include "../intrinsics.hpp"
 #include "../functional.hpp"
+#include "../intrinsics.hpp"
 
 #include "detail/block_sort_bitonic.hpp"
 #include "detail/block_sort_merge.hpp"
@@ -87,12 +87,12 @@ struct select_block_sort_impl;
 template<>
 struct select_block_sort_impl<block_sort_algorithm::bitonic_sort>
 {
-    template <class Key,
-              unsigned int BlockSizeX,
-              unsigned int BlockSizeY,
-              unsigned int BlockSizeZ,
-              unsigned int ItemsPerThread,
-              class Value>
+    template<class Key,
+             unsigned int BlockSizeX,
+             unsigned int BlockSizeY,
+             unsigned int BlockSizeZ,
+             unsigned int ItemsPerThread,
+             class Value>
     using type = block_sort_bitonic<Key, BlockSizeX, BlockSizeY, BlockSizeZ, ItemsPerThread, Value>;
 };
 
@@ -166,21 +166,22 @@ struct select_block_sort_impl<block_sort_algorithm::stable_merge_sort>
 /// }
 /// \endcode
 /// \endparblock
-template<
-    class Key,
-    unsigned int BlockSizeX,
-    unsigned int ItemsPerThread = 1,
-    class Value = empty_type,
-    block_sort_algorithm Algorithm = block_sort_algorithm::default_algorithm,
-    unsigned int BlockSizeY = 1,
-    unsigned int BlockSizeZ = 1
->
+template<class Key,
+         unsigned int BlockSizeX,
+         unsigned int ItemsPerThread     = 1,
+         class Value                     = empty_type,
+         block_sort_algorithm Algorithm  = block_sort_algorithm::default_algorithm,
+         unsigned int         BlockSizeY = 1,
+         unsigned int         BlockSizeZ = 1>
 class block_sort
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-    : private detail::select_block_sort_impl<Algorithm>::template type<Key, BlockSizeX, BlockSizeY, BlockSizeZ, ItemsPerThread, Value>
+    : private detail::select_block_sort_impl<
+          Algorithm>::template type<Key, BlockSizeX, BlockSizeY, BlockSizeZ, ItemsPerThread, Value>
 #endif
 {
-    using base_type = typename detail::select_block_sort_impl<Algorithm>::template type<Key, BlockSizeX, BlockSizeY, BlockSizeZ, ItemsPerThread, Value>;
+    using base_type = typename detail::select_block_sort_impl<
+        Algorithm>::template type<Key, BlockSizeX, BlockSizeY, BlockSizeZ, ItemsPerThread, Value>;
+
 public:
     /// \brief Struct used to allocate a temporary memory that is required for thread
     /// communication during operations provided by related parallel primitive.
@@ -264,8 +265,8 @@ public:
     /// \endparblock
     template<class BinaryFunction = ::rocprim::less<Key>>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void sort(Key& thread_key,
-              storage_type& storage,
+    void sort(Key&           thread_key,
+              storage_type&  storage,
               BinaryFunction compare_function = BinaryFunction())
     {
         base_type::sort(thread_key, storage, compare_function);
@@ -274,9 +275,10 @@ public:
     /// \brief This overload allows arrays of \p ItemsPerThread keys
     /// to be passed in so that each thread can process multiple items.
     template<class BinaryFunction = ::rocprim::less<Key>>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void sort(Key (&thread_keys)[ItemsPerThread],
-                                            storage_type&  storage,
-                                            BinaryFunction compare_function = BinaryFunction())
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void sort(Key (&thread_keys)[ItemsPerThread],
+              storage_type&  storage,
+              BinaryFunction compare_function = BinaryFunction())
     {
         base_type::sort(thread_keys, storage, compare_function);
     }
@@ -302,7 +304,7 @@ public:
         base_type::sort(thread_key, thread_value, compare_function);
     }
 
-    /// \brief This overload allows an array of \p ItemsPerThread keys and values 
+    /// \brief This overload allows an array of \p ItemsPerThread keys and values
     /// to be passed in so that each thread can process multiple items.
     template<class BinaryFunction = ::rocprim::less<Key>>
     ROCPRIM_DEVICE ROCPRIM_FORCE_INLINE
@@ -357,21 +359,21 @@ public:
     /// \endparblock
     template<class BinaryFunction = ::rocprim::less<Key>>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void sort(Key& thread_key,
-              Value& thread_value,
-              storage_type& storage,
+    void sort(Key&           thread_key,
+              Value&         thread_value,
+              storage_type&  storage,
               BinaryFunction compare_function = BinaryFunction())
     {
         base_type::sort(thread_key, thread_value, storage, compare_function);
     }
 
-    /// \brief This overload allows an array of \p ItemsPerThread keys and values 
+    /// \brief This overload allows an array of \p ItemsPerThread keys and values
     /// to be passed in so that each thread can process multiple items.
     template<class BinaryFunction = ::rocprim::less<Key>>
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void sort(Key (&thread_keys)[ItemsPerThread],
               Value (&thread_values)[ItemsPerThread],
-              storage_type& storage,
+              storage_type&  storage,
               BinaryFunction compare_function = BinaryFunction())
     {
         base_type::sort(thread_keys, thread_values, storage, compare_function);
@@ -441,11 +443,12 @@ public:
     /// <tt>bool f(const T &a, const T &b);</tt>. The signature does not need to have
     /// <tt>const &</tt>, but function object must not modify the objects passed to it.
     template<class BinaryFunction = ::rocprim::less<Key>>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void sort(Key&               thread_key,
-                                            Value&             thread_value,
-                                            storage_type&      storage,
-                                            const unsigned int size,
-                                            BinaryFunction     compare_function = BinaryFunction())
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void sort(Key&               thread_key,
+              Value&             thread_value,
+              storage_type&      storage,
+              const unsigned int size,
+              BinaryFunction     compare_function = BinaryFunction())
     {
         base_type::sort(thread_key, thread_value, storage, size, compare_function);
     }
@@ -466,11 +469,12 @@ public:
     /// <tt>bool f(const T &a, const T &b);</tt>. The signature does not need to have
     /// <tt>const &</tt>, but function object must not modify the objects passed to it.
     template<class BinaryFunction = ::rocprim::less<Key>>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void sort(Key (&thread_keys)[ItemsPerThread],
-                                            Value (&thread_values)[ItemsPerThread],
-                                            storage_type&      storage,
-                                            const unsigned int size,
-                                            BinaryFunction     compare_function = BinaryFunction())
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void sort(Key (&thread_keys)[ItemsPerThread],
+              Value (&thread_values)[ItemsPerThread],
+              storage_type&      storage,
+              const unsigned int size,
+              BinaryFunction     compare_function = BinaryFunction())
     {
         base_type::sort(thread_keys, thread_values, storage, size, compare_function);
     }

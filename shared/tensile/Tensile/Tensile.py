@@ -23,7 +23,9 @@
 ################################################################################
 
 if __name__ == "__main__":
-    print("This file can no longer be run as a script.  Run 'Tensile/bin/Tensile' instead.")
+    print(
+        "This file can no longer be run as a script.  Run 'Tensile/bin/Tensile' instead."
+    )
     exit(1)
 
 import os
@@ -31,8 +33,16 @@ import sys
 import argparse
 import shutil
 
-from .Common import globalParameters, tPrint, printExit, ensurePath, \
-    assignGlobalParameters, restoreDefaultGlobalParameters, HR, gfxArch
+from .Common import (
+    globalParameters,
+    tPrint,
+    printExit,
+    ensurePath,
+    assignGlobalParameters,
+    restoreDefaultGlobalParameters,
+    HR,
+    gfxArch,
+)
 from . import BenchmarkProblems
 from . import ClientWriter
 from . import LibraryIO
@@ -62,8 +72,9 @@ def executeStepsInConfig(config):
     ##############################################################################
     # Library Logic
     ##############################################################################
-    libraryLogicDataPath = os.path.join(globalParameters["WorkingPath"], \
-      globalParameters["LibraryLogicPath"])
+    libraryLogicDataPath = os.path.join(
+        globalParameters["WorkingPath"], globalParameters["LibraryLogicPath"]
+    )
     if "LibraryLogic" in config:
         if os.path.exists(libraryLogicDataPath):
             libraryLogicFiles = os.listdir(libraryLogicDataPath)
@@ -107,23 +118,54 @@ def addCommonArguments(argParser):
         value = eval(value)
         return (key, value)
 
-    argParser.add_argument("-d", "--device", dest="device", type=int, \
-        help="override which device to benchmark")
-    argParser.add_argument("-p", "--platform", dest="platform", type=int, \
-        help="override which OpenCL platform to benchmark")
-    argParser.add_argument("--runtime-language", dest="RuntimeLanguage", \
-        choices=["HIP"], help="override which runtime language to use")
-    argParser.add_argument("--code-object-version", dest="CodeObjectVersion", \
-        choices=["default", "V4", "V5"], help="HSA code-object version")
+    argParser.add_argument(
+        "-d",
+        "--device",
+        dest="device",
+        type=int,
+        help="override which device to benchmark",
+    )
+    argParser.add_argument(
+        "-p",
+        "--platform",
+        dest="platform",
+        type=int,
+        help="override which OpenCL platform to benchmark",
+    )
+    argParser.add_argument(
+        "--runtime-language",
+        dest="RuntimeLanguage",
+        choices=["HIP"],
+        help="override which runtime language to use",
+    )
+    argParser.add_argument(
+        "--code-object-version",
+        dest="CodeObjectVersion",
+        choices=["default", "V4", "V5"],
+        help="HSA code-object version",
+    )
     argParser.add_argument("--arch", dest="arch", help="override gfx arch version")
-    argParser.add_argument("-v", "--verbose", action="store_true", \
-        help="set PrintLevel=3")
-    argParser.add_argument("--debug", dest="debug", action="store_true", \
-        help="set PrintLevel=3 and CMakeBuildType=Debug")
-    argParser.add_argument("--short-names", dest="shortNames", action="store_true", \
-        help="use serial kernel and solution names")
-    argParser.add_argument("--no-merge-files", dest="noMergeFiles", action="store_true", \
-        help="kernels and solutions written to individual files")
+    argParser.add_argument(
+        "-v", "--verbose", action="store_true", help="set PrintLevel=3"
+    )
+    argParser.add_argument(
+        "--debug",
+        dest="debug",
+        action="store_true",
+        help="set PrintLevel=3 and CMakeBuildType=Debug",
+    )
+    argParser.add_argument(
+        "--short-names",
+        dest="shortNames",
+        action="store_true",
+        help="use serial kernel and solution names",
+    )
+    argParser.add_argument(
+        "--no-merge-files",
+        dest="noMergeFiles",
+        action="store_true",
+        help="kernels and solutions written to individual files",
+    )
     argParser.add_argument(
         "--cxx-compiler",
         dest="CxxCompiler",
@@ -132,7 +174,7 @@ def addCommonArguments(argParser):
         help="C++ compiler used when generating binaries."
         "On Linux, amdclang++ (default) or hipcc. On Windows clang++ (default) or hipcc. "
         "On Windows, include the file extension, or extensions will be searched according to the PATHEXT environment variable. "
-        "Pass a fully-qualified path to override environment inspection when searching for the compiler."
+        "Pass a fully-qualified path to override environment inspection when searching for the compiler.",
     )
     argParser.add_argument(
         "--c-compiler",
@@ -152,15 +194,29 @@ def addCommonArguments(argParser):
         default=ToolchainDefaults.OFFLOAD_BUNDLER,
         type=str,
     )
-    argParser.add_argument("--library-format", dest="LibraryFormat", choices=["yaml", "msgpack"], \
-        action="store", help="select which library format to use")
+    argParser.add_argument(
+        "--library-format",
+        dest="LibraryFormat",
+        choices=["yaml", "msgpack"],
+        action="store",
+        help="select which library format to use",
+    )
     argParser.add_argument("--client-lock", default=None)
-    argParser.add_argument("--prebuilt-client",
-        default=os.path.abspath(os.path.join('build', 'client', 'tensile-client')),
-        help="Specify the full path to a pre-built tensile-client executable")
-    argParser.add_argument("--asm-cache", dest="AsmCacheFile", action="store", type=str, \
-        help="Path to ASM cache YAML file. If it does not exist, generate the cache. If it does exist, use the cache file")
-    argParser.add_argument("--global-parameters", nargs="+", type=splitExtraParameters, default=[])
+    argParser.add_argument(
+        "--prebuilt-client",
+        default=os.path.abspath(os.path.join("build", "client", "tensile-client")),
+        help="Specify the full path to a pre-built tensile-client executable",
+    )
+    argParser.add_argument(
+        "--asm-cache",
+        dest="AsmCacheFile",
+        action="store",
+        type=str,
+        help="Path to ASM cache YAML file. If it does not exist, generate the cache. If it does exist, use the cache file",
+    )
+    argParser.add_argument(
+        "--global-parameters", nargs="+", type=splitExtraParameters, default=[]
+    )
 
 
 def argUpdatedGlobalParameters(args):
@@ -196,7 +252,7 @@ def argUpdatedGlobalParameters(args):
     if args.noMergeFiles:
         rv["MergeFiles"] = False
     if args.CxxCompiler:
-        rv['CxxCompiler'] = args.CxxCompiler
+        rv["CxxCompiler"] = args.CxxCompiler
     tPrint(1, "")
     if args.client_lock:
         rv["ClientExecutionLockPath"] = args.client_lock
@@ -247,11 +303,15 @@ def Tensile(userArgs):
     useCache = not args.NoCache
 
     if altFormat and len(configPaths) > 2:
-        printExit("Only 1 or 2 config_files are accepted for the alternate config format: "
-                  "the alternate config file and an optional size list")
+        printExit(
+            "Only 1 or 2 config_files are accepted for the alternate config format: "
+            "the alternate config file and an optional size list"
+        )
     elif not altFormat and len(configPaths) != 1:
-        printExit("Only 1 config_file is accepted for the default config format. "
-                  "Did you mean to add '--alternate-formate'?")
+        printExit(
+            "Only 1 config_file is accepted for the default config format. "
+            "Did you mean to add '--alternate-formate'?"
+        )
 
     # 2nd half of splash
     if len(configPaths) == 1:
@@ -268,9 +328,9 @@ def Tensile(userArgs):
 
     # CxxCompiler and LibraryFormat needs to be updated before assignGlobalParameters.
     if args.CxxCompiler:
-        globalParameters['CxxCompiler'] = args.CxxCompiler
+        globalParameters["CxxCompiler"] = args.CxxCompiler
     if args.LibraryFormat:
-        globalParameters['LibraryFormat'] = args.LibraryFormat
+        globalParameters["LibraryFormat"] = args.LibraryFormat
 
     # default config format
     if not altFormat:
@@ -292,9 +352,7 @@ def Tensile(userArgs):
             "BenchmarkCommonParameters": base.get("BenchmarkCommonParameters"),
             "ForkParameters": base.get("ForkParameters"),
             "GroupForkParameters": base.get("GroupForkParameters"),
-            "BenchmarkFinalParameters": [{
-                "ProblemSizes": sizes
-            }]
+            "BenchmarkFinalParameters": [{"ProblemSizes": sizes}],
         }
         config["BenchmarkProblems"] = [[base["ProblemType"], solParams]]
 
@@ -309,14 +367,14 @@ def Tensile(userArgs):
         assembler,
         offloadBundler,
         hipconfig,
-        deviceEnumerator
+        deviceEnumerator,
     ) = validateToolchain(
         args.CxxCompiler,
         args.CCompiler,
         args.Assembler,
         args.OffloadBundler,
         ToolchainDefaults.HIP_CONFIG,
-        ToolchainDefaults.DEVICE_ENUMERATOR
+        ToolchainDefaults.DEVICE_ENUMERATOR,
     )
     params = config.get("GlobalParameters", {})
     params["CxxCompiler"] = cxxCompiler
@@ -348,6 +406,7 @@ def Tensile(userArgs):
                     shutil.rmtree(os.path.join(root, d))
                     break
 
+
 def TensileConfigPath(*args):
     return os.path.join(os.path.dirname(os.path.realpath(__file__)), "Configs", *args)
 
@@ -360,6 +419,7 @@ def TensileTestPath(*args):
 # Entry points
 # installed "tensile" command
 ################################################################################
+
 
 def main():
     Tensile(sys.argv[1:])

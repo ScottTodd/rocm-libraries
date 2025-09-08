@@ -26,8 +26,8 @@
 #include "../config.hpp"
 #include "../detail/various.hpp"
 
-#include "../intrinsics.hpp"
 #include "../functional.hpp"
+#include "../intrinsics.hpp"
 
 #include "detail/block_histogram_atomic.hpp"
 #include "detail/block_histogram_sort.hpp"
@@ -70,14 +70,25 @@ struct select_block_histogram_impl;
 template<>
 struct select_block_histogram_impl<block_histogram_algorithm::using_atomic>
 {
-    template<class T, unsigned int BlockSizeX, unsigned int BlockSizeY, unsigned int BlockSizeZ, unsigned int ItemsPerThread, unsigned int Bins>
-    using type = block_histogram_atomic<T, BlockSizeX, BlockSizeY, BlockSizeZ, ItemsPerThread, Bins>;
+    template<class T,
+             unsigned int BlockSizeX,
+             unsigned int BlockSizeY,
+             unsigned int BlockSizeZ,
+             unsigned int ItemsPerThread,
+             unsigned int Bins>
+    using type
+        = block_histogram_atomic<T, BlockSizeX, BlockSizeY, BlockSizeZ, ItemsPerThread, Bins>;
 };
 
 template<>
 struct select_block_histogram_impl<block_histogram_algorithm::using_sort>
 {
-    template<class T, unsigned int BlockSizeX, unsigned int BlockSizeY, unsigned int BlockSizeZ, unsigned int ItemsPerThread, unsigned int Bins>
+    template<class T,
+             unsigned int BlockSizeX,
+             unsigned int BlockSizeY,
+             unsigned int BlockSizeZ,
+             unsigned int ItemsPerThread,
+             unsigned int Bins>
     using type = block_histogram_sort<T, BlockSizeX, BlockSizeY, BlockSizeZ, ItemsPerThread, Bins>;
 };
 
@@ -123,22 +134,23 @@ struct select_block_histogram_impl<block_histogram_algorithm::using_sort>
 /// }
 /// \endcode
 /// \endparblock
-template<
-    class T,
-    unsigned int BlockSizeX,
-    unsigned int ItemsPerThread,
-    unsigned int Bins,
-    block_histogram_algorithm Algorithm = block_histogram_algorithm::default_algorithm,
-    unsigned int BlockSizeY = 1,
-    unsigned int BlockSizeZ = 1
->
+template<class T,
+         unsigned int              BlockSizeX,
+         unsigned int              ItemsPerThread,
+         unsigned int              Bins,
+         block_histogram_algorithm Algorithm  = block_histogram_algorithm::default_algorithm,
+         unsigned int              BlockSizeY = 1,
+         unsigned int              BlockSizeZ = 1>
 class block_histogram
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-    : private detail::select_block_histogram_impl<Algorithm>::template type<T, BlockSizeX, BlockSizeY, BlockSizeZ, ItemsPerThread, Bins>
+    : private detail::select_block_histogram_impl<
+          Algorithm>::template type<T, BlockSizeX, BlockSizeY, BlockSizeZ, ItemsPerThread, Bins>
 #endif
 {
-    using base_type = typename detail::select_block_histogram_impl<Algorithm>::template type<T, BlockSizeX, BlockSizeY, BlockSizeZ, ItemsPerThread, Bins>;
+    using base_type = typename detail::select_block_histogram_impl<
+        Algorithm>::template type<T, BlockSizeX, BlockSizeY, BlockSizeZ, ItemsPerThread, Bins>;
     static constexpr unsigned int BlockSize = BlockSizeX * BlockSizeY * BlockSizeZ;
+
 public:
     /// \brief Struct used to allocate a temporary memory that is required for thread
     /// communication during operations provided by related parallel primitive.
@@ -221,9 +233,7 @@ public:
     /// \endparblock
     template<class Counter>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void composite(T (&input)[ItemsPerThread],
-                   Counter hist[Bins],
-                   storage_type& storage)
+    void composite(T (&input)[ItemsPerThread], Counter hist[Bins], storage_type& storage)
     {
         base_type::composite(input, hist, storage);
     }
@@ -289,9 +299,7 @@ public:
     /// \endparblock
     template<class Counter>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void histogram(T (&input)[ItemsPerThread],
-                   Counter hist[Bins],
-                   storage_type& storage)
+    void histogram(T (&input)[ItemsPerThread], Counter hist[Bins], storage_type& storage)
     {
         init_histogram(hist);
         ::rocprim::syncthreads();

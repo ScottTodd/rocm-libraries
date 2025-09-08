@@ -256,8 +256,7 @@ __host__ __device__ inline bool hipsparselt_iszero(T arg)
 }
 
 /*! \brief device matches pattern */
-inline
-bool gpu_arch_match(std::string_view gpu_arch, std::string_view pattern)
+inline bool gpu_arch_match(std::string_view gpu_arch, std::string_view pattern)
 {
     if(!pattern.length())
     {

@@ -33,57 +33,58 @@ class bounds_checking_iterator
 public:
     // Iterator traits
     using difference_type = std::ptrdiff_t;
-    using value_type = void;
-    using pointer = void;
-    using reference = T&;
+    using value_type      = void;
+    using pointer         = void;
+    using reference       = T&;
 
     using iterator_category = std::random_access_iterator_tag;
 
-    ROCPRIM_HOST_DEVICE inline
-    bounds_checking_iterator(T * ptr, T * start_ptr, bool * out_of_bounds_flag, size_t size)
+    ROCPRIM_HOST_DEVICE
+    inline bounds_checking_iterator(T* ptr, T* start_ptr, bool* out_of_bounds_flag, size_t size)
         : ptr_(ptr), start_ptr_(start_ptr), out_of_bounds_flag_(out_of_bounds_flag), size_(size)
-    { }
+    {}
 
-    ROCPRIM_HOST_DEVICE inline
-    bounds_checking_iterator(T * ptr, bool * out_of_bounds_flag, size_t size)
+    ROCPRIM_HOST_DEVICE
+    inline bounds_checking_iterator(T* ptr, bool* out_of_bounds_flag, size_t size)
         : bounds_checking_iterator(ptr, ptr, out_of_bounds_flag, size)
-    { }
+    {}
 
-    ROCPRIM_HOST_DEVICE inline
-    ~bounds_checking_iterator() = default;
+    ROCPRIM_HOST_DEVICE
+    inline ~bounds_checking_iterator()
+        = default;
 
-    ROCPRIM_HOST_DEVICE inline
-    bounds_checking_iterator& operator++()
+    ROCPRIM_HOST_DEVICE
+    inline bounds_checking_iterator& operator++()
     {
         ptr_++;
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    bounds_checking_iterator operator++(int)
+    ROCPRIM_HOST_DEVICE
+    inline bounds_checking_iterator operator++(int)
     {
         bounds_checking_iterator old = *this;
         ptr_++;
         return old;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    bounds_checking_iterator& operator--()
+    ROCPRIM_HOST_DEVICE
+    inline bounds_checking_iterator& operator--()
     {
         ptr_--;
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    bounds_checking_iterator operator--(int)
+    ROCPRIM_HOST_DEVICE
+    inline bounds_checking_iterator operator--(int)
     {
         bounds_checking_iterator old = *this;
         ptr_--;
         return old;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    reference operator*() const
+    ROCPRIM_HOST_DEVICE
+    inline reference operator*() const
     {
         if((ptr_ < start_ptr_) || (ptr_ >= start_ptr_ + size_))
         {
@@ -92,8 +93,8 @@ public:
         return *ptr_;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    reference operator[](const difference_type& n) const
+    ROCPRIM_HOST_DEVICE
+    inline reference operator[](const difference_type& n) const
     {
         if(((ptr_ + n) < start_ptr_) || ((ptr_ + n) >= start_ptr_ + size_))
         {
@@ -102,56 +103,56 @@ public:
         return *(ptr_ + n);
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    bounds_checking_iterator operator+(const difference_type& distance) const
+    ROCPRIM_HOST_DEVICE
+    inline bounds_checking_iterator operator+(const difference_type& distance) const
     {
         auto i = ptr_ + distance;
         return bounds_checking_iterator(i, start_ptr_, out_of_bounds_flag_, size_);
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    bounds_checking_iterator& operator+=(const difference_type& distance)
+    ROCPRIM_HOST_DEVICE
+    inline bounds_checking_iterator& operator+=(const difference_type& distance)
     {
         ptr_ += distance;
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    bounds_checking_iterator operator-(const difference_type& distance) const
+    ROCPRIM_HOST_DEVICE
+    inline bounds_checking_iterator operator-(const difference_type& distance) const
     {
         auto i = ptr_ - distance;
         return bounds_checking_iterator(i, start_ptr_, out_of_bounds_flag_, size_);
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    bounds_checking_iterator& operator-=(const difference_type& distance)
+    ROCPRIM_HOST_DEVICE
+    inline bounds_checking_iterator& operator-=(const difference_type& distance)
     {
         ptr_ -= distance;
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    difference_type operator-(bounds_checking_iterator other) const
+    ROCPRIM_HOST_DEVICE
+    inline difference_type operator-(bounds_checking_iterator other) const
     {
         return ptr_ - other.ptr_;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    bool operator==(bounds_checking_iterator other) const
+    ROCPRIM_HOST_DEVICE
+    inline bool operator==(bounds_checking_iterator other) const
     {
         return ptr_ == other.ptr_;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    bool operator!=(bounds_checking_iterator other) const
+    ROCPRIM_HOST_DEVICE
+    inline bool operator!=(bounds_checking_iterator other) const
     {
         return ptr_ != other.ptr_;
     }
 
 private:
-    T * ptr_;
-    T * start_ptr_;
-    bool * out_of_bounds_flag_;
+    T*     ptr_;
+    T*     start_ptr_;
+    bool*  out_of_bounds_flag_;
     size_t size_;
 };
 
@@ -176,15 +177,15 @@ public:
         return value;
     }
 
-    bool * device_pointer() const
+    bool* device_pointer() const
     {
         return device_pointer_;
     }
 
 private:
-    bool * device_pointer_;
+    bool* device_pointer_;
 };
 
-} // end test_utils namespace
+} // namespace test_utils
 
 #endif // TEST_BOUNDS_CHECKING_ITERATOR_HPP_

@@ -37,17 +37,19 @@
 // - hipMallocAsync
 
 // Simple test kernel that increments a value using a single thread.
-__global__ __launch_bounds__(ROCPRIM_DEFAULT_MAX_BLOCK_SIZE) void increment(int* data)
+__global__ __launch_bounds__(ROCPRIM_DEFAULT_MAX_BLOCK_SIZE)
+void increment(int* data)
 {
     const int gid = blockIdx.x * blockDim.x + threadIdx.x;
-    if (!gid)
+    if(!gid)
         data[gid]++;
 }
 
 // Another simple kernel that can be used to test atomics inside a graph.
-__global__ __launch_bounds__(ROCPRIM_DEFAULT_MAX_BLOCK_SIZE) void atomicIncrement(int* data)
+__global__ __launch_bounds__(ROCPRIM_DEFAULT_MAX_BLOCK_SIZE)
+void atomicIncrement(int* data)
 {
-       atomicAdd(data, 1);
+    atomicAdd(data, 1);
 }
 
 void testStreamCapture()
@@ -59,7 +61,7 @@ void testStreamCapture()
     // Allocate a counter variable on the device and set it to 0.
     // We will use this to record the number of times the graph is launched.
     int* d_data = nullptr;
-    int h_data = 0;
+    int  h_data = 0;
 
     // Create a new graph
     hipGraph_t graph;
@@ -89,7 +91,7 @@ void testStreamCapture()
 
     // Launch it
     const int num_launches = 3;
-    for (int i = 0; i < num_launches; i++)
+    for(int i = 0; i < num_launches; i++)
     {
         HIP_CHECK(hipGraphLaunch(instance, stream));
     }
@@ -114,7 +116,7 @@ void testManualConstruction()
     // Allocate a counter variable on the device and set it to 0.
     // We will use this to record the number of times the graph is launched.
     int* d_data = nullptr;
-    int h_data = 0;
+    int  h_data = 0;
     HIP_CHECK(hipMallocAsync(&d_data, sizeof(int), stream));
 
     // Create a new graph
@@ -123,25 +125,40 @@ void testManualConstruction()
 
     // Transfer the counter value from host to device using a graph memcpy node
     hipGraphNode_t hostToDevMemcpyNode;
-    HIP_CHECK(hipGraphAddMemcpyNode1D(&hostToDevMemcpyNode, graph, nullptr, 0, d_data, &h_data, sizeof(int), hipMemcpyHostToDevice));
+    HIP_CHECK(hipGraphAddMemcpyNode1D(&hostToDevMemcpyNode,
+                                      graph,
+                                      nullptr,
+                                      0,
+                                      d_data,
+                                      &h_data,
+                                      sizeof(int),
+                                      hipMemcpyHostToDevice));
 
     // Launch the kernel
-    hipGraphNode_t kernelNode;
-    void* kernelArgs[1] = {(void*) &d_data};
+    hipGraphNode_t      kernelNode;
+    void*               kernelArgs[1] = {(void*)&d_data};
     hipKernelNodeParams kernelNodeParams{};
-    kernelNodeParams.func = (void*) increment;
-    kernelNodeParams.gridDim = dim3(1);
-    kernelNodeParams.blockDim = dim3(1);
+    kernelNodeParams.func           = (void*)increment;
+    kernelNodeParams.gridDim        = dim3(1);
+    kernelNodeParams.blockDim       = dim3(1);
     kernelNodeParams.sharedMemBytes = 0;
-    kernelNodeParams.kernelParams = (void**) (kernelArgs);
-    kernelNodeParams.extra = nullptr;
+    kernelNodeParams.kernelParams   = (void**)(kernelArgs);
+    kernelNodeParams.extra          = nullptr;
 
     // Add the kernel node to the graph, listing the memcpyNode as a dependency
-    HIP_CHECK(hipGraphAddKernelNode(&kernelNode, graph, &hostToDevMemcpyNode, 1, &kernelNodeParams));
+    HIP_CHECK(
+        hipGraphAddKernelNode(&kernelNode, graph, &hostToDevMemcpyNode, 1, &kernelNodeParams));
 
     // Transfer result back to the device
     hipGraphNode_t devToHostMemcpyNode;
-    HIP_CHECK(hipGraphAddMemcpyNode1D(&devToHostMemcpyNode, graph, &kernelNode, 1, &h_data, d_data, sizeof(int), hipMemcpyDeviceToHost));
+    HIP_CHECK(hipGraphAddMemcpyNode1D(&devToHostMemcpyNode,
+                                      graph,
+                                      &kernelNode,
+                                      1,
+                                      &h_data,
+                                      d_data,
+                                      sizeof(int),
+                                      hipMemcpyDeviceToHost));
 
     // Instantiate the graph
     hipGraphExec_t instance;
@@ -149,7 +166,7 @@ void testManualConstruction()
 
     // Launch it
     const int num_launches = 3;
-    for (int i = 0; i < num_launches; i++)
+    for(int i = 0; i < num_launches; i++)
     {
         HIP_CHECK(hipGraphLaunch(instance, stream));
     }
@@ -173,10 +190,10 @@ void testStreamCaptureWithAtomics()
 
     // Allocate a counter variable on the device.
     // We will have each thread atomically increment it.
-    int* d_data = nullptr;
-    int h_data = 0;
-       const int num_blocks = 2;
-       const int num_threads = 33;
+    int*      d_data      = nullptr;
+    int       h_data      = 0;
+    const int num_blocks  = 2;
+    const int num_threads = 33;
 
     // Create a new graph
     hipGraph_t graph;
@@ -206,7 +223,7 @@ void testStreamCaptureWithAtomics()
 
     // Launch it
     const int num_launches = 3;
-    for (int i = 0; i < num_launches; i++)
+    for(int i = 0; i < num_launches; i++)
     {
         HIP_CHECK(hipGraphLaunch(instance, stream));
     }

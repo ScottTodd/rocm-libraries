@@ -68,8 +68,10 @@ struct histogram
 
         using bhistogram_t
             = rocprim::block_histogram<T, BlockSize, ItemsPerThread, BinSize, algorithm>;
-        __shared__ T histogram[BinSize];
-        __shared__ typename bhistogram_t::storage_type storage;
+        __shared__
+        T                                   histogram[BinSize];
+        __shared__
+        typename bhistogram_t::storage_type storage;
 
         ROCPRIM_NO_UNROLL
         for(unsigned int trial = 0; trial < Trials; ++trial)
@@ -111,7 +113,7 @@ void run_benchmark(benchmark_utils::state&& state)
     const auto     size     = items_per_block * ((N + items_per_block - 1) / items_per_block);
     const auto     bin_size = BinSize * ((N + items_per_block - 1) / items_per_block);
     // Allocate and fill memory
-    std::vector<T> input(size, 0.0f);
+    std::vector<T>        input(size, 0.0f);
     common::device_ptr<T> d_input(input);
     common::device_ptr<T> d_output(bin_size);
     HIP_CHECK(hipDeviceSynchronize());

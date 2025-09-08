@@ -131,7 +131,9 @@ struct linear_partition
     ::rocprim::tuple<Ts...> sub_partitions;
 
     /// \brief Constructor.
-    ROCPRIM_HOST_DEVICE linear_partition(Ts... sub_partitions) : sub_partitions{sub_partitions...}
+    ROCPRIM_HOST_DEVICE
+    linear_partition(Ts... sub_partitions)
+        : sub_partitions{sub_partitions...}
     {}
 
     /// Compute the required layout for this type and return it.
@@ -203,7 +205,9 @@ struct union_partition
     ::rocprim::tuple<Ts...> sub_partitions;
 
     /// \brief Constructor.
-    ROCPRIM_HOST_DEVICE union_partition(Ts... sub_partitions) : sub_partitions{sub_partitions...}
+    ROCPRIM_HOST_DEVICE
+    union_partition(Ts... sub_partitions)
+        : sub_partitions{sub_partitions...}
     {}
 
     /// Compute the required layout for this type and return it.

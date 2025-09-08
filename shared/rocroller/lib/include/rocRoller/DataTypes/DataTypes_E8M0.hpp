@@ -100,15 +100,15 @@ namespace std
 {
 
     template <typename T>
-    requires(std::is_convertible_v<T, uint8_t>&& std::is_integral_v<T>) inline bool
-        operator==(rocRoller::E8M0 const& a, T const& b)
+        requires(std::is_convertible_v<T, uint8_t> && std::is_integral_v<T>)
+    inline bool operator==(rocRoller::E8M0 const& a, T const& b)
     {
         return a.scale == static_cast<uint8_t>(b);
     }
 
     template <typename T>
-    requires(std::is_convertible_v<T, uint8_t>&& std::is_integral_v<T>) inline bool
-        operator!=(rocRoller::E8M0 const& a, T const& b)
+        requires(std::is_convertible_v<T, uint8_t> && std::is_integral_v<T>)
+    inline bool operator!=(rocRoller::E8M0 const& a, T const& b)
     {
         return a.scale != static_cast<uint8_t>(b);
     }

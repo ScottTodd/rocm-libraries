@@ -35,23 +35,34 @@
 #include <algorithm>
 
 template<typename KeyType>
-void generate_needles(const std::vector<KeyType>& input, std::vector<KeyType>& output, const size_t search_needle_size, const std::pair<KeyType, KeyType>& bounds, const seed_type& seed_value)
+void generate_needles(const std::vector<KeyType>&        input,
+                      std::vector<KeyType>&              output,
+                      const size_t                       search_needle_size,
+                      const std::pair<KeyType, KeyType>& bounds,
+                      const seed_type&                   seed_value)
 {
     // Pick 50% of the needles from the input vector
-    std::vector<KeyType> indices = test_utils::get_random_data<KeyType>(search_needle_size / 2, 0, input.size() - 1, seed_value);
+    std::vector<KeyType> indices = test_utils::get_random_data<KeyType>(search_needle_size / 2,
+                                                                        0,
+                                                                        input.size() - 1,
+                                                                        seed_value);
 
     // Do selection on the in-bounds indices and write the results to the output vector
-    std::transform(indices.begin(), indices.end(), output.begin(), [&input](const KeyType& index)
-    {
-        return input[index];
-    });
+    std::transform(indices.begin(),
+                   indices.end(),
+                   output.begin(),
+                   [&input](const KeyType& index) { return input[index]; });
 
     // Generate the other 50% from outside the input vector
-    const KeyType max_val = std::get<1>(bounds);
-    std::vector<KeyType> out_of_bounds_vals = test_utils::get_random_data<KeyType>(search_needle_size - search_needle_size / 2, max_val, max_val * 2, seed_value);
+    const KeyType        max_val = std::get<1>(bounds);
+    std::vector<KeyType> out_of_bounds_vals
+        = test_utils::get_random_data<KeyType>(search_needle_size - search_needle_size / 2,
+                                               max_val,
+                                               max_val * 2,
+                                               seed_value);
 
     // Append the out-of-bounds values
-    for (size_t i = 0; i < out_of_bounds_vals.size(); i++)
+    for(size_t i = 0; i < out_of_bounds_vals.size(); i++)
         output[indices.size() + i] = out_of_bounds_vals[i];
 
     // Mix up the in-bounds and out-of-bounds values to make the test a bit more robust
@@ -61,14 +72,20 @@ void generate_needles(const std::vector<KeyType>& input, std::vector<KeyType>& o
 }
 
 template<typename KeyType, typename BinaryFunction>
-void computeExpectedSortAndSearchResult(std::vector<KeyType>& sort_input, const std::vector<KeyType>& search_needles, std::vector<KeyType>& expected_search_output, BinaryFunction compare_op)
+void computeExpectedSortAndSearchResult(std::vector<KeyType>&       sort_input,
+                                        const std::vector<KeyType>& search_needles,
+                                        std::vector<KeyType>&       expected_search_output,
+                                        BinaryFunction              compare_op)
 {
     // Sort
     std::stable_sort(sort_input.begin(), sort_input.end(), compare_op);
-    
+
     // Search
-    for (size_t i = 0; i < search_needles.size(); i++)
-        expected_search_output[i] = std::binary_search(sort_input.begin(), sort_input.end(), search_needles[i], compare_op);
+    for(size_t i = 0; i < search_needles.size(); i++)
+        expected_search_output[i] = std::binary_search(sort_input.begin(),
+                                                       sort_input.end(),
+                                                       search_needles[i],
+                                                       compare_op);
 }
 
 // This test creates a graph that performs a device-wide merge_sort followed by a device-wide binary_search.
@@ -76,13 +93,14 @@ void computeExpectedSortAndSearchResult(std::vector<KeyType>& sort_input, const 
 TEST(TestHipGraphAlgs, SortAndSearch)
 {
     // Test case params
-    using key_type = int;
+    using key_type         = int;
     using compare_fcn_type = typename ::rocprim::less<key_type>;
-    compare_fcn_type compare_op;
-    const size_t sort_data_size = 4096;
-    const size_t search_needle_size = 100;
-    const size_t num_trials = 5;
-    std::pair<key_type, key_type> bounds = std::make_pair(-10000, 10000); // generated data will fall in this range
+    compare_fcn_type              compare_op;
+    const size_t                  sort_data_size     = 4096;
+    const size_t                  search_needle_size = 100;
+    const size_t                  num_trials         = 5;
+    std::pair<key_type, key_type> bounds
+        = std::make_pair(-10000, 10000); // generated data will fall in this range
     const bool debug_synchronous = false;
 
     // Set the device
@@ -177,21 +195,27 @@ TEST(TestHipGraphAlgs, SortAndSearch)
     std::vector<key_type> device_output(search_needle_size);
 
     // We'll launch the graph multiple times with different data.
-    for (size_t i = 0; i < num_trials; i++)
+    for(size_t i = 0; i < num_trials; i++)
     {
         // Generate the test data
-        sort_input = test_utils::get_random_data<key_type>(sort_data_size, std::get<0>(bounds), std::get<1>(bounds), seed_value);
+        sort_input = test_utils::get_random_data<key_type>(sort_data_size,
+                                                           std::get<0>(bounds),
+                                                           std::get<1>(bounds),
+                                                           seed_value);
         generate_needles(sort_input, search_needles, search_needle_size, bounds, seed_value);
 
         // Compute the expected result on the host
-        computeExpectedSortAndSearchResult<key_type, compare_fcn_type>(sort_input, search_needles, expected_search_output, compare_op);
-        
+        computeExpectedSortAndSearchResult<key_type, compare_fcn_type>(sort_input,
+                                                                       search_needles,
+                                                                       expected_search_output,
+                                                                       compare_op);
+
         // Copy input data to the device
         d_sort_input.store(sort_input);
         d_search_needles.store(search_needles);
 
         // Launch the graph
-        gHelper.launchGraph(stream, true); 
+        gHelper.launchGraph(stream, true);
 
         // Copy output back to host
         device_output = d_search_output.load();
@@ -205,5 +229,3 @@ TEST(TestHipGraphAlgs, SortAndSearch)
     gHelper.cleanupGraphHelper();
     HIP_CHECK(hipStreamDestroy(stream));
 }
-                                  
-                                  

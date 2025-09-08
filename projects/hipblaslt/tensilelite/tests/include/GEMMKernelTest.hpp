@@ -56,8 +56,8 @@ struct GEMMKernelTest
     template <typename T>
     using BufferObj = typename DeviceBackend::template BufferObj<T>;
 
-    using ContractionProblemGemm  = ::ContractionProblemGemm;
-    using ContractionSolution = typename ContractionProblemGemm::Solution;
+    using ContractionProblemGemm = ::ContractionProblemGemm;
+    using ContractionSolution    = typename ContractionProblemGemm::Solution;
 
     enum class MemoryPageAlignment : int
     {
@@ -112,12 +112,12 @@ struct TypedGEMMKernelTest : public GEMMKernelTest<DeviceBackend>
     // Extract base component configuration
     using Base = GEMMKernelTest<DeviceBackend>;
     template <typename T>
-    using BufferObj           = typename Base::template BufferObj<T>;
-    using ContractionProblemGemm  = typename Base::ContractionProblemGemm;
-    using ContractionSolution = typename Base::ContractionSolution;
-    using MemoryPageAlignment = typename Base::MemoryPageAlignment;
-    using SolutionAdapter     = typename Base::SolutionAdapter;
-    using SolutionLibrary     = typename Base::SolutionLibrary;
+    using BufferObj              = typename Base::template BufferObj<T>;
+    using ContractionProblemGemm = typename Base::ContractionProblemGemm;
+    using ContractionSolution    = typename Base::ContractionSolution;
+    using MemoryPageAlignment    = typename Base::MemoryPageAlignment;
+    using SolutionAdapter        = typename Base::SolutionAdapter;
+    using SolutionLibrary        = typename Base::SolutionLibrary;
 
     // Extract testing params
     using SolutionParams = typename Base::SolutionParams;
@@ -153,7 +153,7 @@ struct TypedGEMMKernelTest : public GEMMKernelTest<DeviceBackend>
     std::shared_ptr<Hardware> hardware;
 
     // Testing components
-    ContractionProblemGemm                   problem;
+    ContractionProblemGemm               problem;
     std::shared_ptr<SolutionLibrary>     library;
     std::shared_ptr<SolutionAdapter>     adapter;
     std::shared_ptr<ContractionSolution> solution;

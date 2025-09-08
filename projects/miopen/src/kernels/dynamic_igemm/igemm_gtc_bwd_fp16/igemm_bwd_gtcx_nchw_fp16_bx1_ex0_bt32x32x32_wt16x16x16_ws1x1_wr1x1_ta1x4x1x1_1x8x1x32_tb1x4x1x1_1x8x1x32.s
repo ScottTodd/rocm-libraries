@@ -86,10 +86,10 @@
 ; precision                  : fp16
 ; nxb                        : 1
 ; nxe                        : 0
-; 
+;
 ; block_size                 : 256
 ; lds_total                  : 8192
-; 
+;
 .set k_p_in, 0
 .set k_p_wei, 8
 .set k_p_out, 16
@@ -358,8 +358,8 @@ igemm_bwd_gtcx_nchw_fp16_bx1_ex0_bt32x32x32_wt16x16x16_ws1x1_wr1x1_ta1x4x1x1_1x8
 
     v_mov_b32 v[v_tmp+5], v0
     ; xdlops mapping, get source matrix gemm index
-    v_and_b32 v[v_gemm_in], 15, v[v_tmp+5]           ; block_n index 
-    v_and_b32 v[v_gemm_im], 15, v[v_tmp+5]           ; block_m index 
+    v_and_b32 v[v_gemm_in], 15, v[v_tmp+5]           ; block_n index
+    v_and_b32 v[v_gemm_im], 15, v[v_tmp+5]           ; block_m index
     v_lshrrev_b32 v[v_tmp+5], 4, v[v_tmp+5]
     v_and_b32 v[v_tmp + 0], 3, v[v_tmp+5]          ; block_k_per_wave index
     v_lshl_or_b32 v[v_gemm_in], v[v_tmp + 0], 5, v[v_gemm_in]
@@ -478,23 +478,23 @@ igemm_bwd_gtcx_nchw_fp16_bx1_ex0_bt32x32x32_wt16x16x16_ws1x1_wr1x1_ta1x4x1x1_1x8
     s_mul_i32 s[s_wei_stride_k_k1], s[s_move_slice_k_k1], s[s_c]  ; might be 0 or larger
     s_lshl_b32 s[s_out_stride_k_k1], s[s_out_stride_k_k1], 1
     s_lshl_b32 s[s_wei_stride_k_k1], s[s_wei_stride_k_k1], 1
-    
-    
+
+
     s_lshl_b32 s[s_in_stride_c], s[s_in_stride_c], 1
     s_mov_b32 s[s_knum], s[s_k]
 
     ; start MFMA loop, 16x16 wave tile with 1x1 repeat, 1x1 step
     s_waitcnt vmcnt(4)
     v_pack_b32_f16 v[v_gld_b+0+0], v[v_gld_b+0+0], v[v_gld_b+0+1]
-    ds_write_b64 v[v_sst_b_os], v[v_gld_b+0:v_gld_b+0+1] 
+    ds_write_b64 v[v_sst_b_os], v[v_gld_b+0:v_gld_b+0+1]
     v_pack_b32_f16 v[v_gld_b+0+1], v[v_gld_b+0+2], v[v_gld_b+0+3]
-    ds_write_b64 v[v_sst_b_os], v[v_gld_b+0:v_gld_b+0+1] 
+    ds_write_b64 v[v_sst_b_os], v[v_gld_b+0:v_gld_b+0+1]
 
     s_waitcnt vmcnt(0)
     v_pack_b32_f16 v[v_gld_a+0+0], v[v_gld_a+0+0], v[v_gld_a+0+1]
-    ds_write_b64 v[v_sst_a_os], v[v_gld_a+0:v_gld_a+0+1] 
+    ds_write_b64 v[v_sst_a_os], v[v_gld_a+0:v_gld_a+0+1]
     v_pack_b32_f16 v[v_gld_a+0+1], v[v_gld_a+0+2], v[v_gld_a+0+3]
-    ds_write_b64 v[v_sst_a_os], v[v_gld_a+0:v_gld_a+0+1] 
+    ds_write_b64 v[v_sst_a_os], v[v_gld_a+0:v_gld_a+0+1]
 
     .v_clear_acc_c a_c, 4
     ; make sure acc WAR harzard, at least 1 nop for src_c
@@ -505,13 +505,13 @@ igemm_bwd_gtcx_nchw_fp16_bx1_ex0_bt32x32x32_wt16x16x16_ws1x1_wr1x1_ta1x4x1x1_1x8
     ; move slice window by unroll-k along gemm-k
     v_add_u32 v[v_out_os], s[s_out_stride_k_k1], v[v_out_os]
     v_add_u32 v[v_wei_os], s[s_wei_stride_k_k1], v[v_wei_os]
-    
+
     s_waitcnt lgkmcnt(0)
     s_barrier
 L_igemm_bwd_gtcx_nchw_fp16_bx1_ex0_bt32x32x32_wt16x16x16_ws1x1_wr1x1_ta1x4x1x1_1x8x1x32_tb1x4x1x1_1x8x1x32_mfma_body:
     ; do fma accumulate with unroll 32
-    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os] 
-    ds_read_b64 v[v_b:v_b+1], v[v_sld_b_os] 
+    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os]
+    ds_read_b64 v[v_b:v_b+1], v[v_sld_b_os]
     ds_read_b64 v[v_a+2:v_a+2+1], v[v_sld_a_os] offset:1024
     ds_read_b64 v[v_b+2:v_b+2+1], v[v_sld_b_os] offset:1024
     ; load output
@@ -528,7 +528,7 @@ L_igemm_bwd_gtcx_nchw_fp16_bx1_ex0_bt32x32x32_wt16x16x16_ws1x1_wr1x1_ta1x4x1x1_1
     ; move slice window by unroll-k along gemm-k
     v_add_u32 v[v_out_os], s[s_out_stride_k_k1], v[v_out_os]
     v_add_u32 v[v_wei_os], s[s_wei_stride_k_k1], v[v_wei_os]
-    
+
     s_waitcnt lgkmcnt(0)
     s_barrier
     s_waitcnt vmcnt(4)
@@ -553,11 +553,11 @@ L_igemm_bwd_gtcx_nchw_fp16_bx1_ex0_bt32x32x32_wt16x16x16_ws1x1_wr1x1_ta1x4x1x1_1
 L_igemm_bwd_gtcx_nchw_fp16_bx1_ex0_bt32x32x32_wt16x16x16_ws1x1_wr1x1_ta1x4x1x1_1x8x1x32_tb1x4x1x1_1x8x1x32_mfma_end:
     s_waitcnt lgkmcnt(0)
     s_barrier
-    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os] 
-    ds_read_b64 v[v_b:v_b+1], v[v_sld_b_os] 
+    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os]
+    ds_read_b64 v[v_b:v_b+1], v[v_sld_b_os]
     ds_read_b64 v[v_a+2:v_a+2+1], v[v_sld_a_os] offset:1024
     ds_read_b64 v[v_b+2:v_b+2+1], v[v_sld_b_os] offset:1024
-    
+
     s_waitcnt lgkmcnt(2)
     v_mfma_f32_16x16x16f16 a[a_c+0:a_c+3], v[v_a+0:v_a+1], v[v_b+0:v_b+1], a[a_c+0:a_c+3]     ; repeat:0x0, step:0x0, num_a_c:4
     s_waitcnt lgkmcnt(0)
@@ -584,7 +584,7 @@ L_igemm_bwd_gtcx_nchw_fp16_bx1_ex0_bt32x32x32_wt16x16x16_ws1x1_wr1x1_ta1x4x1x1_1
     s_waitcnt lgkmcnt(0)
     s_barrier
     ;   load from lds
-    ds_read_b64 v[v_c:v_c+1], v[v_co_sld] 
+    ds_read_b64 v[v_c:v_c+1], v[v_co_sld]
     ;   store to global, m index start from 0, m0:0, m1:0
     s_mov_b32 s[s_tmp], 0   ; i_m:0(i_m0:0,i_m1:0)
     s_waitcnt lgkmcnt(0)

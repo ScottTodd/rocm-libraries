@@ -237,9 +237,9 @@ namespace rocRoller
         };
 
         template <typename T, typename IO, typename Context>
-        requires(std::constructible_from<KernelGraph::CoordinateGraph::Edge, T>&& T::HasValue
-                 == false) struct MappingTraits<T, IO, Context>
-            : public EmptyMappingTraits<T, IO, Context>
+            requires(std::constructible_from<KernelGraph::CoordinateGraph::Edge, T>
+                     && T::HasValue == false)
+        struct MappingTraits<T, IO, Context> : public EmptyMappingTraits<T, IO, Context>
         {
         };
 
@@ -269,10 +269,10 @@ namespace rocRoller
         };
 
         template <typename T, typename IO, typename Context>
-        requires(
-            CIsAnyOf<T,
-                     KernelGraph::CoordinateGraph::Index,
-                     KernelGraph::CoordinateGraph::Segment>) struct MappingTraits<T, IO, Context>
+            requires(CIsAnyOf<T,
+                              KernelGraph::CoordinateGraph::Index,
+                              KernelGraph::CoordinateGraph::Segment>)
+        struct MappingTraits<T, IO, Context>
         {
             using iot = IOTraits<IO>;
 
@@ -291,9 +291,10 @@ namespace rocRoller
         };
 
         template <typename T, typename IO, typename Context>
-        requires(std::constructible_from<KernelGraph::CoordinateGraph::Dimension, T>&&
-                     std::derived_from<T, KernelGraph::CoordinateGraph::SubDimension>&& T::HasValue
-                 == false) struct MappingTraits<T, IO, Context>
+            requires(std::constructible_from<KernelGraph::CoordinateGraph::Dimension, T>
+                     && std::derived_from<T, KernelGraph::CoordinateGraph::SubDimension>
+                     && T::HasValue == false)
+        struct MappingTraits<T, IO, Context>
         {
             using iot = IOTraits<IO>;
 
@@ -313,12 +314,11 @@ namespace rocRoller
         };
 
         template <typename T, typename IO, typename Context>
-        requires(
-            std::constructible_from<KernelGraph::CoordinateGraph::Dimension, T>&& std::derived_from<
-                T,
-                KernelGraph::CoordinateGraph::
-                    BaseDimension> && !std::derived_from<T, KernelGraph::CoordinateGraph::SubDimension> && T::HasValue == false) struct
-            MappingTraits<T, IO, Context>
+            requires(std::constructible_from<KernelGraph::CoordinateGraph::Dimension, T>
+                     && std::derived_from<T, KernelGraph::CoordinateGraph::BaseDimension>
+                     && !std::derived_from<T, KernelGraph::CoordinateGraph::SubDimension>
+                     && T::HasValue == false)
+        struct MappingTraits<T, IO, Context>
         {
             using iot = IOTraits<IO>;
 

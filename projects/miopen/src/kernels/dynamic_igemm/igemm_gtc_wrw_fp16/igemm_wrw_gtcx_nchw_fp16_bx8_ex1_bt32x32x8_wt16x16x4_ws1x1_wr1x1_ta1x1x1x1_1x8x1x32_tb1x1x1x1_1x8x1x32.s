@@ -189,10 +189,10 @@
 ; precision                  : 'fp16'
 ; nxb                        : 8
 ; nxe                        : 1
-; 
+;
 ; block_size                 : 256
 ; lds_total                  : 2048
-; 
+;
 .set k_p_in, 0
 .set k_p_wei, 8
 .set k_p_out, 16
@@ -464,7 +464,7 @@ igemm_wrw_gtcx_nchw_fp16_bx8_ex1_bt32x32x8_wt16x16x4_ws1x1_wr1x1_ta1x1x1x1_1x8x1
 
     s_lshl_b32 s[s_in_stride_c], s[s_in_stride_c], 1
 
-    
+
     ; load input
     .v_clear_nc v_gld_b, 1
     v_cmpx_eq_u32 vcc, 1, v[v_in_flag]
@@ -502,7 +502,7 @@ igemm_wrw_gtcx_nchw_fp16_bx8_ex1_bt32x32x8_wt16x16x4_ws1x1_wr1x1_ta1x1x1x1_1x8x1
     v_and_b32 v[v_out_flag], v[v_out_flag], v[v_flag_k]
 
 
-    
+
     ; load output
     .v_clear_nc v_gld_a, 1
     v_cmpx_eq_u32 vcc, 1, v[v_out_flag]
@@ -511,8 +511,8 @@ igemm_wrw_gtcx_nchw_fp16_bx8_ex1_bt32x32x8_wt16x16x4_ws1x1_wr1x1_ta1x1x1x1_1x8x1
 
     v_mov_b32 v[v_tmp+5], v0
     ; xdlops mapping, get source matrix gemm index
-    v_and_b32 v[v_gemm_in], 3, v[v_tmp+5]           ; block_n index 
-    v_and_b32 v[v_gemm_im], 3, v[v_tmp+5]           ; block_m index 
+    v_and_b32 v[v_gemm_in], 3, v[v_tmp+5]           ; block_n index
+    v_and_b32 v[v_gemm_im], 3, v[v_tmp+5]           ; block_m index
     v_lshrrev_b32 v[v_tmp+5], 2, v[v_tmp+5]
     v_and_b32 v[v_tmp + 0], 3, v[v_tmp+5]          ; block_n_per_wave index
     v_lshl_or_b32 v[v_gemm_in], v[v_tmp + 0], 2, v[v_gemm_in]
@@ -646,10 +646,10 @@ igemm_wrw_gtcx_nchw_fp16_bx8_ex1_bt32x32x8_wt16x16x4_ws1x1_wr1x1_ta1x1x1x1_1x8x1
 
     ; start MFMA loop, 16x16 wave tile with 1x1 repeat, 1x1 step
     s_waitcnt vmcnt(1)
-    ds_write_b16 v[v_sst_b_os], v[v_gld_b+0] 
+    ds_write_b16 v[v_sst_b_os], v[v_gld_b+0]
 
     s_waitcnt vmcnt(0)
-    ds_write_b16 v[v_sst_a_os], v[v_gld_a+0] 
+    ds_write_b16 v[v_sst_a_os], v[v_gld_a+0]
 
     .v_clear_acc_c a_c, 4
     ; make sure acc WAR harzard, at least 1 nop for src_c
@@ -718,8 +718,8 @@ L_igemm_wrw_gtcx_nchw_fp16_bx8_ex1_bt32x32x8_wt16x16x4_ws1x1_wr1x1_ta1x1x1x1_1x8
     s_waitcnt lgkmcnt(0)
     s_barrier
 
-    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os] 
-    ds_read_b64 v[v_b:v_b+1], v[v_sld_b_os] 
+    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os]
+    ds_read_b64 v[v_b:v_b+1], v[v_sld_b_os]
     ds_read_b64 v[v_a+2:v_a+2+1], v[v_sld_a_os] offset:256
     ds_read_b64 v[v_b+2:v_b+2+1], v[v_sld_b_os] offset:256
     s_waitcnt lgkmcnt(2)
@@ -767,10 +767,10 @@ L_igemm_wrw_gtcx_nchw_fp16_bx8_ex1_bt32x32x8_wt16x16x4_ws1x1_wr1x1_ta1x1x1x1_1x8
     ; k iteration : 0
     s_waitcnt lgkmcnt(0)
     s_waitcnt vmcnt(1)
-    ds_write_b16 v[v_sst_b_os], v[v_gld_b+0] 
+    ds_write_b16 v[v_sst_b_os], v[v_gld_b+0]
     s_waitcnt vmcnt(0)
-    ds_write_b16 v[v_sst_a_os], v[v_gld_a+0] 
-    
+    ds_write_b16 v[v_sst_a_os], v[v_gld_a+0]
+
     v_xor_b32 v[v_sld_b_os], 1024, v[v_sld_b_os] ; switch double buffer b load
     v_xor_b32 v[v_sld_a_os], 1024, v[v_sld_a_os] ; switch double buffer a load
     s_sub_i32 s[s_kitr], s[s_kitr], 8
@@ -784,8 +784,8 @@ L_igemm_wrw_gtcx_nchw_fp16_bx8_ex1_bt32x32x8_wt16x16x4_ws1x1_wr1x1_ta1x1x1x1_1x8
 L_igemm_wrw_gtcx_nchw_fp16_bx8_ex1_bt32x32x8_wt16x16x4_ws1x1_wr1x1_ta1x1x1x1_1x8x1x32_tb1x1x1x1_1x8x1x32_mfma_end:
     s_waitcnt lgkmcnt(0)
     s_barrier
-    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os] 
-    ds_read_b64 v[v_b:v_b+1], v[v_sld_b_os] 
+    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os]
+    ds_read_b64 v[v_b:v_b+1], v[v_sld_b_os]
     ds_read_b64 v[v_a+2:v_a+2+1], v[v_sld_a_os] offset:256
     ds_read_b64 v[v_b+2:v_b+2+1], v[v_sld_b_os] offset:256
     s_waitcnt lgkmcnt(2)
@@ -814,7 +814,7 @@ L_igemm_wrw_gtcx_nchw_fp16_bx8_ex1_bt32x32x8_wt16x16x4_ws1x1_wr1x1_ta1x1x1x1_1x8
     s_waitcnt lgkmcnt(0)
     s_barrier
     ;   load from lds
-    ds_read_b64 v[v_c:v_c+1], v[v_co_sld] 
+    ds_read_b64 v[v_c:v_c+1], v[v_co_sld]
     v_cmpx_eq_u32 vcc, 1, v[v_wei_flag]
     ;   store to global, m index start from 0, m0:0, m1:0
     s_mov_b32 s[s_tmp], 0   ; i_m:0(i_m0:0,i_m1:0)

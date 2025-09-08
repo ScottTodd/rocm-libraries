@@ -23,8 +23,8 @@
 #ifndef HIPCUB_TEST_DETAIL_GET_HIPCUB_VERSION_HPP_
 #define HIPCUB_TEST_DETAIL_GET_HIPCUB_VERSION_HPP_
 
-#include <iostream>
 #include <cstdio>
+#include <iostream>
 
 // hipCUB API
 #include <hipcub/hipcub.hpp>

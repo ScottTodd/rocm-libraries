@@ -57,18 +57,20 @@ typedef struct
 #define HIP_DEVICE __device__
 
 // NANOO E4M3
-struct HIPBLASLT_EXPORT hipblaslt_f8_fnuz: public __hip_fp8_e4m3_fnuz
+struct HIPBLASLT_EXPORT hipblaslt_f8_fnuz : public __hip_fp8_e4m3_fnuz
 {
-    using __hip_fp8_e4m3_fnuz:: __hip_fp8_e4m3_fnuz;
+    using __hip_fp8_e4m3_fnuz::__hip_fp8_e4m3_fnuz;
 
 #if HIP_FP8_TYPE_FNUZ
     HIP_HOST_DEVICE hipblaslt_f8_fnuz(const _Float16 f)
 #else
     HIP_HOST hipblaslt_f8_fnuz(const _Float16 f)
 #endif
-    : __hip_fp8_e4m3_fnuz(reinterpret_cast<const __half &>(f)) {}
+        : __hip_fp8_e4m3_fnuz(reinterpret_cast<const __half&>(f))
+    {
+    }
 
-        // operator overloadiing -> upcast
+    // operator overloadiing -> upcast
 #if HIP_FP8_TYPE_FNUZ
     HIP_HOST_DEVICE operator _Float16() const
 #else
@@ -105,18 +107,20 @@ struct HIPBLASLT_EXPORT hipblaslt_f8_fnuz: public __hip_fp8_e4m3_fnuz
 };
 
 // OCPFP8 E4M3
-struct HIPBLASLT_EXPORT hipblaslt_f8: public __hip_fp8_e4m3
+struct HIPBLASLT_EXPORT hipblaslt_f8 : public __hip_fp8_e4m3
 {
-    using __hip_fp8_e4m3:: __hip_fp8_e4m3;
+    using __hip_fp8_e4m3::__hip_fp8_e4m3;
 
 #if HIP_FP8_TYPE_OCP
     HIP_HOST_DEVICE hipblaslt_f8(const _Float16 f)
 #else
     HIP_HOST hipblaslt_f8(const _Float16 f)
 #endif
-    : __hip_fp8_e4m3(reinterpret_cast<const __half &>(f)) {}
+        : __hip_fp8_e4m3(reinterpret_cast<const __half&>(f))
+    {
+    }
 
-        // operator overloadiing -> upcast
+    // operator overloadiing -> upcast
 #if HIP_FP8_TYPE_OCP
     HIP_HOST_DEVICE operator _Float16() const
 #else
@@ -157,19 +161,21 @@ struct HIPBLASLT_EXPORT hipblaslt_f8: public __hip_fp8_e4m3
 };
 
 // NANOO E5M2
-struct HIPBLASLT_EXPORT hipblaslt_bf8_fnuz: public __hip_fp8_e5m2_fnuz
+struct HIPBLASLT_EXPORT hipblaslt_bf8_fnuz : public __hip_fp8_e5m2_fnuz
 {
 
-    using __hip_fp8_e5m2_fnuz:: __hip_fp8_e5m2_fnuz;
+    using __hip_fp8_e5m2_fnuz::__hip_fp8_e5m2_fnuz;
 
 #if HIP_FP8_TYPE_FNUZ
     HIP_HOST_DEVICE hipblaslt_bf8_fnuz(const _Float16 f)
 #else
     HIP_HOST hipblaslt_bf8_fnuz(const _Float16 f)
 #endif
-    : __hip_fp8_e5m2_fnuz(reinterpret_cast<const __half &>(f)) {}
+        : __hip_fp8_e5m2_fnuz(reinterpret_cast<const __half&>(f))
+    {
+    }
 
-        // operator overloadiing -> upcast
+    // operator overloadiing -> upcast
 #if HIP_FP8_TYPE_OCP
     HIP_HOST_DEVICE operator _Float16() const
 #else
@@ -205,20 +211,21 @@ struct HIPBLASLT_EXPORT hipblaslt_bf8_fnuz: public __hip_fp8_e5m2_fnuz
     }
 };
 
-
 // OCPFP8 E5M2
-struct HIPBLASLT_EXPORT hipblaslt_bf8: public __hip_fp8_e5m2
+struct HIPBLASLT_EXPORT hipblaslt_bf8 : public __hip_fp8_e5m2
 {
-    using __hip_fp8_e5m2:: __hip_fp8_e5m2;
+    using __hip_fp8_e5m2::__hip_fp8_e5m2;
 
 #if HIP_FP8_TYPE_OCP
     HIP_HOST_DEVICE hipblaslt_bf8(const _Float16 f)
 #else
     HIP_HOST hipblaslt_bf8(const _Float16 f)
 #endif
-    : __hip_fp8_e5m2(reinterpret_cast<const __half &>(f)) {}
+        : __hip_fp8_e5m2(reinterpret_cast<const __half&>(f))
+    {
+    }
 
-        // operator overloadiing -> upcast
+    // operator overloadiing -> upcast
 #if HIP_FP8_TYPE_OCP
     HIP_HOST_DEVICE operator _Float16() const
 #else
@@ -242,8 +249,8 @@ struct HIPBLASLT_EXPORT hipblaslt_bf8: public __hip_fp8_e5m2
     // check for nan
     inline HIP_HOST_DEVICE bool is_nan() const
     {
-        return (__x == 0x7d) || (__x == 0x7e) || (__x == 0x7f) ||
-        (__x == 0xfd) || (__x == 0xfe) || (__x == 0xff);
+        return (__x == 0x7d) || (__x == 0x7e) || (__x == 0x7f) || (__x == 0xfd) || (__x == 0xfe)
+               || (__x == 0xff);
     }
 
     // check for inf
@@ -419,8 +426,7 @@ inline __host__ __device__ hipblaslt_bf8_fnuz& operator+=(hipblaslt_bf8_fnuz& a,
 {
     return a = hipblaslt_bf8_fnuz(float(a) + float(b));
 }
-inline __host__ __device__ hipblaslt_bf8& operator+=(hipblaslt_bf8& a,
-                                                     hipblaslt_bf8  b)
+inline __host__ __device__ hipblaslt_bf8& operator+=(hipblaslt_bf8& a, hipblaslt_bf8 b)
 {
     return a = hipblaslt_bf8(float(a) + float(b));
 }

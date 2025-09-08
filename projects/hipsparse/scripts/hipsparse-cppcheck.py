@@ -36,82 +36,109 @@ import subprocess
 #
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', '--ifilename',     required=False, default = 'compile_commands.json',
-                        help = '.json file format is required.')
-    parser.add_argument('-o', '--ofilename',     required=False, default = 'a.xml',
-                        help = 'output file name.')
-    parser.add_argument('-e', '--exclude',     required=False, default = '',
-                        help = 'Regular expression to Exclude files whom names match with')
-    parser.add_argument('-i', '--include',     required=False, default = '',
-                        help = 'Regular expression to Include files whom names match with')
-    parser.add_argument('-v', '--verbose',         required=False, default = False, action = 'store_true', help = 'enable verbose')
+    parser.add_argument(
+        "-f",
+        "--ifilename",
+        required=False,
+        default="compile_commands.json",
+        help=".json file format is required.",
+    )
+    parser.add_argument(
+        "-o", "--ofilename", required=False, default="a.xml", help="output file name."
+    )
+    parser.add_argument(
+        "-e",
+        "--exclude",
+        required=False,
+        default="",
+        help="Regular expression to Exclude files whom names match with",
+    )
+    parser.add_argument(
+        "-i",
+        "--include",
+        required=False,
+        default="",
+        help="Regular expression to Include files whom names match with",
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        required=False,
+        default=False,
+        action="store_true",
+        help="enable verbose",
+    )
 
     user_args, unknown_args = parser.parse_known_args()
-    verbose=user_args.verbose
-    exclude=user_args.exclude
-    include=user_args.include
-    ifilename=user_args.ifilename
-    ofilename=user_args.ofilename
+    verbose = user_args.verbose
+    exclude = user_args.exclude
+    include = user_args.include
+    ifilename = user_args.ifilename
+    ofilename = user_args.ofilename
 
     ifilesplit = os.path.splitext(os.path.basename(ifilename))
     ofilesplit = os.path.splitext(os.path.basename(ofilename))
 
-    ibasename=ifilesplit[0]
-    iextension=ifilesplit[1]
-    obasename=ofilesplit[0]
-    oextension=ofilesplit[1]
+    ibasename = ifilesplit[0]
+    iextension = ifilesplit[1]
+    obasename = ofilesplit[0]
+    oextension = ofilesplit[1]
 
     if verbose:
-        print('// hipsparse-cppcheck.verbose:file \'' + ifilename + '\'')
+        print("// hipsparse-cppcheck.verbose:file '" + ifilename + "'")
     if len(unknown_args) > 0:
-        print('// hipsparse-cppcheck.verbose:unexpected arguments ',end='')
+        print("// hipsparse-cppcheck.verbose:unexpected arguments ", end="")
         print(unknown_args)
         exit(1)
-    with open(ifilename,'r') as f:
-        compile_commands=json.load(f)
+    with open(ifilename, "r") as f:
+        compile_commands = json.load(f)
 
-    res_inc=[ i for i in compile_commands if re.search(include,i['file']) != None]
-    if exclude != '':
-        compile_commands=[ i for i in res_inc if re.search(exclude,i['file']) == None]
+    res_inc = [i for i in compile_commands if re.search(include, i["file"]) != None]
+    if exclude != "":
+        compile_commands = [i for i in res_inc if re.search(exclude, i["file"]) == None]
     else:
         compile_commands = res_inc
 
     if verbose:
-        print('// hipsparse-cppcheck.verbose:num commands ' + str(len(compile_commands)))
+        print(
+            "// hipsparse-cppcheck.verbose:num commands " + str(len(compile_commands))
+        )
 
-    tempfilename=ibasename + '.tmp.json'
-    with open(tempfilename,'w') as f:
-        json.dump(compile_commands,f)
+    tempfilename = ibasename + ".tmp.json"
+    with open(tempfilename, "w") as f:
+        json.dump(compile_commands, f)
 
     if verbose:
-        print('// hipsparse-cppcheck.verbose:' + ofilename)
-    cmdcppcheck = ['cppcheck',
-                   '-j32',
-                   '--enable=all',
-                   '--project='+ tempfilename,
-                   '--output-file='+ ofilename,
-                   '--library=googletest.cfg',
-                   '--suppress=missingIncludeSystem',
-                   '--suppress=unusedFunction',
-                   '--suppress=cstyleCast',
-                   '--suppress=constParameter',
-                   '--suppress=templateRecursion',
-                   '--suppress=redundantAssignment',
-    #              '--suppress=invalidPointerCast'
-                   '--suppress=unmatchedSuppression']
+        print("// hipsparse-cppcheck.verbose:" + ofilename)
+    cmdcppcheck = [
+        "cppcheck",
+        "-j32",
+        "--enable=all",
+        "--project=" + tempfilename,
+        "--output-file=" + ofilename,
+        "--library=googletest.cfg",
+        "--suppress=missingIncludeSystem",
+        "--suppress=unusedFunction",
+        "--suppress=cstyleCast",
+        "--suppress=constParameter",
+        "--suppress=templateRecursion",
+        "--suppress=redundantAssignment",
+        #              '--suppress=invalidPointerCast'
+        "--suppress=unmatchedSuppression",
+    ]
 
-    if oextension == '.xml':
-        cmdcppcheck.append('--xml')
+    if oextension == ".xml":
+        cmdcppcheck.append("--xml")
     proc = subprocess.Popen(cmdcppcheck)
     proc.wait()
     rc = proc.returncode
     if rc != 0:
-        print('// cppcheck failed')
+        print("// cppcheck failed")
         exit(1)
 
     if not verbose:
         os.remove(tempfilename)
 
+
 if __name__ == "__main__":
     main()
-

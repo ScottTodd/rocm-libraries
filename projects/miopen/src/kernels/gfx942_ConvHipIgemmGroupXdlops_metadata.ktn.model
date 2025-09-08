@@ -3,7 +3,7 @@
     "num_tuning_params": {
         "fwd": 13,
         "bwd": 14,
-        "wrw": 14        
+        "wrw": 14
     },
     "decodings": {
         "tunings": {

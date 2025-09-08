@@ -88,8 +88,8 @@ template <unsigned int Pos>
 struct argument
 {
   template <typename... Ts>
-  THRUST_HOST_DEVICE auto eval(Ts&&... args) const
-    -> decltype(thrust::get<Pos>(thrust::tuple<Ts&&...>{THRUST_FWD(args)...}))
+  THRUST_HOST_DEVICE auto
+  eval(Ts&&... args) const -> decltype(thrust::get<Pos>(thrust::tuple<Ts&&...>{THRUST_FWD(args)...}))
   {
     return thrust::get<Pos>(thrust::tuple<Ts&&...>{THRUST_FWD(args)...});
   }

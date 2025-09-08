@@ -38,41 +38,35 @@
 #include <type_traits>
 #include <vector>
 
-template<
-    int Method,
-    unsigned int BlockSize,
-    rocprim::block_scan_algorithm Algorithm,
-    class T,
-    typename std::enable_if<Method == 0>::type* = nullptr
->
-__global__
-__launch_bounds__(BlockSize)
+template<int                           Method,
+         unsigned int                  BlockSize,
+         rocprim::block_scan_algorithm Algorithm,
+         class T,
+         typename std::enable_if<Method == 0>::type* = nullptr>
+__global__ __launch_bounds__(BlockSize)
 void scan_kernel(T* device_output, T* device_output_b, T init)
 {
     (void)init;
     (void)device_output_b;
-    const unsigned int index = (blockIdx.x * BlockSize) + threadIdx.x;
-    T value = device_output[index];
+    const unsigned int                           index = (blockIdx.x * BlockSize) + threadIdx.x;
+    T                                            value = device_output[index];
     rocprim::block_scan<T, BlockSize, Algorithm> bscan;
     bscan.inclusive_scan(value, value);
     device_output[index] = value;
 }
 
-template<
-    int Method,
-    unsigned int BlockSize,
-    rocprim::block_scan_algorithm Algorithm,
-    class T,
-    typename std::enable_if<Method == 1>::type* = nullptr
->
-__global__
-__launch_bounds__(BlockSize)
+template<int                           Method,
+         unsigned int                  BlockSize,
+         rocprim::block_scan_algorithm Algorithm,
+         class T,
+         typename std::enable_if<Method == 1>::type* = nullptr>
+__global__ __launch_bounds__(BlockSize)
 void scan_kernel(T* device_output, T* device_output_b, T init)
 {
     (void)init;
-    const unsigned int index = (blockIdx.x * BlockSize) + threadIdx.x;
-    T value = device_output[index];
-    T reduction;
+    const unsigned int                           index = (blockIdx.x * BlockSize) + threadIdx.x;
+    T                                            value = device_output[index];
+    T                                            reduction;
     rocprim::block_scan<T, BlockSize, Algorithm> bscan;
     bscan.inclusive_scan(value, value, reduction);
     device_output[index] = value;
@@ -82,22 +76,19 @@ void scan_kernel(T* device_output, T* device_output_b, T init)
     }
 }
 
-template<
-    int Method,
-    unsigned int BlockSize,
-    rocprim::block_scan_algorithm Algorithm,
-    class T,
-    typename std::enable_if<Method == 2>::type* = nullptr
->
-__global__
-__launch_bounds__(BlockSize)
+template<int                           Method,
+         unsigned int                  BlockSize,
+         rocprim::block_scan_algorithm Algorithm,
+         class T,
+         typename std::enable_if<Method == 2>::type* = nullptr>
+__global__ __launch_bounds__(BlockSize)
 void scan_kernel(T* device_output, T* device_output_b, T init)
 {
-    const unsigned int index = (blockIdx.x * BlockSize) + threadIdx.x;
-    T prefix_value = init;
-    auto prefix_callback = [&prefix_value](T reduction)
+    const unsigned int index           = (blockIdx.x * BlockSize) + threadIdx.x;
+    T                  prefix_value    = init;
+    auto               prefix_callback = [&prefix_value](T reduction)
     {
-        T prefix = prefix_value;
+        T prefix     = prefix_value;
         prefix_value = prefix_value + reduction;
         return prefix;
     };
@@ -105,7 +96,8 @@ void scan_kernel(T* device_output, T* device_output_b, T init)
     T value = device_output[index];
 
     using bscan_t = rocprim::block_scan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::storage_type storage;
+    __shared__
+    typename bscan_t::storage_type storage;
     bscan_t().inclusive_scan(value, value, storage, prefix_callback, rocprim::plus<T>());
 
     device_output[index] = value;
@@ -115,39 +107,33 @@ void scan_kernel(T* device_output, T* device_output_b, T init)
     }
 }
 
-template<
-    int Method,
-    unsigned int BlockSize,
-    rocprim::block_scan_algorithm Algorithm,
-    class T,
-    typename std::enable_if<Method == 3>::type* = nullptr
->
-__global__
-__launch_bounds__(BlockSize)
+template<int                           Method,
+         unsigned int                  BlockSize,
+         rocprim::block_scan_algorithm Algorithm,
+         class T,
+         typename std::enable_if<Method == 3>::type* = nullptr>
+__global__ __launch_bounds__(BlockSize)
 void scan_kernel(T* device_output, T* device_output_b, T init)
 {
     (void)device_output_b;
-    const unsigned int index = (blockIdx.x * BlockSize) + threadIdx.x;
-    T value = device_output[index];
+    const unsigned int                           index = (blockIdx.x * BlockSize) + threadIdx.x;
+    T                                            value = device_output[index];
     rocprim::block_scan<T, BlockSize, Algorithm> bscan;
     bscan.exclusive_scan(value, value, init);
     device_output[index] = value;
 }
 
-template<
-    int Method,
-    unsigned int BlockSize,
-    rocprim::block_scan_algorithm Algorithm,
-    class T,
-    typename std::enable_if<Method == 4>::type* = nullptr
->
-__global__
-__launch_bounds__(BlockSize)
+template<int                           Method,
+         unsigned int                  BlockSize,
+         rocprim::block_scan_algorithm Algorithm,
+         class T,
+         typename std::enable_if<Method == 4>::type* = nullptr>
+__global__ __launch_bounds__(BlockSize)
 void scan_kernel(T* device_output, T* device_output_b, T init)
 {
-    const unsigned int index = (blockIdx.x * BlockSize) + threadIdx.x;
-    T value = device_output[index];
-    T reduction;
+    const unsigned int                           index = (blockIdx.x * BlockSize) + threadIdx.x;
+    T                                            value = device_output[index];
+    T                                            reduction;
     rocprim::block_scan<T, BlockSize, Algorithm> bscan;
     bscan.exclusive_scan(value, value, init, reduction);
     device_output[index] = value;
@@ -157,22 +143,19 @@ void scan_kernel(T* device_output, T* device_output_b, T init)
     }
 }
 
-template<
-    int Method,
-    unsigned int BlockSize,
-    rocprim::block_scan_algorithm Algorithm,
-    class T,
-    typename std::enable_if<Method == 5>::type* = nullptr
->
-__global__
-__launch_bounds__(BlockSize)
+template<int                           Method,
+         unsigned int                  BlockSize,
+         rocprim::block_scan_algorithm Algorithm,
+         class T,
+         typename std::enable_if<Method == 5>::type* = nullptr>
+__global__ __launch_bounds__(BlockSize)
 void scan_kernel(T* device_output, T* device_output_b, T init)
 {
-    const unsigned int index = (blockIdx.x * BlockSize) + threadIdx.x;
-    T prefix_value = init;
-    auto prefix_callback = [&prefix_value](T reduction)
+    const unsigned int index           = (blockIdx.x * BlockSize) + threadIdx.x;
+    T                  prefix_value    = init;
+    auto               prefix_callback = [&prefix_value](T reduction)
     {
-        T prefix = prefix_value;
+        T prefix     = prefix_value;
         prefix_value = prefix_value + reduction;
         return prefix;
     };
@@ -180,7 +163,8 @@ void scan_kernel(T* device_output, T* device_output_b, T init)
     T value = device_output[index];
 
     using bscan_t = rocprim::block_scan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::storage_type storage;
+    __shared__
+    typename bscan_t::storage_type storage;
     bscan_t().exclusive_scan(value, value, storage, prefix_callback, rocprim::plus<T>());
 
     device_output[index] = value;
@@ -195,8 +179,7 @@ template<int                           Method,
          rocprim::block_scan_algorithm Algorithm,
          class T,
          typename std::enable_if<Method == 6>::type* = nullptr>
-__global__
-__launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void scan_kernel(T* device_output, T* device_output_b, T init)
 {
     (void)device_output_b;
@@ -213,8 +196,7 @@ template<int                           Method,
          rocprim::block_scan_algorithm Algorithm,
          class T,
          typename std::enable_if<Method == 7>::type* = nullptr>
-__global__
-__launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void scan_kernel(T* device_output, T* device_output_b, T init)
 {
     const unsigned int                           index    = (blockIdx.x * BlockSize) + threadIdx.x;
@@ -230,57 +212,46 @@ void scan_kernel(T* device_output, T* device_output_b, T init)
     }
 }
 
-template <
-    class T,
-    unsigned int BlockSize,
-    rocprim::block_scan_algorithm Algorithm,
-    int Method
->
+template<class T, unsigned int BlockSize, rocprim::block_scan_algorithm Algorithm, int Method>
 struct static_run_algo
 {
     static void run(std::vector<T>& output,
                     std::vector<T>& output_b,
                     std::vector<T>& expected,
                     std::vector<T>& expected_b,
-                    T* device_output,
-                    T* device_output_b,
-                    T init,
-                    size_t grid_size)
+                    T*              device_output,
+                    T*              device_output_b,
+                    T               init,
+                    size_t          grid_size)
     {
-        HIP_CHECK(
-            hipMemcpy(
-                device_output, output.data(),
-                output.size() * sizeof(T),
-                hipMemcpyHostToDevice
-            )
-        );
+        HIP_CHECK(hipMemcpy(device_output,
+                            output.data(),
+                            output.size() * sizeof(T),
+                            hipMemcpyHostToDevice));
 
         // Running kernel
-        hipLaunchKernelGGL(
-            HIP_KERNEL_NAME(scan_kernel<Method, BlockSize, Algorithm, T>),
-            dim3(grid_size), dim3(BlockSize), 0, 0,
-            device_output, device_output_b, init
-        );
+        hipLaunchKernelGGL(HIP_KERNEL_NAME(scan_kernel<Method, BlockSize, Algorithm, T>),
+                           dim3(grid_size),
+                           dim3(BlockSize),
+                           0,
+                           0,
+                           device_output,
+                           device_output_b,
+                           init);
         HIP_CHECK(hipGetLastError());
 
         // Reading results back
-        HIP_CHECK(
-            hipMemcpy(
-                output.data(), device_output,
-                output.size() * sizeof(T),
-                hipMemcpyDeviceToHost
-            )
-        );
+        HIP_CHECK(hipMemcpy(output.data(),
+                            device_output,
+                            output.size() * sizeof(T),
+                            hipMemcpyDeviceToHost));
 
         if(device_output_b)
         {
-            HIP_CHECK(
-                hipMemcpy(
-                    output_b.data(), device_output_b,
-                    output_b.size() * sizeof(T),
-                    hipMemcpyDeviceToHost
-                )
-            );
+            HIP_CHECK(hipMemcpy(output_b.data(),
+                                device_output_b,
+                                output_b.size() * sizeof(T),
+                                hipMemcpyDeviceToHost));
         }
 
         // Verifying results
@@ -292,18 +263,15 @@ struct static_run_algo
     }
 };
 
-template<
-    unsigned int BlockSize,
-    unsigned int ItemsPerThread,
-    rocprim::block_scan_algorithm Algorithm,
-    class T,
-    class BinaryOp
->
-__global__
-__launch_bounds__(BlockSize)
+template<unsigned int                  BlockSize,
+         unsigned int                  ItemsPerThread,
+         rocprim::block_scan_algorithm Algorithm,
+         class T,
+         class BinaryOp>
+__global__ __launch_bounds__(BlockSize)
 void inclusive_scan_array_kernel(T* device_output)
 {
-    const unsigned int index = ((blockIdx.x * BlockSize ) + threadIdx.x) * ItemsPerThread;
+    const unsigned int index = ((blockIdx.x * BlockSize) + threadIdx.x) * ItemsPerThread;
 
     // load
     T in_out[ItemsPerThread];
@@ -322,18 +290,15 @@ void inclusive_scan_array_kernel(T* device_output)
     }
 }
 
-template<
-    unsigned int BlockSize,
-    unsigned int ItemsPerThread,
-    rocprim::block_scan_algorithm Algorithm,
-    class T,
-    class BinaryOp
->
-__global__
-__launch_bounds__(BlockSize)
+template<unsigned int                  BlockSize,
+         unsigned int                  ItemsPerThread,
+         rocprim::block_scan_algorithm Algorithm,
+         class T,
+         class BinaryOp>
+__global__ __launch_bounds__(BlockSize)
 void inclusive_scan_reduce_array_kernel(T* device_output, T* device_output_reductions)
 {
-    const unsigned int index = ((blockIdx.x * BlockSize ) + threadIdx.x) * ItemsPerThread;
+    const unsigned int index = ((blockIdx.x * BlockSize) + threadIdx.x) * ItemsPerThread;
 
     // load
     T in_out[ItemsPerThread];
@@ -343,7 +308,7 @@ void inclusive_scan_reduce_array_kernel(T* device_output, T* device_output_reduc
     }
 
     rocprim::block_scan<T, BlockSize, Algorithm> bscan;
-    T reduction;
+    T                                            reduction;
     bscan.inclusive_scan(in_out, in_out, reduction, BinaryOp());
 
     // store
@@ -358,22 +323,21 @@ void inclusive_scan_reduce_array_kernel(T* device_output, T* device_output_reduc
     }
 }
 
-template<
-    unsigned int BlockSize,
-    unsigned int ItemsPerThread,
-    rocprim::block_scan_algorithm Algorithm,
-    class T,
-    class BinaryOp
->
-__global__
-__launch_bounds__(BlockSize)
-void inclusive_scan_array_prefix_callback_kernel(T* device_output, T* device_output_bp, T block_prefix)
+template<unsigned int                  BlockSize,
+         unsigned int                  ItemsPerThread,
+         rocprim::block_scan_algorithm Algorithm,
+         class T,
+         class BinaryOp>
+__global__ __launch_bounds__(BlockSize)
+void inclusive_scan_array_prefix_callback_kernel(T* device_output,
+                                                 T* device_output_bp,
+                                                 T  block_prefix)
 {
-    const unsigned int index = ((blockIdx.x * BlockSize) + threadIdx.x) * ItemsPerThread;
-    T prefix_value = block_prefix;
-    auto prefix_callback = [&prefix_value](T reduction)
+    const unsigned int index           = ((blockIdx.x * BlockSize) + threadIdx.x) * ItemsPerThread;
+    T                  prefix_value    = block_prefix;
+    auto               prefix_callback = [&prefix_value](T reduction)
     {
-        T prefix = prefix_value;
+        T prefix     = prefix_value;
         prefix_value = BinaryOp()(prefix_value, reduction);
         return prefix;
     };
@@ -386,7 +350,8 @@ void inclusive_scan_array_prefix_callback_kernel(T* device_output, T* device_out
     }
 
     using bscan_t = rocprim::block_scan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::storage_type storage;
+    __shared__
+    typename bscan_t::storage_type storage;
     bscan_t().inclusive_scan(in_out, in_out, storage, prefix_callback, BinaryOp());
 
     // store
@@ -401,15 +366,12 @@ void inclusive_scan_array_prefix_callback_kernel(T* device_output, T* device_out
     }
 }
 
-template<
-    unsigned int BlockSize,
-    unsigned int ItemsPerThread,
-    rocprim::block_scan_algorithm Algorithm,
-    class T,
-    class BinaryOp
->
-__global__
-__launch_bounds__(BlockSize)
+template<unsigned int                  BlockSize,
+         unsigned int                  ItemsPerThread,
+         rocprim::block_scan_algorithm Algorithm,
+         class T,
+         class BinaryOp>
+__global__ __launch_bounds__(BlockSize)
 void exclusive_scan_array_kernel(T* device_output, T init)
 {
     const unsigned int index = ((blockIdx.x * BlockSize) + threadIdx.x) * ItemsPerThread;
@@ -430,15 +392,12 @@ void exclusive_scan_array_kernel(T* device_output, T init)
     }
 }
 
-template<
-    unsigned int BlockSize,
-    unsigned int ItemsPerThread,
-    rocprim::block_scan_algorithm Algorithm,
-    class T,
-    class BinaryOp
->
-__global__
-__launch_bounds__(BlockSize)
+template<unsigned int                  BlockSize,
+         unsigned int                  ItemsPerThread,
+         rocprim::block_scan_algorithm Algorithm,
+         class T,
+         class BinaryOp>
+__global__ __launch_bounds__(BlockSize)
 void exclusive_scan_reduce_array_kernel(T* device_output, T* device_output_reductions, T init)
 {
     const unsigned int index = ((blockIdx.x * BlockSize) + threadIdx.x) * ItemsPerThread;
@@ -450,7 +409,7 @@ void exclusive_scan_reduce_array_kernel(T* device_output, T* device_output_reduc
     }
 
     rocprim::block_scan<T, BlockSize, Algorithm> bscan;
-    T reduction;
+    T                                            reduction;
     bscan.exclusive_scan(in_out, in_out, init, reduction, BinaryOp());
 
     // store
@@ -465,26 +424,21 @@ void exclusive_scan_reduce_array_kernel(T* device_output, T* device_output_reduc
     }
 }
 
-template<
-    unsigned int BlockSize,
-    unsigned int ItemsPerThread,
-    rocprim::block_scan_algorithm Algorithm,
-    class T,
-    class BinaryOp
->
-__global__
-__launch_bounds__(BlockSize)
-void exclusive_scan_prefix_callback_array_kernel(
-    T* device_output,
-    T* device_output_bp,
-    T block_prefix
-)
+template<unsigned int                  BlockSize,
+         unsigned int                  ItemsPerThread,
+         rocprim::block_scan_algorithm Algorithm,
+         class T,
+         class BinaryOp>
+__global__ __launch_bounds__(BlockSize)
+void exclusive_scan_prefix_callback_array_kernel(T* device_output,
+                                                 T* device_output_bp,
+                                                 T  block_prefix)
 {
-    const unsigned int index = ((blockIdx.x * BlockSize) + threadIdx.x) * ItemsPerThread;
-    T prefix_value = block_prefix;
-    auto prefix_callback = [&prefix_value](T reduction)
+    const unsigned int index           = ((blockIdx.x * BlockSize) + threadIdx.x) * ItemsPerThread;
+    T                  prefix_value    = block_prefix;
+    auto               prefix_callback = [&prefix_value](T reduction)
     {
-        T prefix = prefix_value;
+        T prefix     = prefix_value;
         prefix_value = BinaryOp()(prefix_value, reduction);
         return prefix;
     };
@@ -493,11 +447,12 @@ void exclusive_scan_prefix_callback_array_kernel(
     T in_out[ItemsPerThread];
     for(unsigned int j = 0; j < ItemsPerThread; j++)
     {
-        in_out[j] = device_output[index+ j];
+        in_out[j] = device_output[index + j];
     }
 
     using bscan_t = rocprim::block_scan<T, BlockSize, Algorithm>;
-    __shared__ typename bscan_t::storage_type storage;
+    __shared__
+    typename bscan_t::storage_type storage;
     bscan_t().exclusive_scan(in_out, in_out, storage, prefix_callback, BinaryOp());
 
     // store
@@ -513,20 +468,17 @@ void exclusive_scan_prefix_callback_array_kernel(
 }
 
 // Test for scan
-template<
-    class T,
-    int Method,
-    unsigned int BlockSize = 256U,
-    unsigned int ItemsPerThread = 1U,
-    rocprim::block_scan_algorithm Algorithm = rocprim::block_scan_algorithm::using_warp_scan
->
-auto test_block_scan_input_arrays()
--> typename std::enable_if<Method == 0>::type
+template<class T,
+         int                           Method,
+         unsigned int                  BlockSize      = 256U,
+         unsigned int                  ItemsPerThread = 1U,
+         rocprim::block_scan_algorithm Algorithm = rocprim::block_scan_algorithm::using_warp_scan>
+auto test_block_scan_input_arrays() -> typename std::enable_if<Method == 0>::type
 {
     using binary_op_type = rocprim::maximum<T>;
 
-    static constexpr auto algorithm = Algorithm;
-    static constexpr size_t block_size = BlockSize;
+    static constexpr auto   algorithm        = Algorithm;
+    static constexpr size_t block_size       = BlockSize;
     static constexpr size_t items_per_thread = ItemsPerThread;
 
     // Given block size not supported
@@ -536,8 +488,8 @@ auto test_block_scan_input_arrays()
     }
 
     const size_t items_per_block = block_size * items_per_thread;
-    const size_t size = items_per_block * 19;
-    const size_t grid_size = size / items_per_block;
+    const size_t size            = items_per_block * 19;
+    const size_t grid_size       = size / items_per_block;
 
     SCOPED_TRACE(testing::Message() << "with items_per_block = " << items_per_block);
     SCOPED_TRACE(testing::Message() << "with size = " << size);
@@ -545,7 +497,8 @@ auto test_block_scan_input_arrays()
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
@@ -558,8 +511,8 @@ auto test_block_scan_input_arrays()
         {
             for(size_t j = 0; j < items_per_block; j++)
             {
-                auto idx = i * items_per_block + j;
-                expected[idx] = binary_op(output[idx], expected[j > 0 ? idx-1 : idx]);
+                auto idx      = i * items_per_block + j;
+                expected[idx] = binary_op(output[idx], expected[j > 0 ? idx - 1 : idx]);
             }
         }
 
@@ -587,23 +540,19 @@ auto test_block_scan_input_arrays()
         // Validating results
         ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(output, expected));
     }
-
 }
 
-template<
-    class T,
-    int Method,
-    unsigned int BlockSize = 256U,
-    unsigned int ItemsPerThread = 1U,
-    rocprim::block_scan_algorithm Algorithm = rocprim::block_scan_algorithm::using_warp_scan
->
-auto test_block_scan_input_arrays()
--> typename std::enable_if<Method == 1>::type
+template<class T,
+         int                           Method,
+         unsigned int                  BlockSize      = 256U,
+         unsigned int                  ItemsPerThread = 1U,
+         rocprim::block_scan_algorithm Algorithm = rocprim::block_scan_algorithm::using_warp_scan>
+auto test_block_scan_input_arrays() -> typename std::enable_if<Method == 1>::type
 {
     using binary_op_type = rocprim::maximum<T>;
 
-    static constexpr auto algorithm = Algorithm;
-    static constexpr size_t block_size = BlockSize;
+    static constexpr auto   algorithm        = Algorithm;
+    static constexpr size_t block_size       = BlockSize;
     static constexpr size_t items_per_thread = ItemsPerThread;
 
     // Given block size not supported
@@ -613,8 +562,8 @@ auto test_block_scan_input_arrays()
     }
 
     const size_t items_per_block = block_size * items_per_thread;
-    const size_t size = items_per_block * 19;
-    const size_t grid_size = size / items_per_block;
+    const size_t size            = items_per_block * 19;
+    const size_t grid_size       = size / items_per_block;
 
     SCOPED_TRACE(testing::Message() << "with items_per_block = " << items_per_block);
     SCOPED_TRACE(testing::Message() << "with size = " << size);
@@ -622,7 +571,8 @@ auto test_block_scan_input_arrays()
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
@@ -639,10 +589,10 @@ auto test_block_scan_input_arrays()
         {
             for(size_t j = 0; j < items_per_block; j++)
             {
-                auto idx = i * items_per_block + j;
-                expected[idx] = binary_op(output[idx], expected[j > 0 ? idx-1 : idx]);
+                auto idx      = i * items_per_block + j;
+                expected[idx] = binary_op(output[idx], expected[j > 0 ? idx - 1 : idx]);
             }
-            expected_reductions[i] = expected[(i+1) * items_per_block - 1];
+            expected_reductions[i] = expected[(i + 1) * items_per_block - 1];
         }
 
         // Writing to device memory
@@ -673,23 +623,19 @@ auto test_block_scan_input_arrays()
         ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(output, expected));
         ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(output_reductions, expected_reductions));
     }
-
 }
 
-template<
-    class T,
-    int Method,
-    unsigned int BlockSize = 256U,
-    unsigned int ItemsPerThread = 1U,
-    rocprim::block_scan_algorithm Algorithm = rocprim::block_scan_algorithm::using_warp_scan
->
-auto test_block_scan_input_arrays()
--> typename std::enable_if<Method == 2>::type
+template<class T,
+         int                           Method,
+         unsigned int                  BlockSize      = 256U,
+         unsigned int                  ItemsPerThread = 1U,
+         rocprim::block_scan_algorithm Algorithm = rocprim::block_scan_algorithm::using_warp_scan>
+auto test_block_scan_input_arrays() -> typename std::enable_if<Method == 2>::type
 {
     using binary_op_type = rocprim::maximum<T>;
 
-    static constexpr auto algorithm = Algorithm;
-    static constexpr size_t block_size = BlockSize;
+    static constexpr auto   algorithm        = Algorithm;
+    static constexpr size_t block_size       = BlockSize;
     static constexpr size_t items_per_thread = ItemsPerThread;
 
     // Given block size not supported
@@ -699,8 +645,8 @@ auto test_block_scan_input_arrays()
     }
 
     const size_t items_per_block = block_size * items_per_thread;
-    const size_t size = items_per_block * 19;
-    const size_t grid_size = size / items_per_block;
+    const size_t size            = items_per_block * 19;
+    const size_t grid_size       = size / items_per_block;
 
     SCOPED_TRACE(testing::Message() << "with items_per_block = " << items_per_block);
     SCOPED_TRACE(testing::Message() << "with size = " << size);
@@ -708,13 +654,14 @@ auto test_block_scan_input_arrays()
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
         std::vector<T> output = test_utils::get_random_data_wrapped<T>(size, 2, 100, seed_value);
         std::vector<T> output_block_prefixes(size / items_per_block, T(0));
-        T block_prefix = test_utils::get_random_value<T>(0, 100, seed_value);
+        T              block_prefix = test_utils::get_random_value<T>(0, 100, seed_value);
 
         // Calculate expected results on host
         std::vector<T> expected(output.size(), T(0));
@@ -725,10 +672,10 @@ auto test_block_scan_input_arrays()
             expected[i * items_per_block] = block_prefix;
             for(size_t j = 0; j < items_per_block; j++)
             {
-                auto idx = i * items_per_block + j;
-                expected[idx] = binary_op(output[idx], expected[j > 0 ? idx-1 : idx]);
+                auto idx      = i * items_per_block + j;
+                expected[idx] = binary_op(output[idx], expected[j > 0 ? idx - 1 : idx]);
             }
-            expected_block_prefixes[i] = expected[(i+1) * items_per_block - 1];
+            expected_block_prefixes[i] = expected[(i + 1) * items_per_block - 1];
         }
 
         // Writing to device memory
@@ -762,23 +709,19 @@ auto test_block_scan_input_arrays()
         ASSERT_NO_FATAL_FAILURE(
             test_utils::assert_eq(output_block_prefixes, expected_block_prefixes));
     }
-
 }
 
-template<
-    class T,
-    int Method,
-    unsigned int BlockSize = 256U,
-    unsigned int ItemsPerThread = 1U,
-    rocprim::block_scan_algorithm Algorithm = rocprim::block_scan_algorithm::using_warp_scan
->
-auto test_block_scan_input_arrays()
--> typename std::enable_if<Method == 3>::type
+template<class T,
+         int                           Method,
+         unsigned int                  BlockSize      = 256U,
+         unsigned int                  ItemsPerThread = 1U,
+         rocprim::block_scan_algorithm Algorithm = rocprim::block_scan_algorithm::using_warp_scan>
+auto test_block_scan_input_arrays() -> typename std::enable_if<Method == 3>::type
 {
     using binary_op_type = rocprim::maximum<T>;
 
-    static constexpr auto algorithm = Algorithm;
-    static constexpr size_t block_size = BlockSize;
+    static constexpr auto   algorithm        = Algorithm;
+    static constexpr size_t block_size       = BlockSize;
     static constexpr size_t items_per_thread = ItemsPerThread;
 
     // Given block size not supported
@@ -797,12 +740,13 @@ auto test_block_scan_input_arrays()
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
         std::vector<T> output = test_utils::get_random_data_wrapped<T>(size, 2, 100, seed_value);
-        const T init = test_utils::get_random_value<T>(0, 100, seed_value);
+        const T        init   = test_utils::get_random_value<T>(0, 100, seed_value);
 
         // Calculate expected results on host
         std::vector<T> expected(output.size(), T(0));
@@ -812,8 +756,8 @@ auto test_block_scan_input_arrays()
             expected[i * items_per_block] = init;
             for(size_t j = 1; j < items_per_block; j++)
             {
-                auto idx = i * items_per_block + j;
-                expected[idx] = binary_op(output[idx-1], expected[idx-1]);
+                auto idx      = i * items_per_block + j;
+                expected[idx] = binary_op(output[idx - 1], expected[idx - 1]);
             }
         }
 
@@ -842,23 +786,19 @@ auto test_block_scan_input_arrays()
         // Validating results
         ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(output, expected));
     }
-
 }
 
-template<
-    class T,
-    int Method,
-    unsigned int BlockSize = 256U,
-    unsigned int ItemsPerThread = 1U,
-    rocprim::block_scan_algorithm Algorithm = rocprim::block_scan_algorithm::using_warp_scan
->
-auto test_block_scan_input_arrays()
--> typename std::enable_if<Method == 4>::type
+template<class T,
+         int                           Method,
+         unsigned int                  BlockSize      = 256U,
+         unsigned int                  ItemsPerThread = 1U,
+         rocprim::block_scan_algorithm Algorithm = rocprim::block_scan_algorithm::using_warp_scan>
+auto test_block_scan_input_arrays() -> typename std::enable_if<Method == 4>::type
 {
     using binary_op_type = rocprim::maximum<T>;
 
-    static constexpr auto algorithm = Algorithm;
-    static constexpr size_t block_size = BlockSize;
+    static constexpr auto   algorithm        = Algorithm;
+    static constexpr size_t block_size       = BlockSize;
     static constexpr size_t items_per_thread = ItemsPerThread;
 
     // Given block size not supported
@@ -868,8 +808,8 @@ auto test_block_scan_input_arrays()
     }
 
     const size_t items_per_block = block_size * items_per_thread;
-    const size_t size = items_per_block * 19;
-    const size_t grid_size = size / items_per_block;
+    const size_t size            = items_per_block * 19;
+    const size_t grid_size       = size / items_per_block;
 
     SCOPED_TRACE(testing::Message() << "with items_per_block = " << items_per_block);
     SCOPED_TRACE(testing::Message() << "with size = " << size);
@@ -877,7 +817,8 @@ auto test_block_scan_input_arrays()
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
@@ -885,7 +826,7 @@ auto test_block_scan_input_arrays()
 
         // Output reduce results
         std::vector<T> output_reductions(size / items_per_block);
-        const T init = test_utils::get_random_value<T>(0, 100, seed_value);
+        const T        init = test_utils::get_random_value<T>(0, 100, seed_value);
 
         // Calculate expected results on host
         std::vector<T> expected(output.size(), T(0));
@@ -896,12 +837,12 @@ auto test_block_scan_input_arrays()
             expected[i * items_per_block] = init;
             for(size_t j = 1; j < items_per_block; j++)
             {
-                auto idx = i * items_per_block + j;
-                expected[idx] = binary_op(output[idx-1], expected[idx-1]);
+                auto idx      = i * items_per_block + j;
+                expected[idx] = binary_op(output[idx - 1], expected[idx - 1]);
             }
             for(size_t j = 0; j < items_per_block; j++)
             {
-                auto idx = i * items_per_block + j;
+                auto idx               = i * items_per_block + j;
                 expected_reductions[i] = binary_op(expected_reductions[i], output[idx]);
             }
         }
@@ -935,23 +876,19 @@ auto test_block_scan_input_arrays()
         ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(output, expected));
         ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(output_reductions, expected_reductions));
     }
-
 }
 
-template<
-    class T,
-    int Method,
-    unsigned int BlockSize = 256U,
-    unsigned int ItemsPerThread = 1U,
-    rocprim::block_scan_algorithm Algorithm = rocprim::block_scan_algorithm::using_warp_scan
->
-auto test_block_scan_input_arrays()
--> typename std::enable_if<Method == 5>::type
+template<class T,
+         int                           Method,
+         unsigned int                  BlockSize      = 256U,
+         unsigned int                  ItemsPerThread = 1U,
+         rocprim::block_scan_algorithm Algorithm = rocprim::block_scan_algorithm::using_warp_scan>
+auto test_block_scan_input_arrays() -> typename std::enable_if<Method == 5>::type
 {
     using binary_op_type = rocprim::maximum<T>;
 
-    static constexpr auto algorithm = Algorithm;
-    static constexpr size_t block_size = BlockSize;
+    static constexpr auto   algorithm        = Algorithm;
+    static constexpr size_t block_size       = BlockSize;
     static constexpr size_t items_per_thread = ItemsPerThread;
 
     // Given block size not supported
@@ -961,8 +898,8 @@ auto test_block_scan_input_arrays()
     }
 
     const size_t items_per_block = block_size * items_per_thread;
-    const size_t size = items_per_block * 19;
-    const size_t grid_size = size / items_per_block;
+    const size_t size            = items_per_block * 19;
+    const size_t grid_size       = size / items_per_block;
 
     SCOPED_TRACE(testing::Message() << "with items_per_block = " << items_per_block);
     SCOPED_TRACE(testing::Message() << "with size = " << size);
@@ -970,13 +907,14 @@ auto test_block_scan_input_arrays()
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
         std::vector<T> output = test_utils::get_random_data_wrapped<T>(size, 2, 100, seed_value);
         std::vector<T> output_block_prefixes(size / items_per_block);
-        T block_prefix = test_utils::get_random_value<T>(0, 100, seed_value);
+        T              block_prefix = test_utils::get_random_value<T>(0, 100, seed_value);
 
         // Calculate expected results on host
         std::vector<T> expected(output.size(), T(0));
@@ -987,13 +925,13 @@ auto test_block_scan_input_arrays()
             expected[i * items_per_block] = block_prefix;
             for(size_t j = 1; j < items_per_block; j++)
             {
-                auto idx = i * items_per_block + j;
-                expected[idx] = binary_op(output[idx-1], expected[idx-1]);
+                auto idx      = i * items_per_block + j;
+                expected[idx] = binary_op(output[idx - 1], expected[idx - 1]);
             }
             expected_block_prefixes[i] = block_prefix;
             for(size_t j = 0; j < items_per_block; j++)
             {
-                auto idx = i * items_per_block + j;
+                auto idx                   = i * items_per_block + j;
                 expected_block_prefixes[i] = binary_op(expected_block_prefixes[i], output[idx]);
             }
         }
@@ -1029,7 +967,6 @@ auto test_block_scan_input_arrays()
         ASSERT_NO_FATAL_FAILURE(
             test_utils::assert_eq(output_block_prefixes, expected_block_prefixes));
     }
-
 }
 
 // Static for-loop
@@ -1059,17 +996,10 @@ struct static_for_input_array
     }
 };
 
-template <
-    unsigned int N,
-    class T,
-    int Method,
-    unsigned int BlockSize
->
+template<unsigned int N, class T, int Method, unsigned int BlockSize>
 struct static_for_input_array<N, N, T, Method, BlockSize>
 {
-    static void run()
-    {
-    }
+    static void run() {}
 };
 
 #endif // TEST_BLOCK_SCAN_KERNELS_HPP_

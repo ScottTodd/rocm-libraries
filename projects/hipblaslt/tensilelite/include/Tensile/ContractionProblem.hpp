@@ -321,7 +321,7 @@ namespace TensileLite
         using Inputs   = ContractionInputs;
 
         ContractionProblemGemm()
-            : ContractionProblem(ContractionProblemGemm::TENSOR::TENSOR_COUNT){};
+            : ContractionProblem(ContractionProblemGemm::TENSOR::TENSOR_COUNT) {};
 
         /**
    * Represents a pair of free indices in a tensor contraction.
@@ -353,7 +353,7 @@ namespace TensileLite
                 : a(xa)
                 , b(xb)
                 , aMirror(aMirror)
-                , bMirror(bMirror){};
+                , bMirror(bMirror) {};
             size_t a, b; //! positions in a or b tensor
             bool   aMirror, bMirror;
         };
@@ -1304,7 +1304,7 @@ namespace TensileLite
     {
     public:
         ContractionProblemGroupedGemm()
-            : ContractionProblem(0){};
+            : ContractionProblem(0) {};
         std::vector<ContractionProblemGemm> gemms;
         virtual std::string                 description() const
         {
@@ -1370,8 +1370,8 @@ namespace TensileLite
         void const* scaleD        = nullptr;
         void const* scaleAlphaVec = nullptr;
 
-        unsigned char const* metadata = nullptr;
-        void const* compressed        = nullptr;
+        unsigned char const* metadata   = nullptr;
+        void const*          compressed = nullptr;
 
         // Constants
         ConstantVariant              alpha = static_cast<float>(0);
@@ -1379,8 +1379,8 @@ namespace TensileLite
         std::vector<ConstantVariant> activationArgs;
 
         // Workspace
-        void*                ws           = nullptr;
-        void*                Synchronizer = nullptr;
+        void* ws           = nullptr;
+        void* Synchronizer = nullptr;
 
         std::vector<size_t> maxElements;
         size_t              workspaceSize;

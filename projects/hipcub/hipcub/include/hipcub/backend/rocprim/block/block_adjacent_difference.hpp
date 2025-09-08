@@ -36,33 +36,20 @@
 
 BEGIN_HIPCUB_NAMESPACE
 
-template<
-    typename T,
-    int BLOCK_DIM_X,
-    int BLOCK_DIM_Y = 1,
-    int BLOCK_DIM_Z = 1,
-    int ARCH = HIPCUB_ARCH /* ignored */
->
+template<typename T,
+         int BLOCK_DIM_X,
+         int BLOCK_DIM_Y = 1,
+         int BLOCK_DIM_Z = 1,
+         int ARCH        = HIPCUB_ARCH /* ignored */
+         >
 class BlockAdjacentDifference
-    : private ::rocprim::block_adjacent_difference<
-        T,
-        BLOCK_DIM_X,
-        BLOCK_DIM_Y,
-        BLOCK_DIM_Z
-      >
+    : private ::rocprim::block_adjacent_difference<T, BLOCK_DIM_X, BLOCK_DIM_Y, BLOCK_DIM_Z>
 {
-    static_assert(
-        BLOCK_DIM_X * BLOCK_DIM_Y * BLOCK_DIM_Z > 0,
-        "BLOCK_DIM_X * BLOCK_DIM_Y * BLOCK_DIM_Z must be greater than 0"
-    );
+    static_assert(BLOCK_DIM_X * BLOCK_DIM_Y * BLOCK_DIM_Z > 0,
+                  "BLOCK_DIM_X * BLOCK_DIM_Y * BLOCK_DIM_Z must be greater than 0");
 
     using base_type =
-        typename ::rocprim::block_adjacent_difference<
-            T,
-            BLOCK_DIM_X,
-            BLOCK_DIM_Y,
-            BLOCK_DIM_Z
-        >;
+        typename ::rocprim::block_adjacent_difference<T, BLOCK_DIM_X, BLOCK_DIM_Y, BLOCK_DIM_Z>;
 
     // Reference to temporary storage (usually shared memory)
     typename base_type::storage_type& temp_storage_;
@@ -70,57 +57,56 @@ class BlockAdjacentDifference
 public:
     using TempStorage = typename base_type::storage_type;
 
-    HIPCUB_DEVICE inline
-    BlockAdjacentDifference() : temp_storage_(private_storage())
+    HIPCUB_DEVICE
+    inline BlockAdjacentDifference()
+        : temp_storage_(private_storage())
+    {}
+
+    HIPCUB_DEVICE
+    inline BlockAdjacentDifference(TempStorage& temp_storage)
+        : temp_storage_(temp_storage)
+    {}
+
+    template<int ITEMS_PER_THREAD, typename OutputType, typename DifferenceOpT>
+    HIPCUB_DEVICE
+    inline void SubtractLeft(T (&input)[ITEMS_PER_THREAD],
+                             OutputType (&output)[ITEMS_PER_THREAD],
+                             DifferenceOpT difference_op)
     {
+        base_type::subtract_left(input, output, difference_op, temp_storage_);
     }
 
-    HIPCUB_DEVICE inline
-    BlockAdjacentDifference(TempStorage& temp_storage) : temp_storage_(temp_storage)
+    template<int ITEMS_PER_THREAD, typename OutputT, typename DifferenceOpT>
+    HIPCUB_DEVICE
+    inline void SubtractLeft(T (&input)[ITEMS_PER_THREAD],
+                             OutputT (&output)[ITEMS_PER_THREAD],
+                             DifferenceOpT difference_op,
+                             T             tile_predecessor_item)
     {
-    }
-
-    template <int ITEMS_PER_THREAD, typename OutputType, typename DifferenceOpT>
-    HIPCUB_DEVICE inline
-    void SubtractLeft(T (&input)[ITEMS_PER_THREAD],
-                      OutputType (&output)[ITEMS_PER_THREAD],
-                      DifferenceOpT difference_op)
-    {
-        base_type::subtract_left(
-            input, output, difference_op, temp_storage_
-        );
-    }
-
-    template <int ITEMS_PER_THREAD, typename OutputT, typename DifferenceOpT>
-    HIPCUB_DEVICE inline
-    void SubtractLeft(T (&input)[ITEMS_PER_THREAD],
-                      OutputT (&output)[ITEMS_PER_THREAD],
-                      DifferenceOpT difference_op,
-                      T tile_predecessor_item)
-    {
-        base_type::subtract_left(
-            input, output, difference_op, tile_predecessor_item, temp_storage_
-        );
-    }
-
-    template <int ITEMS_PER_THREAD, typename OutputType, typename DifferenceOpT>
-    HIPCUB_DEVICE inline
-    void SubtractLeftPartialTile(T (&input)[ITEMS_PER_THREAD],
-                                OutputType (&output)[ITEMS_PER_THREAD],
-                                DifferenceOpT difference_op,
-                                int valid_items)
-    {
-        base_type::subtract_left_partial(
-            input, output, difference_op, valid_items, temp_storage_
-        );
+        base_type::subtract_left(input,
+                                 output,
+                                 difference_op,
+                                 tile_predecessor_item,
+                                 temp_storage_);
     }
 
     template<int ITEMS_PER_THREAD, typename OutputType, typename DifferenceOpT>
-    HIPCUB_DEVICE inline void SubtractLeftPartialTile(T (&input)[ITEMS_PER_THREAD],
-                                                      OutputType (&output)[ITEMS_PER_THREAD],
-                                                      DifferenceOpT difference_op,
-                                                      int           valid_items,
-                                                      T             tile_predecessor_item)
+    HIPCUB_DEVICE
+    inline void SubtractLeftPartialTile(T (&input)[ITEMS_PER_THREAD],
+                                        OutputType (&output)[ITEMS_PER_THREAD],
+                                        DifferenceOpT difference_op,
+                                        int           valid_items)
+    {
+        base_type::subtract_left_partial(input, output, difference_op, valid_items, temp_storage_);
+    }
+
+    template<int ITEMS_PER_THREAD, typename OutputType, typename DifferenceOpT>
+    HIPCUB_DEVICE
+    inline void SubtractLeftPartialTile(T (&input)[ITEMS_PER_THREAD],
+                                        OutputType (&output)[ITEMS_PER_THREAD],
+                                        DifferenceOpT difference_op,
+                                        int           valid_items,
+                                        T             tile_predecessor_item)
     {
         base_type::subtract_left_partial(input,
                                          output,
@@ -130,46 +116,41 @@ public:
                                          temp_storage_);
     }
 
-    template <int ITEMS_PER_THREAD, typename OutputT, typename DifferenceOpT>
-    HIPCUB_DEVICE inline
-    void SubtractRight(T (&input)[ITEMS_PER_THREAD],
-                      OutputT (&output)[ITEMS_PER_THREAD],
-                      DifferenceOpT difference_op)
+    template<int ITEMS_PER_THREAD, typename OutputT, typename DifferenceOpT>
+    HIPCUB_DEVICE
+    inline void SubtractRight(T (&input)[ITEMS_PER_THREAD],
+                              OutputT (&output)[ITEMS_PER_THREAD],
+                              DifferenceOpT difference_op)
     {
-        base_type::subtract_right(
-            input, output, difference_op, temp_storage_
-        );
+        base_type::subtract_right(input, output, difference_op, temp_storage_);
     }
 
-    template <int ITEMS_PER_THREAD, typename OutputT, typename DifferenceOpT>
-    HIPCUB_DEVICE inline
-    void SubtractRight(T (&input)[ITEMS_PER_THREAD],
-                      OutputT (&output)[ITEMS_PER_THREAD],
-                      DifferenceOpT difference_op,
-                      T tile_successor_item)
+    template<int ITEMS_PER_THREAD, typename OutputT, typename DifferenceOpT>
+    HIPCUB_DEVICE
+    inline void SubtractRight(T (&input)[ITEMS_PER_THREAD],
+                              OutputT (&output)[ITEMS_PER_THREAD],
+                              DifferenceOpT difference_op,
+                              T             tile_successor_item)
     {
-        base_type::subtract_right(
-            input, output, difference_op, tile_successor_item, temp_storage_
-        );
+        base_type::subtract_right(input, output, difference_op, tile_successor_item, temp_storage_);
     }
 
-    template <int ITEMS_PER_THREAD, typename OutputT, typename DifferenceOpT>
-    HIPCUB_DEVICE inline
-    void SubtractRightPartialTile(T (&input)[ITEMS_PER_THREAD],
-                                  OutputT (&output)[ITEMS_PER_THREAD],
-                                  DifferenceOpT difference_op,
-                                  int valid_items)
+    template<int ITEMS_PER_THREAD, typename OutputT, typename DifferenceOpT>
+    HIPCUB_DEVICE
+    inline void SubtractRightPartialTile(T (&input)[ITEMS_PER_THREAD],
+                                         OutputT (&output)[ITEMS_PER_THREAD],
+                                         DifferenceOpT difference_op,
+                                         int           valid_items)
     {
-        base_type::subtract_right_partial(
-            input, output, difference_op, valid_items, temp_storage_
-        );
+        base_type::subtract_right_partial(input, output, difference_op, valid_items, temp_storage_);
     }
 
 private:
-    HIPCUB_DEVICE inline
-    TempStorage& private_storage()
+    HIPCUB_DEVICE
+    inline TempStorage& private_storage()
     {
-        HIPCUB_SHARED_MEMORY TempStorage private_storage;
+        HIPCUB_SHARED_MEMORY
+        TempStorage private_storage;
         return private_storage;
     }
 };

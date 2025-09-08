@@ -29,9 +29,9 @@
 #ifndef _ROCSPARSELT_AUXILIARY_H_
 #define _ROCSPARSELT_AUXILIARY_H_
 
-#include <stdint.h>
-#include <hip/hip_runtime_api.h>
 #include "rocsparselt-types.h"
+#include <hip/hip_runtime_api.h>
+#include <stdint.h>
 
 std::string rocsparselt_internal_get_arch_name();
 std::string rocsparselt_internal_get_arch_name(const hipDeviceProp_t& deviceProperties);

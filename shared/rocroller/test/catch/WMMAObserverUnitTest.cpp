@@ -40,7 +40,7 @@ namespace WMMAObserverUnitTests
     {
     public:
         WMMAObserverUnitTest(GPUArchitectureGFX gfx)
-            : TestContext(TestContext::ForTarget({gfx})){};
+            : TestContext(TestContext::ForTarget({gfx})) {};
     };
 
     TEST_CASE("Unit test observer regarding WMMA hazards on GFX1200/1201", "[observer]")

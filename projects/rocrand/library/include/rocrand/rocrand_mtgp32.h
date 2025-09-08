@@ -94,19 +94,21 @@
  * \b mask This is a mask to make the dimension of state space have
  * just Mersenne Prime. This is redundant.
  */
-struct mtgp32_params_fast_t {
-    int mexp;            /**< Mersenne exponent. This is redundant. */
-    int pos;            /**< pick up position. */
-    int sh1;            /**< Shift value 1. 0 < sh1 < 32. */
-    int sh2;            /**< Shift value 2. 0 < sh2 < 32. */
-    uint32_t tbl[16];        /**< A small matrix. */
-    uint32_t tmp_tbl[16];    /**< A small matrix for tempering. */
-    uint32_t flt_tmp_tbl[16];    /**< A small matrix for tempering and converting to float. */
-    uint32_t mask;        /**< This is a mask for state space. */
+struct mtgp32_params_fast_t
+{
+    int           mexp; /**< Mersenne exponent. This is redundant. */
+    int           pos; /**< pick up position. */
+    int           sh1; /**< Shift value 1. 0 < sh1 < 32. */
+    int           sh2; /**< Shift value 2. 0 < sh2 < 32. */
+    uint32_t      tbl[16]; /**< A small matrix. */
+    uint32_t      tmp_tbl[16]; /**< A small matrix for tempering. */
+    uint32_t      flt_tmp_tbl[16]; /**< A small matrix for tempering and converting to float. */
+    uint32_t      mask; /**< This is a mask for state space. */
     unsigned char poly_sha1[21]; /**< SHA1 digest. */
 };
 
-namespace rocrand_device {
+namespace rocrand_device
+{
 
 struct mtgp32_params
 {
@@ -123,27 +125,27 @@ typedef mtgp32_params_fast_t mtgp32_fast_params;
 
 struct mtgp32_state
 {
-    int offset;
-    int id;
+    int          offset;
+    int          id;
     unsigned int status[MTGP_STATE];
 };
 
-inline
-void rocrand_mtgp32_init_state(unsigned int array[],
-                               const mtgp32_fast_params *para, unsigned int seed)
+inline void rocrand_mtgp32_init_state(unsigned int              array[],
+                                      const mtgp32_fast_params* para,
+                                      unsigned int              seed)
 {
-    int i;
-    int size = para->mexp / 32 + 1;
+    int          i;
+    int          size = para->mexp / 32 + 1;
     unsigned int hidden_seed;
     unsigned int tmp;
     hidden_seed = para->tbl[4] ^ (para->tbl[8] << 16);
-    tmp = hidden_seed;
+    tmp         = hidden_seed;
     tmp += tmp >> 16;
     tmp += tmp >> 8;
     memset(array, tmp & 0xff, sizeof(unsigned int) * size);
     array[0] = seed;
     array[1] = hidden_seed;
-    for (i = 1; i < size; i++)
+    for(i = 1; i < size; i++)
         array[i] ^= (1812433253) * (array[i - 1] ^ (array[i - 1] >> 30)) + i;
 }
 
@@ -151,84 +153,88 @@ class mtgp32_engine
 {
 public:
     __forceinline__ __device__ __host__
-        // Initialization is not supported for __shared__ variables
-        mtgp32_engine() // cppcheck-suppress uninitMemberVar
-    {
+    // Initialization is not supported for __shared__ variables
+    mtgp32_engine() // cppcheck-suppress uninitMemberVar
+    {}
 
-    }
-
-    __forceinline__ __device__ __host__ mtgp32_engine(const mtgp32_state&  m_state,
-                                                      const mtgp32_params* params,
-                                                      int                  bid)
+    __forceinline__ __device__ __host__
+    mtgp32_engine(const mtgp32_state& m_state, const mtgp32_params* params, int bid)
     {
         this->m_state = m_state;
-        pos_tbl = params->pos_tbl[bid];
-        sh1_tbl = params->sh1_tbl[bid];
-        sh2_tbl = params->sh2_tbl[bid];
-        mask = params->mask[0];
-        for (int j = 0; j < MTGP_TS; j++) {
-            param_tbl[j] = params->param_tbl[bid][j];
-            temper_tbl[j] = params->temper_tbl[bid][j];
+        pos_tbl       = params->pos_tbl[bid];
+        sh1_tbl       = params->sh1_tbl[bid];
+        sh2_tbl       = params->sh2_tbl[bid];
+        mask          = params->mask[0];
+        for(int j = 0; j < MTGP_TS; j++)
+        {
+            param_tbl[j]         = params->param_tbl[bid][j];
+            temper_tbl[j]        = params->temper_tbl[bid][j];
             single_temper_tbl[j] = params->single_temper_tbl[bid][j];
         }
     }
 
-    __forceinline__ __device__ __host__ void copy(const mtgp32_engine* m_engine)
+    __forceinline__ __device__ __host__
+    void copy(const mtgp32_engine* m_engine)
     {
 #if defined(__HIP_DEVICE_COMPILE__)
         const unsigned int thread_id = threadIdx.x;
         for(int i = thread_id; i < MTGP_STATE; i += blockDim.x)
             m_state.status[i] = m_engine->m_state.status[i];
 
-        if (thread_id == 0)
+        if(thread_id == 0)
         {
             m_state.offset = m_engine->m_state.offset;
-            m_state.id = m_engine->m_state.id;
-            pos_tbl = m_engine->pos_tbl;
-            sh1_tbl = m_engine->sh1_tbl;
-            sh2_tbl = m_engine->sh2_tbl;
-            mask = m_engine->mask;
+            m_state.id     = m_engine->m_state.id;
+            pos_tbl        = m_engine->pos_tbl;
+            sh1_tbl        = m_engine->sh1_tbl;
+            sh2_tbl        = m_engine->sh2_tbl;
+            mask           = m_engine->mask;
         }
-        if (thread_id < MTGP_TS)
+        if(thread_id < MTGP_TS)
         {
-            param_tbl[thread_id] = m_engine->param_tbl[thread_id];
-            temper_tbl[thread_id] = m_engine->temper_tbl[thread_id];
+            param_tbl[thread_id]         = m_engine->param_tbl[thread_id];
+            temper_tbl[thread_id]        = m_engine->temper_tbl[thread_id];
             single_temper_tbl[thread_id] = m_engine->single_temper_tbl[thread_id];
         }
         __syncthreads();
 #else
         this->m_state = m_engine->m_state;
-        pos_tbl = m_engine->pos_tbl;
-        sh1_tbl = m_engine->sh1_tbl;
-        sh2_tbl = m_engine->sh2_tbl;
-        mask = m_engine->mask;
-        for (int j = 0; j < MTGP_TS; j++) {
-            param_tbl[j] = m_engine->param_tbl[j];
-            temper_tbl[j] = m_engine->temper_tbl[j];
+        pos_tbl       = m_engine->pos_tbl;
+        sh1_tbl       = m_engine->sh1_tbl;
+        sh2_tbl       = m_engine->sh2_tbl;
+        mask          = m_engine->mask;
+        for(int j = 0; j < MTGP_TS; j++)
+        {
+            param_tbl[j]         = m_engine->param_tbl[j];
+            temper_tbl[j]        = m_engine->temper_tbl[j];
             single_temper_tbl[j] = m_engine->single_temper_tbl[j];
         }
 #endif
     }
 
-    __forceinline__ __device__ __host__ void set_params(mtgp32_params* params)
+    __forceinline__ __device__ __host__
+    void set_params(mtgp32_params* params)
     {
         pos_tbl = params->pos_tbl[m_state.id];
         sh1_tbl = params->sh1_tbl[m_state.id];
         sh2_tbl = params->sh2_tbl[m_state.id];
-        mask = params->mask[0];
-        for (int j = 0; j < MTGP_TS; j++) {
-            param_tbl[j] = params->param_tbl[m_state.id][j];
-            temper_tbl[j] = params->temper_tbl[m_state.id][j];
+        mask    = params->mask[0];
+        for(int j = 0; j < MTGP_TS; j++)
+        {
+            param_tbl[j]         = params->param_tbl[m_state.id][j];
+            temper_tbl[j]        = params->temper_tbl[m_state.id][j];
             single_temper_tbl[j] = params->single_temper_tbl[m_state.id][j];
         }
     }
 
-    __forceinline__ __device__ __host__ unsigned int operator()()
+    __forceinline__ __device__ __host__
+    unsigned int operator()()
     {
         return this->next();
     }
 
-    __forceinline__ __device__ __host__ unsigned int next()
+    __forceinline__ __device__ __host__
+    unsigned int next()
     {
 #ifdef __HIP_DEVICE_COMPILE__
         unsigned int o = next_thread(threadIdx.x);
@@ -244,12 +250,13 @@ public:
 #endif
     }
 
-    __forceinline__ __device__ __host__ unsigned int next_single()
+    __forceinline__ __device__ __host__
+    unsigned int next_single()
     {
 #if defined(__HIP_DEVICE_COMPILE__)
         unsigned int t   = threadIdx.x;
         unsigned int d   = blockDim.x;
-        int pos = pos_tbl;
+        int          pos = pos_tbl;
         unsigned int r;
         unsigned int o;
 
@@ -260,7 +267,7 @@ public:
 
         o = temper_single(r, m_state.status[(t + m_state.offset + pos - 1) & MTGP_MASK]);
         __syncthreads();
-        if (t == 0)
+        if(t == 0)
             m_state.offset = (m_state.offset + d) & MTGP_MASK;
         __syncthreads();
         return o;
@@ -270,19 +277,20 @@ public:
     }
 
 private:
-    __forceinline__ __device__ __host__ unsigned int
-        para_rec(unsigned int X1, unsigned int X2, unsigned int Y) const
+    __forceinline__ __device__ __host__
+    unsigned int para_rec(unsigned int X1, unsigned int X2, unsigned int Y) const
     {
         unsigned int X = (X1 & mask) ^ X2;
         unsigned int MAT;
 
         X ^= X << sh1_tbl;
-        Y = X ^ (Y >> sh2_tbl);
+        Y   = X ^ (Y >> sh2_tbl);
         MAT = param_tbl[Y & 0x0f];
         return Y ^ MAT;
     }
 
-    __forceinline__ __device__ __host__ unsigned int temper(unsigned int V, unsigned int T) const
+    __forceinline__ __device__ __host__
+    unsigned int temper(unsigned int V, unsigned int T) const
     {
         unsigned int MAT;
 
@@ -292,8 +300,8 @@ private:
         return V ^ MAT;
     }
 
-    __forceinline__ __device__ __host__ unsigned int temper_single(unsigned int V,
-                                                                   unsigned int T) const
+    __forceinline__ __device__ __host__
+    unsigned int temper_single(unsigned int V, unsigned int T) const
     {
         unsigned int MAT;
         unsigned int r;
@@ -301,14 +309,15 @@ private:
         T ^= T >> 16;
         T ^= T >> 8;
         MAT = single_temper_tbl[T & 0x0f];
-        r = (V >> 9) ^ MAT;
+        r   = (V >> 9) ^ MAT;
         return r;
     }
 
 protected:
     /// \brief Generate the next value for thread `thread_idx` and modify state in the process,
     ///   do not update offset.
-    __forceinline__ __device__ __host__ unsigned int next_thread(unsigned int thread_idx)
+    __forceinline__ __device__ __host__
+    unsigned int next_thread(unsigned int thread_idx)
     {
         const unsigned int r
             = para_rec(m_state.status[(thread_idx + m_state.offset) & MTGP_MASK],
@@ -340,10 +349,10 @@ public:
  */
 
 /// \cond ROCRAND_KERNEL_DOCS_TYPEDEFS
-typedef rocrand_device::mtgp32_engine rocrand_state_mtgp32;
-typedef rocrand_device::mtgp32_state mtgp32_state;
+typedef rocrand_device::mtgp32_engine      rocrand_state_mtgp32;
+typedef rocrand_device::mtgp32_state       mtgp32_state;
 typedef rocrand_device::mtgp32_fast_params mtgp32_fast_params;
-typedef rocrand_device::mtgp32_params mtgp32_params;
+typedef rocrand_device::mtgp32_params      mtgp32_params;
 /// \endcond
 
 /**
@@ -367,24 +376,28 @@ inline rocrand_status rocrand_make_state_mtgp32(rocrand_state_mtgp32* state,
                                                 int                   n,
                                                 unsigned long long    seed)
 {
-    int i;
-    rocrand_state_mtgp32 * h_state = (rocrand_state_mtgp32 *) malloc(sizeof(rocrand_state_mtgp32) * n);
-    seed = seed ^ (seed >> 32);
+    int                   i;
+    rocrand_state_mtgp32* h_state = (rocrand_state_mtgp32*)malloc(sizeof(rocrand_state_mtgp32) * n);
+    seed                          = seed ^ (seed >> 32);
 
-    if (h_state == NULL)
+    if(h_state == NULL)
         return ROCRAND_STATUS_ALLOCATION_FAILED;
 
-    for (i = 0; i < n; i++) {
-        rocrand_device::rocrand_mtgp32_init_state(&(h_state[i].m_state.status[0]), &params[i], (unsigned int)seed + i + 1);
+    for(i = 0; i < n; i++)
+    {
+        rocrand_device::rocrand_mtgp32_init_state(&(h_state[i].m_state.status[0]),
+                                                  &params[i],
+                                                  (unsigned int)seed + i + 1);
         h_state[i].m_state.offset = 0;
-        h_state[i].m_state.id = i;
-        h_state[i].pos_tbl = params[i].pos;
-        h_state[i].sh1_tbl = params[i].sh1;
-        h_state[i].sh2_tbl = params[i].sh2;
-        h_state[i].mask = params[0].mask;
-        for (int j = 0; j < MTGP_TS; j++) {
-            h_state[i].param_tbl[j] = params[i].tbl[j];
-            h_state[i].temper_tbl[j] = params[i].tmp_tbl[j];
+        h_state[i].m_state.id     = i;
+        h_state[i].pos_tbl        = params[i].pos;
+        h_state[i].sh1_tbl        = params[i].sh1;
+        h_state[i].sh2_tbl        = params[i].sh2;
+        h_state[i].mask           = params[0].mask;
+        for(int j = 0; j < MTGP_TS; j++)
+        {
+            h_state[i].param_tbl[j]         = params[i].tbl[j];
+            h_state[i].temper_tbl[j]        = params[i].tmp_tbl[j];
             h_state[i].single_temper_tbl[j] = params[i].flt_tmp_tbl[j];
         }
     }
@@ -419,56 +432,60 @@ __host__
 inline rocrand_status rocrand_make_constant(const mtgp32_fast_params params[], mtgp32_params* p)
 {
     const int block_num = MTGP_BN_MAX;
-    const int size1 = sizeof(uint32_t) * block_num;
-    const int size2 = sizeof(uint32_t) * block_num * MTGP_TS;
-    uint32_t *h_pos_tbl;
-    uint32_t *h_sh1_tbl;
-    uint32_t *h_sh2_tbl;
-    uint32_t *h_param_tbl;
-    uint32_t *h_temper_tbl;
-    uint32_t *h_single_temper_tbl;
-    uint32_t *h_mask;
-    h_pos_tbl = (uint32_t *)malloc(size1);
-    h_sh1_tbl = (uint32_t *)malloc(size1);
-    h_sh2_tbl = (uint32_t *)malloc(size1);
-    h_param_tbl = (uint32_t *)malloc(size2);
-    h_temper_tbl = (uint32_t *)malloc(size2);
-    h_single_temper_tbl = (uint32_t *)malloc(size2);
-    h_mask = (uint32_t *)malloc(sizeof(uint32_t));
+    const int size1     = sizeof(uint32_t) * block_num;
+    const int size2     = sizeof(uint32_t) * block_num * MTGP_TS;
+    uint32_t* h_pos_tbl;
+    uint32_t* h_sh1_tbl;
+    uint32_t* h_sh2_tbl;
+    uint32_t* h_param_tbl;
+    uint32_t* h_temper_tbl;
+    uint32_t* h_single_temper_tbl;
+    uint32_t* h_mask;
+    h_pos_tbl             = (uint32_t*)malloc(size1);
+    h_sh1_tbl             = (uint32_t*)malloc(size1);
+    h_sh2_tbl             = (uint32_t*)malloc(size1);
+    h_param_tbl           = (uint32_t*)malloc(size2);
+    h_temper_tbl          = (uint32_t*)malloc(size2);
+    h_single_temper_tbl   = (uint32_t*)malloc(size2);
+    h_mask                = (uint32_t*)malloc(sizeof(uint32_t));
     rocrand_status status = ROCRAND_STATUS_SUCCESS;
 
-    if (h_pos_tbl == NULL || h_sh1_tbl == NULL || h_sh2_tbl == NULL
-        || h_param_tbl == NULL || h_temper_tbl == NULL || h_single_temper_tbl == NULL
-        || h_mask == NULL) {
+    if(h_pos_tbl == NULL || h_sh1_tbl == NULL || h_sh2_tbl == NULL || h_param_tbl == NULL
+       || h_temper_tbl == NULL || h_single_temper_tbl == NULL || h_mask == NULL)
+    {
         printf("failure in allocating host memory for constant table.\n");
         status = ROCRAND_STATUS_ALLOCATION_FAILED;
     }
-    else {
+    else
+    {
         h_mask[0] = params[0].mask;
-        for (int i = 0; i < block_num; i++) {
+        for(int i = 0; i < block_num; i++)
+        {
             h_pos_tbl[i] = params[i].pos;
             h_sh1_tbl[i] = params[i].sh1;
             h_sh2_tbl[i] = params[i].sh2;
-            for (int j = 0; j < MTGP_TS; j++) {
-                h_param_tbl[i * MTGP_TS + j] = params[i].tbl[j];
-                h_temper_tbl[i * MTGP_TS + j] = params[i].tmp_tbl[j];
+            for(int j = 0; j < MTGP_TS; j++)
+            {
+                h_param_tbl[i * MTGP_TS + j]         = params[i].tbl[j];
+                h_temper_tbl[i * MTGP_TS + j]        = params[i].tmp_tbl[j];
                 h_single_temper_tbl[i * MTGP_TS + j] = params[i].flt_tmp_tbl[j];
             }
         }
 
-        if (hipMemcpy(p->pos_tbl, h_pos_tbl, size1, hipMemcpyHostToDevice) != hipSuccess)
+        if(hipMemcpy(p->pos_tbl, h_pos_tbl, size1, hipMemcpyHostToDevice) != hipSuccess)
             status = ROCRAND_STATUS_ALLOCATION_FAILED;
-        if (hipMemcpy(p->sh1_tbl, h_sh1_tbl, size1, hipMemcpyHostToDevice) != hipSuccess)
+        if(hipMemcpy(p->sh1_tbl, h_sh1_tbl, size1, hipMemcpyHostToDevice) != hipSuccess)
             status = ROCRAND_STATUS_ALLOCATION_FAILED;
-        if (hipMemcpy(p->sh2_tbl, h_sh2_tbl, size1, hipMemcpyHostToDevice) != hipSuccess)
+        if(hipMemcpy(p->sh2_tbl, h_sh2_tbl, size1, hipMemcpyHostToDevice) != hipSuccess)
             status = ROCRAND_STATUS_ALLOCATION_FAILED;
-        if (hipMemcpy(p->param_tbl, h_param_tbl, size2, hipMemcpyHostToDevice) != hipSuccess)
+        if(hipMemcpy(p->param_tbl, h_param_tbl, size2, hipMemcpyHostToDevice) != hipSuccess)
             status = ROCRAND_STATUS_ALLOCATION_FAILED;
-        if (hipMemcpy(p->temper_tbl, h_temper_tbl, size2, hipMemcpyHostToDevice) != hipSuccess)
+        if(hipMemcpy(p->temper_tbl, h_temper_tbl, size2, hipMemcpyHostToDevice) != hipSuccess)
             status = ROCRAND_STATUS_ALLOCATION_FAILED;
-        if (hipMemcpy(p->single_temper_tbl, h_single_temper_tbl, size2, hipMemcpyHostToDevice) != hipSuccess)
+        if(hipMemcpy(p->single_temper_tbl, h_single_temper_tbl, size2, hipMemcpyHostToDevice)
+           != hipSuccess)
             status = ROCRAND_STATUS_ALLOCATION_FAILED;
-        if (hipMemcpy(p->mask, h_mask, sizeof(unsigned int), hipMemcpyHostToDevice) != hipSuccess)
+        if(hipMemcpy(p->mask, h_mask, sizeof(unsigned int), hipMemcpyHostToDevice) != hipSuccess)
             status = ROCRAND_STATUS_ALLOCATION_FAILED;
     }
 

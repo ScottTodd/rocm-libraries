@@ -412,12 +412,12 @@ namespace Tensile
             {
                 return false;
             };
-            virtual void preBenchmarkRun() override{};
-            virtual void postBenchmarkRun() override{};
-            virtual void preProblem(ContractionProblem const& problem) override{};
-            virtual void postProblem() override{};
-            virtual void preSolution(ContractionSolution const& solution) override{};
-            virtual void postSolution() override{};
+            virtual void preBenchmarkRun() override {};
+            virtual void postBenchmarkRun() override {};
+            virtual void preProblem(ContractionProblem const& problem) override {};
+            virtual void postProblem() override {};
+            virtual void preSolution(ContractionSolution const& solution) override {};
+            virtual void postSolution() override {};
             virtual bool needMoreRunsInSolution() const override
             {
                 return m_numRunsInSolution < m_numRunsPerSolution;
@@ -427,9 +427,9 @@ namespace Tensile
             {
                 return 0;
             };
-            virtual void setNumWarmupRuns(size_t count) override{};
-            virtual void preWarmup() override{};
-            virtual void postWarmup() override{};
+            virtual void setNumWarmupRuns(size_t count) override {};
+            virtual void preWarmup() override {};
+            virtual void postWarmup() override {};
             virtual void validateWarmups(std::shared_ptr<ContractionInputs> inputs,
                                          TimingEvents const&                startEvents,
                                          TimingEvents const&                stopEvents) override
@@ -441,23 +441,23 @@ namespace Tensile
             {
                 return 0;
             };
-            virtual void setNumSyncs(size_t count) override{};
-            virtual void preSyncs() override{};
-            virtual void postSyncs() override{};
+            virtual void setNumSyncs(size_t count) override {};
+            virtual void preSyncs() override {};
+            virtual void postSyncs() override {};
 
             virtual size_t numEnqueuesPerSync() override
             {
                 return 0;
             };
-            virtual void setNumEnqueuesPerSync(size_t count) override{};
-            virtual void preEnqueues() override{};
+            virtual void setNumEnqueuesPerSync(size_t count) override {};
+            virtual void preEnqueues() override {};
             virtual void postEnqueues(TimingEvents const& startEvents,
-                                      TimingEvents const& stopEvents) override{};
+                                      TimingEvents const& stopEvents) override {};
             virtual void validateEnqueues(std::shared_ptr<ContractionInputs> inputs,
                                           TimingEvents const&                startEvents,
-                                          TimingEvents const&                stopEvents) override{};
+                                          TimingEvents const& stopEvents) override {};
 
-            virtual void finalizeReport() override{};
+            virtual void finalizeReport() override {};
 
             virtual int error() const override
             {

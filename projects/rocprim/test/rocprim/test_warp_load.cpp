@@ -47,10 +47,10 @@ template<class T,
          ::rocprim::warp_load_method Method>
 struct Params
 {
-    using type = T;
-    static constexpr unsigned int items_per_thread = ItemsPerThread;
+    using type                                                    = T;
+    static constexpr unsigned int                items_per_thread = ItemsPerThread;
     static constexpr unsigned int                warp_size        = VirtualWaveSize;
-    static constexpr ::rocprim::warp_load_method method = Method;
+    static constexpr ::rocprim::warp_load_method method           = Method;
 };
 
 template<class Params>
@@ -130,12 +130,13 @@ auto warp_load_test(T* d_input, T* d_output)
     static_assert(BlockSize % LogicalWarpSize == 0,
                   "LogicalWarpSize must be a divisor of BlockSize");
     using warp_load_type = ::rocprim::warp_load<T, ItemsPerThread, LogicalWarpSize, Method>;
-    constexpr unsigned int tile_size = ItemsPerThread * LogicalWarpSize;
-    constexpr unsigned int num_warps = BlockSize / LogicalWarpSize;
-    const unsigned int     warp_id   = threadIdx.x / LogicalWarpSize;
+    constexpr unsigned int                tile_size = ItemsPerThread * LogicalWarpSize;
+    constexpr unsigned int                num_warps = BlockSize / LogicalWarpSize;
+    const unsigned int                    warp_id   = threadIdx.x / LogicalWarpSize;
 
-    ROCPRIM_SHARED_MEMORY typename warp_load_type::storage_type storage[num_warps];
-    T thread_data[ItemsPerThread];
+    ROCPRIM_SHARED_MEMORY
+    typename warp_load_type::storage_type storage[num_warps];
+    T                                     thread_data[ItemsPerThread];
 
     warp_load_type().load(d_input + warp_id * tile_size, thread_data, storage[warp_id]);
 
@@ -160,7 +161,8 @@ template<unsigned int                BlockSize,
          unsigned int                LogicalWarpSize,
          ::rocprim::warp_load_method Method,
          class T>
-__global__ __launch_bounds__(BlockSize) void warp_load_kernel(T* d_input, T* d_output)
+__global__ __launch_bounds__(BlockSize)
+void warp_load_kernel(T* d_input, T* d_output)
 {
     warp_load_test<BlockSize, ItemsPerThread, LogicalWarpSize, Method>(d_input, d_output);
 }
@@ -177,20 +179,19 @@ auto warp_load_guarded_test(T* d_input, T* d_output, int valid_items, T oob_defa
     static_assert(BlockSize % LogicalWarpSize == 0,
                   "LogicalWarpSize must be a divisor of BlockSize");
     using warp_load_type = ::rocprim::warp_load<T, ItemsPerThread, LogicalWarpSize, Method>;
-    constexpr unsigned int tile_size = ItemsPerThread * LogicalWarpSize;
-    constexpr unsigned int num_warps = BlockSize / LogicalWarpSize;
-    const unsigned         warp_id   = threadIdx.x / LogicalWarpSize;
+    constexpr unsigned int                tile_size = ItemsPerThread * LogicalWarpSize;
+    constexpr unsigned int                num_warps = BlockSize / LogicalWarpSize;
+    const unsigned                        warp_id   = threadIdx.x / LogicalWarpSize;
 
-    ROCPRIM_SHARED_MEMORY typename warp_load_type::storage_type storage[num_warps];
-    T thread_data[ItemsPerThread];
+    ROCPRIM_SHARED_MEMORY
+    typename warp_load_type::storage_type storage[num_warps];
+    T                                     thread_data[ItemsPerThread];
 
-    warp_load_type().load(
-        d_input + warp_id * tile_size,
-        thread_data,
-        valid_items,
-        oob_default,
-        storage[warp_id]
-    );
+    warp_load_type().load(d_input + warp_id * tile_size,
+                          thread_data,
+                          valid_items,
+                          oob_default,
+                          storage[warp_id]);
 
     for(unsigned int i = 0; i < ItemsPerThread; i++)
     {
@@ -213,10 +214,8 @@ template<unsigned int                BlockSize,
          unsigned int                LogicalWarpSize,
          ::rocprim::warp_load_method Method,
          class T>
-__global__ __launch_bounds__(BlockSize) void warp_load_guarded_kernel(T*  d_input,
-                                                                      T*  d_output,
-                                                                      int valid_items,
-                                                                      T   oob_default)
+__global__ __launch_bounds__(BlockSize)
+void warp_load_guarded_kernel(T* d_input, T* d_output, int valid_items, T oob_default)
 {
     warp_load_guarded_test<BlockSize, ItemsPerThread, LogicalWarpSize, Method>(d_input,
                                                                                d_output,
@@ -225,19 +224,18 @@ __global__ __launch_bounds__(BlockSize) void warp_load_guarded_kernel(T*  d_inpu
 }
 
 template<class T>
-std::vector<T> stripe_vector(const std::vector<T>& v,
-                             const size_t warp_size,
-                             const size_t items_per_thread)
+std::vector<T>
+    stripe_vector(const std::vector<T>& v, const size_t warp_size, const size_t items_per_thread)
 {
-    const size_t warp_items = warp_size * items_per_thread;
+    const size_t   warp_items = warp_size * items_per_thread;
     std::vector<T> striped(v.size());
     for(size_t i = 0; i < v.size(); i++)
     {
         const size_t warp_idx = i % warp_items;
-        const size_t other_warp_idx = (warp_idx % items_per_thread) * warp_size
-            + (warp_idx / items_per_thread);
+        const size_t other_warp_idx
+            = (warp_idx % items_per_thread) * warp_size + (warp_idx / items_per_thread);
         const size_t other_idx = other_warp_idx + warp_items * (i / warp_items);
-        striped[i] = v[other_idx];
+        striped[i]             = v[other_idx];
     }
     return striped;
 }
@@ -246,12 +244,12 @@ TYPED_TEST_SUITE(WarpLoadTest, WarpLoadTestParams);
 
 TYPED_TEST(WarpLoadTest, WarpLoad)
 {
-    using T = typename TestFixture::params::type;
-    constexpr unsigned int warp_size = TestFixture::params::warp_size;
-    constexpr ::rocprim::warp_load_method method = TestFixture::params::method;
-    constexpr unsigned int items_per_thread = 4;
-    constexpr unsigned int block_size = 1024;
-    constexpr unsigned int items_count = items_per_thread * block_size;
+    using T                                                = typename TestFixture::params::type;
+    constexpr unsigned int                warp_size        = TestFixture::params::warp_size;
+    constexpr ::rocprim::warp_load_method method           = TestFixture::params::method;
+    constexpr unsigned int                items_per_thread = 4;
+    constexpr unsigned int                block_size       = 1024;
+    constexpr unsigned int                items_count      = items_per_thread * block_size;
 
     int device_id = test_common_utils::obtain_device_from_ctest();
     SKIP_IF_UNSUPPORTED_WARP_SIZE(warp_size, device_id);
@@ -280,13 +278,13 @@ TYPED_TEST(WarpLoadTest, WarpLoad)
 
 TYPED_TEST(WarpLoadTest, WarpLoadGuarded)
 {
-    using T = typename TestFixture::params::type;
-    constexpr unsigned int warp_size = TestFixture::params::warp_size;
-    constexpr ::rocprim::warp_load_method method = TestFixture::params::method;
-    constexpr unsigned int items_per_thread = TestFixture::params::items_per_thread;
-    constexpr unsigned int block_size = 1024;
-    constexpr unsigned int items_count = items_per_thread * block_size;
-    constexpr unsigned int valid_items = warp_size / 4;
+    using T                                                = typename TestFixture::params::type;
+    constexpr unsigned int                warp_size        = TestFixture::params::warp_size;
+    constexpr ::rocprim::warp_load_method method           = TestFixture::params::method;
+    constexpr unsigned int                items_per_thread = TestFixture::params::items_per_thread;
+    constexpr unsigned int                block_size       = 1024;
+    constexpr unsigned int                items_count      = items_per_thread * block_size;
+    constexpr unsigned int                valid_items      = warp_size / 4;
 
     const T oob_default = rocprim::numeric_limits<T>::max();
 
@@ -313,7 +311,8 @@ TYPED_TEST(WarpLoadTest, WarpLoadGuarded)
     for(size_t warp_idx = 0; warp_idx < block_size / warp_size; ++warp_idx)
     {
         auto segment_begin = std::next(expected.begin(), warp_idx * warp_size * items_per_thread);
-        auto segment_end = std::next(expected.begin(), (warp_idx + 1) * warp_size * items_per_thread);
+        auto segment_end
+            = std::next(expected.begin(), (warp_idx + 1) * warp_size * items_per_thread);
         std::fill(std::next(segment_begin, valid_items), segment_end, oob_default);
     }
 

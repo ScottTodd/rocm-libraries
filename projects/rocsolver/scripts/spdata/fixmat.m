@@ -1,10 +1,13 @@
 % ********************************************************************
-% Copyright (C) 2023 Advanced Micro Devices, Inc. All rights reserved.
-% ********************************************************************
+    % Copyright(C) 2023 Advanced Micro Devices,
+    Inc.All rights reserved.
+    % ********************************************************************
 
-function A=fixmat(B,diagval)
+    function A
+    = fixmat(B, diagval)
 
-%{
+    %
+{
 -------------------------------------------------------------
 	This function sets all diagonal entries of B to 'diagval'
 	without changing the number of nonzero entries in the
@@ -23,28 +26,24 @@ function A=fixmat(B,diagval)
 	rocSOLVER library interface and could change or be removed
 	without any notice)
 -------------------------------------------------------------
-%}
+%
+}
 
-
-n = size(B,1);
-A=full(B);
+n = size(B, 1);
+A = full(B);
 
 for j=1:n,
 	if (A(j,j) == 0),
 		for i=1:n,
 			if (A(i,j) != 0),
 				A(i,j) = 0;
-				break;
-			end;
-		end;
-	end;
-	A(j,j)=diagval;
+break;
+end;
+end;
+end;
+A(j, j) = diagval;
 end;
 
-A=sparse(A);
+A = sparse(A);
 
 end
-
-
-
-

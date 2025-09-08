@@ -46,7 +46,7 @@ struct kernel_src_gen_t
     {
     }
     kernel_src_gen_t& operator=(const kernel_src_gen_t&) = default;
-    kernel_src_gen_t& operator                           =(generator_func f)
+    kernel_src_gen_t& operator=(generator_func f)
     {
         this->f = f;
         kernel_src.clear();

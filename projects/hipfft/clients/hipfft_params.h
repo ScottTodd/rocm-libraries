@@ -221,7 +221,7 @@ public:
         : fft_params(p)
     {
     }
-    hipfft_params(hipfft_params&& p) = default;
+    hipfft_params(hipfft_params&& p)                = default;
     hipfft_params& operator=(hipfft_params&& other) = default;
 
     ~hipfft_params()
@@ -1314,9 +1314,9 @@ private:
         return false;
     }
 
-    template <
-        typename T,
-        std::enable_if_t<std::is_same_v<T, int> || std::is_same_v<T, long long int>, bool> = true>
+    template <typename T,
+              std::enable_if_t<std::is_same_v<T, int> || std::is_same_v<T, long long int>, bool>
+              = true>
     many_api_layout_args<T> make_valid_layout_args_for_plan_many()
     {
         many_api_layout_args<T> ret;

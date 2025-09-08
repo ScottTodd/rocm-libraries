@@ -50,7 +50,7 @@
         hipError_t error = condition;                                                       \
         if(error == hipErrorOutOfMemory)                                                    \
         {                                                                                   \
-            (void) hipGetLastError();                                                       \
+            (void)hipGetLastError();                                                        \
             std::cout << "Out of memory. Skipping size = " << size << std::endl;            \
             break;                                                                          \
         }                                                                                   \
@@ -82,9 +82,9 @@
 #define INSTANTIATE_TYPED_TEST(test_suite_name, ...) \
     INSTANTIATE_TYPED_TEST_EXPANDED(__LINE__, test_suite_name, __VA_ARGS__)
 
+#include <cctype>
 #include <cstdlib>
 #include <string>
-#include <cctype>
 
 namespace test_common_utils
 {
@@ -112,6 +112,6 @@ inline int obtain_device_from_ctest()
     common::clean_env(env);
     return device;
 }
-}
+} // namespace test_common_utils
 
 #endif // ROCPRIM_COMMON_TEST_HEADER_HPP_

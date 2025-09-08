@@ -12378,7 +12378,7 @@ buffer_load_dword v7, v11, s[sgprSrdScaleB:sgprSrdScaleB+3], 0 offen offset:0 //
 v_lshlrev_b32 v12, 0x2, v[vgprSerial]              // Local address scaled by BPE
 s_barrier                                          // wait for all global loads.
 s_waitcnt vmcnt(3)                                 // wait for global load
-v_lshlrev_b32 v4, 16, v4                           // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v4                           // cvt bf16 to fp32.
 ds_write_b32 v12, v4 offset:0                      // store bias
 v_cmp_gt_u32 s[sgprAddressScaleAlphaVec:sgprAddressScaleAlphaVec+1], s[sgprSrdScaleAlphaVec+2], 0 //  == 0 ?
 s_waitcnt vmcnt(2)                                 // wait for global load
@@ -29048,13 +29048,13 @@ v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[22:23], v[vgprValuC+36:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[22:23], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleBVMulPK(22)(2)
 v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[32:33], v[vgprValuC+36:vgprValuC+36+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[34:35], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v20                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v20                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+36], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v20, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v20, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+37], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v21                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v21                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+38], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v21, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v21, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+39], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+36:vgprValuC+36+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+38:vgprValuC+38+1] // C += bias
@@ -29093,13 +29093,13 @@ v_pk_mul_f32 v[vgprValuC+44:vgprValuC+44+1], v[42:43], v[vgprValuC+44:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+46:vgprValuC+46+1], v[42:43], v[vgprValuC+46:vgprValuC+46+1] // *= ScaleBVMulPK(42)(2)
 v_pk_mul_f32 v[vgprValuC+44:vgprValuC+44+1], v[32:33], v[vgprValuC+44:vgprValuC+44+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+46:vgprValuC+46+1], v[34:35], v[vgprValuC+46:vgprValuC+46+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v40                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v40                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+44], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v40, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v40, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+45], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v41                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v41                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+46], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v41, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v41, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+47], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+44:vgprValuC+44+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+46:vgprValuC+46+1] // C += bias
@@ -29141,13 +29141,13 @@ v_pk_mul_f32 v[vgprValuC+52:vgprValuC+52+1], v[50:51], v[vgprValuC+52:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+54:vgprValuC+54+1], v[50:51], v[vgprValuC+54:vgprValuC+54+1] // *= ScaleBVMulPK(50)(2)
 v_pk_mul_f32 v[vgprValuC+52:vgprValuC+52+1], v[32:33], v[vgprValuC+52:vgprValuC+52+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+54:vgprValuC+54+1], v[34:35], v[vgprValuC+54:vgprValuC+54+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v48                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v48                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+52], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v48, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v48, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+53], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+54], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v49, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v49, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+55], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+52:vgprValuC+52+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+54:vgprValuC+54+1] // C += bias
@@ -29189,13 +29189,13 @@ v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[58:59], v[vgprValuC+60:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[58:59], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleBVMulPK(58)(2)
 v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[32:33], v[vgprValuC+60:vgprValuC+60+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[34:35], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+60], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v56, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v56, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+62], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v57, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v57, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+63], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+60:vgprValuC+60+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+62:vgprValuC+62+1] // C += bias
@@ -29237,13 +29237,13 @@ v_pk_mul_f32 v[vgprValuC+68:vgprValuC+68+1], v[66:67], v[vgprValuC+68:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+70:vgprValuC+70+1], v[66:67], v[vgprValuC+70:vgprValuC+70+1] // *= ScaleBVMulPK(66)(2)
 v_pk_mul_f32 v[vgprValuC+68:vgprValuC+68+1], v[32:33], v[vgprValuC+68:vgprValuC+68+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+70:vgprValuC+70+1], v[34:35], v[vgprValuC+70:vgprValuC+70+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v64                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v64                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+68], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v64, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v64, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+69], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v65                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v65                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+70], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v65, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v65, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+71], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+68:vgprValuC+68+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+70:vgprValuC+70+1] // C += bias
@@ -29285,13 +29285,13 @@ v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[74:75], v[vgprValuC+76:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[74:75], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleBVMulPK(74)(2)
 v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[32:33], v[vgprValuC+76:vgprValuC+76+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[34:35], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v72                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v72                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+76], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v72, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v72, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+77], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v73                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v73                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+78], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v73, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v73, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+79], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+76:vgprValuC+76+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+78:vgprValuC+78+1] // C += bias
@@ -29333,13 +29333,13 @@ v_pk_mul_f32 v[vgprValuC+84:vgprValuC+84+1], v[82:83], v[vgprValuC+84:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+86:vgprValuC+86+1], v[82:83], v[vgprValuC+86:vgprValuC+86+1] // *= ScaleBVMulPK(82)(2)
 v_pk_mul_f32 v[vgprValuC+84:vgprValuC+84+1], v[32:33], v[vgprValuC+84:vgprValuC+84+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+86:vgprValuC+86+1], v[34:35], v[vgprValuC+86:vgprValuC+86+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v80                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v80                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+84], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v80, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v80, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+85], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+86], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v81, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v81, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+87], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+84:vgprValuC+84+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+86:vgprValuC+86+1] // C += bias
@@ -29381,13 +29381,13 @@ v_pk_mul_f32 v[vgprValuC+92:vgprValuC+92+1], v[90:91], v[vgprValuC+92:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+94:vgprValuC+94+1], v[90:91], v[vgprValuC+94:vgprValuC+94+1] // *= ScaleBVMulPK(90)(2)
 v_pk_mul_f32 v[vgprValuC+92:vgprValuC+92+1], v[32:33], v[vgprValuC+92:vgprValuC+92+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+94:vgprValuC+94+1], v[34:35], v[vgprValuC+94:vgprValuC+94+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+92], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v88, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v88, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+93], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v89                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v89                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+94], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v89, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v89, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+95], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+92:vgprValuC+92+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+94:vgprValuC+94+1] // C += bias
@@ -29429,13 +29429,13 @@ v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[98:99], v[vgprValuC+100:vgprVal
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[98:99], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleBVMulPK(98)(2)
 v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[32:33], v[vgprValuC+100:vgprValuC+100+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[34:35], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+100], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v96, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v96, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+101], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+102], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v97, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v97, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+103], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+100:vgprValuC+100+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+102:vgprValuC+102+1] // C += bias
@@ -29477,13 +29477,13 @@ v_pk_mul_f32 v[vgprValuC+108:vgprValuC+108+1], v[106:107], v[vgprValuC+108:vgprV
 v_pk_mul_f32 v[vgprValuC+110:vgprValuC+110+1], v[106:107], v[vgprValuC+110:vgprValuC+110+1] // *= ScaleBVMulPK(106)(2)
 v_pk_mul_f32 v[vgprValuC+108:vgprValuC+108+1], v[32:33], v[vgprValuC+108:vgprValuC+108+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+110:vgprValuC+110+1], v[34:35], v[vgprValuC+110:vgprValuC+110+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v104                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v104                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+108], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v104, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v104, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+109], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v105                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v105                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+110], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v105, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v105, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+111], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+108:vgprValuC+108+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+110:vgprValuC+110+1] // C += bias
@@ -29525,13 +29525,13 @@ v_pk_mul_f32 v[vgprValuC+116:vgprValuC+116+1], v[114:115], v[vgprValuC+116:vgprV
 v_pk_mul_f32 v[vgprValuC+118:vgprValuC+118+1], v[114:115], v[vgprValuC+118:vgprValuC+118+1] // *= ScaleBVMulPK(114)(2)
 v_pk_mul_f32 v[vgprValuC+116:vgprValuC+116+1], v[32:33], v[vgprValuC+116:vgprValuC+116+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+118:vgprValuC+118+1], v[34:35], v[vgprValuC+118:vgprValuC+118+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v112                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v112                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+116], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v112, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v112, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+117], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v113                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v113                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+118], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v113, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v113, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+119], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+116:vgprValuC+116+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+118:vgprValuC+118+1] // C += bias
@@ -29749,13 +29749,13 @@ v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[22:23], v[vgprValuC+36:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[22:23], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleBVMulPK(22)(2)
 v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[32:33], v[vgprValuC+36:vgprValuC+36+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[34:35], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v20                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v20                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+36], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v20, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v20, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+37], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v21                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v21                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+38], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v21, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v21, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+39], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+36:vgprValuC+36+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+38:vgprValuC+38+1] // C += bias
@@ -29797,13 +29797,13 @@ v_pk_mul_f32 v[vgprValuC+44:vgprValuC+44+1], v[42:43], v[vgprValuC+44:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+46:vgprValuC+46+1], v[42:43], v[vgprValuC+46:vgprValuC+46+1] // *= ScaleBVMulPK(42)(2)
 v_pk_mul_f32 v[vgprValuC+44:vgprValuC+44+1], v[32:33], v[vgprValuC+44:vgprValuC+44+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+46:vgprValuC+46+1], v[34:35], v[vgprValuC+46:vgprValuC+46+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v40                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v40                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+44], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v40, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v40, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+45], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v41                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v41                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+46], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v41, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v41, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+47], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+44:vgprValuC+44+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+46:vgprValuC+46+1] // C += bias
@@ -29845,13 +29845,13 @@ v_pk_mul_f32 v[vgprValuC+52:vgprValuC+52+1], v[50:51], v[vgprValuC+52:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+54:vgprValuC+54+1], v[50:51], v[vgprValuC+54:vgprValuC+54+1] // *= ScaleBVMulPK(50)(2)
 v_pk_mul_f32 v[vgprValuC+52:vgprValuC+52+1], v[32:33], v[vgprValuC+52:vgprValuC+52+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+54:vgprValuC+54+1], v[34:35], v[vgprValuC+54:vgprValuC+54+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v48                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v48                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+52], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v48, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v48, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+53], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+54], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v49, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v49, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+55], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+52:vgprValuC+52+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+54:vgprValuC+54+1] // C += bias
@@ -29893,13 +29893,13 @@ v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[58:59], v[vgprValuC+60:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[58:59], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleBVMulPK(58)(2)
 v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[32:33], v[vgprValuC+60:vgprValuC+60+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[34:35], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+60], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v56, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v56, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+62], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v57, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v57, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+63], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+60:vgprValuC+60+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+62:vgprValuC+62+1] // C += bias
@@ -29941,13 +29941,13 @@ v_pk_mul_f32 v[vgprValuC+68:vgprValuC+68+1], v[66:67], v[vgprValuC+68:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+70:vgprValuC+70+1], v[66:67], v[vgprValuC+70:vgprValuC+70+1] // *= ScaleBVMulPK(66)(2)
 v_pk_mul_f32 v[vgprValuC+68:vgprValuC+68+1], v[32:33], v[vgprValuC+68:vgprValuC+68+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+70:vgprValuC+70+1], v[34:35], v[vgprValuC+70:vgprValuC+70+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v64                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v64                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+68], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v64, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v64, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+69], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v65                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v65                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+70], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v65, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v65, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+71], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+68:vgprValuC+68+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+70:vgprValuC+70+1] // C += bias
@@ -29989,13 +29989,13 @@ v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[74:75], v[vgprValuC+76:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[74:75], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleBVMulPK(74)(2)
 v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[32:33], v[vgprValuC+76:vgprValuC+76+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[34:35], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v72                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v72                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+76], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v72, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v72, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+77], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v73                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v73                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+78], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v73, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v73, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+79], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+76:vgprValuC+76+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+78:vgprValuC+78+1] // C += bias
@@ -30037,13 +30037,13 @@ v_pk_mul_f32 v[vgprValuC+84:vgprValuC+84+1], v[82:83], v[vgprValuC+84:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+86:vgprValuC+86+1], v[82:83], v[vgprValuC+86:vgprValuC+86+1] // *= ScaleBVMulPK(82)(2)
 v_pk_mul_f32 v[vgprValuC+84:vgprValuC+84+1], v[32:33], v[vgprValuC+84:vgprValuC+84+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+86:vgprValuC+86+1], v[34:35], v[vgprValuC+86:vgprValuC+86+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v80                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v80                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+84], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v80, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v80, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+85], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+86], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v81, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v81, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+87], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+84:vgprValuC+84+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+86:vgprValuC+86+1] // C += bias
@@ -30085,13 +30085,13 @@ v_pk_mul_f32 v[vgprValuC+92:vgprValuC+92+1], v[90:91], v[vgprValuC+92:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+94:vgprValuC+94+1], v[90:91], v[vgprValuC+94:vgprValuC+94+1] // *= ScaleBVMulPK(90)(2)
 v_pk_mul_f32 v[vgprValuC+92:vgprValuC+92+1], v[32:33], v[vgprValuC+92:vgprValuC+92+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+94:vgprValuC+94+1], v[34:35], v[vgprValuC+94:vgprValuC+94+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+92], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v88, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v88, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+93], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v89                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v89                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+94], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v89, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v89, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+95], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+92:vgprValuC+92+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+94:vgprValuC+94+1] // C += bias
@@ -30133,13 +30133,13 @@ v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[98:99], v[vgprValuC+100:vgprVal
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[98:99], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleBVMulPK(98)(2)
 v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[32:33], v[vgprValuC+100:vgprValuC+100+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[34:35], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+100], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v96, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v96, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+101], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+102], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v97, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v97, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+103], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+100:vgprValuC+100+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+102:vgprValuC+102+1] // C += bias
@@ -30181,13 +30181,13 @@ v_pk_mul_f32 v[vgprValuC+108:vgprValuC+108+1], v[106:107], v[vgprValuC+108:vgprV
 v_pk_mul_f32 v[vgprValuC+110:vgprValuC+110+1], v[106:107], v[vgprValuC+110:vgprValuC+110+1] // *= ScaleBVMulPK(106)(2)
 v_pk_mul_f32 v[vgprValuC+108:vgprValuC+108+1], v[32:33], v[vgprValuC+108:vgprValuC+108+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+110:vgprValuC+110+1], v[34:35], v[vgprValuC+110:vgprValuC+110+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v104                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v104                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+108], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v104, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v104, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+109], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v105                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v105                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+110], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v105, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v105, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+111], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+108:vgprValuC+108+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+110:vgprValuC+110+1] // C += bias
@@ -30229,13 +30229,13 @@ v_pk_mul_f32 v[vgprValuC+116:vgprValuC+116+1], v[114:115], v[vgprValuC+116:vgprV
 v_pk_mul_f32 v[vgprValuC+118:vgprValuC+118+1], v[114:115], v[vgprValuC+118:vgprValuC+118+1] // *= ScaleBVMulPK(114)(2)
 v_pk_mul_f32 v[vgprValuC+116:vgprValuC+116+1], v[32:33], v[vgprValuC+116:vgprValuC+116+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+118:vgprValuC+118+1], v[34:35], v[vgprValuC+118:vgprValuC+118+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v112                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v112                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+116], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v112, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v112, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+117], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v113                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v113                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+118], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v113, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v113, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+119], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+116:vgprValuC+116+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+118:vgprValuC+118+1] // C += bias
@@ -30453,13 +30453,13 @@ v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[22:23], v[vgprValuC+36:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[22:23], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleBVMulPK(22)(2)
 v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[32:33], v[vgprValuC+36:vgprValuC+36+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[34:35], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v20                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v20                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+36], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v20, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v20, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+37], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v21                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v21                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+38], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v21, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v21, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+39], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+36:vgprValuC+36+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+38:vgprValuC+38+1] // C += bias
@@ -30501,13 +30501,13 @@ v_pk_mul_f32 v[vgprValuC+44:vgprValuC+44+1], v[42:43], v[vgprValuC+44:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+46:vgprValuC+46+1], v[42:43], v[vgprValuC+46:vgprValuC+46+1] // *= ScaleBVMulPK(42)(2)
 v_pk_mul_f32 v[vgprValuC+44:vgprValuC+44+1], v[32:33], v[vgprValuC+44:vgprValuC+44+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+46:vgprValuC+46+1], v[34:35], v[vgprValuC+46:vgprValuC+46+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v40                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v40                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+44], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v40, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v40, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+45], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v41                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v41                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+46], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v41, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v41, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+47], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+44:vgprValuC+44+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+46:vgprValuC+46+1] // C += bias
@@ -30549,13 +30549,13 @@ v_pk_mul_f32 v[vgprValuC+52:vgprValuC+52+1], v[50:51], v[vgprValuC+52:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+54:vgprValuC+54+1], v[50:51], v[vgprValuC+54:vgprValuC+54+1] // *= ScaleBVMulPK(50)(2)
 v_pk_mul_f32 v[vgprValuC+52:vgprValuC+52+1], v[32:33], v[vgprValuC+52:vgprValuC+52+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+54:vgprValuC+54+1], v[34:35], v[vgprValuC+54:vgprValuC+54+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v48                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v48                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+52], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v48, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v48, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+53], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+54], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v49, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v49, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+55], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+52:vgprValuC+52+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+54:vgprValuC+54+1] // C += bias
@@ -30597,13 +30597,13 @@ v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[58:59], v[vgprValuC+60:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[58:59], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleBVMulPK(58)(2)
 v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[32:33], v[vgprValuC+60:vgprValuC+60+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[34:35], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+60], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v56, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v56, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+62], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v57, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v57, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+63], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+60:vgprValuC+60+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+62:vgprValuC+62+1] // C += bias
@@ -30645,13 +30645,13 @@ v_pk_mul_f32 v[vgprValuC+68:vgprValuC+68+1], v[66:67], v[vgprValuC+68:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+70:vgprValuC+70+1], v[66:67], v[vgprValuC+70:vgprValuC+70+1] // *= ScaleBVMulPK(66)(2)
 v_pk_mul_f32 v[vgprValuC+68:vgprValuC+68+1], v[32:33], v[vgprValuC+68:vgprValuC+68+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+70:vgprValuC+70+1], v[34:35], v[vgprValuC+70:vgprValuC+70+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v64                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v64                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+68], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v64, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v64, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+69], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v65                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v65                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+70], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v65, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v65, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+71], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+68:vgprValuC+68+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+70:vgprValuC+70+1] // C += bias
@@ -30693,13 +30693,13 @@ v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[74:75], v[vgprValuC+76:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[74:75], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleBVMulPK(74)(2)
 v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[32:33], v[vgprValuC+76:vgprValuC+76+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[34:35], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v72                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v72                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+76], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v72, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v72, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+77], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v73                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v73                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+78], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v73, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v73, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+79], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+76:vgprValuC+76+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+78:vgprValuC+78+1] // C += bias
@@ -30741,13 +30741,13 @@ v_pk_mul_f32 v[vgprValuC+84:vgprValuC+84+1], v[82:83], v[vgprValuC+84:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+86:vgprValuC+86+1], v[82:83], v[vgprValuC+86:vgprValuC+86+1] // *= ScaleBVMulPK(82)(2)
 v_pk_mul_f32 v[vgprValuC+84:vgprValuC+84+1], v[32:33], v[vgprValuC+84:vgprValuC+84+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+86:vgprValuC+86+1], v[34:35], v[vgprValuC+86:vgprValuC+86+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v80                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v80                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+84], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v80, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v80, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+85], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+86], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v81, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v81, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+87], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+84:vgprValuC+84+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+86:vgprValuC+86+1] // C += bias
@@ -30789,13 +30789,13 @@ v_pk_mul_f32 v[vgprValuC+92:vgprValuC+92+1], v[90:91], v[vgprValuC+92:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+94:vgprValuC+94+1], v[90:91], v[vgprValuC+94:vgprValuC+94+1] // *= ScaleBVMulPK(90)(2)
 v_pk_mul_f32 v[vgprValuC+92:vgprValuC+92+1], v[32:33], v[vgprValuC+92:vgprValuC+92+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+94:vgprValuC+94+1], v[34:35], v[vgprValuC+94:vgprValuC+94+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+92], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v88, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v88, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+93], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v89                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v89                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+94], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v89, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v89, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+95], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+92:vgprValuC+92+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+94:vgprValuC+94+1] // C += bias
@@ -30837,13 +30837,13 @@ v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[98:99], v[vgprValuC+100:vgprVal
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[98:99], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleBVMulPK(98)(2)
 v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[32:33], v[vgprValuC+100:vgprValuC+100+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[34:35], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+100], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v96, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v96, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+101], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+102], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v97, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v97, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+103], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+100:vgprValuC+100+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+102:vgprValuC+102+1] // C += bias
@@ -30885,13 +30885,13 @@ v_pk_mul_f32 v[vgprValuC+108:vgprValuC+108+1], v[106:107], v[vgprValuC+108:vgprV
 v_pk_mul_f32 v[vgprValuC+110:vgprValuC+110+1], v[106:107], v[vgprValuC+110:vgprValuC+110+1] // *= ScaleBVMulPK(106)(2)
 v_pk_mul_f32 v[vgprValuC+108:vgprValuC+108+1], v[32:33], v[vgprValuC+108:vgprValuC+108+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+110:vgprValuC+110+1], v[34:35], v[vgprValuC+110:vgprValuC+110+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v104                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v104                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+108], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v104, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v104, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+109], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v105                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v105                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+110], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v105, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v105, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+111], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+108:vgprValuC+108+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+110:vgprValuC+110+1] // C += bias
@@ -30933,13 +30933,13 @@ v_pk_mul_f32 v[vgprValuC+116:vgprValuC+116+1], v[114:115], v[vgprValuC+116:vgprV
 v_pk_mul_f32 v[vgprValuC+118:vgprValuC+118+1], v[114:115], v[vgprValuC+118:vgprValuC+118+1] // *= ScaleBVMulPK(114)(2)
 v_pk_mul_f32 v[vgprValuC+116:vgprValuC+116+1], v[32:33], v[vgprValuC+116:vgprValuC+116+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+118:vgprValuC+118+1], v[34:35], v[vgprValuC+118:vgprValuC+118+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v112                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v112                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+116], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v112, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v112, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+117], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v113                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v113                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+118], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v113, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v113, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+119], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+116:vgprValuC+116+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+118:vgprValuC+118+1] // C += bias
@@ -31157,13 +31157,13 @@ v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[22:23], v[vgprValuC+36:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[22:23], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleBVMulPK(22)(2)
 v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[32:33], v[vgprValuC+36:vgprValuC+36+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[34:35], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v20                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v20                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+36], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v20, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v20, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+37], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v21                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v21                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+38], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v21, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v21, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+39], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+36:vgprValuC+36+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+38:vgprValuC+38+1] // C += bias
@@ -31205,13 +31205,13 @@ v_pk_mul_f32 v[vgprValuC+44:vgprValuC+44+1], v[42:43], v[vgprValuC+44:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+46:vgprValuC+46+1], v[42:43], v[vgprValuC+46:vgprValuC+46+1] // *= ScaleBVMulPK(42)(2)
 v_pk_mul_f32 v[vgprValuC+44:vgprValuC+44+1], v[32:33], v[vgprValuC+44:vgprValuC+44+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+46:vgprValuC+46+1], v[34:35], v[vgprValuC+46:vgprValuC+46+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v40                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v40                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+44], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v40, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v40, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+45], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v41                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v41                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+46], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v41, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v41, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+47], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+44:vgprValuC+44+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+46:vgprValuC+46+1] // C += bias
@@ -31253,13 +31253,13 @@ v_pk_mul_f32 v[vgprValuC+52:vgprValuC+52+1], v[50:51], v[vgprValuC+52:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+54:vgprValuC+54+1], v[50:51], v[vgprValuC+54:vgprValuC+54+1] // *= ScaleBVMulPK(50)(2)
 v_pk_mul_f32 v[vgprValuC+52:vgprValuC+52+1], v[32:33], v[vgprValuC+52:vgprValuC+52+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+54:vgprValuC+54+1], v[34:35], v[vgprValuC+54:vgprValuC+54+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v48                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v48                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+52], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v48, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v48, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+53], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+54], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v49, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v49, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+55], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+52:vgprValuC+52+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+54:vgprValuC+54+1] // C += bias
@@ -31301,13 +31301,13 @@ v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[58:59], v[vgprValuC+60:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[58:59], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleBVMulPK(58)(2)
 v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[32:33], v[vgprValuC+60:vgprValuC+60+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[34:35], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+60], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v56, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v56, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+62], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v57, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v57, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+63], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+60:vgprValuC+60+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+62:vgprValuC+62+1] // C += bias
@@ -31349,13 +31349,13 @@ v_pk_mul_f32 v[vgprValuC+68:vgprValuC+68+1], v[66:67], v[vgprValuC+68:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+70:vgprValuC+70+1], v[66:67], v[vgprValuC+70:vgprValuC+70+1] // *= ScaleBVMulPK(66)(2)
 v_pk_mul_f32 v[vgprValuC+68:vgprValuC+68+1], v[32:33], v[vgprValuC+68:vgprValuC+68+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+70:vgprValuC+70+1], v[34:35], v[vgprValuC+70:vgprValuC+70+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v64                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v64                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+68], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v64, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v64, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+69], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v65                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v65                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+70], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v65, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v65, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+71], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+68:vgprValuC+68+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+70:vgprValuC+70+1] // C += bias
@@ -31397,13 +31397,13 @@ v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[74:75], v[vgprValuC+76:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[74:75], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleBVMulPK(74)(2)
 v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[32:33], v[vgprValuC+76:vgprValuC+76+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[34:35], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v72                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v72                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+76], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v72, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v72, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+77], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v73                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v73                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+78], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v73, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v73, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+79], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+76:vgprValuC+76+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+78:vgprValuC+78+1] // C += bias
@@ -31445,13 +31445,13 @@ v_pk_mul_f32 v[vgprValuC+84:vgprValuC+84+1], v[82:83], v[vgprValuC+84:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+86:vgprValuC+86+1], v[82:83], v[vgprValuC+86:vgprValuC+86+1] // *= ScaleBVMulPK(82)(2)
 v_pk_mul_f32 v[vgprValuC+84:vgprValuC+84+1], v[32:33], v[vgprValuC+84:vgprValuC+84+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+86:vgprValuC+86+1], v[34:35], v[vgprValuC+86:vgprValuC+86+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v80                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v80                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+84], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v80, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v80, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+85], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+86], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v81, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v81, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+87], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+84:vgprValuC+84+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+86:vgprValuC+86+1] // C += bias
@@ -31493,13 +31493,13 @@ v_pk_mul_f32 v[vgprValuC+92:vgprValuC+92+1], v[90:91], v[vgprValuC+92:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+94:vgprValuC+94+1], v[90:91], v[vgprValuC+94:vgprValuC+94+1] // *= ScaleBVMulPK(90)(2)
 v_pk_mul_f32 v[vgprValuC+92:vgprValuC+92+1], v[32:33], v[vgprValuC+92:vgprValuC+92+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+94:vgprValuC+94+1], v[34:35], v[vgprValuC+94:vgprValuC+94+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+92], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v88, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v88, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+93], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v89                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v89                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+94], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v89, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v89, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+95], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+92:vgprValuC+92+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+94:vgprValuC+94+1] // C += bias
@@ -31541,13 +31541,13 @@ v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[98:99], v[vgprValuC+100:vgprVal
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[98:99], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleBVMulPK(98)(2)
 v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[32:33], v[vgprValuC+100:vgprValuC+100+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[34:35], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+100], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v96, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v96, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+101], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+102], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v97, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v97, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+103], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+100:vgprValuC+100+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+102:vgprValuC+102+1] // C += bias
@@ -31589,13 +31589,13 @@ v_pk_mul_f32 v[vgprValuC+108:vgprValuC+108+1], v[106:107], v[vgprValuC+108:vgprV
 v_pk_mul_f32 v[vgprValuC+110:vgprValuC+110+1], v[106:107], v[vgprValuC+110:vgprValuC+110+1] // *= ScaleBVMulPK(106)(2)
 v_pk_mul_f32 v[vgprValuC+108:vgprValuC+108+1], v[32:33], v[vgprValuC+108:vgprValuC+108+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+110:vgprValuC+110+1], v[34:35], v[vgprValuC+110:vgprValuC+110+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v104                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v104                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+108], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v104, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v104, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+109], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v105                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v105                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+110], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v105, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v105, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+111], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+108:vgprValuC+108+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+110:vgprValuC+110+1] // C += bias
@@ -31637,13 +31637,13 @@ v_pk_mul_f32 v[vgprValuC+116:vgprValuC+116+1], v[114:115], v[vgprValuC+116:vgprV
 v_pk_mul_f32 v[vgprValuC+118:vgprValuC+118+1], v[114:115], v[vgprValuC+118:vgprValuC+118+1] // *= ScaleBVMulPK(114)(2)
 v_pk_mul_f32 v[vgprValuC+116:vgprValuC+116+1], v[32:33], v[vgprValuC+116:vgprValuC+116+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+118:vgprValuC+118+1], v[34:35], v[vgprValuC+118:vgprValuC+118+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v112                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v112                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+116], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v112, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v112, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+117], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v113                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v113                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+118], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v113, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v113, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+119], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+116:vgprValuC+116+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+118:vgprValuC+118+1] // C += bias
@@ -31861,13 +31861,13 @@ v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[22:23], v[vgprValuC+36:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[22:23], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleBVMulPK(22)(2)
 v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[32:33], v[vgprValuC+36:vgprValuC+36+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[34:35], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v20                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v20                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+36], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v20, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v20, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+37], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v21                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v21                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+38], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v21, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v21, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+39], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+36:vgprValuC+36+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+38:vgprValuC+38+1] // C += bias
@@ -31909,13 +31909,13 @@ v_pk_mul_f32 v[vgprValuC+44:vgprValuC+44+1], v[42:43], v[vgprValuC+44:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+46:vgprValuC+46+1], v[42:43], v[vgprValuC+46:vgprValuC+46+1] // *= ScaleBVMulPK(42)(2)
 v_pk_mul_f32 v[vgprValuC+44:vgprValuC+44+1], v[32:33], v[vgprValuC+44:vgprValuC+44+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+46:vgprValuC+46+1], v[34:35], v[vgprValuC+46:vgprValuC+46+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v40                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v40                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+44], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v40, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v40, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+45], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v41                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v41                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+46], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v41, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v41, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+47], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+44:vgprValuC+44+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+46:vgprValuC+46+1] // C += bias
@@ -31957,13 +31957,13 @@ v_pk_mul_f32 v[vgprValuC+52:vgprValuC+52+1], v[50:51], v[vgprValuC+52:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+54:vgprValuC+54+1], v[50:51], v[vgprValuC+54:vgprValuC+54+1] // *= ScaleBVMulPK(50)(2)
 v_pk_mul_f32 v[vgprValuC+52:vgprValuC+52+1], v[32:33], v[vgprValuC+52:vgprValuC+52+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+54:vgprValuC+54+1], v[34:35], v[vgprValuC+54:vgprValuC+54+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v48                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v48                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+52], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v48, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v48, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+53], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+54], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v49, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v49, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+55], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+52:vgprValuC+52+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+54:vgprValuC+54+1] // C += bias
@@ -32005,13 +32005,13 @@ v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[58:59], v[vgprValuC+60:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[58:59], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleBVMulPK(58)(2)
 v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[32:33], v[vgprValuC+60:vgprValuC+60+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[34:35], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+60], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v56, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v56, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+62], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v57, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v57, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+63], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+60:vgprValuC+60+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+62:vgprValuC+62+1] // C += bias
@@ -32053,13 +32053,13 @@ v_pk_mul_f32 v[vgprValuC+68:vgprValuC+68+1], v[66:67], v[vgprValuC+68:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+70:vgprValuC+70+1], v[66:67], v[vgprValuC+70:vgprValuC+70+1] // *= ScaleBVMulPK(66)(2)
 v_pk_mul_f32 v[vgprValuC+68:vgprValuC+68+1], v[32:33], v[vgprValuC+68:vgprValuC+68+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+70:vgprValuC+70+1], v[34:35], v[vgprValuC+70:vgprValuC+70+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v64                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v64                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+68], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v64, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v64, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+69], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v65                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v65                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+70], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v65, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v65, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+71], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+68:vgprValuC+68+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+70:vgprValuC+70+1] // C += bias
@@ -32101,13 +32101,13 @@ v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[74:75], v[vgprValuC+76:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[74:75], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleBVMulPK(74)(2)
 v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[32:33], v[vgprValuC+76:vgprValuC+76+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[34:35], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v72                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v72                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+76], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v72, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v72, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+77], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v73                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v73                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+78], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v73, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v73, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+79], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+76:vgprValuC+76+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+78:vgprValuC+78+1] // C += bias
@@ -32149,13 +32149,13 @@ v_pk_mul_f32 v[vgprValuC+84:vgprValuC+84+1], v[82:83], v[vgprValuC+84:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+86:vgprValuC+86+1], v[82:83], v[vgprValuC+86:vgprValuC+86+1] // *= ScaleBVMulPK(82)(2)
 v_pk_mul_f32 v[vgprValuC+84:vgprValuC+84+1], v[32:33], v[vgprValuC+84:vgprValuC+84+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+86:vgprValuC+86+1], v[34:35], v[vgprValuC+86:vgprValuC+86+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v80                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v80                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+84], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v80, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v80, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+85], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+86], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v81, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v81, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+87], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+84:vgprValuC+84+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+86:vgprValuC+86+1] // C += bias
@@ -32197,13 +32197,13 @@ v_pk_mul_f32 v[vgprValuC+92:vgprValuC+92+1], v[90:91], v[vgprValuC+92:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+94:vgprValuC+94+1], v[90:91], v[vgprValuC+94:vgprValuC+94+1] // *= ScaleBVMulPK(90)(2)
 v_pk_mul_f32 v[vgprValuC+92:vgprValuC+92+1], v[32:33], v[vgprValuC+92:vgprValuC+92+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+94:vgprValuC+94+1], v[34:35], v[vgprValuC+94:vgprValuC+94+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+92], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v88, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v88, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+93], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v89                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v89                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+94], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v89, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v89, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+95], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+92:vgprValuC+92+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+94:vgprValuC+94+1] // C += bias
@@ -32245,13 +32245,13 @@ v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[98:99], v[vgprValuC+100:vgprVal
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[98:99], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleBVMulPK(98)(2)
 v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[32:33], v[vgprValuC+100:vgprValuC+100+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[34:35], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+100], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v96, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v96, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+101], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+102], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v97, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v97, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+103], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+100:vgprValuC+100+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+102:vgprValuC+102+1] // C += bias
@@ -32293,13 +32293,13 @@ v_pk_mul_f32 v[vgprValuC+108:vgprValuC+108+1], v[106:107], v[vgprValuC+108:vgprV
 v_pk_mul_f32 v[vgprValuC+110:vgprValuC+110+1], v[106:107], v[vgprValuC+110:vgprValuC+110+1] // *= ScaleBVMulPK(106)(2)
 v_pk_mul_f32 v[vgprValuC+108:vgprValuC+108+1], v[32:33], v[vgprValuC+108:vgprValuC+108+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+110:vgprValuC+110+1], v[34:35], v[vgprValuC+110:vgprValuC+110+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v104                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v104                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+108], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v104, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v104, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+109], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v105                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v105                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+110], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v105, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v105, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+111], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+108:vgprValuC+108+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+110:vgprValuC+110+1] // C += bias
@@ -32341,13 +32341,13 @@ v_pk_mul_f32 v[vgprValuC+116:vgprValuC+116+1], v[114:115], v[vgprValuC+116:vgprV
 v_pk_mul_f32 v[vgprValuC+118:vgprValuC+118+1], v[114:115], v[vgprValuC+118:vgprValuC+118+1] // *= ScaleBVMulPK(114)(2)
 v_pk_mul_f32 v[vgprValuC+116:vgprValuC+116+1], v[32:33], v[vgprValuC+116:vgprValuC+116+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+118:vgprValuC+118+1], v[34:35], v[vgprValuC+118:vgprValuC+118+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v112                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v112                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+116], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v112, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v112, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+117], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v113                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v113                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+118], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v113, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v113, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+119], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+116:vgprValuC+116+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+118:vgprValuC+118+1] // C += bias
@@ -32537,13 +32537,13 @@ v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[22:23], v[vgprValuC+36:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[22:23], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleBVMulPK(22)(2)
 v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[32:33], v[vgprValuC+36:vgprValuC+36+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[34:35], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v20                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v20                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+36], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v20, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v20, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+37], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v21                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v21                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+38], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v21, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v21, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+39], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+36:vgprValuC+36+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+38:vgprValuC+38+1] // C += bias
@@ -32585,13 +32585,13 @@ v_pk_mul_f32 v[vgprValuC+44:vgprValuC+44+1], v[42:43], v[vgprValuC+44:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+46:vgprValuC+46+1], v[42:43], v[vgprValuC+46:vgprValuC+46+1] // *= ScaleBVMulPK(42)(2)
 v_pk_mul_f32 v[vgprValuC+44:vgprValuC+44+1], v[32:33], v[vgprValuC+44:vgprValuC+44+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+46:vgprValuC+46+1], v[34:35], v[vgprValuC+46:vgprValuC+46+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v40                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v40                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+44], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v40, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v40, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+45], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v41                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v41                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+46], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v41, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v41, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+47], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+44:vgprValuC+44+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+46:vgprValuC+46+1] // C += bias
@@ -32633,13 +32633,13 @@ v_pk_mul_f32 v[vgprValuC+52:vgprValuC+52+1], v[50:51], v[vgprValuC+52:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+54:vgprValuC+54+1], v[50:51], v[vgprValuC+54:vgprValuC+54+1] // *= ScaleBVMulPK(50)(2)
 v_pk_mul_f32 v[vgprValuC+52:vgprValuC+52+1], v[32:33], v[vgprValuC+52:vgprValuC+52+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+54:vgprValuC+54+1], v[34:35], v[vgprValuC+54:vgprValuC+54+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v48                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v48                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+52], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v48, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v48, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+53], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+54], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v49, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v49, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+55], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+52:vgprValuC+52+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+54:vgprValuC+54+1] // C += bias
@@ -32681,13 +32681,13 @@ v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[58:59], v[vgprValuC+60:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[58:59], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleBVMulPK(58)(2)
 v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[32:33], v[vgprValuC+60:vgprValuC+60+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[34:35], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+60], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v56, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v56, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+62], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v57, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v57, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+63], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+60:vgprValuC+60+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+62:vgprValuC+62+1] // C += bias
@@ -32729,13 +32729,13 @@ v_pk_mul_f32 v[vgprValuC+68:vgprValuC+68+1], v[66:67], v[vgprValuC+68:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+70:vgprValuC+70+1], v[66:67], v[vgprValuC+70:vgprValuC+70+1] // *= ScaleBVMulPK(66)(2)
 v_pk_mul_f32 v[vgprValuC+68:vgprValuC+68+1], v[32:33], v[vgprValuC+68:vgprValuC+68+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+70:vgprValuC+70+1], v[34:35], v[vgprValuC+70:vgprValuC+70+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v64                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v64                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+68], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v64, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v64, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+69], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v65                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v65                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+70], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v65, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v65, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+71], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+68:vgprValuC+68+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+70:vgprValuC+70+1] // C += bias
@@ -32777,13 +32777,13 @@ v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[74:75], v[vgprValuC+76:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[74:75], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleBVMulPK(74)(2)
 v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[32:33], v[vgprValuC+76:vgprValuC+76+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[34:35], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v72                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v72                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+76], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v72, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v72, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+77], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v73                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v73                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+78], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v73, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v73, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+79], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+76:vgprValuC+76+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+78:vgprValuC+78+1] // C += bias
@@ -32825,13 +32825,13 @@ v_pk_mul_f32 v[vgprValuC+84:vgprValuC+84+1], v[82:83], v[vgprValuC+84:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+86:vgprValuC+86+1], v[82:83], v[vgprValuC+86:vgprValuC+86+1] // *= ScaleBVMulPK(82)(2)
 v_pk_mul_f32 v[vgprValuC+84:vgprValuC+84+1], v[32:33], v[vgprValuC+84:vgprValuC+84+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+86:vgprValuC+86+1], v[34:35], v[vgprValuC+86:vgprValuC+86+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v80                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v80                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+84], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v80, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v80, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+85], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+86], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v81, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v81, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+87], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+84:vgprValuC+84+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+86:vgprValuC+86+1] // C += bias
@@ -32873,13 +32873,13 @@ v_pk_mul_f32 v[vgprValuC+92:vgprValuC+92+1], v[90:91], v[vgprValuC+92:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+94:vgprValuC+94+1], v[90:91], v[vgprValuC+94:vgprValuC+94+1] // *= ScaleBVMulPK(90)(2)
 v_pk_mul_f32 v[vgprValuC+92:vgprValuC+92+1], v[32:33], v[vgprValuC+92:vgprValuC+92+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+94:vgprValuC+94+1], v[34:35], v[vgprValuC+94:vgprValuC+94+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+92], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v88, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v88, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+93], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v89                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v89                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+94], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v89, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v89, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+95], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+92:vgprValuC+92+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+94:vgprValuC+94+1] // C += bias
@@ -32921,13 +32921,13 @@ v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[98:99], v[vgprValuC+100:vgprVal
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[98:99], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleBVMulPK(98)(2)
 v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[32:33], v[vgprValuC+100:vgprValuC+100+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[34:35], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+100], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v96, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v96, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+101], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+102], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v97, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v97, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+103], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[24:25], v[vgprValuC+100:vgprValuC+100+1] // C += bias
 v_pk_add_f32 v[6:7], v[26:27], v[vgprValuC+102:vgprValuC+102+1] // C += bias
@@ -33324,13 +33324,13 @@ v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[28:29], v[vgprValuC+36:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[28:29], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleBVMulPK(28)(2)
 v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[32:33], v[vgprValuC+36:vgprValuC+36+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[34:35], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+36], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v18, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v18, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+37], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v19                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v19                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+38], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v19, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v19, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+39], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+36:vgprValuC+36+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+38:vgprValuC+38+1] // C += bias
@@ -33367,13 +33367,13 @@ v_pk_mul_f32 v[vgprValuC+48:vgprValuC+48+1], v[46:47], v[vgprValuC+48:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+50:vgprValuC+50+1], v[46:47], v[vgprValuC+50:vgprValuC+50+1] // *= ScaleBVMulPK(46)(2)
 v_pk_mul_f32 v[vgprValuC+48:vgprValuC+48+1], v[32:33], v[vgprValuC+48:vgprValuC+48+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+50:vgprValuC+50+1], v[34:35], v[vgprValuC+50:vgprValuC+50+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v44                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v44                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+48], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v44, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v44, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+49], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v45                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v45                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+50], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v45, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v45, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+51], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+48:vgprValuC+48+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+50:vgprValuC+50+1] // C += bias
@@ -33410,13 +33410,13 @@ v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[58:59], v[vgprValuC+60:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[58:59], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleBVMulPK(58)(2)
 v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[32:33], v[vgprValuC+60:vgprValuC+60+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[34:35], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+60], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v56, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v56, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+62], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v57, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v57, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+63], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+60:vgprValuC+60+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+62:vgprValuC+62+1] // C += bias
@@ -33453,13 +33453,13 @@ v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[72:73], v[vgprValuC+76:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[72:73], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleBVMulPK(72)(2)
 v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[32:33], v[vgprValuC+76:vgprValuC+76+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[34:35], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v70                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v70                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+76], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v70, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v70, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+77], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v71                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v71                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+78], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v71, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v71, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+79], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+76:vgprValuC+76+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+78:vgprValuC+78+1] // C += bias
@@ -33496,13 +33496,13 @@ v_pk_mul_f32 v[vgprValuC+88:vgprValuC+88+1], v[84:85], v[vgprValuC+88:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+90:vgprValuC+90+1], v[84:85], v[vgprValuC+90:vgprValuC+90+1] // *= ScaleBVMulPK(84)(2)
 v_pk_mul_f32 v[vgprValuC+88:vgprValuC+88+1], v[32:33], v[vgprValuC+88:vgprValuC+88+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+90:vgprValuC+90+1], v[34:35], v[vgprValuC+90:vgprValuC+90+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v82                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v82                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+88], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v82, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v82, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+89], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v83                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v83                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v83, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v83, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+91], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+88:vgprValuC+88+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+90:vgprValuC+90+1] // C += bias
@@ -33539,13 +33539,13 @@ v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[98:99], v[vgprValuC+100:vgprVal
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[98:99], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleBVMulPK(98)(2)
 v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[32:33], v[vgprValuC+100:vgprValuC+100+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[34:35], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+100], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v96, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v96, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+101], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+102], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v97, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v97, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+103], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+100:vgprValuC+100+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+102:vgprValuC+102+1] // C += bias
@@ -33582,13 +33582,13 @@ v_pk_mul_f32 v[vgprValuC+112:vgprValuC+112+1], v[110:111], v[vgprValuC+112:vgprV
 v_pk_mul_f32 v[vgprValuC+114:vgprValuC+114+1], v[110:111], v[vgprValuC+114:vgprValuC+114+1] // *= ScaleBVMulPK(110)(2)
 v_pk_mul_f32 v[vgprValuC+112:vgprValuC+112+1], v[32:33], v[vgprValuC+112:vgprValuC+112+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+114:vgprValuC+114+1], v[34:35], v[vgprValuC+114:vgprValuC+114+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v108                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v108                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+112], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v108, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v108, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+113], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v109                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v109                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+114], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v109, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v109, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+115], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+112:vgprValuC+112+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+114:vgprValuC+114+1] // C += bias
@@ -33625,13 +33625,13 @@ v_pk_mul_f32 v[vgprValuC+128:vgprValuC+128+1], v[124:125], v[vgprValuC+128:vgprV
 v_pk_mul_f32 v[vgprValuC+130:vgprValuC+130+1], v[124:125], v[vgprValuC+130:vgprValuC+130+1] // *= ScaleBVMulPK(124)(2)
 v_pk_mul_f32 v[vgprValuC+128:vgprValuC+128+1], v[32:33], v[vgprValuC+128:vgprValuC+128+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+130:vgprValuC+130+1], v[34:35], v[vgprValuC+130:vgprValuC+130+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v122                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v122                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+128], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v122, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v122, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+129], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v123                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v123                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+130], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v123, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v123, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+131], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+128:vgprValuC+128+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+130:vgprValuC+130+1] // C += bias
@@ -33945,13 +33945,13 @@ v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[28:29], v[vgprValuC+36:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[28:29], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleBVMulPK(28)(2)
 v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[32:33], v[vgprValuC+36:vgprValuC+36+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[34:35], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+36], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v18, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v18, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+37], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v19                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v19                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+38], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v19, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v19, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+39], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+36:vgprValuC+36+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+38:vgprValuC+38+1] // C += bias
@@ -33988,13 +33988,13 @@ v_pk_mul_f32 v[vgprValuC+48:vgprValuC+48+1], v[46:47], v[vgprValuC+48:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+50:vgprValuC+50+1], v[46:47], v[vgprValuC+50:vgprValuC+50+1] // *= ScaleBVMulPK(46)(2)
 v_pk_mul_f32 v[vgprValuC+48:vgprValuC+48+1], v[32:33], v[vgprValuC+48:vgprValuC+48+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+50:vgprValuC+50+1], v[34:35], v[vgprValuC+50:vgprValuC+50+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v44                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v44                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+48], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v44, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v44, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+49], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v45                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v45                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+50], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v45, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v45, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+51], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+48:vgprValuC+48+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+50:vgprValuC+50+1] // C += bias
@@ -34031,13 +34031,13 @@ v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[58:59], v[vgprValuC+60:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[58:59], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleBVMulPK(58)(2)
 v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[32:33], v[vgprValuC+60:vgprValuC+60+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[34:35], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+60], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v56, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v56, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+62], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v57, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v57, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+63], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+60:vgprValuC+60+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+62:vgprValuC+62+1] // C += bias
@@ -34074,13 +34074,13 @@ v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[72:73], v[vgprValuC+76:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[72:73], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleBVMulPK(72)(2)
 v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[32:33], v[vgprValuC+76:vgprValuC+76+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[34:35], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v70                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v70                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+76], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v70, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v70, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+77], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v71                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v71                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+78], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v71, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v71, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+79], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+76:vgprValuC+76+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+78:vgprValuC+78+1] // C += bias
@@ -34117,13 +34117,13 @@ v_pk_mul_f32 v[vgprValuC+88:vgprValuC+88+1], v[84:85], v[vgprValuC+88:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+90:vgprValuC+90+1], v[84:85], v[vgprValuC+90:vgprValuC+90+1] // *= ScaleBVMulPK(84)(2)
 v_pk_mul_f32 v[vgprValuC+88:vgprValuC+88+1], v[32:33], v[vgprValuC+88:vgprValuC+88+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+90:vgprValuC+90+1], v[34:35], v[vgprValuC+90:vgprValuC+90+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v82                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v82                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+88], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v82, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v82, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+89], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v83                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v83                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v83, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v83, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+91], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+88:vgprValuC+88+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+90:vgprValuC+90+1] // C += bias
@@ -34160,13 +34160,13 @@ v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[98:99], v[vgprValuC+100:vgprVal
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[98:99], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleBVMulPK(98)(2)
 v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[32:33], v[vgprValuC+100:vgprValuC+100+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[34:35], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+100], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v96, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v96, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+101], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+102], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v97, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v97, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+103], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+100:vgprValuC+100+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+102:vgprValuC+102+1] // C += bias
@@ -34203,13 +34203,13 @@ v_pk_mul_f32 v[vgprValuC+112:vgprValuC+112+1], v[110:111], v[vgprValuC+112:vgprV
 v_pk_mul_f32 v[vgprValuC+114:vgprValuC+114+1], v[110:111], v[vgprValuC+114:vgprValuC+114+1] // *= ScaleBVMulPK(110)(2)
 v_pk_mul_f32 v[vgprValuC+112:vgprValuC+112+1], v[32:33], v[vgprValuC+112:vgprValuC+112+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+114:vgprValuC+114+1], v[34:35], v[vgprValuC+114:vgprValuC+114+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v108                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v108                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+112], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v108, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v108, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+113], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v109                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v109                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+114], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v109, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v109, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+115], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+112:vgprValuC+112+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+114:vgprValuC+114+1] // C += bias
@@ -34246,13 +34246,13 @@ v_pk_mul_f32 v[vgprValuC+128:vgprValuC+128+1], v[124:125], v[vgprValuC+128:vgprV
 v_pk_mul_f32 v[vgprValuC+130:vgprValuC+130+1], v[124:125], v[vgprValuC+130:vgprValuC+130+1] // *= ScaleBVMulPK(124)(2)
 v_pk_mul_f32 v[vgprValuC+128:vgprValuC+128+1], v[32:33], v[vgprValuC+128:vgprValuC+128+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+130:vgprValuC+130+1], v[34:35], v[vgprValuC+130:vgprValuC+130+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v122                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v122                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+128], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v122, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v122, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+129], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v123                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v123                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+130], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v123, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v123, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+131], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+128:vgprValuC+128+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+130:vgprValuC+130+1] // C += bias
@@ -34566,13 +34566,13 @@ v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[28:29], v[vgprValuC+36:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[28:29], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleBVMulPK(28)(2)
 v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[32:33], v[vgprValuC+36:vgprValuC+36+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[34:35], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+36], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v18, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v18, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+37], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v19                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v19                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+38], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v19, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v19, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+39], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+36:vgprValuC+36+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+38:vgprValuC+38+1] // C += bias
@@ -34609,13 +34609,13 @@ v_pk_mul_f32 v[vgprValuC+48:vgprValuC+48+1], v[46:47], v[vgprValuC+48:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+50:vgprValuC+50+1], v[46:47], v[vgprValuC+50:vgprValuC+50+1] // *= ScaleBVMulPK(46)(2)
 v_pk_mul_f32 v[vgprValuC+48:vgprValuC+48+1], v[32:33], v[vgprValuC+48:vgprValuC+48+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+50:vgprValuC+50+1], v[34:35], v[vgprValuC+50:vgprValuC+50+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v44                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v44                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+48], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v44, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v44, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+49], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v45                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v45                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+50], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v45, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v45, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+51], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+48:vgprValuC+48+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+50:vgprValuC+50+1] // C += bias
@@ -34652,13 +34652,13 @@ v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[58:59], v[vgprValuC+60:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[58:59], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleBVMulPK(58)(2)
 v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[32:33], v[vgprValuC+60:vgprValuC+60+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[34:35], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+60], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v56, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v56, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+62], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v57, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v57, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+63], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+60:vgprValuC+60+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+62:vgprValuC+62+1] // C += bias
@@ -34695,13 +34695,13 @@ v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[72:73], v[vgprValuC+76:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[72:73], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleBVMulPK(72)(2)
 v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[32:33], v[vgprValuC+76:vgprValuC+76+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[34:35], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v70                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v70                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+76], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v70, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v70, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+77], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v71                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v71                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+78], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v71, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v71, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+79], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+76:vgprValuC+76+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+78:vgprValuC+78+1] // C += bias
@@ -34738,13 +34738,13 @@ v_pk_mul_f32 v[vgprValuC+88:vgprValuC+88+1], v[84:85], v[vgprValuC+88:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+90:vgprValuC+90+1], v[84:85], v[vgprValuC+90:vgprValuC+90+1] // *= ScaleBVMulPK(84)(2)
 v_pk_mul_f32 v[vgprValuC+88:vgprValuC+88+1], v[32:33], v[vgprValuC+88:vgprValuC+88+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+90:vgprValuC+90+1], v[34:35], v[vgprValuC+90:vgprValuC+90+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v82                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v82                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+88], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v82, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v82, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+89], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v83                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v83                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v83, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v83, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+91], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+88:vgprValuC+88+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+90:vgprValuC+90+1] // C += bias
@@ -34781,13 +34781,13 @@ v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[98:99], v[vgprValuC+100:vgprVal
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[98:99], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleBVMulPK(98)(2)
 v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[32:33], v[vgprValuC+100:vgprValuC+100+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[34:35], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+100], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v96, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v96, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+101], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+102], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v97, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v97, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+103], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+100:vgprValuC+100+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+102:vgprValuC+102+1] // C += bias
@@ -34824,13 +34824,13 @@ v_pk_mul_f32 v[vgprValuC+112:vgprValuC+112+1], v[110:111], v[vgprValuC+112:vgprV
 v_pk_mul_f32 v[vgprValuC+114:vgprValuC+114+1], v[110:111], v[vgprValuC+114:vgprValuC+114+1] // *= ScaleBVMulPK(110)(2)
 v_pk_mul_f32 v[vgprValuC+112:vgprValuC+112+1], v[32:33], v[vgprValuC+112:vgprValuC+112+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+114:vgprValuC+114+1], v[34:35], v[vgprValuC+114:vgprValuC+114+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v108                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v108                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+112], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v108, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v108, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+113], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v109                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v109                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+114], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v109, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v109, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+115], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+112:vgprValuC+112+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+114:vgprValuC+114+1] // C += bias
@@ -34867,13 +34867,13 @@ v_pk_mul_f32 v[vgprValuC+128:vgprValuC+128+1], v[124:125], v[vgprValuC+128:vgprV
 v_pk_mul_f32 v[vgprValuC+130:vgprValuC+130+1], v[124:125], v[vgprValuC+130:vgprValuC+130+1] // *= ScaleBVMulPK(124)(2)
 v_pk_mul_f32 v[vgprValuC+128:vgprValuC+128+1], v[32:33], v[vgprValuC+128:vgprValuC+128+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+130:vgprValuC+130+1], v[34:35], v[vgprValuC+130:vgprValuC+130+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v122                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v122                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+128], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v122, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v122, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+129], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v123                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v123                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+130], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v123, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v123, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+131], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+128:vgprValuC+128+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+130:vgprValuC+130+1] // C += bias
@@ -35187,13 +35187,13 @@ v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[28:29], v[vgprValuC+36:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[28:29], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleBVMulPK(28)(2)
 v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[32:33], v[vgprValuC+36:vgprValuC+36+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[34:35], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+36], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v18, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v18, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+37], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v19                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v19                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+38], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v19, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v19, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+39], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+36:vgprValuC+36+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+38:vgprValuC+38+1] // C += bias
@@ -35230,13 +35230,13 @@ v_pk_mul_f32 v[vgprValuC+48:vgprValuC+48+1], v[46:47], v[vgprValuC+48:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+50:vgprValuC+50+1], v[46:47], v[vgprValuC+50:vgprValuC+50+1] // *= ScaleBVMulPK(46)(2)
 v_pk_mul_f32 v[vgprValuC+48:vgprValuC+48+1], v[32:33], v[vgprValuC+48:vgprValuC+48+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+50:vgprValuC+50+1], v[34:35], v[vgprValuC+50:vgprValuC+50+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v44                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v44                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+48], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v44, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v44, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+49], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v45                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v45                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+50], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v45, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v45, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+51], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+48:vgprValuC+48+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+50:vgprValuC+50+1] // C += bias
@@ -35273,13 +35273,13 @@ v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[58:59], v[vgprValuC+60:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[58:59], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleBVMulPK(58)(2)
 v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[32:33], v[vgprValuC+60:vgprValuC+60+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[34:35], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+60], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v56, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v56, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+62], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v57, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v57, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+63], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+60:vgprValuC+60+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+62:vgprValuC+62+1] // C += bias
@@ -35316,13 +35316,13 @@ v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[72:73], v[vgprValuC+76:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[72:73], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleBVMulPK(72)(2)
 v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[32:33], v[vgprValuC+76:vgprValuC+76+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[34:35], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v70                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v70                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+76], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v70, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v70, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+77], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v71                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v71                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+78], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v71, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v71, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+79], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+76:vgprValuC+76+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+78:vgprValuC+78+1] // C += bias
@@ -35359,13 +35359,13 @@ v_pk_mul_f32 v[vgprValuC+88:vgprValuC+88+1], v[84:85], v[vgprValuC+88:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+90:vgprValuC+90+1], v[84:85], v[vgprValuC+90:vgprValuC+90+1] // *= ScaleBVMulPK(84)(2)
 v_pk_mul_f32 v[vgprValuC+88:vgprValuC+88+1], v[32:33], v[vgprValuC+88:vgprValuC+88+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+90:vgprValuC+90+1], v[34:35], v[vgprValuC+90:vgprValuC+90+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v82                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v82                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+88], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v82, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v82, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+89], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v83                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v83                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v83, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v83, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+91], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+88:vgprValuC+88+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+90:vgprValuC+90+1] // C += bias
@@ -35402,13 +35402,13 @@ v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[98:99], v[vgprValuC+100:vgprVal
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[98:99], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleBVMulPK(98)(2)
 v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[32:33], v[vgprValuC+100:vgprValuC+100+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[34:35], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+100], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v96, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v96, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+101], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+102], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v97, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v97, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+103], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+100:vgprValuC+100+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+102:vgprValuC+102+1] // C += bias
@@ -35445,13 +35445,13 @@ v_pk_mul_f32 v[vgprValuC+112:vgprValuC+112+1], v[110:111], v[vgprValuC+112:vgprV
 v_pk_mul_f32 v[vgprValuC+114:vgprValuC+114+1], v[110:111], v[vgprValuC+114:vgprValuC+114+1] // *= ScaleBVMulPK(110)(2)
 v_pk_mul_f32 v[vgprValuC+112:vgprValuC+112+1], v[32:33], v[vgprValuC+112:vgprValuC+112+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+114:vgprValuC+114+1], v[34:35], v[vgprValuC+114:vgprValuC+114+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v108                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v108                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+112], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v108, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v108, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+113], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v109                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v109                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+114], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v109, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v109, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+115], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+112:vgprValuC+112+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+114:vgprValuC+114+1] // C += bias
@@ -35488,13 +35488,13 @@ v_pk_mul_f32 v[vgprValuC+128:vgprValuC+128+1], v[124:125], v[vgprValuC+128:vgprV
 v_pk_mul_f32 v[vgprValuC+130:vgprValuC+130+1], v[124:125], v[vgprValuC+130:vgprValuC+130+1] // *= ScaleBVMulPK(124)(2)
 v_pk_mul_f32 v[vgprValuC+128:vgprValuC+128+1], v[32:33], v[vgprValuC+128:vgprValuC+128+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+130:vgprValuC+130+1], v[34:35], v[vgprValuC+130:vgprValuC+130+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v122                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v122                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+128], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v122, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v122, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+129], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v123                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v123                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+130], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v123, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v123, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+131], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+128:vgprValuC+128+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+130:vgprValuC+130+1] // C += bias
@@ -35808,13 +35808,13 @@ v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[28:29], v[vgprValuC+36:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[28:29], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleBVMulPK(28)(2)
 v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[32:33], v[vgprValuC+36:vgprValuC+36+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[34:35], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+36], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v18, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v18, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+37], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v19                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v19                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+38], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v19, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v19, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+39], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+36:vgprValuC+36+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+38:vgprValuC+38+1] // C += bias
@@ -35851,13 +35851,13 @@ v_pk_mul_f32 v[vgprValuC+48:vgprValuC+48+1], v[46:47], v[vgprValuC+48:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+50:vgprValuC+50+1], v[46:47], v[vgprValuC+50:vgprValuC+50+1] // *= ScaleBVMulPK(46)(2)
 v_pk_mul_f32 v[vgprValuC+48:vgprValuC+48+1], v[32:33], v[vgprValuC+48:vgprValuC+48+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+50:vgprValuC+50+1], v[34:35], v[vgprValuC+50:vgprValuC+50+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v44                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v44                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+48], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v44, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v44, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+49], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v45                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v45                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+50], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v45, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v45, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+51], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+48:vgprValuC+48+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+50:vgprValuC+50+1] // C += bias
@@ -35894,13 +35894,13 @@ v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[58:59], v[vgprValuC+60:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[58:59], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleBVMulPK(58)(2)
 v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[32:33], v[vgprValuC+60:vgprValuC+60+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[34:35], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+60], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v56, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v56, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+62], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v57, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v57, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+63], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+60:vgprValuC+60+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+62:vgprValuC+62+1] // C += bias
@@ -35937,13 +35937,13 @@ v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[72:73], v[vgprValuC+76:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[72:73], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleBVMulPK(72)(2)
 v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[32:33], v[vgprValuC+76:vgprValuC+76+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[34:35], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v70                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v70                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+76], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v70, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v70, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+77], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v71                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v71                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+78], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v71, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v71, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+79], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+76:vgprValuC+76+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+78:vgprValuC+78+1] // C += bias
@@ -35980,13 +35980,13 @@ v_pk_mul_f32 v[vgprValuC+88:vgprValuC+88+1], v[84:85], v[vgprValuC+88:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+90:vgprValuC+90+1], v[84:85], v[vgprValuC+90:vgprValuC+90+1] // *= ScaleBVMulPK(84)(2)
 v_pk_mul_f32 v[vgprValuC+88:vgprValuC+88+1], v[32:33], v[vgprValuC+88:vgprValuC+88+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+90:vgprValuC+90+1], v[34:35], v[vgprValuC+90:vgprValuC+90+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v82                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v82                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+88], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v82, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v82, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+89], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v83                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v83                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v83, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v83, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+91], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+88:vgprValuC+88+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+90:vgprValuC+90+1] // C += bias
@@ -36023,13 +36023,13 @@ v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[98:99], v[vgprValuC+100:vgprVal
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[98:99], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleBVMulPK(98)(2)
 v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[32:33], v[vgprValuC+100:vgprValuC+100+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[34:35], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+100], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v96, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v96, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+101], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+102], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v97, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v97, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+103], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+100:vgprValuC+100+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+102:vgprValuC+102+1] // C += bias
@@ -36066,13 +36066,13 @@ v_pk_mul_f32 v[vgprValuC+112:vgprValuC+112+1], v[110:111], v[vgprValuC+112:vgprV
 v_pk_mul_f32 v[vgprValuC+114:vgprValuC+114+1], v[110:111], v[vgprValuC+114:vgprValuC+114+1] // *= ScaleBVMulPK(110)(2)
 v_pk_mul_f32 v[vgprValuC+112:vgprValuC+112+1], v[32:33], v[vgprValuC+112:vgprValuC+112+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+114:vgprValuC+114+1], v[34:35], v[vgprValuC+114:vgprValuC+114+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v108                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v108                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+112], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v108, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v108, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+113], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v109                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v109                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+114], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v109, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v109, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+115], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+112:vgprValuC+112+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+114:vgprValuC+114+1] // C += bias
@@ -36109,13 +36109,13 @@ v_pk_mul_f32 v[vgprValuC+128:vgprValuC+128+1], v[124:125], v[vgprValuC+128:vgprV
 v_pk_mul_f32 v[vgprValuC+130:vgprValuC+130+1], v[124:125], v[vgprValuC+130:vgprValuC+130+1] // *= ScaleBVMulPK(124)(2)
 v_pk_mul_f32 v[vgprValuC+128:vgprValuC+128+1], v[32:33], v[vgprValuC+128:vgprValuC+128+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+130:vgprValuC+130+1], v[34:35], v[vgprValuC+130:vgprValuC+130+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v122                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v122                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+128], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v122, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v122, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+129], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v123                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v123                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+130], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v123, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v123, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+131], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+128:vgprValuC+128+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+130:vgprValuC+130+1] // C += bias
@@ -36429,13 +36429,13 @@ v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[28:29], v[vgprValuC+36:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[28:29], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleBVMulPK(28)(2)
 v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[32:33], v[vgprValuC+36:vgprValuC+36+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[34:35], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+36], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v18, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v18, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+37], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v19                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v19                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+38], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v19, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v19, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+39], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+36:vgprValuC+36+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+38:vgprValuC+38+1] // C += bias
@@ -36472,13 +36472,13 @@ v_pk_mul_f32 v[vgprValuC+48:vgprValuC+48+1], v[46:47], v[vgprValuC+48:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+50:vgprValuC+50+1], v[46:47], v[vgprValuC+50:vgprValuC+50+1] // *= ScaleBVMulPK(46)(2)
 v_pk_mul_f32 v[vgprValuC+48:vgprValuC+48+1], v[32:33], v[vgprValuC+48:vgprValuC+48+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+50:vgprValuC+50+1], v[34:35], v[vgprValuC+50:vgprValuC+50+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v44                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v44                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+48], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v44, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v44, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+49], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v45                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v45                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+50], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v45, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v45, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+51], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+48:vgprValuC+48+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+50:vgprValuC+50+1] // C += bias
@@ -36515,13 +36515,13 @@ v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[58:59], v[vgprValuC+60:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[58:59], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleBVMulPK(58)(2)
 v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[32:33], v[vgprValuC+60:vgprValuC+60+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[34:35], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+60], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v56, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v56, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+62], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v57, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v57, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+63], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+60:vgprValuC+60+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+62:vgprValuC+62+1] // C += bias
@@ -36558,13 +36558,13 @@ v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[72:73], v[vgprValuC+76:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[72:73], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleBVMulPK(72)(2)
 v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[32:33], v[vgprValuC+76:vgprValuC+76+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[34:35], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v70                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v70                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+76], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v70, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v70, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+77], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v71                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v71                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+78], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v71, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v71, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+79], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+76:vgprValuC+76+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+78:vgprValuC+78+1] // C += bias
@@ -36601,13 +36601,13 @@ v_pk_mul_f32 v[vgprValuC+88:vgprValuC+88+1], v[84:85], v[vgprValuC+88:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+90:vgprValuC+90+1], v[84:85], v[vgprValuC+90:vgprValuC+90+1] // *= ScaleBVMulPK(84)(2)
 v_pk_mul_f32 v[vgprValuC+88:vgprValuC+88+1], v[32:33], v[vgprValuC+88:vgprValuC+88+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+90:vgprValuC+90+1], v[34:35], v[vgprValuC+90:vgprValuC+90+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v82                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v82                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+88], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v82, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v82, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+89], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v83                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v83                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v83, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v83, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+91], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+88:vgprValuC+88+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+90:vgprValuC+90+1] // C += bias
@@ -36644,13 +36644,13 @@ v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[98:99], v[vgprValuC+100:vgprVal
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[98:99], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleBVMulPK(98)(2)
 v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[32:33], v[vgprValuC+100:vgprValuC+100+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[34:35], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+100], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v96, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v96, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+101], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+102], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v97, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v97, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+103], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+100:vgprValuC+100+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+102:vgprValuC+102+1] // C += bias
@@ -36687,13 +36687,13 @@ v_pk_mul_f32 v[vgprValuC+112:vgprValuC+112+1], v[110:111], v[vgprValuC+112:vgprV
 v_pk_mul_f32 v[vgprValuC+114:vgprValuC+114+1], v[110:111], v[vgprValuC+114:vgprValuC+114+1] // *= ScaleBVMulPK(110)(2)
 v_pk_mul_f32 v[vgprValuC+112:vgprValuC+112+1], v[32:33], v[vgprValuC+112:vgprValuC+112+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+114:vgprValuC+114+1], v[34:35], v[vgprValuC+114:vgprValuC+114+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v108                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v108                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+112], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v108, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v108, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+113], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v109                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v109                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+114], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v109, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v109, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+115], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+112:vgprValuC+112+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+114:vgprValuC+114+1] // C += bias
@@ -36730,13 +36730,13 @@ v_pk_mul_f32 v[vgprValuC+128:vgprValuC+128+1], v[124:125], v[vgprValuC+128:vgprV
 v_pk_mul_f32 v[vgprValuC+130:vgprValuC+130+1], v[124:125], v[vgprValuC+130:vgprValuC+130+1] // *= ScaleBVMulPK(124)(2)
 v_pk_mul_f32 v[vgprValuC+128:vgprValuC+128+1], v[32:33], v[vgprValuC+128:vgprValuC+128+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+130:vgprValuC+130+1], v[34:35], v[vgprValuC+130:vgprValuC+130+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v122                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v122                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+128], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v122, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v122, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+129], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v123                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v123                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+130], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v123, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v123, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+131], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+128:vgprValuC+128+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+130:vgprValuC+130+1] // C += bias
@@ -37050,13 +37050,13 @@ v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[28:29], v[vgprValuC+36:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[28:29], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleBVMulPK(28)(2)
 v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[32:33], v[vgprValuC+36:vgprValuC+36+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[34:35], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+36], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v18, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v18, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+37], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v19                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v19                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+38], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v19, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v19, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+39], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+36:vgprValuC+36+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+38:vgprValuC+38+1] // C += bias
@@ -37093,13 +37093,13 @@ v_pk_mul_f32 v[vgprValuC+48:vgprValuC+48+1], v[46:47], v[vgprValuC+48:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+50:vgprValuC+50+1], v[46:47], v[vgprValuC+50:vgprValuC+50+1] // *= ScaleBVMulPK(46)(2)
 v_pk_mul_f32 v[vgprValuC+48:vgprValuC+48+1], v[32:33], v[vgprValuC+48:vgprValuC+48+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+50:vgprValuC+50+1], v[34:35], v[vgprValuC+50:vgprValuC+50+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v44                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v44                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+48], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v44, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v44, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+49], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v45                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v45                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+50], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v45, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v45, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+51], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+48:vgprValuC+48+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+50:vgprValuC+50+1] // C += bias
@@ -37136,13 +37136,13 @@ v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[58:59], v[vgprValuC+60:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[58:59], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleBVMulPK(58)(2)
 v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[32:33], v[vgprValuC+60:vgprValuC+60+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[34:35], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+60], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v56, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v56, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+62], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v57, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v57, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+63], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+60:vgprValuC+60+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+62:vgprValuC+62+1] // C += bias
@@ -37179,13 +37179,13 @@ v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[72:73], v[vgprValuC+76:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[72:73], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleBVMulPK(72)(2)
 v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[32:33], v[vgprValuC+76:vgprValuC+76+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[34:35], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v70                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v70                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+76], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v70, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v70, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+77], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v71                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v71                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+78], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v71, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v71, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+79], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+76:vgprValuC+76+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+78:vgprValuC+78+1] // C += bias
@@ -37222,13 +37222,13 @@ v_pk_mul_f32 v[vgprValuC+88:vgprValuC+88+1], v[84:85], v[vgprValuC+88:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+90:vgprValuC+90+1], v[84:85], v[vgprValuC+90:vgprValuC+90+1] // *= ScaleBVMulPK(84)(2)
 v_pk_mul_f32 v[vgprValuC+88:vgprValuC+88+1], v[32:33], v[vgprValuC+88:vgprValuC+88+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+90:vgprValuC+90+1], v[34:35], v[vgprValuC+90:vgprValuC+90+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v82                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v82                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+88], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v82, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v82, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+89], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v83                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v83                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v83, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v83, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+91], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+88:vgprValuC+88+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+90:vgprValuC+90+1] // C += bias
@@ -37265,13 +37265,13 @@ v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[98:99], v[vgprValuC+100:vgprVal
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[98:99], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleBVMulPK(98)(2)
 v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[32:33], v[vgprValuC+100:vgprValuC+100+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[34:35], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+100], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v96, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v96, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+101], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+102], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v97, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v97, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+103], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+100:vgprValuC+100+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+102:vgprValuC+102+1] // C += bias
@@ -37308,13 +37308,13 @@ v_pk_mul_f32 v[vgprValuC+112:vgprValuC+112+1], v[110:111], v[vgprValuC+112:vgprV
 v_pk_mul_f32 v[vgprValuC+114:vgprValuC+114+1], v[110:111], v[vgprValuC+114:vgprValuC+114+1] // *= ScaleBVMulPK(110)(2)
 v_pk_mul_f32 v[vgprValuC+112:vgprValuC+112+1], v[32:33], v[vgprValuC+112:vgprValuC+112+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+114:vgprValuC+114+1], v[34:35], v[vgprValuC+114:vgprValuC+114+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v108                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v108                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+112], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v108, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v108, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+113], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v109                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v109                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+114], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v109, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v109, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+115], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+112:vgprValuC+112+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+114:vgprValuC+114+1] // C += bias
@@ -37351,13 +37351,13 @@ v_pk_mul_f32 v[vgprValuC+128:vgprValuC+128+1], v[124:125], v[vgprValuC+128:vgprV
 v_pk_mul_f32 v[vgprValuC+130:vgprValuC+130+1], v[124:125], v[vgprValuC+130:vgprValuC+130+1] // *= ScaleBVMulPK(124)(2)
 v_pk_mul_f32 v[vgprValuC+128:vgprValuC+128+1], v[32:33], v[vgprValuC+128:vgprValuC+128+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+130:vgprValuC+130+1], v[34:35], v[vgprValuC+130:vgprValuC+130+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v122                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v122                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+128], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v122, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v122, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+129], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v123                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v123                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+130], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v123, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v123, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+131], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+128:vgprValuC+128+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+130:vgprValuC+130+1] // C += bias
@@ -37671,13 +37671,13 @@ v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[28:29], v[vgprValuC+36:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[28:29], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleBVMulPK(28)(2)
 v_pk_mul_f32 v[vgprValuC+36:vgprValuC+36+1], v[32:33], v[vgprValuC+36:vgprValuC+36+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+38:vgprValuC+38+1], v[34:35], v[vgprValuC+38:vgprValuC+38+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+36], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v18, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v18, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+37], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v19                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v19                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+38], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v19, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v19, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+39], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+36:vgprValuC+36+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+38:vgprValuC+38+1] // C += bias
@@ -37714,13 +37714,13 @@ v_pk_mul_f32 v[vgprValuC+48:vgprValuC+48+1], v[46:47], v[vgprValuC+48:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+50:vgprValuC+50+1], v[46:47], v[vgprValuC+50:vgprValuC+50+1] // *= ScaleBVMulPK(46)(2)
 v_pk_mul_f32 v[vgprValuC+48:vgprValuC+48+1], v[32:33], v[vgprValuC+48:vgprValuC+48+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+50:vgprValuC+50+1], v[34:35], v[vgprValuC+50:vgprValuC+50+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v44                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v44                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+48], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v44, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v44, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+49], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v45                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v45                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+50], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v45, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v45, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+51], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+48:vgprValuC+48+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+50:vgprValuC+50+1] // C += bias
@@ -37757,13 +37757,13 @@ v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[58:59], v[vgprValuC+60:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[58:59], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleBVMulPK(58)(2)
 v_pk_mul_f32 v[vgprValuC+60:vgprValuC+60+1], v[32:33], v[vgprValuC+60:vgprValuC+60+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+62:vgprValuC+62+1], v[34:35], v[vgprValuC+62:vgprValuC+62+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v56                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+60], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v56, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v56, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v57                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+62], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v57, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v57, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+63], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+60:vgprValuC+60+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+62:vgprValuC+62+1] // C += bias
@@ -37800,13 +37800,13 @@ v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[72:73], v[vgprValuC+76:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[72:73], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleBVMulPK(72)(2)
 v_pk_mul_f32 v[vgprValuC+76:vgprValuC+76+1], v[32:33], v[vgprValuC+76:vgprValuC+76+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+78:vgprValuC+78+1], v[34:35], v[vgprValuC+78:vgprValuC+78+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v70                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v70                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+76], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v70, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v70, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+77], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v71                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v71                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+78], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v71, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v71, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+79], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+76:vgprValuC+76+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+78:vgprValuC+78+1] // C += bias
@@ -37843,13 +37843,13 @@ v_pk_mul_f32 v[vgprValuC+88:vgprValuC+88+1], v[84:85], v[vgprValuC+88:vgprValuC+
 v_pk_mul_f32 v[vgprValuC+90:vgprValuC+90+1], v[84:85], v[vgprValuC+90:vgprValuC+90+1] // *= ScaleBVMulPK(84)(2)
 v_pk_mul_f32 v[vgprValuC+88:vgprValuC+88+1], v[32:33], v[vgprValuC+88:vgprValuC+88+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+90:vgprValuC+90+1], v[34:35], v[vgprValuC+90:vgprValuC+90+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v82                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v82                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+88], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v82, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v82, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+89], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v83                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v83                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v83, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v83, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+91], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+88:vgprValuC+88+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+90:vgprValuC+90+1] // C += bias
@@ -37886,13 +37886,13 @@ v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[98:99], v[vgprValuC+100:vgprVal
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[98:99], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleBVMulPK(98)(2)
 v_pk_mul_f32 v[vgprValuC+100:vgprValuC+100+1], v[32:33], v[vgprValuC+100:vgprValuC+100+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+102:vgprValuC+102+1], v[34:35], v[vgprValuC+102:vgprValuC+102+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+100], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v96, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v96, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+101], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v97                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+102], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v97, v10                             // cvt bf16 to fp32. 
+v_and_b32 v4, v97, v10                             // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+103], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+100:vgprValuC+100+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+102:vgprValuC+102+1] // C += bias
@@ -37929,13 +37929,13 @@ v_pk_mul_f32 v[vgprValuC+112:vgprValuC+112+1], v[110:111], v[vgprValuC+112:vgprV
 v_pk_mul_f32 v[vgprValuC+114:vgprValuC+114+1], v[110:111], v[vgprValuC+114:vgprValuC+114+1] // *= ScaleBVMulPK(110)(2)
 v_pk_mul_f32 v[vgprValuC+112:vgprValuC+112+1], v[32:33], v[vgprValuC+112:vgprValuC+112+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+114:vgprValuC+114+1], v[34:35], v[vgprValuC+114:vgprValuC+114+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v108                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v108                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+112], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v108, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v108, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+113], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v109                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v109                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+114], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v109, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v109, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+115], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+112:vgprValuC+112+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+114:vgprValuC+114+1] // C += bias
@@ -37972,13 +37972,13 @@ v_pk_mul_f32 v[vgprValuC+128:vgprValuC+128+1], v[124:125], v[vgprValuC+128:vgprV
 v_pk_mul_f32 v[vgprValuC+130:vgprValuC+130+1], v[124:125], v[vgprValuC+130:vgprValuC+130+1] // *= ScaleBVMulPK(124)(2)
 v_pk_mul_f32 v[vgprValuC+128:vgprValuC+128+1], v[32:33], v[vgprValuC+128:vgprValuC+128+1] // *= ScaleAlphaVecVMulPK(32)(0)
 v_pk_mul_f32 v[vgprValuC+130:vgprValuC+130+1], v[34:35], v[vgprValuC+130:vgprValuC+130+1] // *= ScaleAlphaVecVMulPK(32)(2)
-v_lshlrev_b32 v4, 16, v122                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v122                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+128], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v122, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v122, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+129], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_lshlrev_b32 v4, 16, v123                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v123                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+130], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
-v_and_b32 v4, v123, v10                            // cvt bf16 to fp32. 
+v_and_b32 v4, v123, v10                            // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+131], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_pk_add_f32 v[4:5], v[20:21], v[vgprValuC+128:vgprValuC+128+1] // C += bias
 v_pk_add_f32 v[6:7], v[22:23], v[vgprValuC+130:vgprValuC+130+1] // C += bias
@@ -38477,7 +38477,7 @@ v_mov_b32 v12, 0x7fff                              // rounding bias for bfloat16
 v_mul_f32 v[vgprValuC+23], v20, v[vgprValuC+23]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+23], v21, v[vgprValuC+23]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+23], v22, v[vgprValuC+23]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+23], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+23]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -38491,7 +38491,7 @@ buffer_store_short v23, v13, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+33], v31, v[vgprValuC+33]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+33], v21, v[vgprValuC+33]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+33], v32, v[vgprValuC+33]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+33], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+33]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -38505,7 +38505,7 @@ buffer_store_short v33, v24, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+43], v41, v[vgprValuC+43]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+43], v21, v[vgprValuC+43]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+43], v42, v[vgprValuC+43]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+43], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+43]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -38519,7 +38519,7 @@ buffer_store_short v43, v34, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+53], v51, v[vgprValuC+53]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+53], v21, v[vgprValuC+53]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+53], v52, v[vgprValuC+53]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+53], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+53]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -38533,7 +38533,7 @@ buffer_store_short v53, v44, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+61], v20, v[vgprValuC+61]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+61], v60, v[vgprValuC+61]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+61], v22, v[vgprValuC+61]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+61]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -38547,7 +38547,7 @@ buffer_store_short v61, v54, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+68], v31, v[vgprValuC+68]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+68], v60, v[vgprValuC+68]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+68], v32, v[vgprValuC+68]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+68], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+68]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -38561,7 +38561,7 @@ buffer_store_short v68, v62, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+75], v41, v[vgprValuC+75]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+75], v60, v[vgprValuC+75]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+75], v42, v[vgprValuC+75]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+75], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+75]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -38575,7 +38575,7 @@ buffer_store_short v75, v69, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+82], v51, v[vgprValuC+82]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+82], v60, v[vgprValuC+82]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+82], v52, v[vgprValuC+82]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+82], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+82]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -38589,7 +38589,7 @@ buffer_store_short v82, v76, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+90], v20, v[vgprValuC+90]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+90], v89, v[vgprValuC+90]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+90], v22, v[vgprValuC+90]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+90]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -38603,7 +38603,7 @@ buffer_store_short v90, v83, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+97], v31, v[vgprValuC+97]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+97], v89, v[vgprValuC+97]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+97], v32, v[vgprValuC+97]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+97], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+97]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -38617,7 +38617,7 @@ buffer_store_short v97, v91, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+104], v41, v[vgprValuC+104]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+104], v89, v[vgprValuC+104]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+104], v42, v[vgprValuC+104]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+104], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+104]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -38631,7 +38631,7 @@ buffer_store_short v104, v98, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store 
 v_mul_f32 v[vgprValuC+111], v51, v[vgprValuC+111]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+111], v89, v[vgprValuC+111]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+111], v52, v[vgprValuC+111]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+111], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+111]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -38645,7 +38645,7 @@ buffer_store_short v111, v105, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+119], v20, v[vgprValuC+119]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+119], v118, v[vgprValuC+119] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+119], v22, v[vgprValuC+119]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+119], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+119]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -38659,7 +38659,7 @@ buffer_store_short v119, v112, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+126], v31, v[vgprValuC+126]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+126], v118, v[vgprValuC+126] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+126], v32, v[vgprValuC+126]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+126], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+126]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -38673,7 +38673,7 @@ buffer_store_short v126, v120, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+133], v41, v[vgprValuC+133]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+133], v118, v[vgprValuC+133] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+133], v42, v[vgprValuC+133]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+133], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+133]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -38687,7 +38687,7 @@ buffer_store_short v133, v127, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+140], v51, v[vgprValuC+140]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+140], v118, v[vgprValuC+140] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+140], v52, v[vgprValuC+140]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+140], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+140]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39087,7 +39087,7 @@ v_mov_b32 v12, 0x7fff                              // rounding bias for bfloat16
 v_mul_f32 v[vgprValuC+23], v20, v[vgprValuC+23]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+23], v21, v[vgprValuC+23]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+23], v22, v[vgprValuC+23]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+23], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+23]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39101,7 +39101,7 @@ buffer_store_short v23, v13, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+33], v31, v[vgprValuC+33]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+33], v21, v[vgprValuC+33]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+33], v32, v[vgprValuC+33]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+33], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+33]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39115,7 +39115,7 @@ buffer_store_short v33, v24, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+43], v41, v[vgprValuC+43]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+43], v21, v[vgprValuC+43]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+43], v42, v[vgprValuC+43]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+43], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+43]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39129,7 +39129,7 @@ buffer_store_short v43, v34, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+53], v51, v[vgprValuC+53]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+53], v21, v[vgprValuC+53]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+53], v52, v[vgprValuC+53]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+53], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+53]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39143,7 +39143,7 @@ buffer_store_short v53, v44, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+61], v20, v[vgprValuC+61]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+61], v60, v[vgprValuC+61]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+61], v22, v[vgprValuC+61]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+61]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39157,7 +39157,7 @@ buffer_store_short v61, v54, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+68], v31, v[vgprValuC+68]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+68], v60, v[vgprValuC+68]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+68], v32, v[vgprValuC+68]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+68], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+68]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39171,7 +39171,7 @@ buffer_store_short v68, v62, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+75], v41, v[vgprValuC+75]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+75], v60, v[vgprValuC+75]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+75], v42, v[vgprValuC+75]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+75], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+75]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39185,7 +39185,7 @@ buffer_store_short v75, v69, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+82], v51, v[vgprValuC+82]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+82], v60, v[vgprValuC+82]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+82], v52, v[vgprValuC+82]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+82], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+82]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39199,7 +39199,7 @@ buffer_store_short v82, v76, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+90], v20, v[vgprValuC+90]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+90], v89, v[vgprValuC+90]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+90], v22, v[vgprValuC+90]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+90]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39213,7 +39213,7 @@ buffer_store_short v90, v83, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+97], v31, v[vgprValuC+97]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+97], v89, v[vgprValuC+97]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+97], v32, v[vgprValuC+97]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+97], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+97]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39227,7 +39227,7 @@ buffer_store_short v97, v91, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+104], v41, v[vgprValuC+104]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+104], v89, v[vgprValuC+104]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+104], v42, v[vgprValuC+104]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+104], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+104]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39241,7 +39241,7 @@ buffer_store_short v104, v98, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store 
 v_mul_f32 v[vgprValuC+111], v51, v[vgprValuC+111]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+111], v89, v[vgprValuC+111]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+111], v52, v[vgprValuC+111]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+111], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+111]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39255,7 +39255,7 @@ buffer_store_short v111, v105, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+119], v20, v[vgprValuC+119]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+119], v118, v[vgprValuC+119] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+119], v22, v[vgprValuC+119]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+119], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+119]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39269,7 +39269,7 @@ buffer_store_short v119, v112, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+126], v31, v[vgprValuC+126]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+126], v118, v[vgprValuC+126] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+126], v32, v[vgprValuC+126]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+126], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+126]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39283,7 +39283,7 @@ buffer_store_short v126, v120, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+133], v41, v[vgprValuC+133]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+133], v118, v[vgprValuC+133] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+133], v42, v[vgprValuC+133]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+133], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+133]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39297,7 +39297,7 @@ buffer_store_short v133, v127, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+140], v51, v[vgprValuC+140]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+140], v118, v[vgprValuC+140] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+140], v52, v[vgprValuC+140]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+140], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+140]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39697,7 +39697,7 @@ v_mov_b32 v12, 0x7fff                              // rounding bias for bfloat16
 v_mul_f32 v[vgprValuC+23], v20, v[vgprValuC+23]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+23], v21, v[vgprValuC+23]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+23], v22, v[vgprValuC+23]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+23], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+23]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39711,7 +39711,7 @@ buffer_store_short v23, v13, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+33], v31, v[vgprValuC+33]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+33], v21, v[vgprValuC+33]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+33], v32, v[vgprValuC+33]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+33], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+33]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39725,7 +39725,7 @@ buffer_store_short v33, v24, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+43], v41, v[vgprValuC+43]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+43], v21, v[vgprValuC+43]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+43], v42, v[vgprValuC+43]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+43], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+43]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39739,7 +39739,7 @@ buffer_store_short v43, v34, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+53], v51, v[vgprValuC+53]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+53], v21, v[vgprValuC+53]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+53], v52, v[vgprValuC+53]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+53], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+53]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39753,7 +39753,7 @@ buffer_store_short v53, v44, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+61], v20, v[vgprValuC+61]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+61], v60, v[vgprValuC+61]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+61], v22, v[vgprValuC+61]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+61]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39767,7 +39767,7 @@ buffer_store_short v61, v54, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+68], v31, v[vgprValuC+68]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+68], v60, v[vgprValuC+68]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+68], v32, v[vgprValuC+68]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+68], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+68]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39781,7 +39781,7 @@ buffer_store_short v68, v62, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+75], v41, v[vgprValuC+75]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+75], v60, v[vgprValuC+75]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+75], v42, v[vgprValuC+75]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+75], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+75]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39795,7 +39795,7 @@ buffer_store_short v75, v69, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+82], v51, v[vgprValuC+82]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+82], v60, v[vgprValuC+82]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+82], v52, v[vgprValuC+82]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+82], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+82]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39809,7 +39809,7 @@ buffer_store_short v82, v76, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+90], v20, v[vgprValuC+90]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+90], v89, v[vgprValuC+90]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+90], v22, v[vgprValuC+90]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+90]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39823,7 +39823,7 @@ buffer_store_short v90, v83, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+97], v31, v[vgprValuC+97]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+97], v89, v[vgprValuC+97]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+97], v32, v[vgprValuC+97]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+97], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+97]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39837,7 +39837,7 @@ buffer_store_short v97, v91, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+104], v41, v[vgprValuC+104]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+104], v89, v[vgprValuC+104]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+104], v42, v[vgprValuC+104]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+104], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+104]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39851,7 +39851,7 @@ buffer_store_short v104, v98, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store 
 v_mul_f32 v[vgprValuC+111], v51, v[vgprValuC+111]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+111], v89, v[vgprValuC+111]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+111], v52, v[vgprValuC+111]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+111], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+111]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39865,7 +39865,7 @@ buffer_store_short v111, v105, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+119], v20, v[vgprValuC+119]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+119], v118, v[vgprValuC+119] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+119], v22, v[vgprValuC+119]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+119], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+119]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39879,7 +39879,7 @@ buffer_store_short v119, v112, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+126], v31, v[vgprValuC+126]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+126], v118, v[vgprValuC+126] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+126], v32, v[vgprValuC+126]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+126], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+126]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39893,7 +39893,7 @@ buffer_store_short v126, v120, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+133], v41, v[vgprValuC+133]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+133], v118, v[vgprValuC+133] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+133], v42, v[vgprValuC+133]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+133], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+133]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -39907,7 +39907,7 @@ buffer_store_short v133, v127, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+140], v51, v[vgprValuC+140]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+140], v118, v[vgprValuC+140] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+140], v52, v[vgprValuC+140]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+140], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+140]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -40307,7 +40307,7 @@ v_mov_b32 v12, 0x7fff                              // rounding bias for bfloat16
 v_mul_f32 v[vgprValuC+23], v20, v[vgprValuC+23]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+23], v21, v[vgprValuC+23]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+23], v22, v[vgprValuC+23]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+23], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+23]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -40321,7 +40321,7 @@ buffer_store_short v23, v13, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+33], v31, v[vgprValuC+33]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+33], v21, v[vgprValuC+33]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+33], v32, v[vgprValuC+33]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+33], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+33]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -40335,7 +40335,7 @@ buffer_store_short v33, v24, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+43], v41, v[vgprValuC+43]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+43], v21, v[vgprValuC+43]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+43], v42, v[vgprValuC+43]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+43], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+43]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -40349,7 +40349,7 @@ buffer_store_short v43, v34, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+53], v51, v[vgprValuC+53]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+53], v21, v[vgprValuC+53]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+53], v52, v[vgprValuC+53]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+53], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+53]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -40363,7 +40363,7 @@ buffer_store_short v53, v44, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+61], v20, v[vgprValuC+61]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+61], v60, v[vgprValuC+61]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+61], v22, v[vgprValuC+61]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+61]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -40377,7 +40377,7 @@ buffer_store_short v61, v54, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+68], v31, v[vgprValuC+68]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+68], v60, v[vgprValuC+68]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+68], v32, v[vgprValuC+68]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+68], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+68]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -40391,7 +40391,7 @@ buffer_store_short v68, v62, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+75], v41, v[vgprValuC+75]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+75], v60, v[vgprValuC+75]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+75], v42, v[vgprValuC+75]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+75], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+75]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -40405,7 +40405,7 @@ buffer_store_short v75, v69, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+82], v51, v[vgprValuC+82]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+82], v60, v[vgprValuC+82]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+82], v52, v[vgprValuC+82]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+82], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+82]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -40419,7 +40419,7 @@ buffer_store_short v82, v76, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+90], v20, v[vgprValuC+90]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+90], v89, v[vgprValuC+90]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+90], v22, v[vgprValuC+90]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+90]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -40433,7 +40433,7 @@ buffer_store_short v90, v83, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+97], v31, v[vgprValuC+97]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+97], v89, v[vgprValuC+97]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+97], v32, v[vgprValuC+97]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+97], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+97]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -40447,7 +40447,7 @@ buffer_store_short v97, v91, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+104], v41, v[vgprValuC+104]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+104], v89, v[vgprValuC+104]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+104], v42, v[vgprValuC+104]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+104], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+104]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -40461,7 +40461,7 @@ buffer_store_short v104, v98, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store 
 v_mul_f32 v[vgprValuC+111], v51, v[vgprValuC+111]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+111], v89, v[vgprValuC+111]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+111], v52, v[vgprValuC+111]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+111], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+111]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -40475,7 +40475,7 @@ buffer_store_short v111, v105, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+119], v20, v[vgprValuC+119]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+119], v118, v[vgprValuC+119] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+119], v22, v[vgprValuC+119]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+119], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+119]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -40489,7 +40489,7 @@ buffer_store_short v119, v112, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+126], v31, v[vgprValuC+126]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+126], v118, v[vgprValuC+126] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+126], v32, v[vgprValuC+126]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+126], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+126]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -40503,7 +40503,7 @@ buffer_store_short v126, v120, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+133], v41, v[vgprValuC+133]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+133], v118, v[vgprValuC+133] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+133], v42, v[vgprValuC+133]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+133], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+133]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -40517,7 +40517,7 @@ buffer_store_short v133, v127, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+140], v51, v[vgprValuC+140]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+140], v118, v[vgprValuC+140] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+140], v52, v[vgprValuC+140]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+140], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+140]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -40917,7 +40917,7 @@ v_mov_b32 v12, 0x7fff                              // rounding bias for bfloat16
 v_mul_f32 v[vgprValuC+23], v20, v[vgprValuC+23]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+23], v21, v[vgprValuC+23]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+23], v22, v[vgprValuC+23]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+23], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+23]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -40931,7 +40931,7 @@ buffer_store_short v23, v13, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+33], v31, v[vgprValuC+33]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+33], v21, v[vgprValuC+33]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+33], v32, v[vgprValuC+33]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+33], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+33]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -40945,7 +40945,7 @@ buffer_store_short v33, v24, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+43], v41, v[vgprValuC+43]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+43], v21, v[vgprValuC+43]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+43], v42, v[vgprValuC+43]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+43], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+43]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -40959,7 +40959,7 @@ buffer_store_short v43, v34, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+53], v51, v[vgprValuC+53]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+53], v21, v[vgprValuC+53]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+53], v52, v[vgprValuC+53]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+53], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+53]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -40973,7 +40973,7 @@ buffer_store_short v53, v44, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+61], v20, v[vgprValuC+61]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+61], v60, v[vgprValuC+61]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+61], v22, v[vgprValuC+61]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+61]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -40987,7 +40987,7 @@ buffer_store_short v61, v54, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+68], v31, v[vgprValuC+68]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+68], v60, v[vgprValuC+68]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+68], v32, v[vgprValuC+68]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+68], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+68]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41001,7 +41001,7 @@ buffer_store_short v68, v62, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+75], v41, v[vgprValuC+75]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+75], v60, v[vgprValuC+75]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+75], v42, v[vgprValuC+75]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+75], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+75]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41015,7 +41015,7 @@ buffer_store_short v75, v69, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+82], v51, v[vgprValuC+82]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+82], v60, v[vgprValuC+82]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+82], v52, v[vgprValuC+82]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+82], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+82]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41029,7 +41029,7 @@ buffer_store_short v82, v76, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+90], v20, v[vgprValuC+90]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+90], v89, v[vgprValuC+90]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+90], v22, v[vgprValuC+90]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+90]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41043,7 +41043,7 @@ buffer_store_short v90, v83, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+97], v31, v[vgprValuC+97]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+97], v89, v[vgprValuC+97]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+97], v32, v[vgprValuC+97]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+97], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+97]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41057,7 +41057,7 @@ buffer_store_short v97, v91, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+104], v41, v[vgprValuC+104]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+104], v89, v[vgprValuC+104]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+104], v42, v[vgprValuC+104]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+104], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+104]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41071,7 +41071,7 @@ buffer_store_short v104, v98, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store 
 v_mul_f32 v[vgprValuC+111], v51, v[vgprValuC+111]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+111], v89, v[vgprValuC+111]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+111], v52, v[vgprValuC+111]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+111], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+111]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41085,7 +41085,7 @@ buffer_store_short v111, v105, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+119], v20, v[vgprValuC+119]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+119], v118, v[vgprValuC+119] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+119], v22, v[vgprValuC+119]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+119], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+119]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41099,7 +41099,7 @@ buffer_store_short v119, v112, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+126], v31, v[vgprValuC+126]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+126], v118, v[vgprValuC+126] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+126], v32, v[vgprValuC+126]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+126], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+126]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41113,7 +41113,7 @@ buffer_store_short v126, v120, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+133], v41, v[vgprValuC+133]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+133], v118, v[vgprValuC+133] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+133], v42, v[vgprValuC+133]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+133], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+133]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41127,7 +41127,7 @@ buffer_store_short v133, v127, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+140], v51, v[vgprValuC+140]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+140], v118, v[vgprValuC+140] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+140], v52, v[vgprValuC+140]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+140], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+140]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41527,7 +41527,7 @@ v_mov_b32 v12, 0x7fff                              // rounding bias for bfloat16
 v_mul_f32 v[vgprValuC+23], v20, v[vgprValuC+23]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+23], v21, v[vgprValuC+23]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+23], v22, v[vgprValuC+23]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+23], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+23]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41541,7 +41541,7 @@ buffer_store_short v23, v13, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+33], v31, v[vgprValuC+33]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+33], v21, v[vgprValuC+33]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+33], v32, v[vgprValuC+33]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+33], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+33]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41555,7 +41555,7 @@ buffer_store_short v33, v24, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+43], v41, v[vgprValuC+43]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+43], v21, v[vgprValuC+43]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+43], v42, v[vgprValuC+43]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+43], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+43]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41569,7 +41569,7 @@ buffer_store_short v43, v34, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+53], v51, v[vgprValuC+53]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+53], v21, v[vgprValuC+53]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+53], v52, v[vgprValuC+53]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+53], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+53]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41583,7 +41583,7 @@ buffer_store_short v53, v44, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+61], v20, v[vgprValuC+61]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+61], v60, v[vgprValuC+61]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+61], v22, v[vgprValuC+61]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+61]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41597,7 +41597,7 @@ buffer_store_short v61, v54, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+68], v31, v[vgprValuC+68]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+68], v60, v[vgprValuC+68]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+68], v32, v[vgprValuC+68]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+68], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+68]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41611,7 +41611,7 @@ buffer_store_short v68, v62, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+75], v41, v[vgprValuC+75]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+75], v60, v[vgprValuC+75]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+75], v42, v[vgprValuC+75]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+75], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+75]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41625,7 +41625,7 @@ buffer_store_short v75, v69, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+82], v51, v[vgprValuC+82]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+82], v60, v[vgprValuC+82]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+82], v52, v[vgprValuC+82]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+82], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+82]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41639,7 +41639,7 @@ buffer_store_short v82, v76, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+90], v20, v[vgprValuC+90]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+90], v89, v[vgprValuC+90]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+90], v22, v[vgprValuC+90]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+90]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41653,7 +41653,7 @@ buffer_store_short v90, v83, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+97], v31, v[vgprValuC+97]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+97], v89, v[vgprValuC+97]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+97], v32, v[vgprValuC+97]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+97], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+97]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41667,7 +41667,7 @@ buffer_store_short v97, v91, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+104], v41, v[vgprValuC+104]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+104], v89, v[vgprValuC+104]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+104], v42, v[vgprValuC+104]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+104], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+104]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41681,7 +41681,7 @@ buffer_store_short v104, v98, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store 
 v_mul_f32 v[vgprValuC+111], v51, v[vgprValuC+111]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+111], v89, v[vgprValuC+111]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+111], v52, v[vgprValuC+111]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+111], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+111]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41695,7 +41695,7 @@ buffer_store_short v111, v105, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+119], v20, v[vgprValuC+119]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+119], v118, v[vgprValuC+119] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+119], v22, v[vgprValuC+119]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+119], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+119]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41709,7 +41709,7 @@ buffer_store_short v119, v112, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+126], v31, v[vgprValuC+126]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+126], v118, v[vgprValuC+126] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+126], v32, v[vgprValuC+126]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+126], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+126]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41723,7 +41723,7 @@ buffer_store_short v126, v120, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+133], v41, v[vgprValuC+133]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+133], v118, v[vgprValuC+133] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+133], v42, v[vgprValuC+133]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+133], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+133]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -41737,7 +41737,7 @@ buffer_store_short v133, v127, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+140], v51, v[vgprValuC+140]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+140], v118, v[vgprValuC+140] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+140], v52, v[vgprValuC+140]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+140], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+140]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42137,7 +42137,7 @@ v_mov_b32 v12, 0x7fff                              // rounding bias for bfloat16
 v_mul_f32 v[vgprValuC+23], v20, v[vgprValuC+23]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+23], v21, v[vgprValuC+23]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+23], v22, v[vgprValuC+23]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+23], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+23]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42151,7 +42151,7 @@ buffer_store_short v23, v13, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+33], v31, v[vgprValuC+33]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+33], v21, v[vgprValuC+33]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+33], v32, v[vgprValuC+33]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+33], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+33]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42165,7 +42165,7 @@ buffer_store_short v33, v24, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+43], v41, v[vgprValuC+43]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+43], v21, v[vgprValuC+43]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+43], v42, v[vgprValuC+43]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+43], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+43]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42179,7 +42179,7 @@ buffer_store_short v43, v34, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+53], v51, v[vgprValuC+53]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+53], v21, v[vgprValuC+53]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+53], v52, v[vgprValuC+53]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+53], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+53]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42193,7 +42193,7 @@ buffer_store_short v53, v44, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+61], v20, v[vgprValuC+61]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+61], v60, v[vgprValuC+61]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+61], v22, v[vgprValuC+61]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+61]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42207,7 +42207,7 @@ buffer_store_short v61, v54, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+68], v31, v[vgprValuC+68]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+68], v60, v[vgprValuC+68]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+68], v32, v[vgprValuC+68]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+68], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+68]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42221,7 +42221,7 @@ buffer_store_short v68, v62, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+75], v41, v[vgprValuC+75]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+75], v60, v[vgprValuC+75]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+75], v42, v[vgprValuC+75]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+75], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+75]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42235,7 +42235,7 @@ buffer_store_short v75, v69, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+82], v51, v[vgprValuC+82]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+82], v60, v[vgprValuC+82]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+82], v52, v[vgprValuC+82]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+82], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+82]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42249,7 +42249,7 @@ buffer_store_short v82, v76, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+90], v20, v[vgprValuC+90]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+90], v89, v[vgprValuC+90]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+90], v22, v[vgprValuC+90]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+90]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42263,7 +42263,7 @@ buffer_store_short v90, v83, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+97], v31, v[vgprValuC+97]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+97], v89, v[vgprValuC+97]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+97], v32, v[vgprValuC+97]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+97], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+97]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42277,7 +42277,7 @@ buffer_store_short v97, v91, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+104], v41, v[vgprValuC+104]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+104], v89, v[vgprValuC+104]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+104], v42, v[vgprValuC+104]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+104], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+104]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42291,7 +42291,7 @@ buffer_store_short v104, v98, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store 
 v_mul_f32 v[vgprValuC+111], v51, v[vgprValuC+111]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+111], v89, v[vgprValuC+111]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+111], v52, v[vgprValuC+111]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+111], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+111]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42305,7 +42305,7 @@ buffer_store_short v111, v105, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+119], v20, v[vgprValuC+119]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+119], v118, v[vgprValuC+119] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+119], v22, v[vgprValuC+119]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+119], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+119]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42319,7 +42319,7 @@ buffer_store_short v119, v112, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+126], v31, v[vgprValuC+126]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+126], v118, v[vgprValuC+126] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+126], v32, v[vgprValuC+126]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+126], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+126]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42333,7 +42333,7 @@ buffer_store_short v126, v120, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+133], v41, v[vgprValuC+133]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+133], v118, v[vgprValuC+133] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+133], v42, v[vgprValuC+133]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+133], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+133]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42347,7 +42347,7 @@ buffer_store_short v133, v127, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+140], v51, v[vgprValuC+140]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+140], v118, v[vgprValuC+140] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+140], v52, v[vgprValuC+140]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+140], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+140]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42747,7 +42747,7 @@ v_mov_b32 v12, 0x7fff                              // rounding bias for bfloat16
 v_mul_f32 v[vgprValuC+23], v20, v[vgprValuC+23]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+23], v21, v[vgprValuC+23]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+23], v22, v[vgprValuC+23]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+23], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+23]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42761,7 +42761,7 @@ buffer_store_short v23, v13, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+33], v31, v[vgprValuC+33]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+33], v21, v[vgprValuC+33]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+33], v32, v[vgprValuC+33]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+33], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+33]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42775,7 +42775,7 @@ buffer_store_short v33, v24, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+43], v41, v[vgprValuC+43]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+43], v21, v[vgprValuC+43]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+43], v42, v[vgprValuC+43]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+43], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+43]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42789,7 +42789,7 @@ buffer_store_short v43, v34, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+53], v51, v[vgprValuC+53]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+53], v21, v[vgprValuC+53]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+53], v52, v[vgprValuC+53]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+53], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+53]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42803,7 +42803,7 @@ buffer_store_short v53, v44, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+61], v20, v[vgprValuC+61]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+61], v60, v[vgprValuC+61]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+61], v22, v[vgprValuC+61]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+61]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42817,7 +42817,7 @@ buffer_store_short v61, v54, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+68], v31, v[vgprValuC+68]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+68], v60, v[vgprValuC+68]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+68], v32, v[vgprValuC+68]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+68], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+68]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42831,7 +42831,7 @@ buffer_store_short v68, v62, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+75], v41, v[vgprValuC+75]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+75], v60, v[vgprValuC+75]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+75], v42, v[vgprValuC+75]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+75], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+75]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42845,7 +42845,7 @@ buffer_store_short v75, v69, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+82], v51, v[vgprValuC+82]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+82], v60, v[vgprValuC+82]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+82], v52, v[vgprValuC+82]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+82], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+82]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42859,7 +42859,7 @@ buffer_store_short v82, v76, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+90], v20, v[vgprValuC+90]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+90], v89, v[vgprValuC+90]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+90], v22, v[vgprValuC+90]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+90]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42873,7 +42873,7 @@ buffer_store_short v90, v83, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+97], v31, v[vgprValuC+97]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+97], v89, v[vgprValuC+97]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+97], v32, v[vgprValuC+97]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+97], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+97]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42887,7 +42887,7 @@ buffer_store_short v97, v91, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+104], v41, v[vgprValuC+104]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+104], v89, v[vgprValuC+104]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+104], v42, v[vgprValuC+104]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+104], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+104]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42901,7 +42901,7 @@ buffer_store_short v104, v98, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store 
 v_mul_f32 v[vgprValuC+111], v51, v[vgprValuC+111]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+111], v89, v[vgprValuC+111]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+111], v52, v[vgprValuC+111]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+111], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+111]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42915,7 +42915,7 @@ buffer_store_short v111, v105, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+119], v20, v[vgprValuC+119]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+119], v118, v[vgprValuC+119] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+119], v22, v[vgprValuC+119]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+119], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+119]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42929,7 +42929,7 @@ buffer_store_short v119, v112, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+126], v31, v[vgprValuC+126]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+126], v118, v[vgprValuC+126] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+126], v32, v[vgprValuC+126]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+126], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+126]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42943,7 +42943,7 @@ buffer_store_short v126, v120, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+133], v41, v[vgprValuC+133]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+133], v118, v[vgprValuC+133] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+133], v42, v[vgprValuC+133]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+133], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+133]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -42957,7 +42957,7 @@ buffer_store_short v133, v127, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+140], v51, v[vgprValuC+140]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+140], v118, v[vgprValuC+140] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+140], v52, v[vgprValuC+140]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+140], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+140]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -43357,7 +43357,7 @@ v_mov_b32 v12, 0x7fff                              // rounding bias for bfloat16
 v_mul_f32 v[vgprValuC+23], v20, v[vgprValuC+23]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+23], v21, v[vgprValuC+23]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+23], v22, v[vgprValuC+23]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+23], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+23]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -43371,7 +43371,7 @@ buffer_store_short v23, v13, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+33], v31, v[vgprValuC+33]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+33], v21, v[vgprValuC+33]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+33], v32, v[vgprValuC+33]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+33], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+33]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -43385,7 +43385,7 @@ buffer_store_short v33, v24, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+43], v41, v[vgprValuC+43]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+43], v21, v[vgprValuC+43]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+43], v42, v[vgprValuC+43]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+43], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+43]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -43399,7 +43399,7 @@ buffer_store_short v43, v34, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+53], v51, v[vgprValuC+53]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+53], v21, v[vgprValuC+53]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+53], v52, v[vgprValuC+53]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+53], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+53]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -43413,7 +43413,7 @@ buffer_store_short v53, v44, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+61], v20, v[vgprValuC+61]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+61], v60, v[vgprValuC+61]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+61], v22, v[vgprValuC+61]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+61]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -43427,7 +43427,7 @@ buffer_store_short v61, v54, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+68], v31, v[vgprValuC+68]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+68], v60, v[vgprValuC+68]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+68], v32, v[vgprValuC+68]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+68], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+68]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -43441,7 +43441,7 @@ buffer_store_short v68, v62, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+75], v41, v[vgprValuC+75]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+75], v60, v[vgprValuC+75]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+75], v42, v[vgprValuC+75]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+75], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+75]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -43455,7 +43455,7 @@ buffer_store_short v75, v69, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+82], v51, v[vgprValuC+82]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+82], v60, v[vgprValuC+82]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+82], v52, v[vgprValuC+82]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+82], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+82]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -43469,7 +43469,7 @@ buffer_store_short v82, v76, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+90], v20, v[vgprValuC+90]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+90], v89, v[vgprValuC+90]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+90], v22, v[vgprValuC+90]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+90]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -43483,7 +43483,7 @@ buffer_store_short v90, v83, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+97], v31, v[vgprValuC+97]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+97], v89, v[vgprValuC+97]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+97], v32, v[vgprValuC+97]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+97], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+97]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -43497,7 +43497,7 @@ buffer_store_short v97, v91, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+104], v41, v[vgprValuC+104]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+104], v89, v[vgprValuC+104]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+104], v42, v[vgprValuC+104]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+104], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+104]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -43511,7 +43511,7 @@ buffer_store_short v104, v98, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store 
 v_mul_f32 v[vgprValuC+111], v51, v[vgprValuC+111]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+111], v89, v[vgprValuC+111]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+111], v52, v[vgprValuC+111]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+111], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+111]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -43525,7 +43525,7 @@ buffer_store_short v111, v105, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+119], v20, v[vgprValuC+119]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+119], v118, v[vgprValuC+119] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+119], v22, v[vgprValuC+119]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+119], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+119]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -43539,7 +43539,7 @@ buffer_store_short v119, v112, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+126], v31, v[vgprValuC+126]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+126], v118, v[vgprValuC+126] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+126], v32, v[vgprValuC+126]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+126], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+126]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -43553,7 +43553,7 @@ buffer_store_short v126, v120, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+133], v41, v[vgprValuC+133]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+133], v118, v[vgprValuC+133] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+133], v42, v[vgprValuC+133]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+133], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+133]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -43567,7 +43567,7 @@ buffer_store_short v133, v127, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+140], v51, v[vgprValuC+140]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+140], v118, v[vgprValuC+140] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+140], v52, v[vgprValuC+140]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+140], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+140]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -43967,7 +43967,7 @@ v_mov_b32 v12, 0x7fff                              // rounding bias for bfloat16
 v_mul_f32 v[vgprValuC+23], v20, v[vgprValuC+23]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+23], v21, v[vgprValuC+23]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+23], v22, v[vgprValuC+23]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+23], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+23]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -43981,7 +43981,7 @@ buffer_store_short v23, v13, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+33], v31, v[vgprValuC+33]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+33], v21, v[vgprValuC+33]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+33], v32, v[vgprValuC+33]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+33], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+33]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -43995,7 +43995,7 @@ buffer_store_short v33, v24, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+43], v41, v[vgprValuC+43]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+43], v21, v[vgprValuC+43]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+43], v42, v[vgprValuC+43]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+43], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+43]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44009,7 +44009,7 @@ buffer_store_short v43, v34, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+53], v51, v[vgprValuC+53]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+53], v21, v[vgprValuC+53]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+53], v52, v[vgprValuC+53]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+53], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+53]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44023,7 +44023,7 @@ buffer_store_short v53, v44, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+61], v20, v[vgprValuC+61]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+61], v60, v[vgprValuC+61]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+61], v22, v[vgprValuC+61]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+61]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44037,7 +44037,7 @@ buffer_store_short v61, v54, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+68], v31, v[vgprValuC+68]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+68], v60, v[vgprValuC+68]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+68], v32, v[vgprValuC+68]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+68], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+68]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44051,7 +44051,7 @@ buffer_store_short v68, v62, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+75], v41, v[vgprValuC+75]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+75], v60, v[vgprValuC+75]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+75], v42, v[vgprValuC+75]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+75], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+75]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44065,7 +44065,7 @@ buffer_store_short v75, v69, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+82], v51, v[vgprValuC+82]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+82], v60, v[vgprValuC+82]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+82], v52, v[vgprValuC+82]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+82], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+82]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44079,7 +44079,7 @@ buffer_store_short v82, v76, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+90], v20, v[vgprValuC+90]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+90], v89, v[vgprValuC+90]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+90], v22, v[vgprValuC+90]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+90]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44093,7 +44093,7 @@ buffer_store_short v90, v83, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+97], v31, v[vgprValuC+97]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+97], v89, v[vgprValuC+97]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+97], v32, v[vgprValuC+97]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+97], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+97]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44107,7 +44107,7 @@ buffer_store_short v97, v91, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+104], v41, v[vgprValuC+104]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+104], v89, v[vgprValuC+104]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+104], v42, v[vgprValuC+104]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+104], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+104]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44121,7 +44121,7 @@ buffer_store_short v104, v98, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store 
 v_mul_f32 v[vgprValuC+111], v51, v[vgprValuC+111]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+111], v89, v[vgprValuC+111]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+111], v52, v[vgprValuC+111]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+111], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+111]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44135,7 +44135,7 @@ buffer_store_short v111, v105, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+119], v20, v[vgprValuC+119]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+119], v118, v[vgprValuC+119] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+119], v22, v[vgprValuC+119]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+119], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+119]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44149,7 +44149,7 @@ buffer_store_short v119, v112, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+126], v31, v[vgprValuC+126]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+126], v118, v[vgprValuC+126] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+126], v32, v[vgprValuC+126]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+126], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+126]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44163,7 +44163,7 @@ buffer_store_short v126, v120, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+133], v41, v[vgprValuC+133]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+133], v118, v[vgprValuC+133] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+133], v42, v[vgprValuC+133]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+133], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+133]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44177,7 +44177,7 @@ buffer_store_short v133, v127, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+140], v51, v[vgprValuC+140]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+140], v118, v[vgprValuC+140] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+140], v52, v[vgprValuC+140]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+140], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+140]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44577,7 +44577,7 @@ v_mov_b32 v12, 0x7fff                              // rounding bias for bfloat16
 v_mul_f32 v[vgprValuC+23], v20, v[vgprValuC+23]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+23], v21, v[vgprValuC+23]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+23], v22, v[vgprValuC+23]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+23], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+23]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44591,7 +44591,7 @@ buffer_store_short v23, v13, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+33], v31, v[vgprValuC+33]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+33], v21, v[vgprValuC+33]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+33], v32, v[vgprValuC+33]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+33], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+33]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44605,7 +44605,7 @@ buffer_store_short v33, v24, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+43], v41, v[vgprValuC+43]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+43], v21, v[vgprValuC+43]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+43], v42, v[vgprValuC+43]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+43], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+43]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44619,7 +44619,7 @@ buffer_store_short v43, v34, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+53], v51, v[vgprValuC+53]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+53], v21, v[vgprValuC+53]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+53], v52, v[vgprValuC+53]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+53], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+53]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44633,7 +44633,7 @@ buffer_store_short v53, v44, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+61], v20, v[vgprValuC+61]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+61], v60, v[vgprValuC+61]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+61], v22, v[vgprValuC+61]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+61]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44647,7 +44647,7 @@ buffer_store_short v61, v54, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+68], v31, v[vgprValuC+68]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+68], v60, v[vgprValuC+68]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+68], v32, v[vgprValuC+68]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+68], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+68]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44661,7 +44661,7 @@ buffer_store_short v68, v62, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+75], v41, v[vgprValuC+75]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+75], v60, v[vgprValuC+75]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+75], v42, v[vgprValuC+75]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+75], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+75]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44675,7 +44675,7 @@ buffer_store_short v75, v69, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+82], v51, v[vgprValuC+82]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+82], v60, v[vgprValuC+82]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+82], v52, v[vgprValuC+82]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+82], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+82]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44689,7 +44689,7 @@ buffer_store_short v82, v76, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+90], v20, v[vgprValuC+90]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+90], v89, v[vgprValuC+90]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+90], v22, v[vgprValuC+90]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+90]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44703,7 +44703,7 @@ buffer_store_short v90, v83, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+97], v31, v[vgprValuC+97]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+97], v89, v[vgprValuC+97]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+97], v32, v[vgprValuC+97]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+97], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+97]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44717,7 +44717,7 @@ buffer_store_short v97, v91, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+104], v41, v[vgprValuC+104]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+104], v89, v[vgprValuC+104]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+104], v42, v[vgprValuC+104]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+104], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+104]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44731,7 +44731,7 @@ buffer_store_short v104, v98, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store 
 v_mul_f32 v[vgprValuC+111], v51, v[vgprValuC+111]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+111], v89, v[vgprValuC+111]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+111], v52, v[vgprValuC+111]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+111], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+111]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44745,7 +44745,7 @@ buffer_store_short v111, v105, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+119], v20, v[vgprValuC+119]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+119], v118, v[vgprValuC+119] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+119], v22, v[vgprValuC+119]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+119], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+119]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44759,7 +44759,7 @@ buffer_store_short v119, v112, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+126], v31, v[vgprValuC+126]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+126], v118, v[vgprValuC+126] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+126], v32, v[vgprValuC+126]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+126], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+126]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44773,7 +44773,7 @@ buffer_store_short v126, v120, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+133], v41, v[vgprValuC+133]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+133], v118, v[vgprValuC+133] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+133], v42, v[vgprValuC+133]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+133], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+133]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -44787,7 +44787,7 @@ buffer_store_short v133, v127, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+140], v51, v[vgprValuC+140]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+140], v118, v[vgprValuC+140] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+140], v52, v[vgprValuC+140]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+140], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+140]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45187,7 +45187,7 @@ v_mov_b32 v12, 0x7fff                              // rounding bias for bfloat16
 v_mul_f32 v[vgprValuC+23], v20, v[vgprValuC+23]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+23], v21, v[vgprValuC+23]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+23], v22, v[vgprValuC+23]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+23], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+23]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45201,7 +45201,7 @@ buffer_store_short v23, v13, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+33], v31, v[vgprValuC+33]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+33], v21, v[vgprValuC+33]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+33], v32, v[vgprValuC+33]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+33], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+33]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45215,7 +45215,7 @@ buffer_store_short v33, v24, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+43], v41, v[vgprValuC+43]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+43], v21, v[vgprValuC+43]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+43], v42, v[vgprValuC+43]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+43], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+43]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45229,7 +45229,7 @@ buffer_store_short v43, v34, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+53], v51, v[vgprValuC+53]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+53], v21, v[vgprValuC+53]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+53], v52, v[vgprValuC+53]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+53], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+53]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45243,7 +45243,7 @@ buffer_store_short v53, v44, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+61], v20, v[vgprValuC+61]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+61], v60, v[vgprValuC+61]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+61], v22, v[vgprValuC+61]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+61]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45257,7 +45257,7 @@ buffer_store_short v61, v54, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+68], v31, v[vgprValuC+68]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+68], v60, v[vgprValuC+68]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+68], v32, v[vgprValuC+68]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+68], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+68]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45271,7 +45271,7 @@ buffer_store_short v68, v62, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+75], v41, v[vgprValuC+75]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+75], v60, v[vgprValuC+75]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+75], v42, v[vgprValuC+75]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+75], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+75]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45285,7 +45285,7 @@ buffer_store_short v75, v69, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+82], v51, v[vgprValuC+82]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+82], v60, v[vgprValuC+82]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+82], v52, v[vgprValuC+82]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+82], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+82]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45299,7 +45299,7 @@ buffer_store_short v82, v76, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+90], v20, v[vgprValuC+90]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+90], v89, v[vgprValuC+90]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+90], v22, v[vgprValuC+90]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+90]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45313,7 +45313,7 @@ buffer_store_short v90, v83, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+97], v31, v[vgprValuC+97]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+97], v89, v[vgprValuC+97]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+97], v32, v[vgprValuC+97]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+97], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+97]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45327,7 +45327,7 @@ buffer_store_short v97, v91, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+104], v41, v[vgprValuC+104]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+104], v89, v[vgprValuC+104]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+104], v42, v[vgprValuC+104]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+104], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+104]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45341,7 +45341,7 @@ buffer_store_short v104, v98, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store 
 v_mul_f32 v[vgprValuC+111], v51, v[vgprValuC+111]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+111], v89, v[vgprValuC+111]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+111], v52, v[vgprValuC+111]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+111], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+111]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45355,7 +45355,7 @@ buffer_store_short v111, v105, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+119], v20, v[vgprValuC+119]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+119], v118, v[vgprValuC+119] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+119], v22, v[vgprValuC+119]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+119], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+119]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45369,7 +45369,7 @@ buffer_store_short v119, v112, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+126], v31, v[vgprValuC+126]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+126], v118, v[vgprValuC+126] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+126], v32, v[vgprValuC+126]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+126], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+126]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45383,7 +45383,7 @@ buffer_store_short v126, v120, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+133], v41, v[vgprValuC+133]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+133], v118, v[vgprValuC+133] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+133], v42, v[vgprValuC+133]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+133], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+133]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45397,7 +45397,7 @@ buffer_store_short v133, v127, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+140], v51, v[vgprValuC+140]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+140], v118, v[vgprValuC+140] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+140], v52, v[vgprValuC+140]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+140], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+140]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45797,7 +45797,7 @@ v_mov_b32 v12, 0x7fff                              // rounding bias for bfloat16
 v_mul_f32 v[vgprValuC+23], v20, v[vgprValuC+23]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+23], v21, v[vgprValuC+23]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+23], v22, v[vgprValuC+23]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+23], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+23]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45811,7 +45811,7 @@ buffer_store_short v23, v13, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+33], v31, v[vgprValuC+33]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+33], v21, v[vgprValuC+33]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+33], v32, v[vgprValuC+33]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+33], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+33]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45825,7 +45825,7 @@ buffer_store_short v33, v24, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+43], v41, v[vgprValuC+43]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+43], v21, v[vgprValuC+43]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+43], v42, v[vgprValuC+43]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+43], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+43]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45839,7 +45839,7 @@ buffer_store_short v43, v34, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+53], v51, v[vgprValuC+53]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+53], v21, v[vgprValuC+53]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+53], v52, v[vgprValuC+53]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+53], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+53]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45853,7 +45853,7 @@ buffer_store_short v53, v44, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+61], v20, v[vgprValuC+61]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+61], v60, v[vgprValuC+61]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+61], v22, v[vgprValuC+61]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+61]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45867,7 +45867,7 @@ buffer_store_short v61, v54, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+68], v31, v[vgprValuC+68]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+68], v60, v[vgprValuC+68]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+68], v32, v[vgprValuC+68]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+68], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+68]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45881,7 +45881,7 @@ buffer_store_short v68, v62, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+75], v41, v[vgprValuC+75]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+75], v60, v[vgprValuC+75]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+75], v42, v[vgprValuC+75]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+75], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+75]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45895,7 +45895,7 @@ buffer_store_short v75, v69, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+82], v51, v[vgprValuC+82]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+82], v60, v[vgprValuC+82]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+82], v52, v[vgprValuC+82]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+82], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+82]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45909,7 +45909,7 @@ buffer_store_short v82, v76, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+90], v20, v[vgprValuC+90]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+90], v89, v[vgprValuC+90]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+90], v22, v[vgprValuC+90]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+90]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45923,7 +45923,7 @@ buffer_store_short v90, v83, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+97], v31, v[vgprValuC+97]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+97], v89, v[vgprValuC+97]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+97], v32, v[vgprValuC+97]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+97], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+97]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45937,7 +45937,7 @@ buffer_store_short v97, v91, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+104], v41, v[vgprValuC+104]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+104], v89, v[vgprValuC+104]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+104], v42, v[vgprValuC+104]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+104], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+104]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45951,7 +45951,7 @@ buffer_store_short v104, v98, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store 
 v_mul_f32 v[vgprValuC+111], v51, v[vgprValuC+111]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+111], v89, v[vgprValuC+111]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+111], v52, v[vgprValuC+111]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+111], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+111]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45965,7 +45965,7 @@ buffer_store_short v111, v105, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+119], v20, v[vgprValuC+119]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+119], v118, v[vgprValuC+119] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+119], v22, v[vgprValuC+119]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+119], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+119]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45979,7 +45979,7 @@ buffer_store_short v119, v112, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+126], v31, v[vgprValuC+126]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+126], v118, v[vgprValuC+126] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+126], v32, v[vgprValuC+126]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+126], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+126]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -45993,7 +45993,7 @@ buffer_store_short v126, v120, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+133], v41, v[vgprValuC+133]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+133], v118, v[vgprValuC+133] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+133], v42, v[vgprValuC+133]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+133], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+133]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -46007,7 +46007,7 @@ buffer_store_short v133, v127, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+140], v51, v[vgprValuC+140]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+140], v118, v[vgprValuC+140] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+140], v52, v[vgprValuC+140]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+140], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+140]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -46407,7 +46407,7 @@ v_mov_b32 v12, 0x7fff                              // rounding bias for bfloat16
 v_mul_f32 v[vgprValuC+23], v20, v[vgprValuC+23]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+23], v21, v[vgprValuC+23]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+23], v22, v[vgprValuC+23]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+23], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+23]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -46421,7 +46421,7 @@ buffer_store_short v23, v13, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+33], v31, v[vgprValuC+33]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+33], v21, v[vgprValuC+33]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+33], v32, v[vgprValuC+33]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+33], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+33]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -46435,7 +46435,7 @@ buffer_store_short v33, v24, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+43], v41, v[vgprValuC+43]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+43], v21, v[vgprValuC+43]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+43], v42, v[vgprValuC+43]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+43], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+43]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -46449,7 +46449,7 @@ buffer_store_short v43, v34, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+53], v51, v[vgprValuC+53]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+53], v21, v[vgprValuC+53]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+53], v52, v[vgprValuC+53]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+53], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+53]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -46463,7 +46463,7 @@ buffer_store_short v53, v44, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+61], v20, v[vgprValuC+61]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+61], v60, v[vgprValuC+61]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+61], v22, v[vgprValuC+61]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+61]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -46477,7 +46477,7 @@ buffer_store_short v61, v54, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+68], v31, v[vgprValuC+68]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+68], v60, v[vgprValuC+68]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+68], v32, v[vgprValuC+68]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+68], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+68]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -46491,7 +46491,7 @@ buffer_store_short v68, v62, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+75], v41, v[vgprValuC+75]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+75], v60, v[vgprValuC+75]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+75], v42, v[vgprValuC+75]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+75], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+75]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -46505,7 +46505,7 @@ buffer_store_short v75, v69, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+82], v51, v[vgprValuC+82]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+82], v60, v[vgprValuC+82]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+82], v52, v[vgprValuC+82]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+82], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+82]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -46519,7 +46519,7 @@ buffer_store_short v82, v76, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+90], v20, v[vgprValuC+90]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+90], v89, v[vgprValuC+90]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+90], v22, v[vgprValuC+90]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+90]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -46533,7 +46533,7 @@ buffer_store_short v90, v83, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+97], v31, v[vgprValuC+97]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+97], v89, v[vgprValuC+97]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+97], v32, v[vgprValuC+97]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+97], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+97]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -46547,7 +46547,7 @@ buffer_store_short v97, v91, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+104], v41, v[vgprValuC+104]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+104], v89, v[vgprValuC+104]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+104], v42, v[vgprValuC+104]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+104], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+104]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -46561,7 +46561,7 @@ buffer_store_short v104, v98, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store 
 v_mul_f32 v[vgprValuC+111], v51, v[vgprValuC+111]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+111], v89, v[vgprValuC+111]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+111], v52, v[vgprValuC+111]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+111], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+111]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -46575,7 +46575,7 @@ buffer_store_short v111, v105, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+119], v20, v[vgprValuC+119]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+119], v118, v[vgprValuC+119] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+119], v22, v[vgprValuC+119]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+119], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+119]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -46589,7 +46589,7 @@ buffer_store_short v119, v112, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+126], v31, v[vgprValuC+126]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+126], v118, v[vgprValuC+126] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+126], v32, v[vgprValuC+126]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+126], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+126]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -46603,7 +46603,7 @@ buffer_store_short v126, v120, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+133], v41, v[vgprValuC+133]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+133], v118, v[vgprValuC+133] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+133], v42, v[vgprValuC+133]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+133], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+133]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -46617,7 +46617,7 @@ buffer_store_short v133, v127, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+140], v51, v[vgprValuC+140]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+140], v118, v[vgprValuC+140] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+140], v52, v[vgprValuC+140]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+140], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+140]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47017,7 +47017,7 @@ v_mov_b32 v12, 0x7fff                              // rounding bias for bfloat16
 v_mul_f32 v[vgprValuC+23], v20, v[vgprValuC+23]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+23], v21, v[vgprValuC+23]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+23], v22, v[vgprValuC+23]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+23], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+23]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47031,7 +47031,7 @@ buffer_store_short v23, v13, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+33], v31, v[vgprValuC+33]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+33], v21, v[vgprValuC+33]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+33], v32, v[vgprValuC+33]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+33], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+33]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47045,7 +47045,7 @@ buffer_store_short v33, v24, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+43], v41, v[vgprValuC+43]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+43], v21, v[vgprValuC+43]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+43], v42, v[vgprValuC+43]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+43], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+43]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47059,7 +47059,7 @@ buffer_store_short v43, v34, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+53], v51, v[vgprValuC+53]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+53], v21, v[vgprValuC+53]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+53], v52, v[vgprValuC+53]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+53], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+53]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47073,7 +47073,7 @@ buffer_store_short v53, v44, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+61], v20, v[vgprValuC+61]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+61], v60, v[vgprValuC+61]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+61], v22, v[vgprValuC+61]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+61]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47087,7 +47087,7 @@ buffer_store_short v61, v54, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+68], v31, v[vgprValuC+68]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+68], v60, v[vgprValuC+68]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+68], v32, v[vgprValuC+68]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+68], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+68]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47101,7 +47101,7 @@ buffer_store_short v68, v62, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+75], v41, v[vgprValuC+75]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+75], v60, v[vgprValuC+75]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+75], v42, v[vgprValuC+75]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+75], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+75]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47115,7 +47115,7 @@ buffer_store_short v75, v69, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+82], v51, v[vgprValuC+82]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+82], v60, v[vgprValuC+82]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+82], v52, v[vgprValuC+82]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+82], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+82]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47129,7 +47129,7 @@ buffer_store_short v82, v76, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+90], v20, v[vgprValuC+90]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+90], v89, v[vgprValuC+90]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+90], v22, v[vgprValuC+90]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+90]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47143,7 +47143,7 @@ buffer_store_short v90, v83, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+97], v31, v[vgprValuC+97]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+97], v89, v[vgprValuC+97]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+97], v32, v[vgprValuC+97]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+97], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+97]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47157,7 +47157,7 @@ buffer_store_short v97, v91, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+104], v41, v[vgprValuC+104]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+104], v89, v[vgprValuC+104]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+104], v42, v[vgprValuC+104]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+104], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+104]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47171,7 +47171,7 @@ buffer_store_short v104, v98, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store 
 v_mul_f32 v[vgprValuC+111], v51, v[vgprValuC+111]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+111], v89, v[vgprValuC+111]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+111], v52, v[vgprValuC+111]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+111], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+111]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47185,7 +47185,7 @@ buffer_store_short v111, v105, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+119], v20, v[vgprValuC+119]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+119], v118, v[vgprValuC+119] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+119], v22, v[vgprValuC+119]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+119], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+119]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47199,7 +47199,7 @@ buffer_store_short v119, v112, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+126], v31, v[vgprValuC+126]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+126], v118, v[vgprValuC+126] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+126], v32, v[vgprValuC+126]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+126], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+126]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47213,7 +47213,7 @@ buffer_store_short v126, v120, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+133], v41, v[vgprValuC+133]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+133], v118, v[vgprValuC+133] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+133], v42, v[vgprValuC+133]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+133], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+133]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47227,7 +47227,7 @@ buffer_store_short v133, v127, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+140], v51, v[vgprValuC+140]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+140], v118, v[vgprValuC+140] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+140], v52, v[vgprValuC+140]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+140], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+140]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47627,7 +47627,7 @@ v_mov_b32 v12, 0x7fff                              // rounding bias for bfloat16
 v_mul_f32 v[vgprValuC+23], v20, v[vgprValuC+23]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+23], v21, v[vgprValuC+23]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+23], v22, v[vgprValuC+23]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v18                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+23], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+23]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47641,7 +47641,7 @@ buffer_store_short v23, v13, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+33], v31, v[vgprValuC+33]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+33], v21, v[vgprValuC+33]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+33], v32, v[vgprValuC+33]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v29                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+33], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+33]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47655,7 +47655,7 @@ buffer_store_short v33, v24, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+43], v41, v[vgprValuC+43]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+43], v21, v[vgprValuC+43]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+43], v42, v[vgprValuC+43]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v39                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+43], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+43]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47669,7 +47669,7 @@ buffer_store_short v43, v34, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+53], v51, v[vgprValuC+53]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+53], v21, v[vgprValuC+53]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+53], v52, v[vgprValuC+53]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v49                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+53], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+53]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47683,7 +47683,7 @@ buffer_store_short v53, v44, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+61], v20, v[vgprValuC+61]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+61], v60, v[vgprValuC+61]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+61], v22, v[vgprValuC+61]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v59                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+61], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+61]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47697,7 +47697,7 @@ buffer_store_short v61, v54, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+68], v31, v[vgprValuC+68]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+68], v60, v[vgprValuC+68]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+68], v32, v[vgprValuC+68]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v67                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+68], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+68]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47711,7 +47711,7 @@ buffer_store_short v68, v62, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+75], v41, v[vgprValuC+75]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+75], v60, v[vgprValuC+75]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+75], v42, v[vgprValuC+75]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v74                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+75], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+75]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47725,7 +47725,7 @@ buffer_store_short v75, v69, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+82], v51, v[vgprValuC+82]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+82], v60, v[vgprValuC+82]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+82], v52, v[vgprValuC+82]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v81                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+82], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+82]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47739,7 +47739,7 @@ buffer_store_short v82, v76, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+90], v20, v[vgprValuC+90]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+90], v89, v[vgprValuC+90]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+90], v22, v[vgprValuC+90]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v88                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+90], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+90]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47753,7 +47753,7 @@ buffer_store_short v90, v83, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+97], v31, v[vgprValuC+97]    // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+97], v89, v[vgprValuC+97]    // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+97], v32, v[vgprValuC+97]    // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v96                          // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+97], v4, s[sgprBeta]        // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+97]                 // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47767,7 +47767,7 @@ buffer_store_short v97, v91, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store D
 v_mul_f32 v[vgprValuC+104], v41, v[vgprValuC+104]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+104], v89, v[vgprValuC+104]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+104], v42, v[vgprValuC+104]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v103                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+104], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+104]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47781,7 +47781,7 @@ buffer_store_short v104, v98, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store 
 v_mul_f32 v[vgprValuC+111], v51, v[vgprValuC+111]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+111], v89, v[vgprValuC+111]  // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+111], v52, v[vgprValuC+111]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v110                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+111], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+111]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47795,7 +47795,7 @@ buffer_store_short v111, v105, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+119], v20, v[vgprValuC+119]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+119], v118, v[vgprValuC+119] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+119], v22, v[vgprValuC+119]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v117                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+119], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v19, v[vgprValuC+119]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47809,7 +47809,7 @@ buffer_store_short v119, v112, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+126], v31, v[vgprValuC+126]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+126], v118, v[vgprValuC+126] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+126], v32, v[vgprValuC+126]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v125                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+126], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v30, v[vgprValuC+126]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47823,7 +47823,7 @@ buffer_store_short v126, v120, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+133], v41, v[vgprValuC+133]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+133], v118, v[vgprValuC+133] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+133], v42, v[vgprValuC+133]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v132                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+133], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v40, v[vgprValuC+133]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]
@@ -47837,7 +47837,7 @@ buffer_store_short v133, v127, s[sgprSrdD:sgprSrdD+3], 0 offen offset:0 // store
 v_mul_f32 v[vgprValuC+140], v51, v[vgprValuC+140]  // *= ScaleAVMul
 v_mul_f32 v[vgprValuC+140], v118, v[vgprValuC+140] // *= ScaleBVMul
 v_mul_f32 v[vgprValuC+140], v52, v[vgprValuC+140]  // *= ScaleAlphaVecVMul
-v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32. 
+v_lshlrev_b32 v4, 16, v139                         // cvt bf16 to fp32.
 v_fmac_f32 v[vgprValuC+140], v4, s[sgprBeta]       // finalSum = sum*alpha + C*beta
 v_add_f32 v4, v50, v[vgprValuC+140]                // C += bias
 s_swappc_b64 s[28:29], s[12:13]

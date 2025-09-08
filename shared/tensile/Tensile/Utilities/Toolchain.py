@@ -108,7 +108,9 @@ def _posixSearchPaths() -> List[Path]:
 class ToolchainDefaults(NamedTuple):
     CXX_COMPILER = osSelect(linux="amdclang++", windows="clang++.exe")
     C_COMPILER = osSelect(linux="amdclang", windows="clang.exe")
-    OFFLOAD_BUNDLER = osSelect(linux="clang-offload-bundler", windows="clang-offload-bundler.exe")
+    OFFLOAD_BUNDLER = osSelect(
+        linux="clang-offload-bundler", windows="clang-offload-bundler.exe"
+    )
     ASSEMBLER = osSelect(linux="amdclang++", windows="clang++.exe")
     HIP_CONFIG = osSelect(linux="hipconfig", windows="hipconfig")
     DEVICE_ENUMERATOR = osSelect(linux="rocm_agent_enumerator", windows="hipinfo.exe")
@@ -220,7 +222,9 @@ def _validateExecutable(file: str, searchPaths: List[Path]) -> str:
             supportedDeviceEnumerator(file),
         )
     ):
-        raise ValueError(f"{file} is not a supported toolchain component for OS: {os.name}")
+        raise ValueError(
+            f"{file} is not a supported toolchain component for OS: {os.name}"
+        )
 
     if _exeExists(Path(file)):
         return file
@@ -253,7 +257,9 @@ def validateToolchain(*args: str):
         FileNotFoundError: If a toolchain component is not found in the PATH.
     """
     if not args:
-        raise ValueError("No toolchain components to validate, at least one argument is required")
+        raise ValueError(
+            "No toolchain components to validate, at least one argument is required"
+        )
 
     searchPaths = _windowsSearchPaths() if os.name == "nt" else _posixSearchPaths()
 

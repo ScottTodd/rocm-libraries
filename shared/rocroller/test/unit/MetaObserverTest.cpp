@@ -43,7 +43,7 @@ public:
     TestFalseObserver() {}
 
     TestFalseObserver(ContextPtr context)
-        : m_context(context){
+        : m_context(context) {
 
         };
 
@@ -71,7 +71,7 @@ public:
     TestTrueObserver() {}
 
     TestTrueObserver(ContextPtr context)
-        : m_context(context){
+        : m_context(context) {
 
         };
 
@@ -111,8 +111,8 @@ TEST_F(MetaObserverTest, MultipleObserverTest)
                                 Scheduling::WaitcntObserver(m_context)};
 
     using MyObserver      = Scheduling::MetaObserver<Scheduling::AllocatingObserver,
-                                                Scheduling::WaitcntObserver,
-                                                Scheduling::AllocatingObserver,
-                                                Scheduling::WaitcntObserver>;
+                                                     Scheduling::WaitcntObserver,
+                                                     Scheduling::AllocatingObserver,
+                                                     Scheduling::WaitcntObserver>;
     m_context->observer() = std::make_shared<MyObserver>(constructedObservers);
 }

@@ -25,6 +25,7 @@
 from dataclasses import dataclass
 from typing import NamedTuple
 
+
 @dataclass
 class IsaInfo:
     asmCaps: dict
@@ -38,7 +39,9 @@ class SemanticVersion(NamedTuple):
     minor: int
     patch: int
 
+
 IsaVersion = SemanticVersion
+
 
 class DebugConfig(NamedTuple):
     """
@@ -52,17 +55,18 @@ class DebugConfig(NamedTuple):
         printIndexAssignmentInfo: Print the tensor index assignment info.
 
     """
-    enableAsserts: bool=False
-    enableDebugA: bool=False
-    enableDebugB: bool=False
-    enableDebugC: bool=False
-    expectedValueC: float=16.0
-    forceCExpectedValue: bool=False
-    debugKernel: bool=False
-    forceGenerateKernel: bool=False
-    printSolutionRejectionReason: bool=False
-    splitGSU: bool=False
-    printIndexAssignmentInfo: bool=False
+
+    enableAsserts: bool = False
+    enableDebugA: bool = False
+    enableDebugB: bool = False
+    enableDebugC: bool = False
+    expectedValueC: float = 16.0
+    forceCExpectedValue: bool = False
+    debugKernel: bool = False
+    forceGenerateKernel: bool = False
+    printSolutionRejectionReason: bool = False
+    splitGSU: bool = False
+    printIndexAssignmentInfo: bool = False
 
 
 def makeDebugConfig(config: dict) -> DebugConfig:
@@ -103,15 +107,15 @@ def makeDebugConfig(config: dict) -> DebugConfig:
         printIndexAssignmentInfo = config["PrintIndexAssignmentInfo"]
 
     return DebugConfig(
-               enableAsserts,
-               enableDebugA,
-               enableDebugB,
-               enableDebugC,
-               expectedValueC,
-               forceCExpectedValue,
-               debugKernel,
-               forceGenerateKernel,
-               printSolutionRejectionReason,
-               splitGSU,
-               printIndexAssignmentInfo,
-            )
+        enableAsserts,
+        enableDebugA,
+        enableDebugB,
+        enableDebugC,
+        expectedValueC,
+        forceCExpectedValue,
+        debugKernel,
+        forceGenerateKernel,
+        printSolutionRejectionReason,
+        splitGSU,
+        printIndexAssignmentInfo,
+    )

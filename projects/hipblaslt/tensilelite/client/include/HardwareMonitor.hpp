@@ -145,8 +145,9 @@ namespace TensileLite
 
             uint16_t m_XCDCount;
 
-            std::vector<std::tuple<rsmi_temperature_type_t, rsmi_temperature_metric_t>> m_tempMetrics;
-            std::vector<int64_t>                                                        m_tempValues;
+            std::vector<std::tuple<rsmi_temperature_type_t, rsmi_temperature_metric_t>>
+                                 m_tempMetrics;
+            std::vector<int64_t> m_tempValues;
 
             std::vector<rsmi_clk_type_t> m_clockMetrics;
             std::vector<uint64_t>        m_clockValues;

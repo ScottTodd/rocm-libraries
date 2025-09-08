@@ -67,7 +67,7 @@ namespace rocRoller
             using Base = MatrixMultiply;
 
             MatrixMultiplyGenerator(ContextPtr context)
-                : m_context(context){};
+                : m_context(context) {};
 
             static const std::string Name;
 

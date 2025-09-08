@@ -26,31 +26,30 @@
 #include <hipcub/block/block_histogram.hpp>
 
 // Params for tests
-template<
-    class T,
-    unsigned int BlockSize = 256U,
-    unsigned int ItemsPerThread = 1U,
-    unsigned int BinSize = BlockSize,
-    hipcub::BlockHistogramAlgorithm Algorithm = hipcub::BlockHistogramAlgorithm::BLOCK_HISTO_ATOMIC
->
+template<class T,
+         unsigned int                    BlockSize      = 256U,
+         unsigned int                    ItemsPerThread = 1U,
+         unsigned int                    BinSize        = BlockSize,
+         hipcub::BlockHistogramAlgorithm Algorithm
+         = hipcub::BlockHistogramAlgorithm::BLOCK_HISTO_ATOMIC>
 struct params
 {
-    using type = T;
-    static constexpr hipcub::BlockHistogramAlgorithm algorithm = Algorithm;
-    static constexpr unsigned int block_size = BlockSize;
-    static constexpr unsigned int items_per_thread = ItemsPerThread;
-    static constexpr unsigned int bin_size = BinSize;
+    using type                                                        = T;
+    static constexpr hipcub::BlockHistogramAlgorithm algorithm        = Algorithm;
+    static constexpr unsigned int                    block_size       = BlockSize;
+    static constexpr unsigned int                    items_per_thread = ItemsPerThread;
+    static constexpr unsigned int                    bin_size         = BinSize;
 };
 
 template<class Params>
 class HipcubBlockHistogramInputArrayTests : public ::testing::Test
 {
 public:
-    using type = typename Params::type;
-    static constexpr unsigned int block_size = Params::block_size;
-    static constexpr hipcub::BlockHistogramAlgorithm algorithm = Params::algorithm;
-    static constexpr unsigned int items_per_thread = Params::items_per_thread;
-    static constexpr unsigned int bin_size = Params::bin_size;
+    using type                                                        = typename Params::type;
+    static constexpr unsigned int                    block_size       = Params::block_size;
+    static constexpr hipcub::BlockHistogramAlgorithm algorithm        = Params::algorithm;
+    static constexpr unsigned int                    items_per_thread = Params::items_per_thread;
+    static constexpr unsigned int                    bin_size         = Params::bin_size;
 };
 
 using InputArrayTestParams = ::testing::Types<
@@ -91,20 +90,18 @@ using InputArrayTestParams = ::testing::Types<
 
 TYPED_TEST_SUITE(HipcubBlockHistogramInputArrayTests, InputArrayTestParams);
 
-template<
-    unsigned int BlockSize,
-    unsigned int ItemsPerThread,
-    unsigned int BinSize,
-    hipcub::BlockHistogramAlgorithm Algorithm,
-    class T
->
-__global__
-__launch_bounds__(BlockSize)
+template<unsigned int                    BlockSize,
+         unsigned int                    ItemsPerThread,
+         unsigned int                    BinSize,
+         hipcub::BlockHistogramAlgorithm Algorithm,
+         class T>
+__global__ __launch_bounds__(BlockSize)
 void histogram_kernel(T* device_output, T* device_output_bin)
 {
     const unsigned int index = ((hipBlockIdx_x * BlockSize) + hipThreadIdx_x) * ItemsPerThread;
-    unsigned int global_offset = hipBlockIdx_x * BinSize;
-    __shared__ T hist[BinSize];
+    unsigned int       global_offset = hipBlockIdx_x * BinSize;
+    __shared__
+    T                  hist[BinSize];
     // load
     T in_out[ItemsPerThread];
     for(unsigned int j = 0; j < ItemsPerThread; j++)
@@ -113,12 +110,13 @@ void histogram_kernel(T* device_output, T* device_output_bin)
     }
 
     using bhistogram_t = hipcub::BlockHistogram<T, BlockSize, ItemsPerThread, BinSize, Algorithm>;
-    __shared__ typename bhistogram_t::TempStorage temp_storage;
+    __shared__
+    typename bhistogram_t::TempStorage temp_storage;
     bhistogram_t(temp_storage).Histogram(in_out, hist);
     __syncthreads();
 
-    #pragma unroll
-    for (unsigned int offset = 0; offset < BinSize; offset += BlockSize)
+#pragma unroll
+    for(unsigned int offset = 0; offset < BinSize; offset += BlockSize)
     {
         if(offset + hipThreadIdx_x < BinSize)
         {
@@ -134,11 +132,11 @@ TYPED_TEST(HipcubBlockHistogramInputArrayTests, Histogram)
     SCOPED_TRACE(testing::Message() << "with device_id= " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using T = typename TestFixture::type;
-    constexpr auto algorithm = TestFixture::algorithm;
-    constexpr size_t block_size = TestFixture::block_size;
+    using T                           = typename TestFixture::type;
+    constexpr auto   algorithm        = TestFixture::algorithm;
+    constexpr size_t block_size       = TestFixture::block_size;
     constexpr size_t items_per_thread = TestFixture::items_per_thread;
-    constexpr size_t bin = TestFixture::bin_size;
+    constexpr size_t bin              = TestFixture::bin_size;
 
     // Given block size not supported
     if(block_size > test_utils::get_max_block_size())
@@ -146,15 +144,16 @@ TYPED_TEST(HipcubBlockHistogramInputArrayTests, Histogram)
         return;
     }
 
-    for (size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
+    for(size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed= " << seed_value);
 
         const size_t items_per_block = block_size * items_per_thread;
-        const size_t size = items_per_block * 37;
-        const size_t bin_sizes = bin * 37;
-        const size_t grid_size = size / items_per_block;
+        const size_t size            = items_per_block * 37;
+        const size_t bin_sizes       = bin * 37;
+        const size_t grid_size       = size / items_per_block;
         // Generate data
         std::vector<T> output = test_utils::get_random_data<T>(size, 0, T(bin - 1), seed_value);
 
@@ -168,7 +167,7 @@ TYPED_TEST(HipcubBlockHistogramInputArrayTests, Histogram)
             for(size_t j = 0; j < items_per_block; j++)
             {
                 auto bin_idx = i * bin;
-                auto idx = i * items_per_block + j;
+                auto idx     = i * items_per_block + j;
                 expected_bin[bin_idx + static_cast<unsigned int>(output[idx])]++;
             }
         }
@@ -177,45 +176,38 @@ TYPED_TEST(HipcubBlockHistogramInputArrayTests, Histogram)
         T* device_output;
         HIP_CHECK(test_common_utils::hipMallocHelper(&device_output, output.size() * sizeof(T)));
         T* device_output_bin;
-        HIP_CHECK(test_common_utils::hipMallocHelper(&device_output_bin, output_bin.size() * sizeof(T)));
-
         HIP_CHECK(
-            hipMemcpy(
-                device_output, output.data(),
-                output.size() * sizeof(T),
-                hipMemcpyHostToDevice
-            )
-        );
+            test_common_utils::hipMallocHelper(&device_output_bin, output_bin.size() * sizeof(T)));
 
-        HIP_CHECK(
-            hipMemcpy(
-                device_output_bin, output_bin.data(),
-                output_bin.size() * sizeof(T),
-                hipMemcpyHostToDevice
-            )
-        );
+        HIP_CHECK(hipMemcpy(device_output,
+                            output.data(),
+                            output.size() * sizeof(T),
+                            hipMemcpyHostToDevice));
+
+        HIP_CHECK(hipMemcpy(device_output_bin,
+                            output_bin.data(),
+                            output_bin.size() * sizeof(T),
+                            hipMemcpyHostToDevice));
 
         // Running kernel
         hipLaunchKernelGGL(
             HIP_KERNEL_NAME(histogram_kernel<block_size, items_per_thread, bin, algorithm, T>),
-            dim3(grid_size), dim3(block_size), 0, 0,
-            device_output, device_output_bin
-        );
+            dim3(grid_size),
+            dim3(block_size),
+            0,
+            0,
+            device_output,
+            device_output_bin);
 
         // Reading results back
-        HIP_CHECK(
-            hipMemcpy(
-                output_bin.data(), device_output_bin,
-                output_bin.size() * sizeof(T),
-                hipMemcpyDeviceToHost
-            )
-        );
+        HIP_CHECK(hipMemcpy(output_bin.data(),
+                            device_output_bin,
+                            output_bin.size() * sizeof(T),
+                            hipMemcpyDeviceToHost));
 
         for(size_t i = 0; i < output_bin.size(); i++)
         {
-            ASSERT_EQ(
-                output_bin[i], expected_bin[i]
-            );
+            ASSERT_EQ(output_bin[i], expected_bin[i]);
         }
 
         HIP_CHECK(hipFree(device_output));

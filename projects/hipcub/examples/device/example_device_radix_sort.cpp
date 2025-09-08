@@ -39,8 +39,8 @@
 // Ensure printing of CUDA runtime errors to console
 #define CUB_STDERR
 
-#include <stdio.h>
 #include <algorithm>
+#include <stdio.h>
 
 #include <hipcub/device/device_radix_sort.hpp>
 
@@ -48,14 +48,12 @@
 
 using namespace hipcub;
 
-
 //---------------------------------------------------------------------
 // Globals, constants and typedefs
 //---------------------------------------------------------------------
 
-bool                            g_verbose = false;  // Whether to display input/output to console
-hipcub::CachingDeviceAllocator  g_allocator;  // Caching allocator for device memory
-
+bool                           g_verbose = false; // Whether to display input/output to console
+hipcub::CachingDeviceAllocator g_allocator; // Caching allocator for device memory
 
 //---------------------------------------------------------------------
 // Test generation
@@ -67,37 +65,32 @@ hipcub::CachingDeviceAllocator  g_allocator;  // Caching allocator for device me
  */
 struct Pair
 {
-    float   key;
-    int     value;
+    float key;
+    int   value;
 
-    bool operator<(const Pair &b) const
+    bool operator<(const Pair& b) const
     {
         return key < b.key;
     }
 };
 
-
 /**
  * Initialize key-value sorting problem.
  */
 void Initialize(
-    float           *h_keys,
-    int             *h_values,
-    float           *h_reference_keys,
-    int             *h_reference_values,
-    int             num_items)
+    float* h_keys, int* h_values, float* h_reference_keys, int* h_reference_values, int num_items)
 {
-    Pair *h_pairs = new Pair[num_items];
+    Pair* h_pairs = new Pair[num_items];
 
-    for (int i = 0; i < num_items; ++i)
+    for(int i = 0; i < num_items; ++i)
     {
         RandomBits(h_keys[i]);
         RandomBits(h_values[i]);
-        h_pairs[i].key    = h_keys[i];
-        h_pairs[i].value  = h_values[i];
+        h_pairs[i].key   = h_keys[i];
+        h_pairs[i].value = h_values[i];
     }
 
-    if (g_verbose)
+    if(g_verbose)
     {
         printf("Input keys:\n");
         DisplayResults(h_keys, num_items);
@@ -110,15 +103,14 @@ void Initialize(
 
     std::stable_sort(h_pairs, h_pairs + num_items);
 
-    for (int i = 0; i < num_items; ++i)
+    for(int i = 0; i < num_items; ++i)
     {
-        h_reference_keys[i]     = h_pairs[i].key;
-        h_reference_values[i]   = h_pairs[i].value;
+        h_reference_keys[i]   = h_pairs[i].key;
+        h_reference_values[i] = h_pairs[i].value;
     }
 
     delete[] h_pairs;
 }
-
 
 //---------------------------------------------------------------------
 // Main
@@ -137,13 +129,14 @@ int main(int argc, char** argv)
     args.GetCmdLineArgument("n", num_items);
 
     // Print usage
-    if (args.CheckCmdLineFlag("help"))
+    if(args.CheckCmdLineFlag("help"))
     {
         printf("%s "
-            "[--n=<input items> "
-            "[--device=<device-id>] "
-            "[--v] "
-            "\n", argv[0]);
+               "[--n=<input items> "
+               "[--device=<device-id>] "
+               "[--v] "
+               "\n",
+               argv[0]);
         exit(0);
     }
 
@@ -151,14 +144,16 @@ int main(int argc, char** argv)
     HIP_CHECK(args.DeviceInit());
 
     printf("hipcub::DeviceRadixSort::SortPairs() %d items (%d-byte keys %d-byte values)\n",
-        num_items, int(sizeof(float)), int(sizeof(int)));
+           num_items,
+           int(sizeof(float)),
+           int(sizeof(int)));
     fflush(stdout);
 
     // Allocate host arrays
-    float   *h_keys             = new float[num_items];
-    float   *h_reference_keys   = new float[num_items];
-    int     *h_values           = new int[num_items];
-    int     *h_reference_values = new int[num_items];
+    float* h_keys             = new float[num_items];
+    float* h_reference_keys   = new float[num_items];
+    int*   h_values           = new int[num_items];
+    int*   h_reference_values = new int[num_items];
 
     // Initialize problem and solution on host
     Initialize(h_keys, h_values, h_reference_keys, h_reference_values, num_items);
@@ -172,8 +167,8 @@ int main(int argc, char** argv)
     HIP_CHECK(g_allocator.DeviceAllocate((void**)&d_values.d_buffers[1], sizeof(int) * num_items));
 
     // Allocate temporary storage
-    size_t  temp_storage_bytes  = 0;
-    void*   d_temp_storage      = nullptr;
+    size_t temp_storage_bytes = 0;
+    void*  d_temp_storage     = nullptr;
 
     HIP_CHECK(hipcub::DeviceRadixSort::SortPairs(d_temp_storage,
                                                  temp_storage_bytes,
@@ -200,10 +195,12 @@ int main(int argc, char** argv)
                                                  num_items));
 
     // Check for correctness (and display results, if specified)
-    int compare = CompareDeviceResults(h_reference_keys, d_keys.Current(), num_items, true, g_verbose);
+    int compare
+        = CompareDeviceResults(h_reference_keys, d_keys.Current(), num_items, true, g_verbose);
     printf("\t Compare keys (selector %d): %s\n", d_keys.selector, compare ? "FAIL" : "PASS");
     AssertEquals(0, compare);
-    compare = CompareDeviceResults(h_reference_values, d_values.Current(), num_items, true, g_verbose);
+    compare
+        = CompareDeviceResults(h_reference_values, d_values.Current(), num_items, true, g_verbose);
     printf("\t Compare values (selector %d): %s\n", d_values.selector, compare ? "FAIL" : "PASS");
     AssertEquals(0, compare);
 

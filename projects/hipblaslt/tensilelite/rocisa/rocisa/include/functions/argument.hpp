@@ -70,18 +70,20 @@ namespace rocisa
             if(writeSgpr)
             {
                 auto comment
-                    = sgprOffset ? std::visit(
-                          [](const auto& value) -> std::string {
-                              if constexpr(std::is_same_v<decltype(value), int>)
-                                  return std::to_string(value);
-                              else if constexpr(std::is_same_v<decltype(value),
-                                                               std::shared_ptr<RegisterContainer>>)
-                                  return value->toString();
-                              else
-                                  return "";
-                          },
-                          *sgprOffset)
-                                 : std::to_string(kernArgOffset);
+                    = sgprOffset
+                          ? std::visit(
+                                [](const auto& value) -> std::string {
+                                    if constexpr(std::is_same_v<decltype(value), int>)
+                                        return std::to_string(value);
+                                    else if constexpr(std::is_same_v<
+                                                          decltype(value),
+                                                          std::shared_ptr<RegisterContainer>>)
+                                        return value->toString();
+                                    else
+                                        return "";
+                                },
+                                *sgprOffset)
+                          : std::to_string(kernArgOffset);
                 auto dstSgpr = sgpr(dst, dword);
                 auto srcSgpr = sgpr(srcAddr, 2);
                 // Determine the appropriate SLoadBX based on dword size

@@ -140,8 +140,8 @@ inline rocsparselt_status validateSetAttributeDataSize(size_t dataSize,
 
         hipsparselt_cerr << "The parameter number 5 (dataSize) had an illegal value: "
                          << "expected " << expectedSize << " bytes(sizeof("
-                         << (status == 0 ? mname : typeid(T).name()) << "))"
-                         << ", current size " << dataSize << " bytes" << std::endl;
+                         << (status == 0 ? mname : typeid(T).name()) << "))" << ", current size "
+                         << dataSize << " bytes" << std::endl;
 
         if(status == 0)
             free(mname);
@@ -267,8 +267,8 @@ inline rocsparselt_status validateMatrixArgs(const _rocsparselt_handle* handle,
             break;
 #endif
     default:
-        hipsparselt_cerr << "datatype (" << hip_datatype_to_string(valueType) << ") is not supported"
-                         << std::endl;
+        hipsparselt_cerr << "datatype (" << hip_datatype_to_string(valueType)
+                         << ") is not supported" << std::endl;
         log_error(handle, __func__, "datatype is not supported");
         return rocsparselt_status_not_implemented;
     }

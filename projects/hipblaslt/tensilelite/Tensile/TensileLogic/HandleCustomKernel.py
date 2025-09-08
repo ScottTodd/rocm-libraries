@@ -28,13 +28,17 @@ from pathlib import Path
 from typing import Dict, Tuple
 
 from Tensile.Common import print1, IsaVersion, IsaInfo
-from Tensile.SolutionStructs.Validators.MatrixInstruction import matrixInstructionToMIParameters
+from Tensile.SolutionStructs.Validators.MatrixInstruction import (
+    matrixInstructionToMIParameters,
+)
 
 from Tensile.CustomKernels import isCustomKernelConfig, getCustomKernelConfig
 from Tensile import CUSTOM_KERNEL_PATH
 
 
-def handleCustomKernel(sol: dict, isaInfoMap: Dict[IsaVersion, IsaInfo]) -> Tuple[dict, bool]:
+def handleCustomKernel(
+    sol: dict, isaInfoMap: Dict[IsaVersion, IsaInfo]
+) -> Tuple[dict, bool]:
     """
     Process custom kernel configuration for a given solution.
 

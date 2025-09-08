@@ -34,16 +34,16 @@ namespace TensileLite
 {
     struct Task
     {
-        Task(Hardware const&            hardware,
-             ContractionProblemGemm const&  problem,
-             ContractionSolution const& solution)
+        Task(Hardware const&               hardware,
+             ContractionProblemGemm const& problem,
+             ContractionSolution const&    solution)
             : hardware(hardware)
             , problem(problem)
             , solution(solution)
         {
         }
-        Hardware const&            hardware;
-        ContractionProblemGemm const&  problem;
-        ContractionSolution const& solution;
+        Hardware const&               hardware;
+        ContractionProblemGemm const& problem;
+        ContractionSolution const&    solution;
     };
 } // namespace TensileLite

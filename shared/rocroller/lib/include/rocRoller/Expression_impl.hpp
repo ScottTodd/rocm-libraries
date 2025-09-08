@@ -558,7 +558,8 @@ namespace rocRoller
         }
 
         template <typename Expr>
-        requires(CUnary<Expr> || CBinary<Expr> || CTernary<Expr>) auto split(ExpressionPtr expr)
+            requires(CUnary<Expr> || CBinary<Expr> || CTernary<Expr>)
+        auto split(ExpressionPtr expr)
         {
             AssertFatal(expr && std::holds_alternative<Expr>(*expr),
                         "Expression does not hold the correct type");

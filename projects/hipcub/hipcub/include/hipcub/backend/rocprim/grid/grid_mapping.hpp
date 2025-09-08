@@ -36,17 +36,14 @@
 
 BEGIN_HIPCUB_NAMESPACE
 
-
 /**
  * \addtogroup GridModule
  * @{
  */
 
-
 /******************************************************************************
  * Mapping policies
  *****************************************************************************/
-
 
 /**
  * \brief cub::GridMappingStrategy enumerates alternative strategies for mapping constant-sized tiles of device-wide data onto a grid of CUDA thread blocks.
@@ -100,8 +97,7 @@ enum GridMappingStrategy
     GRID_MAPPING_DYNAMIC,
 };
 
-
-/** @} */       // end group GridModule
+/** @} */ // end group GridModule
 
 END_HIPCUB_NAMESPACE
 

@@ -129,12 +129,13 @@ TYPED_TEST(HipcubThreadOperationTests, Load)
     using native_T = test_utils::convert_to_native_t<T>;
 
     constexpr uint32_t block_size = 256;
-    constexpr uint32_t grid_size = 128;
-    constexpr uint32_t size = block_size * grid_size;
+    constexpr uint32_t grid_size  = 128;
+    constexpr uint32_t size       = block_size * grid_size;
 
-    for (size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
+    for(size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed= " << seed_value);
 
         // Generate data
@@ -159,23 +160,15 @@ TYPED_TEST(HipcubThreadOperationTests, Load)
         HIP_CHECK(hipMalloc(&device_output, output.size() * sizeof(T)));
 
         HIP_CHECK(
-            hipMemcpy(
-                device_input, input.data(),
-                input.size() * sizeof(T),
-                hipMemcpyHostToDevice
-            )
-        );
+            hipMemcpy(device_input, input.data(), input.size() * sizeof(T), hipMemcpyHostToDevice));
 
         thread_load_kernel<T><<<grid_size, block_size>>>(device_input, device_output);
 
         // Reading results back
-        HIP_CHECK(
-            hipMemcpy(
-                output.data(), device_output,
-                output.size() * sizeof(T),
-                hipMemcpyDeviceToHost
-            )
-        );
+        HIP_CHECK(hipMemcpy(output.data(),
+                            device_output,
+                            output.size() * sizeof(T),
+                            hipMemcpyDeviceToHost));
 
         // Verifying results
         for(size_t i = 0; i < output.size(); i++)
@@ -327,12 +320,13 @@ TYPED_TEST(HipcubThreadOperationTests, Store)
     using native_T = test_utils::convert_to_native_t<T>;
 
     constexpr uint32_t block_size = 256;
-    constexpr uint32_t grid_size = 128;
-    constexpr uint32_t size = block_size * grid_size;
+    constexpr uint32_t grid_size  = 128;
+    constexpr uint32_t size       = block_size * grid_size;
 
-    for (size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
+    for(size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed= " << seed_value);
 
         // Generate data
@@ -357,23 +351,15 @@ TYPED_TEST(HipcubThreadOperationTests, Store)
         HIP_CHECK(hipMalloc(&device_output, output.size() * sizeof(T)));
 
         HIP_CHECK(
-            hipMemcpy(
-                device_input, input.data(),
-                input.size() * sizeof(T),
-                hipMemcpyHostToDevice
-            )
-        );
+            hipMemcpy(device_input, input.data(), input.size() * sizeof(T), hipMemcpyHostToDevice));
 
         thread_store_kernel<T><<<grid_size, block_size>>>(device_input, device_output);
 
         // Reading results back
-        HIP_CHECK(
-            hipMemcpy(
-                output.data(), device_output,
-                output.size() * sizeof(T),
-                hipMemcpyDeviceToHost
-            )
-        );
+        HIP_CHECK(hipMemcpy(output.data(),
+                            device_output,
+                            output.size() * sizeof(T),
+                            hipMemcpyDeviceToHost));
 
         // Verifying results
         for(size_t i = 0; i < output.size(); i++)
@@ -467,9 +453,9 @@ TYPED_TEST(HipcubThreadOperationTests, IterateStore)
 
 struct sum_op
 {
-    template<typename T> HIPCUB_HOST_DEVICE
-    T
-    operator()(const T& input_1,const T& input_2) const
+    template<typename T>
+    HIPCUB_HOST_DEVICE
+    T operator()(const T& input_1, const T& input_2) const
     {
         return input_1 + input_2;
     }
@@ -479,7 +465,7 @@ template<class Type, int32_t Length>
 __global__
 void thread_reduce_kernel(Type* const device_input, Type* device_output)
 {
-    size_t input_index = (hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x) * Length;
+    size_t input_index  = (hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x) * Length;
     size_t output_index = (hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x) * Length;
     device_output[output_index]
         = hipcub::ThreadReduce<Length>(&device_input[input_index], sum_op());
@@ -494,15 +480,16 @@ TYPED_TEST(HipcubThreadOperationTests, Reduction)
     using T        = typename TestFixture::type;
     using native_T = test_utils::convert_to_native_t<T>;
 
-    constexpr uint32_t length = 4;
+    constexpr uint32_t length     = 4;
     constexpr uint32_t block_size = 128 / length;
-    constexpr uint32_t grid_size = 128;
-    constexpr uint32_t size = block_size * grid_size * length;
-    sum_op operation;
+    constexpr uint32_t grid_size  = 128;
+    constexpr uint32_t size       = block_size * grid_size * length;
+    sum_op             operation;
 
-    for (size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
+    for(size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed= " << seed_value);
 
         // Generate data
@@ -524,7 +511,7 @@ TYPED_TEST(HipcubThreadOperationTests, Reduction)
             for(uint32_t i = 0; i < block_size; i++)
             {
                 uint32_t offset = (grid_index * block_size + i) * length;
-                T result = T(0);
+                T        result = T(0);
                 for(uint32_t j = 0; j < length; j++)
                 {
                     result = operation(result, input[offset + j]);
@@ -540,26 +527,18 @@ TYPED_TEST(HipcubThreadOperationTests, Reduction)
         HIP_CHECK(hipMalloc(&device_output, output.size() * sizeof(T)));
 
         HIP_CHECK(
-            hipMemcpy(
-                device_input, input.data(),
-                input.size() * sizeof(T),
-                hipMemcpyHostToDevice
-            )
-        );
+            hipMemcpy(device_input, input.data(), input.size() * sizeof(T), hipMemcpyHostToDevice));
 
         thread_reduce_kernel<T, length><<<grid_size, block_size>>>(device_input, device_output);
 
         // Reading results back
-        HIP_CHECK(
-            hipMemcpy(
-                output.data(), device_output,
-                output.size() * sizeof(T),
-                hipMemcpyDeviceToHost
-            )
-        );
+        HIP_CHECK(hipMemcpy(output.data(),
+                            device_output,
+                            output.size() * sizeof(T),
+                            hipMemcpyDeviceToHost));
 
         // Verifying results
-        for(size_t i = 0; i < output.size(); i+=length)
+        for(size_t i = 0; i < output.size(); i += length)
         {
             ASSERT_EQ(static_cast<native_T>(output[i]), static_cast<native_T>(expected[i]));
         }
@@ -573,7 +552,7 @@ template<class Type, int32_t Length>
 __global__
 void thread_scan_kernel(Type* const device_input, Type* device_output)
 {
-    size_t input_index = (hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x) * Length;
+    size_t input_index  = (hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x) * Length;
     size_t output_index = (hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x) * Length;
 
     hipcub::internal::ThreadScanInclusive<Length>(&device_input[input_index],
@@ -590,15 +569,16 @@ TYPED_TEST(HipcubThreadOperationTests, Scan)
     using T        = typename TestFixture::type;
     using native_T = test_utils::convert_to_native_t<T>;
 
-    constexpr uint32_t length = 4;
+    constexpr uint32_t length     = 4;
     constexpr uint32_t block_size = 128 / length;
-    constexpr uint32_t grid_size = 128;
-    constexpr uint32_t size = block_size * grid_size * length;
-    sum_op operation;
+    constexpr uint32_t grid_size  = 128;
+    constexpr uint32_t size       = block_size * grid_size * length;
+    sum_op             operation;
 
-    for (size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
+    for(size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed= " << seed_value);
 
         // Generate data
@@ -619,12 +599,12 @@ TYPED_TEST(HipcubThreadOperationTests, Scan)
         {
             for(uint32_t i = 0; i < block_size; i++)
             {
-                uint32_t offset = (grid_index * block_size + i) * length;
-                T result = input[offset];
+                uint32_t offset  = (grid_index * block_size + i) * length;
+                T        result  = input[offset];
                 expected[offset] = result;
                 for(uint32_t j = 1; j < length; j++)
                 {
-                    result = operation(result, input[offset + j]);
+                    result               = operation(result, input[offset + j]);
                     expected[offset + j] = result;
                 }
             }
@@ -637,23 +617,15 @@ TYPED_TEST(HipcubThreadOperationTests, Scan)
         HIP_CHECK(hipMalloc(&device_output, output.size() * sizeof(T)));
 
         HIP_CHECK(
-            hipMemcpy(
-                device_input, input.data(),
-                input.size() * sizeof(T),
-                hipMemcpyHostToDevice
-            )
-        );
+            hipMemcpy(device_input, input.data(), input.size() * sizeof(T), hipMemcpyHostToDevice));
 
         thread_scan_kernel<T, length><<<grid_size, block_size>>>(device_input, device_output);
 
         // Reading results back
-        HIP_CHECK(
-            hipMemcpy(
-                output.data(), device_output,
-                output.size() * sizeof(T),
-                hipMemcpyDeviceToHost
-            )
-        );
+        HIP_CHECK(hipMemcpy(output.data(),
+                            device_output,
+                            output.size() * sizeof(T),
+                            hipMemcpyDeviceToHost));
 
         // Verifying results
         for(size_t i = 0; i < output.size(); i++)
@@ -668,21 +640,20 @@ TYPED_TEST(HipcubThreadOperationTests, Scan)
 
 template<class Type>
 __global__
-void thread_search_kernel(
-    Type* const device_input,
-    Type* device_lower_bound_output,
-    Type* device_upper_bound_output,
-    Type val,
-    uint32_t num_items)
+void thread_search_kernel(Type* const device_input,
+                          Type*       device_lower_bound_output,
+                          Type*       device_upper_bound_output,
+                          Type        val,
+                          uint32_t    num_items)
 {
-    size_t input_index = (hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x) * num_items;
+    size_t input_index  = (hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x) * num_items;
     size_t output_index = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
 
-    device_lower_bound_output[output_index] =
-        hipcub::LowerBound(device_input + input_index, num_items, val);
+    device_lower_bound_output[output_index]
+        = hipcub::LowerBound(device_input + input_index, num_items, val);
 
-    device_upper_bound_output[output_index] =
-        hipcub::UpperBound(device_input + input_index, num_items, val);
+    device_upper_bound_output[output_index]
+        = hipcub::UpperBound(device_input + input_index, num_items, val);
 }
 
 TYPED_TEST(HipcubThreadOperationTests, Bounds)
@@ -696,11 +667,12 @@ TYPED_TEST(HipcubThreadOperationTests, Bounds)
     using OffsetT  = uint32_t;
 
     constexpr uint32_t block_size = 256;
-    constexpr uint32_t grid_size = 1;
+    constexpr uint32_t grid_size  = 1;
 
-    for (size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
+    for(size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed= " << seed_value);
 
         uint32_t num_items = test_utils::get_random_value(1, 12, seed_value);
@@ -722,19 +694,19 @@ TYPED_TEST(HipcubThreadOperationTests, Bounds)
         {
             for(uint32_t i = 0; i < block_size; i++)
             {
-                uint32_t input_offset = (grid_index * block_size + i) * num_items;
-                uint32_t output_offset = grid_index * block_size + i;
+                uint32_t input_offset    = (grid_index * block_size + i) * num_items;
+                uint32_t output_offset   = grid_index * block_size + i;
                 uint32_t local_num_items = num_items;
-                OffsetT retval = 0;
+                OffsetT  retval          = 0;
 
                 // calculate expected lower bound
-                while (local_num_items > 0)
+                while(local_num_items > 0)
                 {
                     OffsetT half = local_num_items >> 1;
                     if(static_cast<native_T>(input[input_offset + retval + half])
                        < static_cast<native_T>(val))
                     {
-                        retval = retval + (half + 1);
+                        retval          = retval + (half + 1);
                         local_num_items = local_num_items - (half + 1);
                     }
                     else
@@ -746,8 +718,8 @@ TYPED_TEST(HipcubThreadOperationTests, Bounds)
 
                 // calculate expected upper bound
                 local_num_items = num_items;
-                retval = 0;
-                while (local_num_items > 0)
+                retval          = 0;
+                while(local_num_items > 0)
                 {
                     OffsetT half = local_num_items >> 1;
                     if(static_cast<native_T>(val)
@@ -757,7 +729,7 @@ TYPED_TEST(HipcubThreadOperationTests, Bounds)
                     }
                     else
                     {
-                        retval = retval + (half + 1);
+                        retval          = retval + (half + 1);
                         local_num_items = local_num_items - (half + 1);
                     }
                 }
@@ -776,34 +748,25 @@ TYPED_TEST(HipcubThreadOperationTests, Bounds)
         HIP_CHECK(hipMalloc(&device_upper_bound_output, output_upper_bound.size() * sizeof(T)));
 
         HIP_CHECK(
-            hipMemcpy(
-                device_input, input.data(),
-                input.size() * sizeof(T),
-                hipMemcpyHostToDevice
-            )
-        );
+            hipMemcpy(device_input, input.data(), input.size() * sizeof(T), hipMemcpyHostToDevice));
 
-        thread_search_kernel<T>
-            <<<grid_size, block_size>>>
-                (device_input, device_lower_bound_output, device_upper_bound_output, val, num_items);
+        thread_search_kernel<T><<<grid_size, block_size>>>(device_input,
+                                                           device_lower_bound_output,
+                                                           device_upper_bound_output,
+                                                           val,
+                                                           num_items);
 
         // Reading results back
-        HIP_CHECK(
-            hipMemcpy(
-                output_lower_bound.data(), device_lower_bound_output,
-                output_lower_bound.size() * sizeof(T),
-                hipMemcpyDeviceToHost
-            )
-        );
+        HIP_CHECK(hipMemcpy(output_lower_bound.data(),
+                            device_lower_bound_output,
+                            output_lower_bound.size() * sizeof(T),
+                            hipMemcpyDeviceToHost));
 
         // Reading results back
-        HIP_CHECK(
-            hipMemcpy(
-                output_upper_bound.data(), device_upper_bound_output,
-                output_upper_bound.size() * sizeof(T),
-                hipMemcpyDeviceToHost
-            )
-        );
+        HIP_CHECK(hipMemcpy(output_upper_bound.data(),
+                            device_upper_bound_output,
+                            output_upper_bound.size() * sizeof(T),
+                            hipMemcpyDeviceToHost));
 
         // Verifying results
         for(size_t i = 0; i < output_lower_bound.size(); i++)

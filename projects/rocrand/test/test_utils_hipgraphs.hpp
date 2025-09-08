@@ -21,69 +21,72 @@
 #ifndef ROCRAND_TEST_UTILS_HIPGRAPHS_HPP
 #define ROCRAND_TEST_UTILS_HIPGRAPHS_HPP
 
-#include <hip/hip_runtime.h>
 #include "test_common.hpp"
+#include <hip/hip_runtime.h>
 
 // Helper functions for testing with hipGraph stream capture.
 // Note: graphs will not work on the default stream.
 namespace test_utils
 {
-    class GraphHelper{
-        private:
-            hipGraph_t graph;
-            hipGraphExec_t graph_instance;
-        public:
+class GraphHelper
+{
+private:
+    hipGraph_t     graph;
+    hipGraphExec_t graph_instance;
 
-            inline void startStreamCapture(hipStream_t & stream)
-            {
-                HIP_CHECK_NON_VOID(hipStreamBeginCapture(stream, hipStreamCaptureModeGlobal));
-            }
+public:
+    inline void startStreamCapture(hipStream_t& stream)
+    {
+        HIP_CHECK_NON_VOID(hipStreamBeginCapture(stream, hipStreamCaptureModeGlobal));
+    }
 
-            inline void endStreamCapture(hipStream_t & stream)
-            {
-                HIP_CHECK_NON_VOID(hipStreamEndCapture(stream, &graph));
-            }
+    inline void endStreamCapture(hipStream_t& stream)
+    {
+        HIP_CHECK_NON_VOID(hipStreamEndCapture(stream, &graph));
+    }
 
-            inline void createAndLaunchGraph(hipStream_t & stream, const bool launchGraph=true, const bool sync=true)
-            {
-                
-                endStreamCapture(stream);
-                
-                HIP_CHECK_NON_VOID(hipGraphInstantiate(&graph_instance, graph, nullptr, nullptr, 0));
+    inline void createAndLaunchGraph(hipStream_t& stream,
+                                     const bool   launchGraph = true,
+                                     const bool   sync        = true)
+    {
 
-                // Optionally launch the graph
-                if (launchGraph)
-                    HIP_CHECK_NON_VOID(hipGraphLaunch(graph_instance, stream));
+        endStreamCapture(stream);
 
-                // Optionally synchronize the stream when we're done
-                if (sync)
-                    HIP_CHECK_NON_VOID(hipStreamSynchronize(stream));
-            } 
-    
-            inline void cleanupGraphHelper()
-            {
-                HIP_CHECK_NON_VOID(hipGraphDestroy(this->graph));
-                HIP_CHECK_NON_VOID(hipGraphExecDestroy(this->graph_instance));
-            }
+        HIP_CHECK_NON_VOID(hipGraphInstantiate(&graph_instance, graph, nullptr, nullptr, 0));
 
-            inline void resetGraphHelper(hipStream_t& stream, const bool beginCapture=true)
-            {
-                // Destroy the old graph and instance
-                cleanupGraphHelper();
+        // Optionally launch the graph
+        if(launchGraph)
+            HIP_CHECK_NON_VOID(hipGraphLaunch(graph_instance, stream));
 
-                if(beginCapture)
-                    startStreamCapture(stream);
-            }
+        // Optionally synchronize the stream when we're done
+        if(sync)
+            HIP_CHECK_NON_VOID(hipStreamSynchronize(stream));
+    }
 
-            inline void launchGraphHelper(hipStream_t& stream,const bool sync=false)
-            {
-                HIP_CHECK_NON_VOID(hipGraphLaunch(this->graph_instance, stream));
+    inline void cleanupGraphHelper()
+    {
+        HIP_CHECK_NON_VOID(hipGraphDestroy(this->graph));
+        HIP_CHECK_NON_VOID(hipGraphExecDestroy(this->graph_instance));
+    }
 
-                // Optionally sync after the launch
-                if (sync)
-                    HIP_CHECK_NON_VOID(hipStreamSynchronize(stream));
-            }
-    };
+    inline void resetGraphHelper(hipStream_t& stream, const bool beginCapture = true)
+    {
+        // Destroy the old graph and instance
+        cleanupGraphHelper();
+
+        if(beginCapture)
+            startStreamCapture(stream);
+    }
+
+    inline void launchGraphHelper(hipStream_t& stream, const bool sync = false)
+    {
+        HIP_CHECK_NON_VOID(hipGraphLaunch(this->graph_instance, stream));
+
+        // Optionally sync after the launch
+        if(sync)
+            HIP_CHECK_NON_VOID(hipStreamSynchronize(stream));
+    }
+};
 } // end namespace test_utils
 
 #endif //ROCRAND_TEST_UTILS_HIPGRAPHS_HPP

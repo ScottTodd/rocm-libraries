@@ -811,10 +811,10 @@ void EnumerateKernelConfigs(const ExecPlan& execPlan)
         ProblemKey probKey_kernel(archName, kernel_token);
 
         // enumerate !
-        auto kernel_configs = (is_2D)
-                                  ? Supported2DKernelConfigs(len, curNode->length[1], node_id)
-                                  : SupportedKernelConfigs(
-                                      len, node_id, is_single, is_sbcc, is_sbrc, is_sbcr, large1D);
+        auto kernel_configs
+            = (is_2D) ? Supported2DKernelConfigs(len, curNode->length[1], node_id)
+                      : SupportedKernelConfigs(
+                            len, node_id, is_single, is_sbcc, is_sbrc, is_sbcr, large1D);
         for(KernelConfig config : kernel_configs)
         {
             // We can set the ebType and direction here. But we still don't know static_dim, aryType,

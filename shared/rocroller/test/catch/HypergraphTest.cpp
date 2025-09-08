@@ -97,9 +97,9 @@ namespace HypergraphTest
     }
 
     template <typename T>
-    requires(!std::same_as<TestDimension,
-                           std::decay_t<T>> && std::constructible_from<TestDimension, T>) bool
-        operator==(T const& lhs, T const& rhs)
+        requires(!std::same_as<TestDimension, std::decay_t<T>>
+                 && std::constructible_from<TestDimension, T>)
+    bool operator==(T const& lhs, T const& rhs)
     {
         // Since none of these have any members, if the types are the same, they are equal.
         return true;
@@ -136,9 +136,9 @@ namespace HypergraphTest
     }
 
     template <typename T>
-    requires(!std::same_as<TestTransform,
-                           std::decay_t<T>> && std::constructible_from<TestTransform, T>) bool
-        operator==(T const& lhs, T const& rhs)
+        requires(!std::same_as<TestTransform, std::decay_t<T>>
+                 && std::constructible_from<TestTransform, T>)
+    bool operator==(T const& lhs, T const& rhs)
     {
         // Since none of these have any members, if the types are the same, they are equal.
         return true;

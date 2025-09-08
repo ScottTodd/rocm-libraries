@@ -30,11 +30,11 @@
 #include <Tensile/ContractionSolution.hpp>
 #include <Tensile/ExactLogicLibrary.hpp>
 #include <Tensile/FreeSizeLibrary.hpp>
-#include <Tensile/PredictionLibrary.hpp>
 #include <Tensile/GranularitySelectionLibrary.hpp>
 #include <Tensile/MapLibrary.hpp>
 #include <Tensile/MasterSolutionLibrary.hpp>
 #include <Tensile/MatchingLibrary.hpp>
+#include <Tensile/PredictionLibrary.hpp>
 #include <Tensile/SingleSolutionLibrary.hpp>
 #include <Tensile/SolutionLibrary.hpp>
 

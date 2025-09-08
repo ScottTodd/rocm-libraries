@@ -30,18 +30,21 @@ from Tensile.SolutionLibrary import PredicateLibrary
 
 
 def test_perf_metric_predicate_comparison():
-    cu = Predicate('CUEfficiency')
-    dv = Predicate('TruePred')
+    cu = Predicate("CUEfficiency")
+    dv = Predicate("TruePred")
 
     assert cu < dv
     assert not dv < cu
 
+
 def perf_metric_library_objects_order():
-    objs = [PredicateLibrary('Problem', [{'predicate': Predicate('CUEfficiency')}]),
-            PredicateLibrary('Problem', [{'predicate': Predicate('TruePred')}])
+    objs = [
+        PredicateLibrary("Problem", [{"predicate": Predicate("CUEfficiency")}]),
+        PredicateLibrary("Problem", [{"predicate": Predicate("TruePred")}]),
     ]
 
     return [copy.deepcopy(libs) for libs in itertools.permutations(objs)]
+
 
 @pytest.mark.parametrize("libraries", perf_metric_library_objects_order())
 def test_perf_metric_library_merge_order(libraries):
@@ -49,17 +52,32 @@ def test_perf_metric_library_merge_order(libraries):
     for lib2 in libraries[1:]:
         lib.merge(lib2)
 
-    assert lib.rows[0]['predicate'] == Predicate('CUEfficiency')
-    assert lib.rows[1]['predicate'] == Predicate('TruePred')
+    assert lib.rows[0]["predicate"] == Predicate("CUEfficiency")
+    assert lib.rows[1]["predicate"] == Predicate("TruePred")
+
 
 def perf_metric_library_objects_dups():
-    objs = [PredicateLibrary('Problem', [{'predicate': Predicate('CUEfficiency'), 'library': PredicateLibrary()}]),
-            PredicateLibrary('Problem', [{'predicate': Predicate('CUEfficiency'), 'library': PredicateLibrary()}]),
-            PredicateLibrary('Problem', [{'predicate': Predicate('TruePred'),     'library': PredicateLibrary()}]),
-            PredicateLibrary('Problem', [{'predicate': Predicate('TruePred'),     'library': PredicateLibrary()}])
+    objs = [
+        PredicateLibrary(
+            "Problem",
+            [{"predicate": Predicate("CUEfficiency"), "library": PredicateLibrary()}],
+        ),
+        PredicateLibrary(
+            "Problem",
+            [{"predicate": Predicate("CUEfficiency"), "library": PredicateLibrary()}],
+        ),
+        PredicateLibrary(
+            "Problem",
+            [{"predicate": Predicate("TruePred"), "library": PredicateLibrary()}],
+        ),
+        PredicateLibrary(
+            "Problem",
+            [{"predicate": Predicate("TruePred"), "library": PredicateLibrary()}],
+        ),
     ]
 
     return [copy.deepcopy(libs) for libs in itertools.permutations(objs)]
+
 
 @pytest.mark.parametrize("libraries", perf_metric_library_objects_dups())
 def test_perf_metric_library_merge_dups(libraries):
@@ -70,8 +88,9 @@ def test_perf_metric_library_merge_dups(libraries):
     assert len(lib.rows) == 2
 
     def getPred(row):
-        return row['predicate']
+        return row["predicate"]
+
     rowPreds = map(getPred, lib.rows)
 
-    assert Predicate('CUEfficiency') in rowPreds
-    assert Predicate('TruePred') in rowPreds
+    assert Predicate("CUEfficiency") in rowPreds
+    assert Predicate("TruePred") in rowPreds

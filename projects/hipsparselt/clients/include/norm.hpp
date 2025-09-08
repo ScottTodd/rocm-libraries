@@ -27,8 +27,8 @@
 #pragma once
 
 #include "cblas.h"
-#include "hipsparselt_vector.hpp"
 #include "hipsparselt_fp8.hpp"
+#include "hipsparselt_vector.hpp"
 #include "norm.hpp"
 #include "utility.hpp"
 #include <cstdio>
@@ -103,12 +103,11 @@ void m_axpy(size_t* N, T* alpha, T* x, int* incx, T* y, int* incy)
 /*! \brief compare the norm error of two matrices hCPU & hGPU */
 
 // Real
-template <
-    typename T,
-    std::enable_if_t<!(std::is_same<T, hipsparselt_fp8_e4m3>{} || std::is_same<T, hipsparselt_fp8_e5m2>{}
-                       ),
-                     int>
-    = 0>
+template <typename T,
+          std::enable_if_t<!(std::is_same<T, hipsparselt_fp8_e4m3>{}
+                             || std::is_same<T, hipsparselt_fp8_e5m2>{}),
+                           int>
+          = 0>
 double norm_check_general(char norm_type, int64_t M, int64_t N, int64_t lda, T* hCPU, T* hGPU)
 {
     if(M * N == 0)
@@ -148,11 +147,11 @@ double norm_check_general(char norm_type, int64_t M, int64_t N, int64_t lda, T* 
     return error;
 }
 
-
-template <
-    typename T,
-    std::enable_if_t<(std::is_same<T, hipsparselt_fp8_e4m3>{} || std::is_same<T, hipsparselt_fp8_e5m2>{}), int>
-    = 0>
+template <typename T,
+          std::enable_if_t<(std::is_same<T, hipsparselt_fp8_e4m3>{}
+                            || std::is_same<T, hipsparselt_fp8_e5m2>{}),
+                           int>
+          = 0>
 double norm_check_general(char norm_type, int64_t M, int64_t N, int64_t lda, T* hCPU, T* hGPU)
 {
     if(M * N == 0)
@@ -321,12 +320,8 @@ double norm_check_general(
         return norm_check_general<double>(
             norm_type, M, N, lda, static_cast<double*>(hCPU), static_cast<double*>(hGPU));
     case HIP_R_16F:
-        return norm_check_general<__half>(norm_type,
-                                                 M,
-                                                 N,
-                                                 lda,
-                                                 static_cast<__half*>(hCPU),
-                                                 static_cast<__half*>(hGPU));
+        return norm_check_general<__half>(
+            norm_type, M, N, lda, static_cast<__half*>(hCPU), static_cast<__half*>(hGPU));
     case HIP_R_16BF:
         return norm_check_general<hip_bfloat16>(norm_type,
                                                 M,
@@ -336,28 +331,24 @@ double norm_check_general(
                                                 static_cast<hip_bfloat16*>(hGPU));
     case HIP_R_8F_E4M3:
         return norm_check_general<hipsparselt_fp8_e4m3>(norm_type,
-                                                M,
-                                                N,
-                                                lda,
-                                                static_cast<hipsparselt_fp8_e4m3*>(hCPU),
-                                                static_cast<hipsparselt_fp8_e4m3*>(hGPU));
+                                                        M,
+                                                        N,
+                                                        lda,
+                                                        static_cast<hipsparselt_fp8_e4m3*>(hCPU),
+                                                        static_cast<hipsparselt_fp8_e4m3*>(hGPU));
     case HIP_R_8F_E5M2:
         return norm_check_general<hipsparselt_fp8_e5m2>(norm_type,
-                                                 M,
-                                                 N,
-                                                 lda,
-                                                 static_cast<hipsparselt_fp8_e5m2*>(hCPU),
-                                                 static_cast<hipsparselt_fp8_e5m2*>(hGPU));
+                                                        M,
+                                                        N,
+                                                        lda,
+                                                        static_cast<hipsparselt_fp8_e5m2*>(hCPU),
+                                                        static_cast<hipsparselt_fp8_e5m2*>(hGPU));
     case HIP_R_32I:
         return norm_check_general<int32_t>(
             norm_type, M, N, lda, static_cast<int32_t*>(hCPU), static_cast<int32_t*>(hGPU));
     case HIP_R_8I:
-        return norm_check_general<int8_t>(norm_type,
-                                                 M,
-                                                 N,
-                                                 lda,
-                                                 static_cast<int8_t*>(hCPU),
-                                                 static_cast<int8_t*>(hGPU));
+        return norm_check_general<int8_t>(
+            norm_type, M, N, lda, static_cast<int8_t*>(hCPU), static_cast<int8_t*>(hGPU));
     default:
         hipsparselt_cerr << "Error type in norm_check_general" << std::endl;
         return 0;
@@ -387,13 +378,13 @@ double norm_check_general(char        norm_type,
                                          batch_count);
     case HIP_R_16F:
         return norm_check_general<__half>(norm_type,
-                                                 M,
-                                                 N,
-                                                 lda,
-                                                 stride_a,
-                                                 static_cast<__half*>(hCPU),
-                                                 static_cast<__half*>(hGPU),
-                                                 batch_count);
+                                          M,
+                                          N,
+                                          lda,
+                                          stride_a,
+                                          static_cast<__half*>(hCPU),
+                                          static_cast<__half*>(hGPU),
+                                          batch_count);
     case HIP_R_16BF:
         return norm_check_general<hip_bfloat16>(norm_type,
                                                 M,
@@ -404,22 +395,22 @@ double norm_check_general(char        norm_type,
                                                 static_cast<hip_bfloat16*>(hGPU),
                                                 batch_count);
         return norm_check_general<hipsparselt_fp8_e4m3>(norm_type,
-                                                M,
-                                                N,
-                                                lda,
-                                                stride_a,
-                                                static_cast<hipsparselt_fp8_e4m3*>(hCPU),
-                                                static_cast<hipsparselt_fp8_e4m3*>(hGPU),
-                                                batch_count);
+                                                        M,
+                                                        N,
+                                                        lda,
+                                                        stride_a,
+                                                        static_cast<hipsparselt_fp8_e4m3*>(hCPU),
+                                                        static_cast<hipsparselt_fp8_e4m3*>(hGPU),
+                                                        batch_count);
     case HIP_R_8F_E5M2:
         return norm_check_general<hipsparselt_fp8_e5m2>(norm_type,
-                                                 M,
-                                                 N,
-                                                 lda,
-                                                 stride_a,
-                                                 static_cast<hipsparselt_fp8_e5m2*>(hCPU),
-                                                 static_cast<hipsparselt_fp8_e5m2*>(hGPU),
-                                                 batch_count);
+                                                        M,
+                                                        N,
+                                                        lda,
+                                                        stride_a,
+                                                        static_cast<hipsparselt_fp8_e5m2*>(hCPU),
+                                                        static_cast<hipsparselt_fp8_e5m2*>(hGPU),
+                                                        batch_count);
     case HIP_R_32I:
         return norm_check_general<int32_t>(norm_type,
                                            M,
@@ -431,13 +422,13 @@ double norm_check_general(char        norm_type,
                                            batch_count);
     case HIP_R_8I:
         return norm_check_general<int8_t>(norm_type,
-                                                 M,
-                                                 N,
-                                                 lda,
-                                                 stride_a,
-                                                 static_cast<int8_t*>(hCPU),
-                                                 static_cast<int8_t*>(hGPU),
-                                                 batch_count);
+                                          M,
+                                          N,
+                                          lda,
+                                          stride_a,
+                                          static_cast<int8_t*>(hCPU),
+                                          static_cast<int8_t*>(hGPU),
+                                          batch_count);
     default:
         hipsparselt_cerr << "Error type in norm_check_general" << std::endl;
         return 0;

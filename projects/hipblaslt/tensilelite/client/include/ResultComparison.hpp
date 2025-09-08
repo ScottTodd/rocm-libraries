@@ -92,24 +92,23 @@ namespace TensileLite
 
                         if constexpr(std::is_same<int8_t, T>())
                         {
-                            std::cout << "[" << (m_printed) << "] "
-                                    << " elem=" << elemNumber << " idx=" << elemIndex << ": "
-                                    << static_cast<int>(resultValue) << (match ? "==" : "!=")
-                                    << static_cast<int>(referenceValue) << std::endl;
+                            std::cout << "[" << (m_printed) << "] " << " elem=" << elemNumber
+                                      << " idx=" << elemIndex << ": "
+                                      << static_cast<int>(resultValue) << (match ? "==" : "!=")
+                                      << static_cast<int>(referenceValue) << std::endl;
                         }
                         else if constexpr(std::is_same<Float8, T>() || std::is_same<BFloat8, T>())
                         {
-                            std::cout << "[" << (m_printed) << "] "
-                                    << " elem=" << elemNumber << " idx=" << elemIndex << ": "
-                                    << static_cast<float>(resultValue) << (match ? "==" : "!=")
-                                    << static_cast<float>(referenceValue) << std::endl;
+                            std::cout << "[" << (m_printed) << "] " << " elem=" << elemNumber
+                                      << " idx=" << elemIndex << ": "
+                                      << static_cast<float>(resultValue) << (match ? "==" : "!=")
+                                      << static_cast<float>(referenceValue) << std::endl;
                         }
                         else
                         {
-                            std::cout << "[" << (m_printed) << "] "
-                                    << " elem=" << elemNumber << " idx=" << elemIndex << ": "
-                                    << resultValue << (match ? "==" : "!=")
-                                    << referenceValue << std::endl;
+                            std::cout << "[" << (m_printed) << "] " << " elem=" << elemNumber
+                                      << " idx=" << elemIndex << ": " << resultValue
+                                      << (match ? "==" : "!=") << referenceValue << std::endl;
                         }
 
                         m_printed++;

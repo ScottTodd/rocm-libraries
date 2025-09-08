@@ -25,7 +25,7 @@
 #include <rocprim/test_utils.hpp>
 test_suite_type_def(suite_name, name_suffix)
 
-typed_test_suite_def(suite_name, name_suffix, warp_params);
+    typed_test_suite_def(suite_name, name_suffix, warp_params);
 
 typed_test_def(suite_name, name_suffix, LoadStoreClass)
 {
@@ -33,14 +33,14 @@ typed_test_def(suite_name, name_suffix, LoadStoreClass)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using Type = typename TestFixture::params::type;
-    static constexpr size_t block_size = TestFixture::params::block_size;
-    static constexpr rocprim::block_load_method load_method = TestFixture::params::load_method;
+    using Type                                                = typename TestFixture::params::type;
+    static constexpr size_t                      block_size   = TestFixture::params::block_size;
+    static constexpr rocprim::block_load_method  load_method  = TestFixture::params::load_method;
     static constexpr rocprim::block_store_method store_method = TestFixture::params::store_method;
     static constexpr size_t items_per_thread = TestFixture::params::items_per_thread;
-    static constexpr auto items_per_block = block_size * items_per_thread;
-    const size_t size = items_per_block * 113;
-    const auto grid_size = size / items_per_block;
+    static constexpr auto   items_per_block  = block_size * items_per_thread;
+    const size_t            size             = items_per_block * 113;
+    const auto              grid_size        = size / items_per_block;
 
     if(load_method == rocprim::block_load_method::block_load_warp_transpose
        || store_method == rocprim::block_store_method::block_store_warp_transpose)
@@ -62,7 +62,8 @@ typed_test_def(suite_name, name_suffix, LoadStoreClass)
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
@@ -71,10 +72,10 @@ typed_test_def(suite_name, name_suffix, LoadStoreClass)
 
         // Calculate expected results on host
         std::vector<Type> expected(input.size(), (Type)0);
-        for (size_t i = 0; i < 113; i++)
+        for(size_t i = 0; i < 113; i++)
         {
             size_t block_offset = i * items_per_block;
-            for (size_t j = 0; j < items_per_block; j++)
+            for(size_t j = 0; j < items_per_block; j++)
             {
                 expected[j + block_offset] = input[j + block_offset];
             }
@@ -102,7 +103,6 @@ typed_test_def(suite_name, name_suffix, LoadStoreClass)
         // Validating results
         ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(output, expected));
     }
-
 }
 
 typed_test_def(suite_name, name_suffix, LoadStoreClassValid)
@@ -111,14 +111,14 @@ typed_test_def(suite_name, name_suffix, LoadStoreClassValid)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using Type = typename TestFixture::params::type;
-    static constexpr size_t block_size = TestFixture::params::block_size;
-    static constexpr rocprim::block_load_method load_method = TestFixture::params::load_method;
+    using Type                                                = typename TestFixture::params::type;
+    static constexpr size_t                      block_size   = TestFixture::params::block_size;
+    static constexpr rocprim::block_load_method  load_method  = TestFixture::params::load_method;
     static constexpr rocprim::block_store_method store_method = TestFixture::params::store_method;
     static constexpr size_t items_per_thread = TestFixture::params::items_per_thread;
-    static constexpr auto items_per_block = block_size * items_per_thread;
-    const size_t size = items_per_block * 113;
-    const auto grid_size = size / items_per_block;
+    static constexpr auto   items_per_block  = block_size * items_per_thread;
+    const size_t            size             = items_per_block * 113;
+    const auto              grid_size        = size / items_per_block;
     // Given block size not supported
     if(block_size > test_utils::get_max_block_size() || (block_size & (block_size - 1)) != 0)
     {
@@ -141,7 +141,8 @@ typed_test_def(suite_name, name_suffix, LoadStoreClassValid)
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
@@ -151,12 +152,12 @@ typed_test_def(suite_name, name_suffix, LoadStoreClassValid)
 
         // Calculate expected results on host
         std::vector<Type> expected(input.size(), (Type)0);
-        for (size_t i = 0; i < 113; i++)
+        for(size_t i = 0; i < 113; i++)
         {
             size_t block_offset = i * items_per_block;
-            for (size_t j = 0; j < items_per_block; j++)
+            for(size_t j = 0; j < items_per_block; j++)
             {
-                if (j < valid)
+                if(j < valid)
                 {
                     expected[j + block_offset] = input[j + block_offset];
                 }
@@ -189,7 +190,6 @@ typed_test_def(suite_name, name_suffix, LoadStoreClassValid)
         // Validating results
         ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(output, expected));
     }
-
 }
 
 typed_test_def(suite_name, name_suffix, LoadStoreClassDefault)
@@ -198,14 +198,14 @@ typed_test_def(suite_name, name_suffix, LoadStoreClassDefault)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using Type = typename TestFixture::params::type;
-    static constexpr size_t block_size = TestFixture::params::block_size;
-    static constexpr rocprim::block_load_method load_method = TestFixture::params::load_method;
+    using Type                                                = typename TestFixture::params::type;
+    static constexpr size_t                      block_size   = TestFixture::params::block_size;
+    static constexpr rocprim::block_load_method  load_method  = TestFixture::params::load_method;
     static constexpr rocprim::block_store_method store_method = TestFixture::params::store_method;
     static constexpr size_t items_per_thread = TestFixture::params::items_per_thread;
-    static constexpr auto items_per_block = block_size * items_per_thread;
-    const size_t size = items_per_block * 113;
-    const auto grid_size = size / items_per_block;
+    static constexpr auto   items_per_block  = block_size * items_per_thread;
+    const size_t            size             = items_per_block * 113;
+    const auto              grid_size        = size / items_per_block;
     // Given block size not supported
     if(block_size > test_utils::get_max_block_size() || (block_size & (block_size - 1)) != 0)
     {
@@ -224,12 +224,13 @@ typed_test_def(suite_name, name_suffix, LoadStoreClassDefault)
         }
     }
 
-    const size_t valid = items_per_thread + 1;
-    Type _default = (Type)-1;
+    const size_t valid    = items_per_thread + 1;
+    Type         _default = (Type)-1;
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
@@ -238,12 +239,12 @@ typed_test_def(suite_name, name_suffix, LoadStoreClassDefault)
 
         // Calculate expected results on host
         std::vector<Type> expected(input.size(), _default);
-        for (size_t i = 0; i < 113; i++)
+        for(size_t i = 0; i < 113; i++)
         {
             size_t block_offset = i * items_per_block;
-            for (size_t j = 0; j < items_per_block; j++)
+            for(size_t j = 0; j < items_per_block; j++)
             {
-                if (j < valid)
+                if(j < valid)
                 {
                     expected[j + block_offset] = input[j + block_offset];
                 }

@@ -37,7 +37,6 @@
 #include "ReductionTemplate.h"
 #include "memory_gfx.h"
 
-
 __device__ inline int GenDot4(int a, int b, int c)
 {
 #if(__hcc_workweek__ >= 19092) || __HIP_CLANG_ONLY__

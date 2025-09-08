@@ -70,6 +70,7 @@ for i in validMacroTileSides:
         validMacroTiles.append([i, j])
 validTT = 32
 
+
 @lru_cache
 def makeValidWorkGroups():
     validWorkGroups = []
@@ -82,15 +83,39 @@ def makeValidWorkGroups():
                     validWorkGroups.append(workGroup)
     return validWorkGroups
 
+
 def makeValidWMMA():
     return [[16, 16, 16, 1]]
+
 
 @lru_cache
 def makeValidMFMA():
     validMFMA = {}
-    validMFMA["H"] = [[32, 32, 16, 1], [32, 32, 4, 2], [32, 32, 8, 1], [16, 16, 32, 1], [16, 16, 4, 4], [16, 16, 16, 1], [4, 4, 4, 16]]
-    validMFMA["S"] = [[32, 32, 1, 2], [32, 32, 2, 1], [16, 16, 1, 4], [16, 16, 4, 1], [4, 4, 1, 16]]
-    validMFMA["B"] = [[32, 32, 16, 1], [32, 32, 2, 2], [32, 32, 4, 1], [16, 16, 32, 1], [16, 16, 2, 4], [16, 16, 8, 1], [4, 4, 2, 16]]
+    validMFMA["H"] = [
+        [32, 32, 16, 1],
+        [32, 32, 4, 2],
+        [32, 32, 8, 1],
+        [16, 16, 32, 1],
+        [16, 16, 4, 4],
+        [16, 16, 16, 1],
+        [4, 4, 4, 16],
+    ]
+    validMFMA["S"] = [
+        [32, 32, 1, 2],
+        [32, 32, 2, 1],
+        [16, 16, 1, 4],
+        [16, 16, 4, 1],
+        [4, 4, 1, 16],
+    ]
+    validMFMA["B"] = [
+        [32, 32, 16, 1],
+        [32, 32, 2, 2],
+        [32, 32, 4, 1],
+        [16, 16, 32, 1],
+        [16, 16, 2, 4],
+        [16, 16, 8, 1],
+        [4, 4, 2, 16],
+    ]
     validMFMA["4xi8"] = [
         [32, 32, 4, 2],
         [32, 32, 8, 1],
@@ -101,18 +126,42 @@ def makeValidMFMA():
         [16, 16, 32, 1],
     ]
     validMFMA["D"] = [[16, 16, 4, 1], [4, 4, 4, 4]]
-    validMFMA["B1k"] = [[32, 32, 4, 2], [32, 32, 8, 1], [16, 16, 4, 4], [16, 16, 16, 1], [4, 4, 4, 16]]
-    validMFMA["C"] = validMFMA["S"]
-    validMFMA["Z"] = validMFMA["D"]
-    validMFMA["I8"] = [
+    validMFMA["B1k"] = [
         [32, 32, 4, 2],
         [32, 32, 8, 1],
         [16, 16, 4, 4],
         [16, 16, 16, 1],
         [4, 4, 4, 16],
-    ] + [[32, 32, 16, 1], [16, 16, 32, 1],] + [[16, 16, 64, 1],[32, 32, 32, 1]]
-    validMFMA["X"] = [[32, 32, 4, 1], [16, 16, 8, 1], [16, 16, 16, 1], [16, 16, 32, 1], [32, 32, 16, 1]]
-    validMFMA["F8"] = [[32, 32, 16, 1], [16, 16, 32, 1], [32, 32, 64, 1], [16, 16, 128, 1]]
+    ]
+    validMFMA["C"] = validMFMA["S"]
+    validMFMA["Z"] = validMFMA["D"]
+    validMFMA["I8"] = (
+        [
+            [32, 32, 4, 2],
+            [32, 32, 8, 1],
+            [16, 16, 4, 4],
+            [16, 16, 16, 1],
+            [4, 4, 4, 16],
+        ]
+        + [
+            [32, 32, 16, 1],
+            [16, 16, 32, 1],
+        ]
+        + [[16, 16, 64, 1], [32, 32, 32, 1]]
+    )
+    validMFMA["X"] = [
+        [32, 32, 4, 1],
+        [16, 16, 8, 1],
+        [16, 16, 16, 1],
+        [16, 16, 32, 1],
+        [32, 32, 16, 1],
+    ]
+    validMFMA["F8"] = [
+        [32, 32, 16, 1],
+        [16, 16, 32, 1],
+        [32, 32, 64, 1],
+        [16, 16, 128, 1],
+    ]
     validMFMA["B8"] = validMFMA["F8"]
     validMFMA["F8B8"] = validMFMA["F8"]
     validMFMA["B8F8"] = validMFMA["F8"]
@@ -138,18 +187,49 @@ def makeValidMFMA():
                         for wave_m in range(3):
                             for wave_n in range(3):
                                 validMFMA["_format9"].append(
-                                    [MI[0], MI[1], MI[2], MI[3], 2**bm, tt0, tt1, 2**wave_m, 2**wave_n]
+                                    [
+                                        MI[0],
+                                        MI[1],
+                                        MI[2],
+                                        MI[3],
+                                        2**bm,
+                                        tt0,
+                                        tt1,
+                                        2**wave_m,
+                                        2**wave_n,
+                                    ]
                                 )
     return validMFMA
+
 
 @lru_cache
 def makeValidSMFMA():
     validSMFMA = {}
-    validSMFMA["H"] = [[32, 32, 16, 1], [16, 16, 32, 1], [16, 16, 64, 1], [32, 32, 32, 1]]
-    validSMFMA["B"] = [[32, 32, 16, 1], [16, 16, 32, 1], [16, 16, 64, 1], [32, 32, 32, 1]]
-    validSMFMA["4xi8"] = [[32, 32, 32, 1], [16, 16, 64, 1], [16, 16, 128, 1], [32, 32, 64, 1]]
+    validSMFMA["H"] = [
+        [32, 32, 16, 1],
+        [16, 16, 32, 1],
+        [16, 16, 64, 1],
+        [32, 32, 32, 1],
+    ]
+    validSMFMA["B"] = [
+        [32, 32, 16, 1],
+        [16, 16, 32, 1],
+        [16, 16, 64, 1],
+        [32, 32, 32, 1],
+    ]
+    validSMFMA["4xi8"] = [
+        [32, 32, 32, 1],
+        [16, 16, 64, 1],
+        [16, 16, 128, 1],
+        [32, 32, 64, 1],
+    ]
     validSMFMA["I8"] = validSMFMA["4xi8"]
-    validSMFMA["F8"] = [[32, 32, 32, 1], [16, 16, 64, 1], [16, 16, 128, 1], [32, 32, 64, 1]]
+    validSMFMA["F8"] = [
+        [32, 32, 32, 1],
+        [16, 16, 64, 1],
+        [16, 16, 128, 1],
+        [32, 32, 64, 1],
+    ]
     validSMFMA["B8"] = validSMFMA["F8"]
     validSMFMA["F8B8"] = validSMFMA["F8"]
     validSMFMA["B8F8"] = validSMFMA["F8"]
@@ -158,7 +238,12 @@ def makeValidSMFMA():
     validSMFMA["F8B8N"] = validSMFMA["F8N"]
     validSMFMA["B8F8N"] = validSMFMA["F8N"]
     validSMFMA["_format9"] = []
-    for SMFMA in [validSMFMA["H"], validSMFMA["B"], validSMFMA["4xi8"], validSMFMA["F8N"]]:
+    for SMFMA in [
+        validSMFMA["H"],
+        validSMFMA["B"],
+        validSMFMA["4xi8"],
+        validSMFMA["F8N"],
+    ]:
         for MI in SMFMA:
             for bm in range(int(math.log(MI[3], 2)) + 1):
                 for tt0 in range(1, validTT + 1):
@@ -166,9 +251,20 @@ def makeValidSMFMA():
                         for wave_m in range(3):
                             for wave_n in range(3):
                                 validSMFMA["_format9"].append(
-                                    [MI[0], MI[1], MI[2], MI[3], 2**bm, tt0, tt1, 2**wave_m, 2**wave_n]
+                                    [
+                                        MI[0],
+                                        MI[1],
+                                        MI[2],
+                                        MI[3],
+                                        2**bm,
+                                        tt0,
+                                        tt1,
+                                        2**wave_m,
+                                        2**wave_n,
+                                    ]
                                 )
     return validSMFMA
+
 
 @lru_cache
 def makeValidMatrixInstructions():
@@ -189,7 +285,7 @@ def makeValidMatrixInstructions():
     return validMatrixInstructions + mfma["_format9"] + smfma["_format9"]
 
 
-validParameters = { # we need to make sure this matches develop
+validParameters = {  # we need to make sure this matches develop
     # 0: Global read is along parallel direction in thread level,
     #     each load instruction stride whole threads.
     #                         ----> perp
@@ -261,7 +357,11 @@ validParameters = { # we need to make sure this matches develop
     # 1: use atomic operation to accumulate on one buffer
     # 2: each GSU group write to each own buffer and accumulate by another kernel
     # 3: each GSU group write to each own buffer and accumulate by same kernel
-    "GlobalSplitUAlgorithm": ["SingleBuffer", "MultipleBuffer", "MultipleBufferSingleKernel"],
+    "GlobalSplitUAlgorithm": [
+        "SingleBuffer",
+        "MultipleBuffer",
+        "MultipleBufferSingleKernel",
+    ],
     # don't create a whole copy of the Unroll loop with loads removed - instead
     # use buffer limits to suppress global loads and ignore unnecessary ds_reads
     "SuppressNoLoadLoop": [False, True],
@@ -820,27 +920,27 @@ validParameters = { # we need to make sure this matches develop
 newMIValidParameters = {
     "EnableF32XdlMathOp": [False, True],
     "UseF32XEmulation": [False, True],
-    'EnableMatrixInstruction': [False, True],
-    'ISA': -1,
-    'MFMA_BF16_1K': [False, True],
-    'MIBlock': -1,
-    'MIInputPerThread': -1,
-    'MIInputPerThreadA': -1,
-    'MIInputPerThreadB': -1,
-    'MIInputPerThreadMetadata': -1,
-    'MIWaveGroup': -1,
-    'MIWaveTile': -1,
-    'MatrixInstM': -1,
-    'MatrixInstN': -1,
-    'MatrixInstK': -1,
-    'MatrixInstB': -1,
-    'MatrixInstBM': -1,
-    'MatrixInstBN': -1,
-    'MatrixInstruction': -1,
-    'Sparse': -1,
-    'ThreadTile': -1,
-    'WavefrontSize': -1,
-    'WorkGroup': -1,
+    "EnableMatrixInstruction": [False, True],
+    "ISA": -1,
+    "MFMA_BF16_1K": [False, True],
+    "MIBlock": -1,
+    "MIInputPerThread": -1,
+    "MIInputPerThreadA": -1,
+    "MIInputPerThreadB": -1,
+    "MIInputPerThreadMetadata": -1,
+    "MIWaveGroup": -1,
+    "MIWaveTile": -1,
+    "MatrixInstM": -1,
+    "MatrixInstN": -1,
+    "MatrixInstK": -1,
+    "MatrixInstB": -1,
+    "MatrixInstBM": -1,
+    "MatrixInstBN": -1,
+    "MatrixInstruction": -1,
+    "Sparse": -1,
+    "ThreadTile": -1,
+    "WavefrontSize": -1,
+    "WorkGroup": -1,
 }
 
 
@@ -867,4 +967,6 @@ def checkParametersAreValid(param, validParams):
                 if len(validParams[name]) > 32
                 else ""
             )
-            raise Exception(msgBase.format(name, value, name, validParams[name][:32], msgExt))
+            raise Exception(
+                msgBase.format(name, value, name, validParams[name][:32], msgExt)
+            )

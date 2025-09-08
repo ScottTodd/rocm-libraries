@@ -247,9 +247,9 @@ void testing_gemm_strided_batched_ex_run(const Arguments& arg)
 
     bool alpha_isnan = arg.alpha_isnan<Tc>();
     bool beta_isnan  = arg.beta_isnan<Tc>();
-    if(!std::is_same_v<
-           To,
-           float> && !std::is_same_v<To, double> && !std::is_same_v<To, rocblas_half> && !rocblas_is_complex<To> && (alpha_isnan || beta_isnan))
+    if(!std::is_same_v<To, float> && !std::is_same_v<To, double>
+       && !std::is_same_v<To, rocblas_half> && !rocblas_is_complex<To>
+       && (alpha_isnan || beta_isnan))
         return; // Exclude integers or other types which don't support NaN
 
     Tc h_alpha_Tc = arg.get_alpha<Tc>();
@@ -602,7 +602,7 @@ void testing_gemm_strided_batched_ex_run(const Arguments& arg)
                         (M, N, ldc, stride_c, batch_count, flush_batch_count));
         device_multiple_strided_batch_matrix<To> dD
             = (arg.outofplace) ? device_multiple_strided_batch_matrix<To>(
-                  M, N, ldd, stride_d, batch_count, flush_batch_count)
+                                     M, N, ldd, stride_d, batch_count, flush_batch_count)
                                : device_multiple_strided_batch_matrix<To>(0, 1, 1, 1, 1, 1);
         CHECK_DEVICE_ALLOCATION(dD.memcheck());
         device_multiple_strided_batch_matrix<To>& dDref = (arg.outofplace) ? dD : dC;

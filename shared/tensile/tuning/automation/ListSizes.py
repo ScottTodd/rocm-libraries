@@ -34,13 +34,15 @@ import csv
 
 from decimal import Decimal
 
+
 def parseArgs():
     argParser = argparse.ArgumentParser()
 
-    h = {"baseBench" : "Results of baseline benchmark",
-         "newBench"  : "Results of new benchmark",
-         "sizeList"  : "Output CSV file listing sizes faster in new benchmark",
-         "verbose"   : "Verbose output"
+    h = {
+        "baseBench": "Results of baseline benchmark",
+        "newBench": "Results of new benchmark",
+        "sizeList": "Output CSV file listing sizes faster in new benchmark",
+        "verbose": "Verbose output",
     }
 
     argParser.add_argument("baseBench", type=str, help=h["baseBench"])
@@ -49,6 +51,7 @@ def parseArgs():
     argParser.add_argument("--verbose", "-v", action="store_true", help=h["verbose"])
 
     return argParser.parse_args()
+
 
 def main():
     args = parseArgs()
@@ -71,8 +74,16 @@ def main():
                 dataLine = next(baseFile)
                 data = dataLine.split(",")
                 data = [d.strip() for d in data]
-                baseData.append([int(data[mIdx]), int(data[nIdx]), int(data[bIdx]), int(data[kIdx]), Decimal(data[gflopsIdx])])
-                
+                baseData.append(
+                    [
+                        int(data[mIdx]),
+                        int(data[nIdx]),
+                        int(data[bIdx]),
+                        int(data[kIdx]),
+                        Decimal(data[gflopsIdx]),
+                    ]
+                )
+
     newData = []
     with open(args.newBench) as newFile:
         for line in newFile:
@@ -86,7 +97,15 @@ def main():
                 dataLine = next(newFile)
                 data = dataLine.split(",")
                 data = [d.strip() for d in data]
-                newData.append([int(data[mIdx]), int(data[nIdx]), int(data[bIdx]), int(data[kIdx]), Decimal(data[gflopsIdx])])
+                newData.append(
+                    [
+                        int(data[mIdx]),
+                        int(data[nIdx]),
+                        int(data[bIdx]),
+                        int(data[kIdx]),
+                        Decimal(data[gflopsIdx]),
+                    ]
+                )
 
     sizeData = []
     for n in newData:
@@ -104,6 +123,7 @@ def main():
 
     if args.verbose:
         print("Done writing size list")
+
 
 if __name__ == "__main__":
     main()

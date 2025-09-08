@@ -120,7 +120,9 @@ def ProcessingPool(enable=True, maxTasksPerChild=None):
         return multiprocessing.Pool(threadCount, maxtasksperchild=maxTasksPerChild)
 
 
-def ParallelMap(function, objects, message="", enable=True, method=None, maxTasksPerChild=None):
+def ParallelMap(
+    function, objects, message="", enable=True, method=None, maxTasksPerChild=None
+):
     """
     Generally equivalent to list(map(function, objects)), possibly executing in parallel.
 
@@ -180,7 +182,9 @@ def ParallelMap(function, objects, message="", enable=True, method=None, maxTask
     return rv
 
 
-def ParallelMapReturnAsGenerator(function, objects, message="", enable=True, multiArg=True):
+def ParallelMapReturnAsGenerator(
+    function, objects, message="", enable=True, multiArg=True
+):
     from .GlobalParameters import globalParameters
 
     threadCount = CPUThreadCount(enable)
@@ -188,17 +192,27 @@ def ParallelMapReturnAsGenerator(function, objects, message="", enable=True, mul
 
     if threadCount <= 1 and globalParameters["ShowProgressBar"]:
         # Provide a progress bar for single-threaded operation.
-        callFunc = lambda args: function(*args) if multiArg else lambda args: function(args)
+        callFunc = (
+            lambda args: function(*args) if multiArg else lambda args: function(args)
+        )
         return [callFunc(args) for args in tqdm(objects, message)]
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=threadCount) as executor:
-        resultFutures = (executor.submit(function, *arg if multiArg else arg) for arg in objects)
+        resultFutures = (
+            executor.submit(function, *arg if multiArg else arg) for arg in objects
+        )
         for result in concurrent.futures.as_completed(resultFutures):
             yield result.result()
 
 
 def ParallelMap2(
-    function, objects, message="", enable=True, multiArg=True, return_as="list", procs=None
+    function,
+    objects,
+    message="",
+    enable=True,
+    multiArg=True,
+    return_as="list",
+    procs=None,
 ):
     """
     Generally equivalent to list(map(function, objects)), possibly executing in parallel.
@@ -208,8 +222,13 @@ def ParallelMap2(
       multiArg: True if objects represent multiple arguments
                   (differentiates multi args vs single collection arg)
     """
-    if return_as in ("generator", "generator_unordered") and not joblibParallelSupportsGenerator():
-        return ParallelMapReturnAsGenerator(function, objects, message, enable, multiArg)
+    if (
+        return_as in ("generator", "generator_unordered")
+        and not joblibParallelSupportsGenerator()
+    ):
+        return ParallelMapReturnAsGenerator(
+            function, objects, message, enable, multiArg
+        )
 
     from .GlobalParameters import globalParameters
 
@@ -219,7 +238,10 @@ def ParallelMap2(
 
     if threadCount <= 1 and globalParameters["ShowProgressBar"]:
         # Provide a progress bar for single-threaded operation.
-        return [function(*args) if multiArg else function(args) for args in tqdm(objects, message)]
+        return [
+            function(*args) if multiArg else function(args)
+            for args in tqdm(objects, message)
+        ]
 
     countMessage = ""
     try:
@@ -233,7 +255,9 @@ def ParallelMap2(
     sys.stdout.flush()
     currentTime = time.time()
 
-    pcall = pcallWithGlobalParamsMultiArg if multiArg else pcallWithGlobalParamsSingleArg
+    pcall = (
+        pcallWithGlobalParamsMultiArg if multiArg else pcallWithGlobalParamsSingleArg
+    )
     pargs = zip(objects, itertools.repeat(globalParameters))
 
     if joblibParallelSupportsGenerator():

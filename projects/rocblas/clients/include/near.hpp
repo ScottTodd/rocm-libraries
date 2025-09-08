@@ -73,28 +73,30 @@ template <>
 inline constexpr double sum_error_tolerance_for_gfx11<float, rocblas_bfloat16, float> = 1 / 10.0;
 
 template <>
-inline constexpr double
-    sum_error_tolerance_for_gfx11<float, rocblas_bfloat16, rocblas_bfloat16> = 1 / 10.0;
+inline constexpr double sum_error_tolerance_for_gfx11<float, rocblas_bfloat16, rocblas_bfloat16>
+    = 1 / 10.0;
 
 template <>
 inline constexpr double sum_error_tolerance_for_gfx11<float, rocblas_half, float> = 1 / 100.0;
 
 template <>
-inline constexpr double sum_error_tolerance_for_gfx11<float, rocblas_half, rocblas_half> = 1
-                                                                                           / 100.0;
+inline constexpr double sum_error_tolerance_for_gfx11<float, rocblas_half, rocblas_half>
+    = 1 / 100.0;
 template <>
-inline constexpr double
-    sum_error_tolerance_for_gfx11<rocblas_half, rocblas_half, rocblas_half> = 1 / 100.0;
+inline constexpr double sum_error_tolerance_for_gfx11<rocblas_half, rocblas_half, rocblas_half>
+    = 1 / 100.0;
 
 template <>
 inline constexpr double sum_error_tolerance_for_gfx11<rocblas_float_complex,
                                                       rocblas_float_complex,
-                                                      rocblas_float_complex> = 1 / 10000.0;
+                                                      rocblas_float_complex>
+    = 1 / 10000.0;
 
 template <>
 inline constexpr double sum_error_tolerance_for_gfx11<rocblas_double_complex,
                                                       rocblas_double_complex,
-                                                      rocblas_double_complex> = 1 / 1000000.0;
+                                                      rocblas_double_complex>
+    = 1 / 1000000.0;
 
 template <typename T>
 double sum_near_tolerance(int64_t n, real_t<T> sum)

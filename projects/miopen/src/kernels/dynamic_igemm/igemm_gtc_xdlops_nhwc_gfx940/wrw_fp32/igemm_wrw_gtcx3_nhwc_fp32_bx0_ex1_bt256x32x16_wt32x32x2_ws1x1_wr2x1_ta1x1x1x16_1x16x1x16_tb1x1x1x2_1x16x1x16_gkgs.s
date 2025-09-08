@@ -50,11 +50,11 @@
 ; nxe                        : 1
 ; gemm_k_global_split        : 1
 ; vector_c                   : 1
-; 
+;
 ; block_size                 : 256
 ; lds_total                  : 32768
 ; lds_buffer_num             : 1
-; 
+;
 .set k_p_in, 0
 .set k_p_wei, 8
 .set k_p_out, 16
@@ -348,8 +348,8 @@ igemm_wrw_gtcx3_nhwc_fp32_bx0_ex1_bt256x32x16_wt32x32x2_ws1x1_wr2x1_ta1x1x1x16_1
 
     v_mov_b32 v[v_tmp+5], v0
     ; xdlops mapping, get source matrix gemm index, k_pack:1, v_pack:1, k_pack_per_thread:1
-    v_and_b32 v[v_gemm_in], 31, v[v_tmp+5]           ; block_n index 
-    v_and_b32 v[v_gemm_im], 31, v[v_tmp+5]           ; block_m index 
+    v_and_b32 v[v_gemm_in], 31, v[v_tmp+5]           ; block_n index
+    v_and_b32 v[v_gemm_im], 31, v[v_tmp+5]           ; block_m index
     v_lshrrev_b32 v[v_tmp+5], 5, v[v_tmp+5]
     v_and_b32 v[v_tmp + 0], 1, v[v_tmp+5]          ; block_k_per_wave index
     v_lshl_or_b32 v[v_gemm_in], v[v_tmp + 0], 5, v[v_gemm_in]
@@ -469,10 +469,10 @@ igemm_wrw_gtcx3_nhwc_fp32_bx0_ex1_bt256x32x16_wt32x32x2_ws1x1_wr2x1_ta1x1x1x16_1
 
     ; start MFMA loop, 32x32 wave tile with 2x1 repeat, 1x1 step, k_pack:1
     s_waitcnt vmcnt(4)
-    ds_write_b64 v[v_sst_b_os], v[v_gld_b+0:v_gld_b+0+1] 
+    ds_write_b64 v[v_sst_b_os], v[v_gld_b+0:v_gld_b+0+1]
 
     s_waitcnt vmcnt(0)
-    ds_write_b128 v[v_sst_a_os], v[v_gld_a+0:v_gld_a+0+3] 
+    ds_write_b128 v[v_sst_a_os], v[v_gld_a+0:v_gld_a+0+3]
     ds_write_b128 v[v_sst_a_os], v[v_gld_a+4:v_gld_a+4+3] offset:16
     ds_write_b128 v[v_sst_a_os], v[v_gld_a+8:v_gld_a+8+3] offset:32
     ds_write_b128 v[v_sst_a_os], v[v_gld_a+12:v_gld_a+12+3] offset:48

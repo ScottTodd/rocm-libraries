@@ -161,7 +161,7 @@ public:
     //!
     //! @brief Const cast of the data on host.
     //!
-    operator const hipblas_internal_type<T>* const *() const
+    operator const hipblas_internal_type<T>* const*() const
     {
         return m_data;
     }
@@ -253,9 +253,10 @@ private:
         if(success)
         {
             success = (nullptr
-                       != (m_data = !this->use_HMM ? (hipblas_internal_type<T>**)calloc(
-                                        m_batch_count, sizeof(hipblas_internal_type<T>*))
-                                                   : m_device_data));
+                       != (m_data = !this->use_HMM
+                                        ? (hipblas_internal_type<T>**)calloc(
+                                              m_batch_count, sizeof(hipblas_internal_type<T>*))
+                                        : m_device_data));
             if(success)
             {
                 for(int64_t batch_index = 0; batch_index < m_batch_count; ++batch_index)

@@ -328,8 +328,8 @@ namespace rocRoller
             }
 
             template <typename T>
-            requires(CMappedType<T, NodeInput> || EmptyMappedType<T, NodeInput>) void input(
-                YAML::Node& n, T& obj)
+                requires(CMappedType<T, NodeInput> || EmptyMappedType<T, NodeInput>)
+            void input(YAML::Node& n, T& obj)
             {
                 NodeInput    subInput(&n, context);
                 EmptyContext ctx;

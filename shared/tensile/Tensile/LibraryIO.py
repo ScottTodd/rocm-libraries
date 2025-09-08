@@ -109,7 +109,7 @@ def writeSolutions(filename, problemSizes, solutions, cache=False):
             for sizeRange in problemSizes.ranges:
                 f.write("  - Range: {}\n".format(sizeRange))
             for problemExact in problemSizes.exacts:
-                #FIXME-problem, this ignores strides:
+                # FIXME-problem, this ignores strides:
                 f.write("  - Exact: {}\n".format(problemExact))
 
         yaml.dump(solutionStates, f, yamlDumper, default_flow_style=None)
@@ -133,13 +133,19 @@ def parseSolutionsFile(filename):
 def parseSolutionsData(data, srcFile="?"):
     """Parses problem sizes and solutions from the data of a solutions file."""
     if len(data) < 3:
-        printExit("Solution file {} is missing required fields (len = {} < 3" \
-                .format(srcFile, len(data)))
+        printExit(
+            "Solution file {} is missing required fields (len = {} < 3".format(
+                srcFile, len(data)
+            )
+        )
 
     versionString = data[0]["MinimumRequiredVersion"]
     if not versionIsCompatible(versionString):
-        printWarning("Version = {} in solution file {} does not match Tensile version = {}" \
-                .format(srcFile, versionString, __version__) )
+        printWarning(
+            "Version = {} in solution file {} does not match Tensile version = {}".format(
+                srcFile, versionString, __version__
+            )
+        )
 
     if "ProblemSizes" not in data[1]:
         printExit("Solution file {} doesn't begin with ProblemSizes".format(srcFile))
@@ -161,6 +167,7 @@ def parseSolutionsData(data, srcFile="?"):
 
 class LibraryLogic(NamedTuple):
     """Return tuple for parseLibraryLogicData()"""
+
     schedule: str
     architecture: str
     problemType: ProblemType
@@ -192,8 +199,11 @@ def parseLibraryLogicData(data, srcFile="?"):
         data["Fp16AltImplRound"] = False
 
     if not versionIsCompatible(data["MinimumRequiredVersion"]):
-        printWarning("Version = {} in library logic file {} does not match Tensile version = {}" \
-                .format(srcFile, data["MinimumRequiredVersion"], __version__) )
+        printWarning(
+            "Version = {} in library logic file {} does not match Tensile version = {}".format(
+                srcFile, data["MinimumRequiredVersion"], __version__
+            )
+        )
 
     # unpack problemType
     problemType = ProblemType(data["ProblemType"])
@@ -212,21 +222,35 @@ def parseLibraryLogicData(data, srcFile="?"):
         solutionObject = Solution(solutionState)
 
         if solutionObject["ProblemType"] != problemType:
-            printExit("ProblemType in library logic file {} doesn't match solution: {} != {}" \
-                    .format(srcFile, problemType, solutionObject["ProblemType"]))
+            printExit(
+                "ProblemType in library logic file {} doesn't match solution: {} != {}".format(
+                    srcFile, problemType, solutionObject["ProblemType"]
+                )
+            )
         solutions.append(solutionObject)
 
-    newLibrary = SolutionLibrary.MasterSolutionLibrary.FromOriginalState(data, solutions)
+    newLibrary = SolutionLibrary.MasterSolutionLibrary.FromOriginalState(
+        data, solutions
+    )
 
-    return LibraryLogic(data["ScheduleName"], data["ArchitectureName"], problemType, solutions, \
-            data.get("ExactLogic"), newLibrary)
+    return LibraryLogic(
+        data["ScheduleName"],
+        data["ArchitectureName"],
+        problemType,
+        solutions,
+        data.get("ExactLogic"),
+        newLibrary,
+    )
 
 
 def parseLibraryLogicList(data, srcFile="?"):
     """Parses the data of a matching table style library logic file."""
     if len(data) < 9:
-        printExit("Library logic file {} is missing required fields (len = {} < 9)" \
-                .format(srcFile, len(data)))
+        printExit(
+            "Library logic file {} is missing required fields (len = {} < 9)".format(
+                srcFile, len(data)
+            )
+        )
 
     rv = {}
     rv["MinimumRequiredVersion"] = data[0]["MinimumRequiredVersion"]
@@ -289,16 +313,30 @@ def rawLibraryLogic(data):
         for idx in range(9, dataLength):
             otherFields.append(data[idx])
 
-    return (versionString, scheduleName, architectureName, deviceNames,\
-            problemTypeState, solutionStates, indexOrder, exactLogic, rangeLogic, otherFields)
+    return (
+        versionString,
+        scheduleName,
+        architectureName,
+        deviceNames,
+        problemTypeState,
+        solutionStates,
+        indexOrder,
+        exactLogic,
+        rangeLogic,
+        otherFields,
+    )
 
 
 ########################
 # Library logic creation
 ########################
-def createLibraryLogic(schedulePrefix, architectureName, deviceNames, logicTuple, dictFormat):
+def createLibraryLogic(
+    schedulePrefix, architectureName, deviceNames, logicTuple, dictFormat
+):
     if not dictFormat:
-        return createLibraryLogicList(schedulePrefix, architectureName, deviceNames, logicTuple)
+        return createLibraryLogicList(
+            schedulePrefix, architectureName, deviceNames, logicTuple
+        )
 
     rv = {}
     rv["MinimumRequiredVersion"] = __version__
@@ -422,26 +460,27 @@ def initAsmCapsCache(cacheFile: str) -> Optional[dict]:
       cacheFile: Cache file (YAML format).
 
     Returns:
-      newcache:  If cachFile is empty, None. Otherwise, if file exists, a dictionary containing 
+      newcache:  If cachFile is empty, None. Otherwise, if file exists, a dictionary containing
                  capabilities cache; if not, an empty dict
     """
     # if cacheFile str is empty, do not use cache
     if not cacheFile:
         return None
-    
+
     cacheExists = os.path.exists(cacheFile)
     if not cacheExists:
         return {}
 
-    cache  = readYAML(cacheFile)
+    cache = readYAML(cacheFile)
 
     # gaurd against inconsistent state
     if not cache:
         return None
 
     toTuple = lambda s: tuple(int(i.strip()) for i in s.split(","))
-    newcache = {toTuple(k): v for k,v in cache.items()}
+    newcache = {toTuple(k): v for k, v in cache.items()}
     return newcache
+
 
 def writeAsmCapsCache(cacheFile: str, data: dict):
     """

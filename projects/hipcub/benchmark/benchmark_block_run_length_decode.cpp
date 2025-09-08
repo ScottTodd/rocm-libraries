@@ -36,11 +36,11 @@ template<class ItemT,
          unsigned RunsPerThread,
          unsigned DecodedItemsPerThread,
          unsigned Trials>
-__global__
-    __launch_bounds__(BlockSize) void block_run_length_decode_kernel(const ItemT*   d_run_items,
-                                                                     const OffsetT* d_run_offsets,
-                                                                     ItemT*         d_decoded_items,
-                                                                     bool enable_store = false)
+__global__ __launch_bounds__(BlockSize)
+void block_run_length_decode_kernel(const ItemT*   d_run_items,
+                                    const OffsetT* d_run_offsets,
+                                    ItemT*         d_decoded_items,
+                                    bool           enable_store = false)
 {
     using BlockRunLengthDecodeT
         = hipcub::BlockRunLengthDecode<ItemT, BlockSize, RunsPerThread, DecodedItemsPerThread>;

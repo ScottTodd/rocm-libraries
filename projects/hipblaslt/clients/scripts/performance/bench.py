@@ -31,30 +31,34 @@ from asyncio.subprocess import PIPE, STDOUT
 #####################################
 # for hipblaslt-bench, can use --yaml
 #####################################
-def run_bench(benchExecutable,
-              probYamlFolder,
-              benchType,
-              argsDict:Dict[str, str],
-              verbose=False,
-              timeout=300):
+def run_bench(
+    benchExecutable,
+    probYamlFolder,
+    benchType,
+    argsDict: Dict[str, str],
+    verbose=False,
+    timeout=300,
+):
     """Run bench"""
     cmd = [pathlib.Path(benchExecutable).resolve()]
 
     for argKey, argValue in argsDict.items():
         if len(argValue) != 0:
             if argKey == "--yaml":
-                argValue = pathlib.Path(os.path.join(probYamlFolder, argValue)).resolve()
+                argValue = pathlib.Path(
+                    os.path.join(probYamlFolder, argValue)
+                ).resolve()
             cmd += [argKey, argValue]
         else:
             cmd += [argKey]
 
     cmd = [str(x) for x in cmd]
-    logging.info('hipblaslt-perf: ' + ' '.join(cmd))
+    logging.info("hipblaslt-perf: " + " ".join(cmd))
     if verbose:
-        print('hipblaslt-perf: ' + ' '.join(cmd))
+        print("hipblaslt-perf: " + " ".join(cmd))
 
     startingToken = "["
-    csvKeys = ''
+    csvKeys = ""
     benchResultsList = []
     capturingValues = False
     isAPIOverhead = False
@@ -62,7 +66,8 @@ def run_bench(benchExecutable,
     async def run_command(*args, benchType=benchType, timeout=None):
 
         process = await asyncio.create_subprocess_exec(
-            *args, stdout=asyncio.subprocess.PIPE)
+            *args, stdout=asyncio.subprocess.PIPE
+        )
 
         nonlocal startingToken
         nonlocal csvKeys
@@ -72,11 +77,9 @@ def run_bench(benchExecutable,
 
         while True:
             try:
-                line = await asyncio.wait_for(process.stdout.readline(),
-                                              timeout)
+                line = await asyncio.wait_for(process.stdout.readline(), timeout)
             except asyncio.TimeoutError:
-                logging.info(
-                    "timeout expired. killed. Please check the process.")
+                logging.info("timeout expired. killed. Please check the process.")
                 print("timeout expired. killed. Please check the process.")
                 process.kill()  # Timeout or some criterion is not satisfied
                 break
@@ -84,27 +87,27 @@ def run_bench(benchExecutable,
             if not line:
                 break
             else:
-                line = line.decode('utf-8').rstrip('\n')
+                line = line.decode("utf-8").rstrip("\n")
                 line = line.strip()
                 if capturingValues:
-                    if not line.startswith(benchType): # filter out some irrelative msg
+                    if not line.startswith(benchType):  # filter out some irrelative msg
                         # print('irrelative msg:',line)
                         continue
                     print(line)
-                    dd_output = defaultdict(str, zip(csvKeys, line.split(',')))
+                    dd_output = defaultdict(str, zip(csvKeys, line.split(",")))
                     benchResultsList += [dd_output]
                     # if is doing api-overhead, the return log will contain serveral values lines
                     capturingValues = True if isAPIOverhead else False
                 elif line.startswith(startingToken):
-                    line = line.replace('hipblaslt-Gflops', 'gflops')
-                    line = line.replace('hipblaslt-GB/s', 'GB/s')
-                    splitLine = line.split(':')
+                    line = line.replace("hipblaslt-Gflops", "gflops")
+                    line = line.replace("hipblaslt-GB/s", "GB/s")
+                    splitLine = line.split(":")
                     funcType = splitLine[0]
                     keys = splitLine[1]
-                    print(f'\n{keys}')
-                    csvKeys = keys.split(',')
+                    print(f"\n{keys}")
+                    csvKeys = keys.split(",")
                     capturingValues = True
-                    isAPIOverhead = (funcType == '[overhead]')
+                    isAPIOverhead = funcType == "[overhead]"
         return await process.wait()  # Wait for the child process to exit
 
     if sys.platform == "win32":
@@ -124,16 +127,14 @@ def run_bench(benchExecutable,
 #####################################
 # For ./hipblaslt-perf --run_sh
 #####################################
-def run_sh_cmd(cmdLine,
-               verbose=False,
-               timeout=300):
+def run_sh_cmd(cmdLine, verbose=False, timeout=300):
     """Run single bench from sh"""
 
-    cmd = cmdLine.split(' ')
+    cmd = cmdLine.split(" ")
     cmd = [str(x) for x in cmd]
-    logging.info('running: ' + ' '.join(cmd))
+    logging.info("running: " + " ".join(cmd))
     if verbose:
-        print('running: ' + ' '.join(cmd))
+        print("running: " + " ".join(cmd))
 
     startingToken = "["
     solNameToken = "--Solution name:"
@@ -144,7 +145,8 @@ def run_sh_cmd(cmdLine,
     async def run_command(*args, timeout=None):
 
         process = await asyncio.create_subprocess_exec(
-            *args, stdout=asyncio.subprocess.PIPE)
+            *args, stdout=asyncio.subprocess.PIPE
+        )
 
         nonlocal startingToken
         nonlocal csvKeys
@@ -156,11 +158,9 @@ def run_sh_cmd(cmdLine,
 
         while True:
             try:
-                line = await asyncio.wait_for(process.stdout.readline(),
-                                              timeout)
+                line = await asyncio.wait_for(process.stdout.readline(), timeout)
             except asyncio.TimeoutError:
-                logging.info(
-                    "timeout expired. killed. Please check the process.")
+                logging.info("timeout expired. killed. Please check the process.")
                 print("timeout expired. killed. Please check the process.")
                 process.kill()  # Timeout or some criterion is not satisfied
                 break
@@ -168,31 +168,31 @@ def run_sh_cmd(cmdLine,
             if not line:
                 break
             else:
-                line = line.decode('utf-8').rstrip('\n')
+                line = line.decode("utf-8").rstrip("\n")
                 line = line.strip()
 
                 # capturing values right after capturing keys
                 if capturingValues:
-                    singleValuesList = line.split(',')
+                    singleValuesList = line.split(",")
                     # default is empty if --print_kernel_info is not in the bench cmd
                     solutionName = "N/A"
                     capturingValues = False
                     continue
 
                 if line.startswith(startingToken):
-                    line = line.replace('hipblaslt-Gflops', 'gflops')
-                    line = line.replace('hipblaslt-GB/s', 'GB/s')
-                    splitLine = line.split(':')
+                    line = line.replace("hipblaslt-Gflops", "gflops")
+                    line = line.replace("hipblaslt-GB/s", "GB/s")
+                    splitLine = line.split(":")
                     # SSN = splitLine[0] # should be [0]
                     keys = splitLine[1] + str(",solution-name")
-                    csvKeys = keys.split(',')
+                    csvKeys = keys.split(",")
                     # print(f'\n{keys}')
                     # print(f'\n{csvKeys}')
-                    capturingValues = True # Next line must be values
+                    capturingValues = True  # Next line must be values
                 else:
                     # if is "--Solution name:" (--print_kernel_info), then we capture this
                     if line.startswith(solNameToken):
-                        splitLine = line.split(':')
+                        splitLine = line.split(":")
                         solutionName = splitLine[1].strip()
                     # simply ignore irrelative msg
                     else:

@@ -27,7 +27,7 @@ import numpy as np
 
 import perflib.specs
 
-all_precisions = ['single', 'double']
+all_precisions = ["single", "double"]
 all_directions = [-1, 1]
 all_inplaces = [True, False]
 all_reals = [True, False]
@@ -36,7 +36,7 @@ def_tuning_max_wgs = 512
 def_export_full_token = False
 default_ngpus = 1
 def_mp_size = 1
-def_mp_exec = '/usr/bin/mpirun'
+def_mp_exec = "/usr/bin/mpirun"
 def_ingrid = [1, 1, 1]
 def_outgrid = [1, 1, 1]
 
@@ -375,209 +375,240 @@ lengths = {
 def mktag(tag, dimension, precision, direction, inplace, real):
     t = [
         tag,
-        str(dimension) + 'D', precision, {
-            -1: 'forward',
-            1: 'backward'
-        }[direction], {
-            True: 'real',
-            False: 'complex'
-        }[real], {
-            True: 'in-place',
-            False: 'out-of-place'
-        }[inplace]
+        str(dimension) + "D",
+        precision,
+        {-1: "forward", 1: "backward"}[direction],
+        {True: "real", False: "complex"}[real],
+        {True: "in-place", False: "out-of-place"}[inplace],
     ]
     return "_".join(t)
 
 
 # yield problem sizes with default precision, direction, etc
-def default_length_params(tag, lengths, nbatch, ngpus=default_ngpus, mp_size=def_mp_size, \
-                          mp_exec=def_mp_exec, precisions=all_precisions, \
-                          directions=all_directions, inplaces=all_inplaces, \
-                          reals=all_reals, min_wgs=def_tuning_min_wgs, \
-                          max_wgs=def_tuning_max_wgs,  ingrid=def_ingrid, outgrid=def_outgrid, \
-                          full_token=def_export_full_token, meta = {}):
+def default_length_params(
+    tag,
+    lengths,
+    nbatch,
+    ngpus=default_ngpus,
+    mp_size=def_mp_size,
+    mp_exec=def_mp_exec,
+    precisions=all_precisions,
+    directions=all_directions,
+    inplaces=all_inplaces,
+    reals=all_reals,
+    min_wgs=def_tuning_min_wgs,
+    max_wgs=def_tuning_max_wgs,
+    ingrid=def_ingrid,
+    outgrid=def_outgrid,
+    full_token=def_export_full_token,
+    meta={},
+):
 
-    for precision, direction, inplace, real in product(precisions, directions,
-                                                       inplaces, reals):
+    for precision, direction, inplace, real in product(
+        precisions, directions, inplaces, reals
+    ):
         for length in lengths:
-            length = (length, ) if isinstance(length, int) else length
+            length = (length,) if isinstance(length, int) else length
 
-            yield Problem(length,
-                          tag=mktag(tag, len(length), precision, direction,
-                                    inplace, real),
-                          nbatch=nbatch,
-                          ngpus=ngpus,
-                          mp_size=mp_size,
-                          mp_exec=mp_exec,
-                          ingrid=ingrid,
-                          outgrid=outgrid,
-                          direction=direction,
-                          inplace=inplace,
-                          real=real,
-                          precision=precision,
-                          min_wgs=min_wgs,
-                          max_wgs=max_wgs,
-                          full_token=full_token,
-                          meta=meta)
+            yield Problem(
+                length,
+                tag=mktag(tag, len(length), precision, direction, inplace, real),
+                nbatch=nbatch,
+                ngpus=ngpus,
+                mp_size=mp_size,
+                mp_exec=mp_exec,
+                ingrid=ingrid,
+                outgrid=outgrid,
+                direction=direction,
+                inplace=inplace,
+                real=real,
+                precision=precision,
+                min_wgs=min_wgs,
+                max_wgs=max_wgs,
+                full_token=full_token,
+                meta=meta,
+            )
 
 
 def md():
     """Molecular dynamics suite."""
 
-    yield from default_length_params("md", lengths['md'], 10)
+    yield from default_length_params("md", lengths["md"], 10)
 
 
 def qa():
     """AMD QA suite."""
 
     for length1 in [
-            8192, 10752, 15625, 16384, 16807, 18816, 19683, 21504, 32256, 43008
+        8192,
+        10752,
+        15625,
+        16384,
+        16807,
+        18816,
+        19683,
+        21504,
+        32256,
+        43008,
     ]:
         for direction in [-1, 1]:
-            yield Problem([length1],
-                          tag=mktag("qa1", 1, 'double', direction, False,
-                                    False),
-                          nbatch=10000,
-                          direction=direction,
-                          inplace=False,
-                          real=False,
-                          precision='double')
+            yield Problem(
+                [length1],
+                tag=mktag("qa1", 1, "double", direction, False, False),
+                nbatch=10000,
+                direction=direction,
+                inplace=False,
+                real=False,
+                precision="double",
+            )
 
-    yield Problem([10000],
-                  tag=mktag('qa10k', 1, 'double', 1, False, False),
-                  nbatch=10000,
-                  direction=1,
-                  inplace=False,
-                  real=False,
-                  precision='double')
+    yield Problem(
+        [10000],
+        tag=mktag("qa10k", 1, "double", 1, False, False),
+        nbatch=10000,
+        direction=1,
+        inplace=False,
+        real=False,
+        precision="double",
+    )
 
-    yield from default_length_params("336x336x56_b1", [(336, 336, 56)],
-                                     1,
-                                     directions=[-1],
-                                     precisions=['double'],
-                                     inplaces=[True, False],
-                                     reals=[False])
+    yield from default_length_params(
+        "336x336x56_b1",
+        [(336, 336, 56)],
+        1,
+        directions=[-1],
+        precisions=["double"],
+        inplaces=[True, False],
+        reals=[False],
+    )
 
-    yield from default_length_params("336x336x56_b10", [(336, 336, 56)],
-                                     10,
-                                     directions=[-1],
-                                     precisions=['double'],
-                                     inplaces=[True, False],
-                                     reals=[False])
+    yield from default_length_params(
+        "336x336x56_b10",
+        [(336, 336, 56)],
+        10,
+        directions=[-1],
+        precisions=["double"],
+        inplaces=[True, False],
+        reals=[False],
+    )
 
-    for length3 in lengths['md']:
+    for length3 in lengths["md"]:
         for direction in [-1, 1]:
-            yield Problem(length3,
-                          tag=mktag('qa3md', 3, 'single', direction, False,
-                                    True),
-                          nbatch=10,
-                          direction=direction,
-                          inplace=False,
-                          real=True,
-                          precision='single',
-                          meta={'figtype': 'bargraph'})
+            yield Problem(
+                length3,
+                tag=mktag("qa3md", 3, "single", direction, False, True),
+                nbatch=10,
+                direction=direction,
+                inplace=False,
+                real=True,
+                precision="single",
+                meta={"figtype": "bargraph"},
+            )
 
-    for length in lengths['qa1d10b']:
-        yield Problem([length],
-                      tag=mktag("qa1d10b", 1, 'single', -1, True, False),
-                      nbatch=10,
-                      direction=-1,
-                      inplace=True,
-                      real=False,
-                      precision='single')
+    for length in lengths["qa1d10b"]:
+        yield Problem(
+            [length],
+            tag=mktag("qa1d10b", 1, "single", -1, True, False),
+            nbatch=10,
+            direction=-1,
+            inplace=True,
+            real=False,
+            precision="single",
+        )
 
-    for length2 in lengths['qa2d10b']:
-        yield Problem(length2,
-                      tag=mktag("qa2d10b", 2, 'single', -1, True, False),
-                      nbatch=10,
-                      direction=-1,
-                      inplace=True,
-                      real=False,
-                      precision='single')
+    for length2 in lengths["qa2d10b"]:
+        yield Problem(
+            length2,
+            tag=mktag("qa2d10b", 2, "single", -1, True, False),
+            nbatch=10,
+            direction=-1,
+            inplace=True,
+            real=False,
+            precision="single",
+        )
 
-    for length3 in lengths['qa3d10b']:
-        yield Problem(length3,
-                      tag=mktag("qa3d10b", 3, 'single', -1, True, False),
-                      nbatch=10,
-                      direction=-1,
-                      inplace=True,
-                      real=False,
-                      precision='single')
+    for length3 in lengths["qa3d10b"]:
+        yield Problem(
+            length3,
+            tag=mktag("qa3d10b", 3, "single", -1, True, False),
+            nbatch=10,
+            direction=-1,
+            inplace=True,
+            real=False,
+            precision="single",
+        )
 
-    for length3 in lengths['qaReal3d10b']:
+    for length3 in lengths["qaReal3d10b"]:
         for direction in [-1, 1]:
-            yield Problem(length3,
-                          tag=mktag("qaReal3d10b", 3, 'single', direction,
-                                    False, True),
-                          nbatch=10,
-                          direction=direction,
-                          inplace=False,
-                          real=True,
-                          precision='single')
+            yield Problem(
+                length3,
+                tag=mktag("qaReal3d10b", 3, "single", direction, False, True),
+                nbatch=10,
+                direction=direction,
+                inplace=False,
+                real=True,
+                precision="single",
+            )
 
 
 def misc2d():
     """Miscellaneous 2D sizes."""
 
-    yield from default_length_params("misc2d", lengths['misc2d'], 1)
+    yield from default_length_params("misc2d", lengths["misc2d"], 1)
 
 
 def misc3d():
     """Miscellaneous 3D sizes."""
 
-    yield from default_length_params("misc3d", lengths['misc3d'], 1)
+    yield from default_length_params("misc3d", lengths["misc3d"], 1)
 
 
 def simpleL1D():
     """Basic C2C Large 1D sizes."""
 
-    yield from default_length_params("C2C_L1D",
-                                     lengths['simpleL1D'],
-                                     8000,
-                                     reals=[False])
+    yield from default_length_params(
+        "C2C_L1D", lengths["simpleL1D"], 8000, reals=[False]
+    )
 
 
 def large1d():
     """Large 1D sizes."""
 
-    yield from default_length_params("large1d",
-                                     lengths['large1d'],
-                                     10000,
-                                     reals=[False])
+    yield from default_length_params(
+        "large1d", lengths["large1d"], 10000, reals=[False]
+    )
 
 
 def generated1d(skip=1):
     """Explicitly generated 1D lengths."""
 
-    yield from default_length_params("generated1d",
-                                     lengths['generated'][::skip], 1000)
+    yield from default_length_params("generated1d", lengths["generated"][::skip], 1000)
 
 
 def generated2d():
     """Explicitly generated 2D lengths."""
 
-    lengths2d = list(filter(lambda x: x <= 1024, lengths['generated']))
+    lengths2d = list(filter(lambda x: x <= 1024, lengths["generated"]))
     yield from default_length_params("generated2d", lengths2d, 100)
 
 
 def generated3d():
     """Explicitly generated 3D lengths."""
 
-    lengths3d = list(filter(lambda x: x <= 512, lengths['generated']))
+    lengths3d = list(filter(lambda x: x <= 512, lengths["generated"]))
     yield from default_length_params("generated3d", lengths3d, 1)
 
 
 def prime():
     """Large selection of prime lengths."""
 
-    yield from default_length_params("prime", list(sieve.primerange(11, 1000)),
-                                     10000)
+    yield from default_length_params("prime", list(sieve.primerange(11, 1000)), 10000)
 
 
 def mixed1d(skip=1):
     """Mixed 1D lengths."""
 
-    yield from default_length_params("mixed", lengths['mixed'][::skip], 10000)
+    yield from default_length_params("mixed", lengths["mixed"][::skip], 10000)
 
 
 def prime_limited():
@@ -589,15 +620,17 @@ def prime_limited():
 def small_prime_extended():
     """Extended selection of small prime lengths."""
 
-    yield from default_length_params("small_prime_extended",
-                                     list(sieve.primerange(32, 8192)), 10000)
+    yield from default_length_params(
+        "small_prime_extended", list(sieve.primerange(32, 8192)), 10000
+    )
 
 
 def large_prime_extended():
     """Extended selection of large prime lengths."""
 
-    yield from default_length_params("large_prime_extended",
-                                     list(sieve.primerange(8192, 65536)), 1000)
+    yield from default_length_params(
+        "large_prime_extended", list(sieve.primerange(8192, 65536)), 1000
+    )
 
 
 def prime_2D():
@@ -620,99 +653,124 @@ def prime_3D():
 
 def non_supported_lengths_1D():
     """Non-prime 1D lengths in (32,2048) that default to Bluestein.
-       Subject to change as further kernel support is added."""
+    Subject to change as further kernel support is added."""
 
-    yield from default_length_params("non_supported_lengths_1D",
-                                     lengths['nonSupported1D'], 10000)
+    yield from default_length_params(
+        "non_supported_lengths_1D", lengths["nonSupported1D"], 10000
+    )
 
 
 def mpi():
     """MPI sizes."""
 
     # Grid sizes can be overwritten from CLI
-    yield from default_length_params("mpi",
-                                     lengths['mpi'],
-                                     1,
-                                     precisions=['single'],
-                                     reals=[False])
+    yield from default_length_params(
+        "mpi", lengths["mpi"], 1, precisions=["single"], reals=[False]
+    )
 
 
 def mgpu():
     """Multi-GPU sizes."""
 
-    yield from default_length_params("mgpu",
-                                     lengths['mgpu'],
-                                     1,
-                                     precisions=['single'],
-                                     reals=[False])
+    yield from default_length_params(
+        "mgpu", lengths["mgpu"], 1, precisions=["single"], reals=[False]
+    )
 
 
 def strongScaling():
     """Strong scalability test sizes."""
 
-    for length in lengths['scaling2D']:
+    for length in lengths["scaling2D"]:
         direction = -1
-        precision = 'double'
+        precision = "double"
         nbatch = 1
-        yield Problem(length,
-                      tag=mktag(
-                          'strongScaling' + "x".join([str(x) for x in length]),
-                          nbatch, precision, direction, False, False),
-                      nbatch=nbatch,
-                      direction=direction,
-                      inplace=False,
-                      real=False,
-                      precision='double',
-                      meta={'scaling': 'strong'})
+        yield Problem(
+            length,
+            tag=mktag(
+                "strongScaling" + "x".join([str(x) for x in length]),
+                nbatch,
+                precision,
+                direction,
+                False,
+                False,
+            ),
+            nbatch=nbatch,
+            direction=direction,
+            inplace=False,
+            real=False,
+            precision="double",
+            meta={"scaling": "strong"},
+        )
 
-    for length in lengths['scaling3D']:
+    for length in lengths["scaling3D"]:
         direction = -1
-        precision = 'double'
+        precision = "double"
         nbatch = 1
-        yield Problem(length,
-                      tag=mktag(
-                          'strongScaling' + "x".join([str(x) for x in length]),
-                          nbatch, precision, direction, False, False),
-                      nbatch=nbatch,
-                      direction=direction,
-                      inplace=False,
-                      real=False,
-                      precision='double',
-                      meta={'scaling': 'strong'})
+        yield Problem(
+            length,
+            tag=mktag(
+                "strongScaling" + "x".join([str(x) for x in length]),
+                nbatch,
+                precision,
+                direction,
+                False,
+                False,
+            ),
+            nbatch=nbatch,
+            direction=direction,
+            inplace=False,
+            real=False,
+            precision="double",
+            meta={"scaling": "strong"},
+        )
 
 
 def weakScaling():
     """Weak scalability test sizes."""
 
-    for length in lengths['scaling2D']:
+    for length in lengths["scaling2D"]:
         direction = -1
-        precision = 'double'
+        precision = "double"
         nbatch = 1
-        yield Problem(length,
-                      tag=mktag(
-                          'weakScaling' + "x".join([str(x) for x in length]),
-                          nbatch, precision, direction, False, False),
-                      nbatch=nbatch,
-                      direction=direction,
-                      inplace=False,
-                      real=False,
-                      precision='double',
-                      meta={'scaling': 'weak'})
+        yield Problem(
+            length,
+            tag=mktag(
+                "weakScaling" + "x".join([str(x) for x in length]),
+                nbatch,
+                precision,
+                direction,
+                False,
+                False,
+            ),
+            nbatch=nbatch,
+            direction=direction,
+            inplace=False,
+            real=False,
+            precision="double",
+            meta={"scaling": "weak"},
+        )
 
-    for length in lengths['scaling3D']:
+    for length in lengths["scaling3D"]:
         direction = -1
-        precision = 'double'
+        precision = "double"
         nbatch = 1
-        yield Problem(length,
-                      tag=mktag(
-                          'weakScaling' + "x".join([str(x) for x in length]),
-                          nbatch, precision, direction, False, False),
-                      nbatch=nbatch,
-                      direction=direction,
-                      inplace=False,
-                      real=False,
-                      precision='double',
-                      meta={'scaling': 'weak'})
+        yield Problem(
+            length,
+            tag=mktag(
+                "weakScaling" + "x".join([str(x) for x in length]),
+                nbatch,
+                precision,
+                direction,
+                False,
+                False,
+            ),
+            nbatch=nbatch,
+            direction=direction,
+            inplace=False,
+            real=False,
+            precision="double",
+            meta={"scaling": "weak"},
+        )
 
 
 def unbatched_1d():
@@ -726,9 +784,10 @@ def unbatched_1d():
 
 
 def batched_1d():
-    for subtag in ['simpleL1D', 'large1d']:  #, 'generated', 'mixed']:
+    for subtag in ["simpleL1D", "large1d"]:  # , 'generated', 'mixed']:
         for precision, direction, inplace, real in product(
-                all_precisions, all_directions, all_inplaces, all_reals):
+            all_precisions, all_directions, all_inplaces, all_reals
+        ):
             subcaption = precision
             subcaption += " forward " if direction == -1 else " backward "
             subcaption += " real" if real else " complex"
@@ -736,14 +795,22 @@ def batched_1d():
             subcaption += " length $N$ batch size $N$."
 
             for length in lengths[subtag]:
-                yield Problem([length],
-                              tag=mktag('batched_1d_contiguous_' + subtag, 1,
-                                        precision, direction, inplace, real),
-                              nbatch=length,
-                              inplace=inplace,
-                              precision=precision,
-                              real=real,
-                              meta={'caption': 'Batched 1D ' + subcaption})
+                yield Problem(
+                    [length],
+                    tag=mktag(
+                        "batched_1d_contiguous_" + subtag,
+                        1,
+                        precision,
+                        direction,
+                        inplace,
+                        real,
+                    ),
+                    nbatch=length,
+                    inplace=inplace,
+                    precision=precision,
+                    real=real,
+                    meta={"caption": "Batched 1D " + subcaption},
+                )
                 ncomplex = length // 2 + 1
                 istride = length
                 ostride = length
@@ -757,8 +824,14 @@ def batched_1d():
 
                 yield Problem(
                     [length],
-                    tag=mktag('batched_1d_strided_' + subtag, 1, precision,
-                              direction, inplace, real),
+                    tag=mktag(
+                        "batched_1d_strided_" + subtag,
+                        1,
+                        precision,
+                        direction,
+                        inplace,
+                        real,
+                    ),
                     nbatch=length,
                     istride=istride,
                     ostride=ostride,
@@ -767,16 +840,14 @@ def batched_1d():
                     inplace=inplace,
                     precision=precision,
                     real=real,
-                    meta={'caption': 'Batched strided 1D ' + subcaption})
+                    meta={"caption": "Batched strided 1D " + subcaption},
+                )
 
 
 def batched_1d_small_r2c():
     """Small 1D sizes, large batch size."""
 
-    yield from default_length_params("small1d",
-                                     lengths['small1d'],
-                                     10000,
-                                     reals=[True])
+    yield from default_length_params("small1d", lengths["small1d"], 10000, reals=[True])
 
 
 def batch_const_count():
@@ -787,17 +858,24 @@ def batch_const_count():
                 for place in all_inplaces:
                     for lexp in range(4, exp + 1):
                         length = 2**lexp
-                        batch = 2**(exp - lexp)
+                        batch = 2 ** (exp - lexp)
 
-                        yield Problem([length],
-                                      tag=mktag("footprint2exp" + str(exp), 1,
-                                                precision, direction, False,
-                                                False),
-                                      nbatch=batch,
-                                      direction=direction,
-                                      inplace=place,
-                                      real=False,
-                                      precision=precision)
+                        yield Problem(
+                            [length],
+                            tag=mktag(
+                                "footprint2exp" + str(exp),
+                                1,
+                                precision,
+                                direction,
+                                False,
+                                False,
+                            ),
+                            nbatch=batch,
+                            direction=direction,
+                            inplace=place,
+                            real=False,
+                            precision=precision,
+                        )
 
 
 def benchmarks():
@@ -816,9 +894,12 @@ def benchmarks():
 
     for dimension in dimensions:
         min1, max1 = minmax[dimension]
-        lengths = [(3 * [length])[:dimension] for length in all_lengths
-                   if min1 <= length <= max1]
-        yield from default_length_params('benchmark', lengths, 1)
+        lengths = [
+            (3 * [length])[:dimension]
+            for length in all_lengths
+            if min1 <= length <= max1
+        ]
+        yield from default_length_params("benchmark", lengths, 1)
 
 
 def all():
@@ -842,10 +923,9 @@ def all():
 def short_test():
     """A few small sizes for script testing."""
 
-    yield from default_length_params("short_test", [(8), (16), (32),
-                                                    (4294967296)],
-                                     1,
-                                     reals=[False])
+    yield from default_length_params(
+        "short_test", [(8), (16), (32), (4294967296)], 1, reals=[False]
+    )
 
 
 def tuning_example():
@@ -853,80 +933,96 @@ def tuning_example():
 
     # real 1d : odd/even/small/large - fwd
     length1s = [243, 486, 16807, 16384]
-    yield from default_length_params("real_1d_fwd",
-                                     length1s,
-                                     40000,
-                                     directions=[-1],
-                                     precisions=['double'],
-                                     inplaces=[True, False],
-                                     reals=[True],
-                                     min_wgs=128,
-                                     max_wgs=256)
+    yield from default_length_params(
+        "real_1d_fwd",
+        length1s,
+        40000,
+        directions=[-1],
+        precisions=["double"],
+        inplaces=[True, False],
+        reals=[True],
+        min_wgs=128,
+        max_wgs=256,
+    )
 
     # real 1d : odd/even/small/large - bwd - FIXME: bugs: batchsize for bwd can't exceed 1024
-    yield from default_length_params("real_1d_fwd",
-                                     length1s,
-                                     1024,
-                                     directions=[1],
-                                     precisions=['double'],
-                                     inplaces=[True, False],
-                                     reals=[True],
-                                     min_wgs=128,
-                                     max_wgs=256)
+    yield from default_length_params(
+        "real_1d_fwd",
+        length1s,
+        1024,
+        directions=[1],
+        precisions=["double"],
+        inplaces=[True, False],
+        reals=[True],
+        min_wgs=128,
+        max_wgs=256,
+    )
 
     # real 2d
     length2s = [(55, 55), (64, 52), (52, 52)]
-    yield from default_length_params("real_2d",
-                                     length2s,
-                                     10000,
-                                     directions=[-1, 1],
-                                     precisions=['double'],
-                                     inplaces=[False],
-                                     reals=[True],
-                                     min_wgs=128,
-                                     max_wgs=256)
+    yield from default_length_params(
+        "real_2d",
+        length2s,
+        10000,
+        directions=[-1, 1],
+        precisions=["double"],
+        inplaces=[False],
+        reals=[True],
+        min_wgs=128,
+        max_wgs=256,
+    )
 
     # real 3d
-    length3s = [(75, 55, 55), (208, 104, 104), (100, 100, 100),
-                (200, 200, 200)]
-    yield from default_length_params("real_3d",
-                                     length3s,
-                                     10,
-                                     directions=[-1, 1],
-                                     precisions=['double'],
-                                     inplaces=[False],
-                                     reals=[True],
-                                     min_wgs=128,
-                                     max_wgs=256)
+    length3s = [(75, 55, 55), (208, 104, 104), (100, 100, 100), (200, 200, 200)]
+    yield from default_length_params(
+        "real_3d",
+        length3s,
+        10,
+        directions=[-1, 1],
+        precisions=["double"],
+        inplaces=[False],
+        reals=[True],
+        min_wgs=128,
+        max_wgs=256,
+    )
 
     # complex
-    yield from default_length_params("81_1d", [(81)],
-                                     60000,
-                                     directions=[-1],
-                                     precisions=['double'],
-                                     inplaces=[False],
-                                     reals=[False],
-                                     min_wgs=128,
-                                     max_wgs=256)
+    yield from default_length_params(
+        "81_1d",
+        [(81)],
+        60000,
+        directions=[-1],
+        precisions=["double"],
+        inplaces=[False],
+        reals=[False],
+        min_wgs=128,
+        max_wgs=256,
+    )
 
-    yield from default_length_params("81_2d", [(81, 81)],
-                                     8000,
-                                     directions=[-1],
-                                     precisions=['double'],
-                                     inplaces=[False],
-                                     reals=[False],
-                                     min_wgs=128,
-                                     max_wgs=256)
+    yield from default_length_params(
+        "81_2d",
+        [(81, 81)],
+        8000,
+        directions=[-1],
+        precisions=["double"],
+        inplaces=[False],
+        reals=[False],
+        min_wgs=128,
+        max_wgs=256,
+    )
 
     # batch=500 to enabling tuning with intrinsic buffer
-    yield from default_length_params("81_3d", [(81, 81, 81)],
-                                     500,
-                                     directions=[-1],
-                                     precisions=['double'],
-                                     inplaces=[False],
-                                     reals=[False],
-                                     min_wgs=128,
-                                     max_wgs=256)
+    yield from default_length_params(
+        "81_3d",
+        [(81, 81, 81)],
+        500,
+        directions=[-1],
+        precisions=["double"],
+        inplaces=[False],
+        reals=[False],
+        min_wgs=128,
+        max_wgs=256,
+    )
 
 
 def tuning_2D_example():
@@ -934,14 +1030,16 @@ def tuning_2D_example():
 
     lengths = [(81, 32), (81, 25), (125, 32)]
 
-    yield from default_length_params("2D_SINGLE",
-                                     lengths,
-                                     10000,
-                                     directions=[-1],
-                                     precisions=['single'],
-                                     inplaces=[False],
-                                     reals=[False],
-                                     max_wgs=1024)
+    yield from default_length_params(
+        "2D_SINGLE",
+        lengths,
+        10000,
+        directions=[-1],
+        precisions=["single"],
+        inplaces=[False],
+        reals=[False],
+        max_wgs=1024,
+    )
 
 
 def tuning_suite():
@@ -953,135 +1051,176 @@ def tuning_suite():
     # if the setting gives no any candidate (example, a len64 with min_wgs=128 might not derive any)
 
     # complex transforms in suite qa.
-    for length1 in [
-            8192, 10000, 10752, 15625, 16384, 16807, 18816, 19683, 21504
-    ]:
+    for length1 in [8192, 10000, 10752, 15625, 16384, 16807, 18816, 19683, 21504]:
         for direction in [1]:
-            yield Problem([length1],
-                          tag=mktag("qa1", 1, 'double', direction, False,
-                                    False),
-                          nbatch=10000,
-                          direction=direction,
-                          inplace=False,
-                          real=False,
-                          precision='double',
-                          min_wgs=128,
-                          max_wgs=256)
+            yield Problem(
+                [length1],
+                tag=mktag("qa1", 1, "double", direction, False, False),
+                nbatch=10000,
+                direction=direction,
+                inplace=False,
+                real=False,
+                precision="double",
+                min_wgs=128,
+                max_wgs=256,
+            )
 
     # batch=5000 to enabling tuning with intrinsic buffer
     # since batch 10000 causes memory offset > 2^32, buffer inst will be disabled
     for length1 in [32256, 43008]:
         for direction in [1]:
-            yield Problem([length1],
-                          tag=mktag("qa1", 1, 'double', direction, False,
-                                    False),
-                          nbatch=5000,
-                          direction=direction,
-                          inplace=False,
-                          real=False,
-                          precision='double',
-                          min_wgs=128,
-                          max_wgs=256)
+            yield Problem(
+                [length1],
+                tag=mktag("qa1", 1, "double", direction, False, False),
+                nbatch=5000,
+                direction=direction,
+                inplace=False,
+                real=False,
+                precision="double",
+                min_wgs=128,
+                max_wgs=256,
+            )
 
     # we'd like to search more for this problem, so min_wgs = 64, not 128
-    yield from default_length_params("336x336x56_b1", [(336, 336, 56)],
-                                     1,
-                                     directions=[-1],
-                                     precisions=['double'],
-                                     inplaces=[True, False],
-                                     reals=[False],
-                                     max_wgs=256,
-                                     full_token=True)
+    yield from default_length_params(
+        "336x336x56_b1",
+        [(336, 336, 56)],
+        1,
+        directions=[-1],
+        precisions=["double"],
+        inplaces=[True, False],
+        reals=[False],
+        max_wgs=256,
+        full_token=True,
+    )
 
-    yield from default_length_params("336x336x56_b10", [(336, 336, 56)],
-                                     10,
-                                     directions=[-1],
-                                     precisions=['double'],
-                                     inplaces=[True, False],
-                                     reals=[False],
-                                     max_wgs=256)
+    yield from default_length_params(
+        "336x336x56_b10",
+        [(336, 336, 56)],
+        10,
+        directions=[-1],
+        precisions=["double"],
+        inplaces=[True, False],
+        reals=[False],
+        max_wgs=256,
+    )
 
-    for length3 in lengths['md']:
+    for length3 in lengths["md"]:
         for direction in [-1, 1]:
-            yield Problem(length3,
-                          tag=mktag('qa3md', 3, 'single', direction, False,
-                                    True),
-                          nbatch=10,
-                          direction=direction,
-                          inplace=False,
-                          real=True,
-                          precision='single',
-                          min_wgs=128,
-                          max_wgs=256)
+            yield Problem(
+                length3,
+                tag=mktag("qa3md", 3, "single", direction, False, True),
+                nbatch=10,
+                direction=direction,
+                inplace=False,
+                real=True,
+                precision="single",
+                min_wgs=128,
+                max_wgs=256,
+            )
 
-    for length in lengths['qa1d10b']:
-        yield Problem([length],
-                      tag=mktag("qa1d10b", 1, 'single', -1, True, False),
-                      nbatch=10,
-                      direction=-1,
-                      inplace=True,
-                      real=False,
-                      precision='single',
-                      min_wgs=128)
+    for length in lengths["qa1d10b"]:
+        yield Problem(
+            [length],
+            tag=mktag("qa1d10b", 1, "single", -1, True, False),
+            nbatch=10,
+            direction=-1,
+            inplace=True,
+            real=False,
+            precision="single",
+            min_wgs=128,
+        )
 
-    for length2 in lengths['qa2d10b']:
-        yield Problem(length2,
-                      tag=mktag("qa2d10b", 2, 'single', -1, True, False),
-                      nbatch=10,
-                      direction=-1,
-                      inplace=True,
-                      real=False,
-                      precision='single',
-                      min_wgs=128)
+    for length2 in lengths["qa2d10b"]:
+        yield Problem(
+            length2,
+            tag=mktag("qa2d10b", 2, "single", -1, True, False),
+            nbatch=10,
+            direction=-1,
+            inplace=True,
+            real=False,
+            precision="single",
+            min_wgs=128,
+        )
 
-    for length3 in lengths['qa3d10b']:
-        yield Problem(length3,
-                      tag=mktag("qa3d10b", 3, 'single', -1, True, False),
-                      nbatch=10,
-                      direction=-1,
-                      inplace=True,
-                      real=False,
-                      precision='single',
-                      min_wgs=128)
+    for length3 in lengths["qa3d10b"]:
+        yield Problem(
+            length3,
+            tag=mktag("qa3d10b", 3, "single", -1, True, False),
+            nbatch=10,
+            direction=-1,
+            inplace=True,
+            real=False,
+            precision="single",
+            min_wgs=128,
+        )
 
 
 def partial_pass():
-    for length in [(64, 64, 128), (64, 64, 64), (64, 64, 52), (60, 60, 60),
-                   (32, 32, 128), (32, 32, 64), (64, 32, 128)]:
+    for length in [
+        (64, 64, 128),
+        (64, 64, 64),
+        (64, 64, 52),
+        (60, 60, 60),
+        (32, 32, 128),
+        (32, 32, 64),
+        (64, 32, 128),
+    ]:
         for direction in [-1, 1]:
-            for precision in ['single', 'double']:
+            for precision in ["single", "double"]:
                 for place in all_inplaces:
                     for batch in [
-                            1, 5, 20, 50, 100, 200, 500, 1000, 1500, 3000,
-                            5000, 7500, 10000
+                        1,
+                        5,
+                        20,
+                        50,
+                        100,
+                        200,
+                        500,
+                        1000,
+                        1500,
+                        3000,
+                        5000,
+                        7500,
+                        10000,
                     ]:
 
-                        yield Problem(length,
-                                      tag=mktag("partial_pass", 1, precision,
-                                                direction, place, False),
-                                      nbatch=batch,
-                                      direction=direction,
-                                      inplace=place,
-                                      real=False,
-                                      meta={'ivariable': 'batch'},
-                                      precision=precision)
+                        yield Problem(
+                            length,
+                            tag=mktag(
+                                "partial_pass", 1, precision, direction, place, False
+                            ),
+                            nbatch=batch,
+                            direction=direction,
+                            inplace=place,
+                            real=False,
+                            meta={"ivariable": "batch"},
+                            precision=precision,
+                        )
 
 
 def large_1d_extended():
     """All supported L1D_CC compute scheme sizes"""
 
-    for length in lengths['large1DExtended']:
+    for length in lengths["large1DExtended"]:
         for direction in [-1, 1]:
-            for precision in ['single', 'double']:
+            for precision in ["single", "double"]:
                 for place in all_inplaces:
                     for batch in [1, 10, 100, 1000, 10000]:
-                        yield Problem([length],
-                                      tag=mktag("large_1d_extended", 1,
-                                                precision, direction, place,
-                                                False),
-                                      nbatch=batch,
-                                      direction=direction,
-                                      inplace=place,
-                                      real=False,
-                                      meta={'ivariable': 'batch'},
-                                      precision=precision)
+                        yield Problem(
+                            [length],
+                            tag=mktag(
+                                "large_1d_extended",
+                                1,
+                                precision,
+                                direction,
+                                place,
+                                False,
+                            ),
+                            nbatch=batch,
+                            direction=direction,
+                            inplace=place,
+                            real=False,
+                            meta={"ivariable": "batch"},
+                            precision=precision,
+                        )

@@ -752,14 +752,14 @@ public:
     // this factor
     double scale_factor = 1.0;
 
-    fft_params(){};
-    virtual ~fft_params(){};
+    fft_params() {};
+    virtual ~fft_params() {};
 
     // copying and moving
-    fft_params(const fft_params&) = default;
+    fft_params(const fft_params&)            = default;
     fft_params& operator=(const fft_params&) = default;
     fft_params(fft_params&&)                 = default;
-    fft_params& operator=(fft_params&&) = default;
+    fft_params& operator=(fft_params&&)      = default;
 
     virtual void setup() {}
     virtual void cleanup() {}
@@ -2991,7 +2991,8 @@ inline VectorNorms distance_1to1_complex(const Tcomplex*                        
     for(size_t b = 0; b < nbatch; b++, idx_base += idist, odx_base += odist)
     {
 #ifdef _OPENMP
-#pragma omp parallel for reduction(max : linf) reduction(+ : l2) num_threads(partitions.size()) private(linf_failures_private)
+#pragma omp parallel for reduction(max : linf) reduction(+ : l2) \
+    num_threads(partitions.size()) private(linf_failures_private)
 #endif
         for(size_t part = 0; part < partitions.size(); ++part)
         {
@@ -3076,7 +3077,8 @@ inline VectorNorms distance_1to1_real(const Tfloat*                           in
     for(size_t b = 0; b < nbatch; b++, idx_base += idist, odx_base += odist)
     {
 #ifdef _OPENMP
-#pragma omp parallel for reduction(max : linf) reduction(+ : l2) num_threads(partitions.size()) private(linf_failures_private)
+#pragma omp parallel for reduction(max : linf) reduction(+ : l2) \
+    num_threads(partitions.size()) private(linf_failures_private)
 #endif
         for(size_t part = 0; part < partitions.size(); ++part)
         {
@@ -3149,7 +3151,8 @@ inline VectorNorms distance_1to2(const rocfft_complex<Tval>*             input,
     for(size_t b = 0; b < nbatch; b++, idx_base += idist, odx_base += odist)
     {
 #ifdef _OPENMP
-#pragma omp parallel for reduction(max : linf) reduction(+ : l2) num_threads(partitions.size()) private(linf_failures_private)
+#pragma omp parallel for reduction(max : linf) reduction(+ : l2) \
+    num_threads(partitions.size()) private(linf_failures_private)
 #endif
         for(size_t part = 0; part < partitions.size(); ++part)
         {

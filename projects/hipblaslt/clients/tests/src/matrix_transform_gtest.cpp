@@ -1153,8 +1153,8 @@ TEST(MatrixTransformTest, ScalarsOnDevice)
 
 TEST(MatrixTransformTest, MultipleDevices)
 {
-    int numDevices{};
-    int curDevice{};
+    int  numDevices{};
+    int  curDevice{};
     auto hipErr = hipGetDeviceCount(&numDevices);
     EXPECT_EQ(hipErr, hipSuccess);
     hipErr = hipGetDevice(&curDevice);
@@ -1162,7 +1162,7 @@ TEST(MatrixTransformTest, MultipleDevices)
     // acquire at most 2 devices
     numDevices = std::min<int>(numDevices, 2);
 
-    for (int deviceId = 0; deviceId < numDevices; ++deviceId)
+    for(int deviceId = 0; deviceId < numDevices; ++deviceId)
     {
         hipErr = hipSetDevice(deviceId);
         EXPECT_EQ(hipErr, hipSuccess);
@@ -1200,9 +1200,9 @@ TEST(MatrixTransformTest, MultipleDevices)
         void* dC     = inputs->getBuf(2);
 
         hipblasLtMatrixTransformDesc_t desc;
-        auto                   hipblasLtErr = hipblasLtMatrixTransformDescCreate(&desc, scaleDatatype);
-        hipblasLtPointerMode_t pMode        = HIPBLASLT_POINTER_MODE_HOST;
-        hipblasLtErr                        = hipblasLtMatrixTransformDescSetAttribute(
+        auto hipblasLtErr            = hipblasLtMatrixTransformDescCreate(&desc, scaleDatatype);
+        hipblasLtPointerMode_t pMode = HIPBLASLT_POINTER_MODE_HOST;
+        hipblasLtErr                 = hipblasLtMatrixTransformDescSetAttribute(
             desc,
             hipblasLtMatrixTransformDescAttributes_t::HIPBLASLT_MATRIX_TRANSFORM_DESC_POINTER_MODE,
             &pMode,
@@ -1280,82 +1280,82 @@ TEST(MatrixTransformTest, MultipleDevices)
         if(datatype == HIP_R_32F)
         {
             validation<float>(dC,
-                            dA,
-                            dB,
-                            alpha,
-                            beta,
-                            m,
-                            n,
-                            ldA,
-                            ldB,
-                            ldC,
-                            batchSize,
-                            batchStride,
-                            rowMajA,
-                            rowMajB,
-                            rowMajC,
-                            transA,
-                            transB);
+                              dA,
+                              dB,
+                              alpha,
+                              beta,
+                              m,
+                              n,
+                              ldA,
+                              ldB,
+                              ldC,
+                              batchSize,
+                              batchStride,
+                              rowMajA,
+                              rowMajB,
+                              rowMajC,
+                              transA,
+                              transB);
         }
         else if(datatype == HIP_R_16F)
         {
             validation<hipblasLtHalf>(dC,
-                                    dA,
-                                    dB,
-                                    alpha,
-                                    beta,
-                                    m,
-                                    n,
-                                    ldA,
-                                    ldB,
-                                    ldC,
-                                    batchSize,
-                                    batchStride,
-                                    rowMajA,
-                                    rowMajB,
-                                    rowMajC,
-                                    transA,
-                                    transB);
+                                      dA,
+                                      dB,
+                                      alpha,
+                                      beta,
+                                      m,
+                                      n,
+                                      ldA,
+                                      ldB,
+                                      ldC,
+                                      batchSize,
+                                      batchStride,
+                                      rowMajA,
+                                      rowMajB,
+                                      rowMajC,
+                                      transA,
+                                      transB);
         }
         else if(datatype == HIP_R_16BF)
         {
             validation<hipblasLtBfloat16>(dC,
-                                        dA,
-                                        dB,
-                                        alpha,
-                                        beta,
-                                        m,
-                                        n,
-                                        ldA,
-                                        ldB,
-                                        ldC,
-                                        batchSize,
-                                        batchStride,
-                                        rowMajA,
-                                        rowMajB,
-                                        rowMajC,
-                                        transA,
-                                        transB);
+                                          dA,
+                                          dB,
+                                          alpha,
+                                          beta,
+                                          m,
+                                          n,
+                                          ldA,
+                                          ldB,
+                                          ldC,
+                                          batchSize,
+                                          batchStride,
+                                          rowMajA,
+                                          rowMajB,
+                                          rowMajC,
+                                          transA,
+                                          transB);
         }
         else if(datatype == HIP_R_8I)
         {
             validation<int8_t>(dC,
-                            dA,
-                            dB,
-                            alpha,
-                            beta,
-                            m,
-                            n,
-                            ldA,
-                            ldB,
-                            ldC,
-                            batchSize,
-                            batchStride,
-                            rowMajA,
-                            rowMajB,
-                            rowMajC,
-                            transA,
-                            transB);
+                               dA,
+                               dB,
+                               alpha,
+                               beta,
+                               m,
+                               n,
+                               ldA,
+                               ldB,
+                               ldC,
+                               batchSize,
+                               batchStride,
+                               rowMajA,
+                               rowMajB,
+                               rowMajC,
+                               transA,
+                               transB);
         }
         else if(datatype == HIP_R_32I)
         {

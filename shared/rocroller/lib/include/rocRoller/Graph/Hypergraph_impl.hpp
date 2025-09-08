@@ -389,8 +389,9 @@ namespace rocRoller
 
         template <typename Node, typename Edge, bool Hyper>
         template <typename T, CForwardRangeOf<int> T_Inputs, CForwardRangeOf<int> T_Outputs>
-        requires(std::constructible_from<Edge, T>) void Hypergraph<Node, Edge, Hyper>::
-            deleteElement(T_Inputs const& inputs, T_Outputs const& outputs)
+            requires(std::constructible_from<Edge, T>)
+        void Hypergraph<Node, Edge, Hyper>::deleteElement(T_Inputs const&  inputs,
+                                                          T_Outputs const& outputs)
         {
             return deleteElement(
                 inputs, outputs, [](Edge const& edge) { return std::holds_alternative<T>(edge); });
@@ -1083,9 +1084,8 @@ namespace rocRoller
 
         template <typename Node, typename Edge, bool Hyper>
         template <typename T>
-        requires(std::constructible_from<Node, T> || std::constructible_from<Edge, T>)
-            Generator<int> Hypergraph<Node, Edge, Hyper>::getElements()
-        const
+            requires(std::constructible_from<Node, T> || std::constructible_from<Edge, T>)
+        Generator<int> Hypergraph<Node, Edge, Hyper>::getElements() const
         {
             for(auto const& elem : m_elements)
             {
@@ -1117,27 +1117,24 @@ namespace rocRoller
 
         template <typename Node, typename Edge, bool Hyper>
         template <typename T>
-        requires(std::constructible_from<Node, T>)
-            Generator<int> Hypergraph<Node, Edge, Hyper>::getNodes()
-        const
+            requires(std::constructible_from<Node, T>)
+        Generator<int> Hypergraph<Node, Edge, Hyper>::getNodes() const
         {
             co_yield getElements<T>();
         }
 
         template <typename Node, typename Edge, bool Hyper>
         template <typename T>
-        requires(std::constructible_from<Edge, T>)
-            Generator<int> Hypergraph<Node, Edge, Hyper>::getEdges()
-        const
+            requires(std::constructible_from<Edge, T>)
+        Generator<int> Hypergraph<Node, Edge, Hyper>::getEdges() const
         {
             co_yield getElements<T>();
         }
 
         template <typename Node, typename Edge, bool Hyper>
         template <typename T, Direction Dir>
-        requires(std::constructible_from<Edge, T>)
-            Generator<int> Hypergraph<Node, Edge, Hyper>::getConnectedNodeIndices(int const dst)
-        const
+            requires(std::constructible_from<Edge, T>)
+        Generator<int> Hypergraph<Node, Edge, Hyper>::getConnectedNodeIndices(int const dst) const
         {
             if constexpr(std::same_as<Edge, T>)
             {
@@ -1171,9 +1168,8 @@ namespace rocRoller
 
         template <typename Node, typename Edge, bool Hyper>
         template <typename T>
-        requires(std::constructible_from<Edge, T>)
-            Generator<int> Hypergraph<Node, Edge, Hyper>::getInputNodeIndices(int const dst)
-        const
+            requires(std::constructible_from<Edge, T>)
+        Generator<int> Hypergraph<Node, Edge, Hyper>::getInputNodeIndices(int const dst) const
         {
             co_yield getConnectedNodeIndices<T, Direction::Upstream>(dst);
         }
@@ -1189,9 +1185,8 @@ namespace rocRoller
 
         template <typename Node, typename Edge, bool Hyper>
         template <typename T>
-        requires(std::constructible_from<Edge, T>)
-            Generator<int> Hypergraph<Node, Edge, Hyper>::getOutputNodeIndices(int const src)
-        const
+            requires(std::constructible_from<Edge, T>)
+        Generator<int> Hypergraph<Node, Edge, Hyper>::getOutputNodeIndices(int const src) const
         {
             co_yield getConnectedNodeIndices<T, Direction::Downstream>(src);
         }
@@ -1213,10 +1208,9 @@ namespace rocRoller
 
         template <typename Node, typename Edge, bool Hyper>
         template <typename T>
-        requires(std::constructible_from<Edge, T>)
-            std::set<int> Hypergraph<Node, Edge, Hyper>::followEdges(
-                std::set<int> const& candidates)
-        const
+            requires(std::constructible_from<Edge, T>)
+        std::set<int>
+            Hypergraph<Node, Edge, Hyper>::followEdges(std::set<int> const& candidates) const
         {
             // Nodes to be analyzed
             std::set<int> currentNodes = candidates;

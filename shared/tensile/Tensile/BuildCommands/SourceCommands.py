@@ -118,7 +118,11 @@ def _compileSourceObjectFile(
         ]
 
     args = (
-        launcher + [cxxCompiler] + hipFlags + archFlags + [str(cxxSrcPath), "-c", "-o", objDestPath]
+        launcher
+        + [cxxCompiler]
+        + hipFlags
+        + archFlags
+        + [str(cxxSrcPath), "-c", "-o", objDestPath]
     )
 
     tPrint(2, f"Compile source object file command: {args}")
@@ -140,7 +144,9 @@ def _listTargetTriples(bundler: str, objFile: str):
     """
     args = [bundler, "--type=o", f"--input={objFile}", "-list"]
     try:
-        listing = subprocess.check_output(args, stderr=subprocess.STDOUT).decode().split("\n")
+        listing = (
+            subprocess.check_output(args, stderr=subprocess.STDOUT).decode().split("\n")
+        )
     except subprocess.CalledProcessError as err:
         raise RuntimeError(
             f"Error listing target triples in object files: {err.output}\nFailed command: {' '.join(args)}"
@@ -188,7 +194,9 @@ def _buildSourceCodeObjectFile(
     removeTemporaries: bool,
 ) -> List[str]:
 
-    buildPath = Path(ensurePath(os.path.join(globalParameters["WorkingPath"], "code_object_tmp")))
+    buildPath = Path(
+        ensurePath(os.path.join(globalParameters["WorkingPath"], "code_object_tmp"))
+    )
     destPath = Path(ensurePath(os.path.join(outputPath, "library")))
     kernelPath = Path(kernelPath)
 
@@ -196,7 +204,10 @@ def _buildSourceCodeObjectFile(
     coPathsRaw = []
     coPaths = []
 
-    if "CmakeCxxCompiler" in globalParameters and globalParameters["CmakeCxxCompiler"] is not None:
+    if (
+        "CmakeCxxCompiler" in globalParameters
+        and globalParameters["CmakeCxxCompiler"] is not None
+    ):
         os.environ["CMAKE_CXX_COMPILER"] = globalParameters["CmakeCxxCompiler"]
 
     _, cmdlineArchs = splitArchs()
@@ -207,7 +218,12 @@ def _buildSourceCodeObjectFile(
 
     objPath = str(buildPath / objectFilename)
     _compileSourceObjectFile(
-        cmdlineArchs, cxxCompiler, str(kernelPath), objPath, str(outputPath), compilerVer
+        cmdlineArchs,
+        cxxCompiler,
+        str(kernelPath),
+        objPath,
+        str(outputPath),
+        compilerVer,
     )
 
     bundler = globalParameters["ClangOffloadBundlerPath"]
@@ -220,7 +236,9 @@ def _buildSourceCodeObjectFile(
         match = re.search("gfx.*$", target)
         if match:
             arch = re.sub(":", "-", match.group())
-            coPathRaw = _computeSourceCodeObjectPath(target, kernelPath.stem, buildPath, arch)
+            coPathRaw = _computeSourceCodeObjectPath(
+                target, kernelPath.stem, buildPath, arch
+            )
             if not coPathRaw:
                 continue
             _unbundleSourceCodeObjects(bundler, target, objPath, str(coPathRaw))

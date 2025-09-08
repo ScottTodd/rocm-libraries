@@ -33,7 +33,7 @@
     }
 
 __global__
-void get_version_kernel(unsigned int * version)
+void get_version_kernel(unsigned int* version)
 {
     *version = HIPCUB_VERSION;
 }
@@ -42,25 +42,15 @@ unsigned int get_hipcub_version_on_device()
 {
     unsigned int version = 0;
 
-    unsigned int * d_version;
+    unsigned int* d_version;
     HIP_CHECK(hipMalloc(&d_version, sizeof(unsigned int)));
     HIP_CHECK(hipDeviceSynchronize());
 
-    hipLaunchKernelGGL(
-        get_version_kernel,
-        dim3(1), dim3(1), 0, 0,
-        d_version
-    );
+    hipLaunchKernelGGL(get_version_kernel, dim3(1), dim3(1), 0, 0, d_version);
     HIP_CHECK(hipPeekAtLastError());
     HIP_CHECK(hipDeviceSynchronize());
 
-    HIP_CHECK(
-        hipMemcpy(
-            &version, d_version,
-            sizeof(unsigned int),
-            hipMemcpyDeviceToHost
-        )
-    );
+    HIP_CHECK(hipMemcpy(&version, d_version, sizeof(unsigned int), hipMemcpyDeviceToHost));
     HIP_CHECK(hipDeviceSynchronize());
     HIP_CHECK(hipFree(d_version));
 

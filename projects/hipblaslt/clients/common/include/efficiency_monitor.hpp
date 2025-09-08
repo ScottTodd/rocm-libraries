@@ -55,4 +55,4 @@ public:
 };
 
 EfficiencyMonitor& getEfficiencyMonitor();
-void                freeEfficiencyMonitor();
+void               freeEfficiencyMonitor();

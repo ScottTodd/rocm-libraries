@@ -65,13 +65,10 @@ namespace rocRoller::Expression::EvaluateDetail
      * @tparam ARG
      */
     template <typename TheEvaluator, typename ARG>
-    concept CCanEvaluateUnary = requires(TheEvaluator ev, ARG arg)
-    {
+    concept CCanEvaluateUnary = requires(TheEvaluator ev, ARG arg) {
         requires CCommandArgumentValue<ARG>;
 
-        {
-            ev.evaluate(arg)
-            } -> CCommandArgumentValue;
+        { ev.evaluate(arg) } -> CCommandArgumentValue;
     };
 
     /**
@@ -88,26 +85,20 @@ namespace rocRoller::Expression::EvaluateDetail
      * @tparam RHS
      */
     template <typename TheEvaluator, typename LHS, typename RHS>
-    concept CCanEvaluateBinary = requires(TheEvaluator ev, LHS lhs, RHS rhs)
-    {
+    concept CCanEvaluateBinary = requires(TheEvaluator ev, LHS lhs, RHS rhs) {
         requires CCommandArgumentValue<LHS>;
         requires CCommandArgumentValue<RHS>;
 
-        {
-            ev.evaluate(lhs, rhs)
-            } -> CCommandArgumentValue;
+        { ev.evaluate(lhs, rhs) } -> CCommandArgumentValue;
     };
 
     template <typename TheEvaluator, typename LHS, typename R1HS, typename R2HS>
-    concept CCanEvaluateTernary = requires(TheEvaluator ev, LHS lhs, R1HS r1hs, R2HS r2hs)
-    {
+    concept CCanEvaluateTernary = requires(TheEvaluator ev, LHS lhs, R1HS r1hs, R2HS r2hs) {
         requires CCommandArgumentValue<LHS>;
         requires CCommandArgumentValue<R1HS>;
         requires CCommandArgumentValue<R2HS>;
 
-        {
-            ev.evaluate(lhs, r1hs, r2hs)
-            } -> CCommandArgumentValue;
+        { ev.evaluate(lhs, r1hs, r2hs) } -> CCommandArgumentValue;
     };
 
     template <CUnary T>

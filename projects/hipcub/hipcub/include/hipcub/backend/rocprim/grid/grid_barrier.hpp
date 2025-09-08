@@ -46,20 +46,19 @@ BEGIN_HIPCUB_NAMESPACE
 
 /**
  * \brief GridBarrier implements a software global barrier among thread blocks within a hip grid
- * 
+ *
  * deprecated [Since rocm 7.1.0]
- * 
+ *
  */
 class HIPCUB_DEPRECATED_BECAUSE("Use the APIs from cooperative groups instead") GridBarrier
 {
-protected :
+protected:
     using SyncFlag = unsigned int;
 
     // Counters in global device memory
     SyncFlag* d_sync;
 
 public:
-
     /**
      * Constructor
      */
@@ -72,17 +71,17 @@ public:
     __device__ __forceinline__
     void Sync() const
     {
-        volatile SyncFlag *d_vol_sync = d_sync;
+        volatile SyncFlag* d_vol_sync = d_sync;
 
         // Threadfence and syncthreads to make sure global writes are visible before
         // thread-0 reports in with its sync counter
         __threadfence();
         __syncthreads();
 
-        if (blockIdx.x == 0)
+        if(blockIdx.x == 0)
         {
             // Report in ourselves
-            if (threadIdx.x == 0)
+            if(threadIdx.x == 0)
             {
                 d_vol_sync[blockIdx.x] = 1;
             }
@@ -90,9 +89,9 @@ public:
             __syncthreads();
 
             // Wait for everyone else to report in
-            for (uint32_t peer_block = threadIdx.x; peer_block < gridDim.x; peer_block += blockDim.x)
+            for(uint32_t peer_block = threadIdx.x; peer_block < gridDim.x; peer_block += blockDim.x)
             {
-                while (ThreadLoad<LOAD_CG>(d_sync + peer_block) == 0)
+                while(ThreadLoad<LOAD_CG>(d_sync + peer_block) == 0)
                 {
                     __threadfence_block();
                 }
@@ -101,20 +100,20 @@ public:
             __syncthreads();
 
             // Let everyone know it's safe to proceed
-            for (uint32_t peer_block = threadIdx.x; peer_block < gridDim.x; peer_block += blockDim.x)
+            for(uint32_t peer_block = threadIdx.x; peer_block < gridDim.x; peer_block += blockDim.x)
             {
                 d_vol_sync[peer_block] = 0;
             }
         }
         else
         {
-            if (threadIdx.x == 0)
+            if(threadIdx.x == 0)
             {
                 // Report in
                 d_vol_sync[blockIdx.x] = 1;
 
                 // Wait for acknowledgment
-                while (ThreadLoad<LOAD_CG>(d_sync + blockIdx.x) == 1)
+                while(ThreadLoad<LOAD_CG>(d_sync + blockIdx.x) == 1)
                 {
                     __threadfence_block();
                 }
@@ -130,26 +129,23 @@ public:
  *
  * Uses RAII for lifetime, i.e., device resources are reclaimed when
  * the destructor is called.
- * 
+ *
  * deprecated [Since rocm 7.1.0]
- * 
+ *
  */
 HIPCUB_CLANG_SUPPRESS_DEPRECATED_PUSH
 class HIPCUB_DEPRECATED_BECAUSE("Use the APIs from cooperative groups instead") GridBarrierLifetime
     : public GridBarrier
 {
 protected:
-
     // Number of bytes backed by d_sync
     size_t sync_bytes;
 
 public:
-
     /**
      * Constructor
      */
     GridBarrierLifetime() : GridBarrier(), sync_bytes(0) {}
-
 
     /**
      * DeviceFrees and resets the progress counters
@@ -157,7 +153,7 @@ public:
     hipError_t HostReset()
     {
         hipError_t retval = hipSuccess;
-        if (d_sync)
+        if(d_sync)
         {
             retval = hipFree(d_sync);
             d_sync = nullptr;
@@ -165,7 +161,6 @@ public:
         sync_bytes = 0;
         return retval;
     }
-
 
     /**
      * Destructor
@@ -175,7 +170,6 @@ public:
         (void)HostReset();
     }
 
-
     /**
      * Sets up the progress counters for the next kernel launch (lazily
      * allocating and initializing them if necessary)
@@ -183,22 +177,27 @@ public:
     hipError_t Setup(int sweep_grid_size)
     {
         hipError_t retval = hipSuccess;
-        do {
+        do
+        {
             size_t new_sync_bytes = sweep_grid_size * sizeof(SyncFlag);
-            if (new_sync_bytes > sync_bytes)
+            if(new_sync_bytes > sync_bytes)
             {
-                if (d_sync)
+                if(d_sync)
                 {
-                    if ((retval = hipFree(d_sync))) break;
+                    if((retval = hipFree(d_sync)))
+                        break;
                 }
 
                 sync_bytes = new_sync_bytes;
 
                 // Allocate and initialize to zero
-                if ((retval = hipMalloc((void**) &d_sync, sync_bytes))) break;
-                if ((retval = hipMemset(d_sync, 0, new_sync_bytes))) break;
+                if((retval = hipMalloc((void**)&d_sync, sync_bytes)))
+                    break;
+                if((retval = hipMemset(d_sync, 0, new_sync_bytes)))
+                    break;
             }
-        } while (0);
+        }
+        while(0);
 
         return retval;
     }

@@ -161,7 +161,8 @@ namespace DGen
         }
     };
 
-    inline index_t get_strided_idx(const std::vector<index_t>& indices, const std::vector<index_t>& stride)
+    inline index_t get_strided_idx(const std::vector<index_t>& indices,
+                                   const std::vector<index_t>& stride)
     {
         index_t res = 0;
         for(size_t i = 0; i < indices.size(); i++)

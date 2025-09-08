@@ -22,7 +22,10 @@
 #
 ################################################################################
 
-def use(): pass
+
+def use():
+    pass
+
 
 # This should list all of the files in the 'Components' directory, without extensions.
 __all__ = [
@@ -43,5 +46,5 @@ __all__ = [
     "ComputeStoreVgprs",
     "NotLocalFullTileElements",
     "LraTileAssignment",
-    "PseudoRandomGenerator"
-    ]
+    "PseudoRandomGenerator",
+]

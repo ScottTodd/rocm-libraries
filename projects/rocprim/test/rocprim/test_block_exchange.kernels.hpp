@@ -45,21 +45,15 @@
 #include <type_traits>
 #include <vector>
 
-template<
-    class Type,
-    class OutputType,
-    unsigned int ItemsPerBlock,
-    unsigned int ItemsPerThread
->
-__global__
-__launch_bounds__(ROCPRIM_DEFAULT_MAX_BLOCK_SIZE)
+template<class Type, class OutputType, unsigned int ItemsPerBlock, unsigned int ItemsPerThread>
+__global__ __launch_bounds__(ROCPRIM_DEFAULT_MAX_BLOCK_SIZE)
 void blocked_to_striped_kernel(Type* device_input, OutputType* device_output)
 {
-    constexpr unsigned int block_size = (ItemsPerBlock / ItemsPerThread);
-    const unsigned int lid = threadIdx.x;
-    const unsigned int block_offset = blockIdx.x * ItemsPerBlock;
+    constexpr unsigned int block_size   = (ItemsPerBlock / ItemsPerThread);
+    const unsigned int     lid          = threadIdx.x;
+    const unsigned int     block_offset = blockIdx.x * ItemsPerBlock;
 
-    Type input[ItemsPerThread];
+    Type       input[ItemsPerThread];
     OutputType output[ItemsPerThread];
     rocprim::block_load_direct_blocked(lid, device_input + block_offset, input);
 
@@ -69,21 +63,15 @@ void blocked_to_striped_kernel(Type* device_input, OutputType* device_output)
     rocprim::block_store_direct_blocked(lid, device_output + block_offset, output);
 }
 
-template<
-    class Type,
-    class OutputType,
-    unsigned int ItemsPerBlock,
-    unsigned int ItemsPerThread
->
-__global__
-__launch_bounds__(ROCPRIM_DEFAULT_MAX_BLOCK_SIZE)
+template<class Type, class OutputType, unsigned int ItemsPerBlock, unsigned int ItemsPerThread>
+__global__ __launch_bounds__(ROCPRIM_DEFAULT_MAX_BLOCK_SIZE)
 void striped_to_blocked_kernel(Type* device_input, OutputType* device_output)
 {
-    constexpr unsigned int block_size = (ItemsPerBlock / ItemsPerThread);
-    const unsigned int lid = threadIdx.x;
-    const unsigned int block_offset = blockIdx.x * ItemsPerBlock;
+    constexpr unsigned int block_size   = (ItemsPerBlock / ItemsPerThread);
+    const unsigned int     lid          = threadIdx.x;
+    const unsigned int     block_offset = blockIdx.x * ItemsPerBlock;
 
-    Type input[ItemsPerThread];
+    Type       input[ItemsPerThread];
     OutputType output[ItemsPerThread];
     rocprim::block_load_direct_blocked(lid, device_input + block_offset, input);
 
@@ -93,21 +81,15 @@ void striped_to_blocked_kernel(Type* device_input, OutputType* device_output)
     rocprim::block_store_direct_blocked(lid, device_output + block_offset, output);
 }
 
-template<
-    class Type,
-    class OutputType,
-    unsigned int ItemsPerBlock,
-    unsigned int ItemsPerThread
->
-__global__
-__launch_bounds__(ROCPRIM_DEFAULT_MAX_BLOCK_SIZE)
+template<class Type, class OutputType, unsigned int ItemsPerBlock, unsigned int ItemsPerThread>
+__global__ __launch_bounds__(ROCPRIM_DEFAULT_MAX_BLOCK_SIZE)
 void blocked_to_warp_striped_kernel(Type* device_input, OutputType* device_output)
 {
-    constexpr unsigned int block_size = (ItemsPerBlock / ItemsPerThread);
-    const unsigned int lid = threadIdx.x;
-    const unsigned int block_offset = blockIdx.x * ItemsPerBlock;
+    constexpr unsigned int block_size   = (ItemsPerBlock / ItemsPerThread);
+    const unsigned int     lid          = threadIdx.x;
+    const unsigned int     block_offset = blockIdx.x * ItemsPerBlock;
 
-    Type input[ItemsPerThread];
+    Type       input[ItemsPerThread];
     OutputType output[ItemsPerThread];
     rocprim::block_load_direct_blocked(lid, device_input + block_offset, input);
 
@@ -117,21 +99,15 @@ void blocked_to_warp_striped_kernel(Type* device_input, OutputType* device_outpu
     rocprim::block_store_direct_blocked(lid, device_output + block_offset, output);
 }
 
-template<
-    class Type,
-    class OutputType,
-    unsigned int ItemsPerBlock,
-    unsigned int ItemsPerThread
->
-__global__
-__launch_bounds__(ROCPRIM_DEFAULT_MAX_BLOCK_SIZE)
+template<class Type, class OutputType, unsigned int ItemsPerBlock, unsigned int ItemsPerThread>
+__global__ __launch_bounds__(ROCPRIM_DEFAULT_MAX_BLOCK_SIZE)
 void warp_striped_to_blocked_kernel(Type* device_input, OutputType* device_output)
 {
-    constexpr unsigned int block_size = (ItemsPerBlock / ItemsPerThread);
-    const unsigned int lid = threadIdx.x;
-    const unsigned int block_offset = blockIdx.x * ItemsPerBlock;
+    constexpr unsigned int block_size   = (ItemsPerBlock / ItemsPerThread);
+    const unsigned int     lid          = threadIdx.x;
+    const unsigned int     block_offset = blockIdx.x * ItemsPerBlock;
 
-    Type input[ItemsPerThread];
+    Type       input[ItemsPerThread];
     OutputType output[ItemsPerThread];
     rocprim::block_load_direct_blocked(lid, device_input + block_offset, input);
 
@@ -141,22 +117,18 @@ void warp_striped_to_blocked_kernel(Type* device_input, OutputType* device_outpu
     rocprim::block_store_direct_blocked(lid, device_output + block_offset, output);
 }
 
-template<
-    class Type,
-    class OutputType,
-    unsigned int ItemsPerBlock,
-    unsigned int ItemsPerThread
->
-__global__
-__launch_bounds__(ROCPRIM_DEFAULT_MAX_BLOCK_SIZE)
-void scatter_to_blocked_kernel(Type* device_input, OutputType* device_output, unsigned int* device_ranks)
+template<class Type, class OutputType, unsigned int ItemsPerBlock, unsigned int ItemsPerThread>
+__global__ __launch_bounds__(ROCPRIM_DEFAULT_MAX_BLOCK_SIZE)
+void scatter_to_blocked_kernel(Type*         device_input,
+                               OutputType*   device_output,
+                               unsigned int* device_ranks)
 {
-    constexpr unsigned int block_size = (ItemsPerBlock / ItemsPerThread);
-    const unsigned int lid = threadIdx.x;
-    const unsigned int block_offset = blockIdx.x * ItemsPerBlock;
+    constexpr unsigned int block_size   = (ItemsPerBlock / ItemsPerThread);
+    const unsigned int     lid          = threadIdx.x;
+    const unsigned int     block_offset = blockIdx.x * ItemsPerBlock;
 
-    Type input[ItemsPerThread];
-    OutputType output[ItemsPerThread];
+    Type         input[ItemsPerThread];
+    OutputType   output[ItemsPerThread];
     unsigned int ranks[ItemsPerThread];
     rocprim::block_load_direct_blocked(lid, device_input + block_offset, input);
     rocprim::block_load_direct_blocked(lid, device_ranks + block_offset, ranks);
@@ -167,22 +139,18 @@ void scatter_to_blocked_kernel(Type* device_input, OutputType* device_output, un
     rocprim::block_store_direct_blocked(lid, device_output + block_offset, output);
 }
 
-template<
-    class Type,
-    class OutputType,
-    unsigned int ItemsPerBlock,
-    unsigned int ItemsPerThread
->
-__global__
-__launch_bounds__(ROCPRIM_DEFAULT_MAX_BLOCK_SIZE)
-void scatter_to_striped_kernel(Type* device_input, OutputType* device_output, unsigned int* device_ranks)
+template<class Type, class OutputType, unsigned int ItemsPerBlock, unsigned int ItemsPerThread>
+__global__ __launch_bounds__(ROCPRIM_DEFAULT_MAX_BLOCK_SIZE)
+void scatter_to_striped_kernel(Type*         device_input,
+                               OutputType*   device_output,
+                               unsigned int* device_ranks)
 {
-    constexpr unsigned int block_size = (ItemsPerBlock / ItemsPerThread);
-    const unsigned int lid = threadIdx.x;
-    const unsigned int block_offset = blockIdx.x * ItemsPerBlock;
+    constexpr unsigned int block_size   = (ItemsPerBlock / ItemsPerThread);
+    const unsigned int     lid          = threadIdx.x;
+    const unsigned int     block_offset = blockIdx.x * ItemsPerBlock;
 
-    Type input[ItemsPerThread];
-    OutputType output[ItemsPerThread];
+    Type         input[ItemsPerThread];
+    OutputType   output[ItemsPerThread];
     unsigned int ranks[ItemsPerThread];
     rocprim::block_load_direct_blocked(lid, device_input + block_offset, input);
     rocprim::block_load_direct_blocked(lid, device_ranks + block_offset, ranks);
@@ -201,11 +169,11 @@ template<class T,
          unsigned int ItemsPerThread = 1U>
 auto test_block_exchange(int /*device_id*/) -> typename std::enable_if<Method == 0>::type
 {
-    using type = T;
-    using output_type = U;
-    static constexpr size_t block_size = BlockSize;
+    using type                               = T;
+    using output_type                        = U;
+    static constexpr size_t block_size       = BlockSize;
     static constexpr size_t items_per_thread = ItemsPerThread;
-    static constexpr size_t items_per_block = block_size * items_per_thread;
+    static constexpr size_t items_per_block  = block_size * items_per_thread;
     // Given block size not supported
     if(block_size > test_utils::get_max_block_size())
     {
@@ -218,7 +186,7 @@ auto test_block_exchange(int /*device_id*/) -> typename std::enable_if<Method ==
     SCOPED_TRACE(testing::Message() << "size = " << size);
 
     // Generate data
-    std::vector<type> input(size);
+    std::vector<type>        input(size);
     std::vector<output_type> expected(size);
 
     // Calculate input and expected results on host
@@ -235,9 +203,9 @@ auto test_block_exchange(int /*device_id*/) -> typename std::enable_if<Method ==
             for(size_t ii = 0; ii < items_per_thread; ii++)
             {
                 const size_t offset = bi * items_per_block;
-                const size_t i0 = offset + ti * items_per_thread + ii;
-                const size_t i1 = offset + ii * block_size + ti;
-                input[i1] = values[i1];
+                const size_t i0     = offset + ti * items_per_thread + ii;
+                const size_t i1     = offset + ii * block_size + ti;
+                input[i1]           = values[i1];
                 expected[i0]        = values[i1];
             }
         }
@@ -273,11 +241,11 @@ template<class T,
          unsigned int ItemsPerThread = 1U>
 auto test_block_exchange(int /*device_id*/) -> typename std::enable_if<Method == 1>::type
 {
-    using type = T;
-    using output_type = U;
-    static constexpr size_t block_size = BlockSize;
+    using type                               = T;
+    using output_type                        = U;
+    static constexpr size_t block_size       = BlockSize;
     static constexpr size_t items_per_thread = ItemsPerThread;
-    static constexpr size_t items_per_block = block_size * items_per_thread;
+    static constexpr size_t items_per_block  = block_size * items_per_thread;
     // Given block size not supported
     if(block_size > test_utils::get_max_block_size())
     {
@@ -290,7 +258,7 @@ auto test_block_exchange(int /*device_id*/) -> typename std::enable_if<Method ==
     SCOPED_TRACE(testing::Message() << "size = " << size);
 
     // Generate data
-    std::vector<type> input(size);
+    std::vector<type>        input(size);
     std::vector<output_type> expected(size);
 
     // Calculate input and expected results on host
@@ -307,10 +275,10 @@ auto test_block_exchange(int /*device_id*/) -> typename std::enable_if<Method ==
             for(size_t ii = 0; ii < items_per_thread; ii++)
             {
                 const size_t offset = bi * items_per_block;
-                const size_t i0 = offset + ti * items_per_thread + ii;
-                const size_t i1 = offset + ii * block_size + ti;
-                input[i0] = values[i1];
-                expected[i1] = values[i1];
+                const size_t i0     = offset + ti * items_per_thread + ii;
+                const size_t i1     = offset + ii * block_size + ti;
+                input[i0]           = values[i1];
+                expected[i1]        = values[i1];
             }
         }
     }
@@ -345,11 +313,11 @@ template<class T,
          unsigned int ItemsPerThread = 1U>
 auto test_block_exchange(int device_id) -> typename std::enable_if<Method == 2>::type
 {
-    using type = T;
-    using output_type = U;
-    static constexpr size_t block_size = BlockSize;
+    using type                               = T;
+    using output_type                        = U;
+    static constexpr size_t block_size       = BlockSize;
     static constexpr size_t items_per_thread = ItemsPerThread;
-    static constexpr size_t items_per_block = block_size * items_per_thread;
+    static constexpr size_t items_per_block  = block_size * items_per_thread;
     // Given block size not supported
     if(block_size > test_utils::get_max_block_size())
     {
@@ -362,7 +330,7 @@ auto test_block_exchange(int device_id) -> typename std::enable_if<Method == 2>:
     SCOPED_TRACE(testing::Message() << "size = " << size);
 
     // Generate data
-    std::vector<type> input(size);
+    std::vector<type>        input(size);
     std::vector<output_type> expected(size);
 
     unsigned int current_device_warp_size;
@@ -383,18 +351,19 @@ auto test_block_exchange(int device_id) -> typename std::enable_if<Method == 2>:
     {
         for(size_t wi = 0; wi < warps_no; wi++)
         {
-            const size_t current_warp_size = wi == warps_no - 1
-                ? (block_size % warp_size != 0 ? block_size % warp_size : warp_size)
-                : warp_size;
+            const size_t current_warp_size
+                = wi == warps_no - 1
+                      ? (block_size % warp_size != 0 ? block_size % warp_size : warp_size)
+                      : warp_size;
             for(size_t li = 0; li < current_warp_size; li++)
             {
                 for(size_t ii = 0; ii < items_per_thread; ii++)
                 {
                     const size_t offset = bi * items_per_block + wi * items_per_warp;
-                    const size_t i0 = offset + li * items_per_thread + ii;
-                    const size_t i1 = offset + ii * current_warp_size + li;
-                    input[i1] = values[i1];
-                    expected[i0] = values[i1];
+                    const size_t i0     = offset + li * items_per_thread + ii;
+                    const size_t i1     = offset + ii * current_warp_size + li;
+                    input[i1]           = values[i1];
+                    expected[i0]        = values[i1];
                 }
             }
         }
@@ -430,11 +399,11 @@ template<class T,
          unsigned int ItemsPerThread = 1U>
 auto test_block_exchange(int device_id) -> typename std::enable_if<Method == 3>::type
 {
-    using type = T;
-    using output_type = U;
-    static constexpr size_t block_size = BlockSize;
+    using type                               = T;
+    using output_type                        = U;
+    static constexpr size_t block_size       = BlockSize;
     static constexpr size_t items_per_thread = ItemsPerThread;
-    static constexpr size_t items_per_block = block_size * items_per_thread;
+    static constexpr size_t items_per_block  = block_size * items_per_thread;
     // Given block size not supported
     if(block_size > test_utils::get_max_block_size())
     {
@@ -447,7 +416,7 @@ auto test_block_exchange(int device_id) -> typename std::enable_if<Method == 3>:
     SCOPED_TRACE(testing::Message() << "size = " << size);
 
     // Generate data
-    std::vector<type> input(size);
+    std::vector<type>        input(size);
     std::vector<output_type> expected(size);
 
     unsigned int current_device_warp_size;
@@ -468,18 +437,19 @@ auto test_block_exchange(int device_id) -> typename std::enable_if<Method == 3>:
     {
         for(size_t wi = 0; wi < warps_no; wi++)
         {
-            const size_t current_warp_size = wi == warps_no - 1
-                ? (block_size % warp_size != 0 ? block_size % warp_size : warp_size)
-                : warp_size;
+            const size_t current_warp_size
+                = wi == warps_no - 1
+                      ? (block_size % warp_size != 0 ? block_size % warp_size : warp_size)
+                      : warp_size;
             for(size_t li = 0; li < current_warp_size; li++)
             {
                 for(size_t ii = 0; ii < items_per_thread; ii++)
                 {
                     const size_t offset = bi * items_per_block + wi * items_per_warp;
-                    const size_t i0 = offset + li * items_per_thread + ii;
-                    const size_t i1 = offset + ii * current_warp_size + li;
-                    input[i0] = values[i1];
-                    expected[i1] = values[i1];
+                    const size_t i0     = offset + li * items_per_thread + ii;
+                    const size_t i1     = offset + ii * current_warp_size + li;
+                    input[i0]           = values[i1];
+                    expected[i1]        = values[i1];
                 }
             }
         }
@@ -515,11 +485,11 @@ template<class T,
          unsigned int ItemsPerThread = 1U>
 auto test_block_exchange(int /*device_id*/) -> typename std::enable_if<Method == 4>::type
 {
-    using type = T;
-    using output_type = U;
-    static constexpr size_t block_size = BlockSize;
+    using type                               = T;
+    using output_type                        = U;
+    static constexpr size_t block_size       = BlockSize;
     static constexpr size_t items_per_thread = ItemsPerThread;
-    static constexpr size_t items_per_block = block_size * items_per_thread;
+    static constexpr size_t items_per_block  = block_size * items_per_thread;
 
     // Given block size not supported
     if(block_size > test_utils::get_max_block_size())
@@ -533,7 +503,7 @@ auto test_block_exchange(int /*device_id*/) -> typename std::enable_if<Method ==
     SCOPED_TRACE(testing::Message() << "size = " << size);
 
     // Generate data
-    std::vector<type> input(size);
+    std::vector<type>         input(size);
     std::vector<output_type>  expected(size);
     std::vector<unsigned int> ranks(size);
 
@@ -542,7 +512,9 @@ auto test_block_exchange(int /*device_id*/) -> typename std::enable_if<Method ==
     {
         auto block_ranks = ranks.begin() + bi * items_per_block;
         std::iota(block_ranks, block_ranks + items_per_block, 0);
-        std::shuffle(block_ranks, block_ranks + items_per_block, std::mt19937{std::random_device{}()});
+        std::shuffle(block_ranks,
+                     block_ranks + items_per_block,
+                     std::mt19937{std::random_device{}()});
     }
     std::vector<type> values(size);
     test_utils::iota_modulo(values.begin(),
@@ -557,10 +529,10 @@ auto test_block_exchange(int /*device_id*/) -> typename std::enable_if<Method ==
             for(size_t ii = 0; ii < items_per_thread; ii++)
             {
                 const size_t offset = bi * items_per_block;
-                const size_t i0 = offset + ti * items_per_thread + ii;
-                const size_t i1 = offset + ranks[i0];
-                input[i0] = values[i0];
-                expected[i1] = values[i0];
+                const size_t i0     = offset + ti * items_per_thread + ii;
+                const size_t i1     = offset + ranks[i0];
+                input[i0]           = values[i0];
+                expected[i1]        = values[i0];
             }
         }
     }
@@ -597,11 +569,11 @@ template<class T,
          unsigned int ItemsPerThread = 1U>
 auto test_block_exchange(int /*device_id*/) -> typename std::enable_if<Method == 5>::type
 {
-    using type = T;
-    using output_type = U;
-    static constexpr size_t block_size = BlockSize;
+    using type                               = T;
+    using output_type                        = U;
+    static constexpr size_t block_size       = BlockSize;
     static constexpr size_t items_per_thread = ItemsPerThread;
-    static constexpr size_t items_per_block = block_size * items_per_thread;
+    static constexpr size_t items_per_block  = block_size * items_per_thread;
 
     // Given block size not supported
     if(block_size > test_utils::get_max_block_size())
@@ -615,7 +587,7 @@ auto test_block_exchange(int /*device_id*/) -> typename std::enable_if<Method ==
     SCOPED_TRACE(testing::Message() << "size = " << size);
 
     // Generate data
-    std::vector<type> input(size);
+    std::vector<type>         input(size);
     std::vector<output_type>  expected(size);
     std::vector<unsigned int> ranks(size);
 
@@ -624,7 +596,9 @@ auto test_block_exchange(int /*device_id*/) -> typename std::enable_if<Method ==
     {
         auto block_ranks = ranks.begin() + bi * items_per_block;
         std::iota(block_ranks, block_ranks + items_per_block, 0);
-        std::shuffle(block_ranks, block_ranks + items_per_block, std::mt19937{std::random_device{}()});
+        std::shuffle(block_ranks,
+                     block_ranks + items_per_block,
+                     std::mt19937{std::random_device{}()});
     }
     std::vector<type> values(size);
     test_utils::iota_modulo(values.begin(),
@@ -639,11 +613,10 @@ auto test_block_exchange(int /*device_id*/) -> typename std::enable_if<Method ==
             for(size_t ii = 0; ii < items_per_thread; ii++)
             {
                 const size_t offset = bi * items_per_block;
-                const size_t i0 = offset + ti * items_per_thread + ii;
-                const size_t i1 = offset
-                    + ranks[i0] % block_size * items_per_thread
-                    + ranks[i0] / block_size;
-                input[i0] = values[i0];
+                const size_t i0     = offset + ti * items_per_thread + ii;
+                const size_t i1
+                    = offset + ranks[i0] % block_size * items_per_thread + ranks[i0] / block_size;
+                input[i0]    = values[i0];
                 expected[i1] = values[i0];
             }
         }

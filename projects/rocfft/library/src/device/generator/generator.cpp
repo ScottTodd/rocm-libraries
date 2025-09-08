@@ -22,9 +22,9 @@
 
 #define CONSTRUCT_OPER(NAME)                                \
     NAME::NAME(const std::initializer_list<Expression>& il) \
-        : args(il){};                                       \
+        : args(il) {};                                      \
     NAME::NAME(const std::vector<Expression>& il)           \
-        : args(il){};
+        : args(il) {};
 
 #define MAKE_BINARY_METHODS(NAME)                                  \
     std::string NAME::render() const                               \
@@ -405,14 +405,14 @@ std::string Parens::render() const
 
 CallExpr::CallExpr(const std::string& name, const std::vector<Expression>& arguments)
     : name(name)
-    , arguments(arguments){};
+    , arguments(arguments) {};
 
 CallExpr::CallExpr(const std::string&             name,
                    const TemplateList&            templates,
                    const std::vector<Expression>& arguments)
     : name(name)
     , templates(templates)
-    , arguments(arguments){};
+    , arguments(arguments) {};
 
 std::string CallExpr::render() const
 {
@@ -512,7 +512,7 @@ std::string Butterfly::render() const
 
 StatementList::StatementList() {}
 StatementList::StatementList(const std::initializer_list<Statement>& il)
-    : statements(il){};
+    : statements(il) {};
 std::string StatementList::render() const
 {
     std::string r;
@@ -532,7 +532,7 @@ For::For(const Variable&      var,
     , condition(condition)
     , increment(increment)
     , body(body)
-    , pragma_unroll(pragma_unroll){};
+    , pragma_unroll(pragma_unroll) {};
 
 std::string For::render() const
 {
@@ -560,7 +560,7 @@ std::string For::render() const
 
 While::While(const Expression& condition, const StatementList& body)
     : condition(condition)
-    , body(body){};
+    , body(body) {};
 std::string While::render() const
 {
     std::string s;
@@ -573,7 +573,7 @@ std::string While::render() const
 
 If::If(const Expression& condition, const StatementList& body)
     : condition(condition)
-    , body(body){};
+    , body(body) {};
 std::string If::render() const
 {
     std::string s;
@@ -587,7 +587,7 @@ std::string If::render() const
 
 ElseIf::ElseIf(const Expression& condition, const StatementList& body)
     : condition(condition)
-    , body(body){};
+    , body(body) {};
 std::string ElseIf::render() const
 {
     std::string s;
@@ -600,7 +600,7 @@ std::string ElseIf::render() const
 }
 
 Else::Else(const StatementList& body)
-    : body(body){};
+    : body(body) {};
 std::string Else::render() const
 {
     std::string s;

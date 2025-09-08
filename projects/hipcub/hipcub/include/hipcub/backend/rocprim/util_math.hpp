@@ -45,12 +45,13 @@ BEGIN_HIPCUB_NAMESPACE
  *
  * \return Half the sum of \p begin and \p end
  */
-template <typename T>
-constexpr __device__ __host__ T MidPoint(T begin, T end)
+template<typename T>
+constexpr __device__ __host__
+T MidPoint(T begin, T end)
 {
     return begin + (end - begin) / 2;
 }
 
 END_HIPCUB_NAMESPACE
 
-#endif  // HIPCUB_ROCPRIM_UTIL_MATH_HPP_
+#endif // HIPCUB_ROCPRIM_UTIL_MATH_HPP_

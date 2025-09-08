@@ -50,8 +50,8 @@ struct csx_matrix
     array_t<J>                           ind{};
     array_t<T>                           val{};
 
-    csx_matrix(){};
-    ~csx_matrix(){};
+    csx_matrix() {};
+    ~csx_matrix() {};
 
     csx_matrix(J m_, J n_, I nnz_, rocsparse_index_base base_)
         : m(m_)
@@ -61,7 +61,7 @@ struct csx_matrix
         , ptr((rocsparse_direction_row == DIRECTION) ? ((m_ > 0) ? (m_ + 1) : 0)
                                                      : ((n_ > 0) ? (n_ + 1) : 0))
         , ind(nnz_)
-        , val(nnz_){};
+        , val(nnz_) {};
 
     explicit csx_matrix(const csx_matrix<MODE, DIRECTION, T, I, J>& that_, bool transfer = true)
         : csx_matrix<MODE, DIRECTION, T, I, J>(that_.m, that_.n, that_.nnz, that_.base)

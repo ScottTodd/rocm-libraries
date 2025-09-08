@@ -73,14 +73,16 @@ public:
         /// \brief Constructs a ``proxy`` object with the given reference and keep flag.
         /// \param val The value or reference to be captured.
         /// \param keep Boolean flag that indicates whether to keep the reference.
-        ROCPRIM_HOST_DEVICE ROCPRIM_INLINE proxy(capture_t val, const bool keep)
+        ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+        proxy(capture_t val, const bool keep)
             : underlying_(val), keep_(keep)
         {}
 
         /// \brief Assigns a value to the held reference if the keep flag is ``true``.
         /// \param value The value to assign to the captured value.
         /// \return A reference to the (possibly) modified ``proxy`` object.
-        ROCPRIM_HOST_DEVICE ROCPRIM_INLINE proxy& operator=(const value_type& value)
+        ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+        proxy& operator=(const value_type& value)
         {
             if(keep_)
             {
@@ -110,22 +112,25 @@ public:
     /// \param predicate_iterator The test iterator that is used to test the predicate on.
     /// \param predicate Unary function used to select values obtained.
     /// from range pointed by \p iterator.
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE predicate_iterator(DataIterator          data_iterator,
-                                                          PredicateDataIterator predicate_iterator,
-                                                          UnaryPredicate        predicate)
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    predicate_iterator(DataIterator          data_iterator,
+                       PredicateDataIterator predicate_iterator,
+                       UnaryPredicate        predicate)
         : data_it_(data_iterator), predicate_data_it_(predicate_iterator), predicate_(predicate)
     {}
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE predicate_iterator& operator++()
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    predicate_iterator& operator++()
     {
         data_it_++;
         predicate_data_it_++;
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE predicate_iterator operator++(int)
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    predicate_iterator operator++(int)
     {
         predicate_iterator old = *this;
         data_it_++;
@@ -133,14 +138,16 @@ public:
         return old;
     }
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE predicate_iterator& operator--()
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    predicate_iterator& operator--()
     {
         data_it_--;
         predicate_data_it_--;
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE predicate_iterator operator--(int)
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    predicate_iterator operator--(int)
     {
         predicate_iterator old = *this;
         data_it_--;
@@ -148,76 +155,90 @@ public:
         return old;
     }
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE proxy operator*()
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    proxy operator*()
     {
         return proxy(*data_it_, predicate_(*predicate_data_it_));
     }
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE proxy operator->()
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    proxy operator->()
     {
         return *(*this);
     }
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE proxy operator[](difference_type distance)
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    proxy operator[](difference_type distance)
     {
         return *(*this + distance);
     }
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE predicate_iterator operator+(difference_type distance) const
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    predicate_iterator operator+(difference_type distance) const
     {
         return predicate_iterator(data_it_ + distance, predicate_data_it_ + distance, predicate_);
     }
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE predicate_iterator& operator+=(difference_type distance)
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    predicate_iterator& operator+=(difference_type distance)
     {
         data_it_ += distance;
         predicate_data_it_ += distance;
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE predicate_iterator operator-(difference_type distance) const
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    predicate_iterator operator-(difference_type distance) const
     {
         return predicate_iterator(data_it_ - distance, predicate_data_it_ - distance, predicate_);
     }
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE predicate_iterator& operator-=(difference_type distance)
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    predicate_iterator& operator-=(difference_type distance)
     {
         data_it_ -= distance;
         predicate_data_it_ -= distance;
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE difference_type operator-(predicate_iterator other) const
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    difference_type operator-(predicate_iterator other) const
     {
         return data_it_ - other.data_it_;
     }
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE bool operator==(predicate_iterator other) const
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    bool operator==(predicate_iterator other) const
     {
         return data_it_ == other.data_it_;
     }
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE bool operator!=(predicate_iterator other) const
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    bool operator!=(predicate_iterator other) const
     {
         return data_it_ != other.data_it_;
     }
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE bool operator<(predicate_iterator other) const
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    bool operator<(predicate_iterator other) const
     {
         return data_it_ < other.data_it_;
     }
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE bool operator<=(predicate_iterator other) const
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    bool operator<=(predicate_iterator other) const
     {
         return data_it_ <= other.data_it_;
     }
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE bool operator>(predicate_iterator other) const
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    bool operator>(predicate_iterator other) const
     {
         return data_it_ > other.data_it_;
     }
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE bool operator>=(predicate_iterator other) const
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    bool operator>=(predicate_iterator other) const
     {
         return data_it_ >= other.data_it_;
     }
@@ -231,11 +252,11 @@ private:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 template<class DataIterator, class PredicateDataIterator, class UnaryPredicate>
-ROCPRIM_HOST_DEVICE inline predicate_iterator<DataIterator, PredicateDataIterator, UnaryPredicate>
-    operator+(
-        typename predicate_iterator<DataIterator, PredicateDataIterator, UnaryPredicate>::
-            difference_type                                                            distance,
-        const predicate_iterator<DataIterator, PredicateDataIterator, UnaryPredicate>& iterator)
+ROCPRIM_HOST_DEVICE
+inline predicate_iterator<DataIterator, PredicateDataIterator, UnaryPredicate> operator+(
+    typename predicate_iterator<DataIterator, PredicateDataIterator, UnaryPredicate>::
+        difference_type                                                            distance,
+    const predicate_iterator<DataIterator, PredicateDataIterator, UnaryPredicate>& iterator)
 {
     return iterator + distance;
 }
@@ -269,7 +290,8 @@ auto make_predicate_iterator(DataIterator          data_iterator,
 /// \param data_iterator The data iterator that will be forwarded whenever the predicate is true.
 /// \param predicate The predicate function. It will be tested on ``data_iterator``.
 template<class DataIterator, class UnaryPredicate>
-ROCPRIM_HOST_DEVICE inline predicate_iterator<DataIterator, DataIterator, UnaryPredicate>
+ROCPRIM_HOST_DEVICE
+inline predicate_iterator<DataIterator, DataIterator, UnaryPredicate>
     make_predicate_iterator(DataIterator data_iterator, UnaryPredicate predicate)
 {
     return make_predicate_iterator<DataIterator, DataIterator>(data_iterator,

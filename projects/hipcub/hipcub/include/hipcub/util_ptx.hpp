@@ -36,5 +36,4 @@
     #include <cub/util_ptx.cuh> // IWYU pragma: export
 #endif
 
-
 #endif

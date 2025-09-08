@@ -469,8 +469,7 @@ struct GetPtrToRange
 struct GetRunLength
 {
     __host__ __device__ __forceinline__
-    unsigned int
-        operator()(unsigned int index) const
+    unsigned int operator()(unsigned int index) const
     {
         return d_offsets[index + 1] - d_offsets[index];
     }

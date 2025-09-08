@@ -399,8 +399,8 @@ inline void PrintFailInfo(rocfft_precision precision,
                           size_t           kernelLength = 0,
                           ComputeScheme    kernelScheme = CS_NONE)
 {
-    rocfft_cerr << "Failed on Node: length " << length << " (" << precision << "): "
-                << "when attempting Scheme: " << PrintScheme(scheme) << std::endl;
+    rocfft_cerr << "Failed on Node: length " << length << " (" << precision
+                << "): " << "when attempting Scheme: " << PrintScheme(scheme) << std::endl;
     if(kernelScheme != CS_NONE)
         rocfft_cerr << "\tCouldn't find the kernel of length " << kernelLength << ", with type "
                     << PrintScheme(kernelScheme) << std::endl;

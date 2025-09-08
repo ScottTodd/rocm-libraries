@@ -98,7 +98,7 @@ void batch_copy(void*              temporary_storage,
 template<typename ValueType, typename BufferSizeType>
 struct BatchMemcpyData
 {
-    size_t          total_num_elements = 0;
+    size_t                             total_num_elements = 0;
     common::device_ptr<ValueType>      d_input;
     common::device_ptr<ValueType>      d_output;
     common::device_ptr<ValueType*>     d_buffer_srcs;
@@ -153,8 +153,8 @@ BatchMemcpyData<ValueType, BufferSizeType> prepare_data(hipStream_t         stre
 
     const int32_t wlev_min_elems = rocprim::detail::ceiling_div(wlev_min_size, sizeof(ValueType));
     const int32_t blev_min_elems = rocprim::detail::ceiling_div(blev_min_size, sizeof(ValueType));
-    constexpr int32_t max_size       = 1024 * 1024;
-    constexpr int32_t max_elems = max_size / sizeof(ValueType);
+    constexpr int32_t max_size   = 1024 * 1024;
+    constexpr int32_t max_elems  = max_size / sizeof(ValueType);
 
     // Generate data
     std::mt19937_64 rng(seed.get_0());

@@ -28,11 +28,11 @@
 // Meta configuration for rocPRIM
 #include "config.hpp"
 
-#include "intrinsics.hpp"
 #include "functional.hpp"
-#include "types.hpp"
-#include "type_traits.hpp"
+#include "intrinsics.hpp"
 #include "iterator.hpp"
+#include "type_traits.hpp"
+#include "types.hpp"
 
 #include "thread/thread_load.hpp"
 #include "thread/thread_operators.hpp"
@@ -89,8 +89,8 @@ BEGIN_ROCPRIM_NAMESPACE
 
 /// \brief Returns version of rocPRIM library.
 /// \return version of rocPRIM library
-ROCPRIM_HOST_DEVICE inline
-unsigned int version()
+ROCPRIM_HOST_DEVICE
+inline unsigned int version()
 {
     return ROCPRIM_VERSION;
 }

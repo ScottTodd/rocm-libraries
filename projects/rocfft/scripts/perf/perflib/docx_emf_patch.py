@@ -71,7 +71,7 @@ class Emf(BaseImageHeader):
         """
         Default filename extension, always 'emf' for EMF images.
         """
-        return 'emf'
+        return "emf"
 
     @classmethod
     def from_stream(cls, stream, filename=None):
@@ -111,12 +111,11 @@ class Emf(BaseImageHeader):
         px_width = int(mmwidth * dpi * 0.03937008)
         px_height = int(mmheight * dpi * 0.03937008)
 
-        #1 dot/inch  =  0.03937008 pixel/millimeter
+        # 1 dot/inch  =  0.03937008 pixel/millimeter
         return cls(px_width, px_height, horz_dpi, vert_dpi)
 
 
 docx.image.Emf = Emf
-docx.image.constants.MIME_TYPE.EMF = 'image/emf'
-docx.image.SIGNATURES = tuple(
-    list(docx.image.SIGNATURES) + [(Emf, 40, b' EMF')])
+docx.image.constants.MIME_TYPE.EMF = "image/emf"
+docx.image.SIGNATURES = tuple(list(docx.image.SIGNATURES) + [(Emf, 40, b" EMF")])
 docx.image.image._ImageHeaderFactory = _ImageHeaderFactory

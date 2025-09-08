@@ -2,7 +2,7 @@
     "predict_type": 0,
     "num_tuning_params": {
         "fwd": 8,
-        "bwd": 8        
+        "bwd": 8
     },
     "decodings": {
         "tunings": {

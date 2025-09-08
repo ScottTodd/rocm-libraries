@@ -36,5 +36,4 @@
     #include <cub/util_type.cuh> // IWYU pragma: export
 #endif
 
-
 #endif

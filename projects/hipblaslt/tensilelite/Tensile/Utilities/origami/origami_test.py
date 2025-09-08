@@ -6,6 +6,7 @@
 import argparse
 import origami
 
+
 def parseArguments():
     parser = argparse.ArgumentParser(description="""Test Origami.""")
     parser.add_argument("-m", type=int, default=8192)

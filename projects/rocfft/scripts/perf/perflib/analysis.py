@@ -53,6 +53,7 @@ def confidence_interval(vals, measure, confidence, alpha=0.95, nboot=2000):
     else:
         print("invalid value for confidence:", confidence)
         import sys
+
         sys.exit(1)
     return low, high
 
@@ -61,8 +62,9 @@ def ratio_confidence_interval(Avals, Bvals, alpha=0.95, nboot=2000):
     """Compute the alpha-confidence interval for the ratio of the given sets of values using boot-strap resampling."""
     ratios = []
     for i in range(nboot):
-        ratios.append(Avals[random.randrange(len(Avals))] /
-                      Bvals[random.randrange(len(Bvals))])
+        ratios.append(
+            Avals[random.randrange(len(Avals))] / Bvals[random.randrange(len(Bvals))]
+        )
     ratios = sorted(ratios)
     low = ratios[int(np.floor(len(ratios) * 0.5 * (1.0 - alpha)))]
     high = ratios[int(np.ceil(len(ratios) * (1.0 - 0.5 * (1.0 - alpha))))]
@@ -79,6 +81,7 @@ def moods(reference: Run, others: List[Run]):
     """Perform Moods analysis..."""
     import scipy.stats
     import numpy
+
     pvals = {}
     for rname, rdat in reference.dats.items():
         for other in others:
@@ -87,23 +90,22 @@ def moods(reference: Run, others: List[Run]):
                 s1 = rdat.samples[length].times
                 s2 = odat.samples[length].times
 
-                if arguments.method == 'median':
+                if arguments.method == "median":
                     m1 = statistics.median(s1)
                     m2 = statistics.median(s2)
                 elif arguments.mesaure == "mean":
                     m1 = numpy.mean(s1)
                     m2 = numpy.mean(s2)
 
-                if arguments.method == 'moods':
+                if arguments.method == "moods":
                     _, pval, _, _ = scipy.stats.median_test(s1, s2)
-                elif arguments.method == 'ttest':
+                elif arguments.method == "ttest":
                     _, pval = scipy.stats.ttest_ind(s1, s2)
-                elif arguments.method == 'mwu':
+                elif arguments.method == "mwu":
                     _, pval = scipy.stats.mannwhitneyu(s1, s2)
                 else:
                     print("unsupported statistical method")
                     sys.exit(1)
 
-                pvals[other.path.name, rname,
-                      length] = MoodsResult(pval, [m1, m2])
+                pvals[other.path.name, rname, length] = MoodsResult(pval, [m1, m2])
     return pvals

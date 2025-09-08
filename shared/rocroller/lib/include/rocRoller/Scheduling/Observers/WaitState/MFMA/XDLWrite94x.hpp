@@ -106,7 +106,7 @@ namespace rocRoller
         public:
             XDLWrite94x() {}
             XDLWrite94x(ContextPtr context)
-                : WaitStateObserver<XDLWrite94x>(context){};
+                : WaitStateObserver<XDLWrite94x>(context) {};
 
             constexpr static bool required(GPUArchitectureTarget const& target)
             {

@@ -25,53 +25,65 @@ from copy import deepcopy
 from .Activation import ActivationType
 from .KernelWriterBase import KernelWriterBase
 
+
 class KernelWriterActivationEnumHeader(KernelWriterBase):
+    def __init__(self, state):
+        super().__init__()
+        self.state["ProblemType"] = deepcopy(state["ProblemType"])
 
-  def __init__(self, state):
-    super().__init__()
-    self.state["ProblemType"] = deepcopy(state["ProblemType"])
+        self.actGradientPrefix = ""
+        self.actExportType = ActivationType.Export.NORMAL
+        if self.state["ProblemType"]["Gradient"]:
+            self.actGradientPrefix = "Gradient"
+            self.actExportType = ActivationType.Export.GRADONLY
 
-    self.actGradientPrefix = ""
-    self.actExportType = ActivationType.Export.NORMAL
-    if self.state["ProblemType"]["Gradient"]:
-      self.actGradientPrefix = "Gradient"
-      self.actExportType = ActivationType.Export.GRADONLY
+        # derive parameter
+        self.language = "HIP"
+        self.kernelName = self.getKernelName()
 
-    # derive parameter
-    self.language = "HIP"
-    self.kernelName = self.getKernelName()
+    def keys(self):
+        return self.getKernelName()
 
-  def keys(self):
-    return self.getKernelName()
+    @staticmethod
+    def kernelName(solution):
+        state = solution._state if hasattr(solution, "_state") else solution.state
+        s = "Gradient" if state["ProblemType"]["Gradient"] else ""
+        return "Tensile%sActivationEnum_%s" % (
+            s,
+            state["ProblemType"]["ActivationComputeDataType"].toChar(),
+        )
 
-  @staticmethod
-  def kernelName(solution):
-    state = solution._state if hasattr(solution, "_state") else solution.state
-    s = "Gradient" if state["ProblemType"]["Gradient"] else ""
-    return "Tensile%sActivationEnum_%s"%(s,
-                                         state["ProblemType"]["ActivationComputeDataType"].toChar())
+    def getKernelName(self):
+        return KernelWriterActivationEnumHeader.kernelName(self)
 
-  def getKernelName(self):
-    return KernelWriterActivationEnumHeader.kernelName(self)
+    def getSourceFileString(self):
+        fileString = "// This is a dummy file."
+        return (0, fileString)
 
-   
+    def getHeaderFileString(self):
+        fileString = ""  # CHeader
+        activationCDataType = self.state["ProblemType"]["ActivationComputeDataType"]
+        supportedBy = (
+            ActivationType.SupportedBy.ALL
+            if self.state["ProblemType"]["ActivationType"] == "all"
+            else ActivationType.SupportedBy.HIPBLASLT
+        )
+        enumName = "%sActivationType_%s" % (
+            self.actGradientPrefix,
+            activationCDataType.toChar(),
+        )
+        fileString += "namespace Tensile {\n"
+        fileString += "enum class %s : uint32_t\n" % enumName
+        fileString += "{\n"
+        enumList = ActivationType.getEnumStrList(
+            activationCDataType, supportedBy, exportType=self.actExportType
+        )
+        for idx, enumStr in enumerate(enumList):
+            fileString += "  %s = %s,\n" % (
+                ActivationType(enumStr).toEnum(),
+                ActivationType.getEnumIndex(enumStr),
+            )
+        fileString += "};\n"
+        fileString += "}  // End of namespace Tensile\n"
 
-  def getSourceFileString(self):
-    fileString = "// This is a dummy file."
-    return (0, fileString)
-
-  def getHeaderFileString(self):
-    fileString = "" # CHeader
-    activationCDataType = self.state["ProblemType"]["ActivationComputeDataType"]
-    supportedBy = ActivationType.SupportedBy.ALL if self.state["ProblemType"]["ActivationType"] == 'all' else ActivationType.SupportedBy.HIPBLASLT
-    enumName = "%sActivationType_%s"%(self.actGradientPrefix, activationCDataType.toChar())
-    fileString += "namespace Tensile {\n"
-    fileString += "enum class %s : uint32_t\n"%enumName
-    fileString += "{\n"
-    enumList = ActivationType.getEnumStrList(activationCDataType, supportedBy, exportType=self.actExportType)
-    for idx, enumStr in enumerate(enumList):
-      fileString += "  %s = %s,\n"%(ActivationType(enumStr).toEnum(), ActivationType.getEnumIndex(enumStr))
-    fileString += "};\n"
-    fileString += "}  // End of namespace Tensile\n"
-
-    return fileString
+        return fileString

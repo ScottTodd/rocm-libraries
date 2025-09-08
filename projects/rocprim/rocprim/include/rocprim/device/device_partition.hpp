@@ -105,7 +105,8 @@ inline hipError_t launch_partition(detail::target_arch     arch,
                                                                BlockIdWrapper>;
 
         using VSmemHelperT = detail::vsmem_helper_impl<partition_kernel_impl_t>;
-        ROCPRIM_SHARED_MEMORY typename VSmemHelperT::static_temp_storage_t static_temp_storage;
+        ROCPRIM_SHARED_MEMORY
+        typename VSmemHelperT::static_temp_storage_t static_temp_storage;
         // Get temporary storage
         typename partition_kernel_impl_t::storage_type& storage
             = VSmemHelperT::get_temp_storage(static_temp_storage, vsmem);
@@ -151,13 +152,13 @@ inline size_t get_partition_vsmem_size_per_block(detail::target_arch arch)
 
             using ArchConfig               = typename Config::template architecture_config<Arch>;
             using partition_kernel_impl_t  = partition_kernel_impl_<ArchConfig,
-                                                                   SelectMethod,
-                                                                   OnlySelected,
-                                                                   Key,
-                                                                   Value,
-                                                                   FlagType,
-                                                                   offset_type,
-                                                                   BlockIdWrapper>;
+                                                                    SelectMethod,
+                                                                    OnlySelected,
+                                                                    Key,
+                                                                    Value,
+                                                                    FlagType,
+                                                                    offset_type,
+                                                                    BlockIdWrapper>;
             using partition_vsmem_helper_t = detail::vsmem_helper_impl<partition_kernel_impl_t>;
 
             vsmem_per_block = partition_vsmem_helper_t::vsmem_per_block;
@@ -166,13 +167,13 @@ inline size_t get_partition_vsmem_size_per_block(detail::target_arch arch)
     {
         using ArchConfig = typename Config::template architecture_config<target_arch::unknown>;
         using partition_kernel_impl_t  = partition_kernel_impl_<ArchConfig,
-                                                               SelectMethod,
-                                                               OnlySelected,
-                                                               Key,
-                                                               Value,
-                                                               FlagType,
-                                                               offset_type,
-                                                               BlockIdWrapper>;
+                                                                SelectMethod,
+                                                                OnlySelected,
+                                                                Key,
+                                                                Value,
+                                                                FlagType,
+                                                                offset_type,
+                                                                BlockIdWrapper>;
         using partition_vsmem_helper_t = detail::vsmem_helper_impl<partition_kernel_impl_t>;
 
         vsmem_per_block = partition_vsmem_helper_t::vsmem_per_block;

@@ -86,10 +86,10 @@
 ; precision                  : fp16
 ; nxb                        : 1
 ; nxe                        : 1
-; 
+;
 ; block_size                 : 256
 ; lds_total                  : 16384
-; 
+;
 .set k_p_in, 0
 .set k_p_wei, 8
 .set k_p_out, 16
@@ -485,8 +485,8 @@ igemm_bwd_gtcx_nchw_fp16_bx1_ex1_bt64x128x32_wt32x32x8_ws1x2_wr1x1_ta4x1x2x1_1x8
 
     v_mov_b32 v[v_tmp+5], v0
     ; xdlops mapping, get source matrix gemm index
-    v_and_b32 v[v_gemm_in], 31, v[v_tmp+5]           ; block_n index 
-    v_and_b32 v[v_gemm_im], 31, v[v_tmp+5]           ; block_m index 
+    v_and_b32 v[v_gemm_in], 31, v[v_tmp+5]           ; block_n index
+    v_and_b32 v[v_gemm_im], 31, v[v_tmp+5]           ; block_m index
     v_lshrrev_b32 v[v_tmp+5], 5, v[v_tmp+5]
     v_and_b32 v[v_tmp + 0], 1, v[v_tmp+5]          ; block_k_per_wave index
     v_lshl_or_b32 v[v_gemm_in], v[v_tmp + 0], 7, v[v_gemm_in]
@@ -717,7 +717,7 @@ igemm_bwd_gtcx_nchw_fp16_bx1_ex1_bt64x128x32_wt32x32x8_ws1x2_wr1x1_ta4x1x2x1_1x8
     s_barrier
 L_igemm_bwd_gtcx_nchw_fp16_bx1_ex1_bt64x128x32_wt32x32x8_ws1x2_wr1x1_ta4x1x2x1_1x8x1x32_tb4x1x4x1_1x8x1x32_mfma_body:
     ; do fma accumulate with unroll 32
-    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os] 
+    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os]
     ds_read2_b64 v[v_b+0:v_b+3], v[v_sld_b_os], offset0:0, offset1:32
     ds_read_b64 v[v_a+2:v_a+2+1], v[v_sld_a_os] offset:1024
     v_add_u32 v[v_tmp+5], 2048, v[v_sld_b_os]
@@ -837,7 +837,7 @@ L_igemm_bwd_gtcx_nchw_fp16_bx1_ex1_bt64x128x32_wt32x32x8_ws1x2_wr1x1_ta4x1x2x1_1
 L_igemm_bwd_gtcx_nchw_fp16_bx1_ex1_bt64x128x32_wt32x32x8_ws1x2_wr1x1_ta4x1x2x1_1x8x1x32_tb4x1x4x1_1x8x1x32_mfma_end:
     s_waitcnt lgkmcnt(0)
     s_barrier
-    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os] 
+    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os]
     ds_read2_b64 v[v_b+0:v_b+3], v[v_sld_b_os], offset0:0, offset1:32
     ds_read_b64 v[v_a+2:v_a+2+1], v[v_sld_a_os] offset:1024
     v_add_u32 v[v_tmp+5], 2048, v[v_sld_b_os]
@@ -960,7 +960,7 @@ L_igemm_bwd_gtcx_nchw_fp16_bx1_ex1_bt64x128x32_wt32x32x8_ws1x2_wr1x1_ta4x1x2x1_1
     s_waitcnt lgkmcnt(0)
     s_barrier
     ;   load from lds
-    ds_read_b64 v[v_c:v_c+1], v[v_co_sld] 
+    ds_read_b64 v[v_c:v_c+1], v[v_co_sld]
     ds_read_b64 v[v_c+2:v_c+2+1], v[v_co_sld] offset:2048
     ds_read_b64 v[v_c+4:v_c+4+1], v[v_co_sld] offset:4096
     ds_read_b64 v[v_c+6:v_c+6+1], v[v_co_sld] offset:6144

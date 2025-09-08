@@ -81,17 +81,18 @@ direction_of_copy(thrust::system::hip::execution_policy<Sys1> const&, thrust::cp
     THRUST_DECLTYPE_RETURNS(thrust::detail::integral_constant<hipMemcpyKind, hipMemcpyDeviceToDevice>{})
 
       template <class Sys1, class Sys2>
-      constexpr THRUST_HOST_DEVICE auto direction_of_copy(execution_policy<cross_system<Sys1, Sys2>> const& systems)
-        THRUST_DECLTYPE_RETURNS(
-          direction_of_copy(derived_cast(derived_cast(systems).sys1), derived_cast(derived_cast(systems).sys2)))
+      constexpr
+  THRUST_HOST_DEVICE auto direction_of_copy(execution_policy<cross_system<Sys1, Sys2>> const& systems)
+    THRUST_DECLTYPE_RETURNS(
+      direction_of_copy(derived_cast(derived_cast(systems).sys1), derived_cast(derived_cast(systems).sys2)))
 
-          template <typename ExecutionPolicy0,
-                    typename ExecutionPolicy1,
-                    // MSVC2015 WAR: put decltype here instead of in trailing return type
-                    typename Direction =
-                      decltype(direction_of_copy(std::declval<ExecutionPolicy0>(), std::declval<ExecutionPolicy1>()))>
-          constexpr THRUST_HOST_DEVICE auto is_device_to_host_copy(
-            ExecutionPolicy0 const&, ExecutionPolicy1 const&) noexcept
+      template <typename ExecutionPolicy0,
+                typename ExecutionPolicy1,
+                // MSVC2015 WAR: put decltype here instead of in trailing return type
+                typename Direction =
+                  decltype(direction_of_copy(std::declval<ExecutionPolicy0>(), std::declval<ExecutionPolicy1>()))>
+      constexpr
+  THRUST_HOST_DEVICE auto is_device_to_host_copy(ExecutionPolicy0 const&, ExecutionPolicy1 const&) noexcept
   -> thrust::detail::integral_constant<bool, hipMemcpyDeviceToHost == Direction::value>
 {
   return {};

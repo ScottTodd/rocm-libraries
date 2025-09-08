@@ -22,11 +22,11 @@
 #define ROCRAND_RNG_DISTRIBUTIONS_H_
 
 // IWYU pragma: begin_exports
-#include "distribution/uniform.hpp"
-#include "distribution/normal.hpp"
-#include "distribution/log_normal.hpp"
 #include "distribution/discrete.hpp"
+#include "distribution/log_normal.hpp"
+#include "distribution/normal.hpp"
 #include "distribution/poisson.hpp"
+#include "distribution/uniform.hpp"
 // IWYU pragma: end_exports
 
 #endif // ROCRAND_RNG_DISTRIBUTION_S_H_

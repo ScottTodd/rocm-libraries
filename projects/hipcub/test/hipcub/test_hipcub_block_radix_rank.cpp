@@ -307,12 +307,12 @@ void rank_kernel(const KeyType* keys_input,
     using UnsignedBits   = typename KeyTraits::UnsignedBits;
     using DigitExtractor = hipcub::BFEDigitExtractor<KeyType>;
     using RankType       = std::conditional_t<
-        Algorithm == RadixRankAlgorithm::RADIX_RANK_MATCH,
-        hipcub::BlockRadixRankMatch<BlockSize, MaxRadixBits, Descending>,
-        hipcub::BlockRadixRank<BlockSize,
-                               MaxRadixBits,
-                               Descending,
-                               Algorithm == RadixRankAlgorithm::RADIX_RANK_MEMOIZE>>;
+              Algorithm == RadixRankAlgorithm::RADIX_RANK_MATCH,
+              hipcub::BlockRadixRankMatch<BlockSize, MaxRadixBits, Descending>,
+              hipcub::BlockRadixRank<BlockSize,
+                                     MaxRadixBits,
+                                     Descending,
+                                     Algorithm == RadixRankAlgorithm::RADIX_RANK_MEMOIZE>>;
 
     using KeyExchangeType  = hipcub::BlockExchange<KeyType, BlockSize, ItemsPerThread>;
     using RankExchangeType = hipcub::BlockExchange<int, BlockSize, ItemsPerThread>;
@@ -536,12 +536,12 @@ void rank_with_prefix_sum_kernel(const KeyType* keys_input,
     using UnsignedBits   = typename KeyTraits::UnsignedBits;
     using DigitExtractor = hipcub::BFEDigitExtractor<KeyType>;
     using RankType       = std::conditional_t<
-        Algorithm == RadixRankAlgorithm::RADIX_RANK_MATCH,
-        hipcub::BlockRadixRankMatch<BlockSize, RadixBits, Descending>,
-        hipcub::BlockRadixRank<BlockSize,
-                               RadixBits,
-                               Descending,
-                               Algorithm == RadixRankAlgorithm::RADIX_RANK_MEMOIZE>>;
+              Algorithm == RadixRankAlgorithm::RADIX_RANK_MATCH,
+              hipcub::BlockRadixRankMatch<BlockSize, RadixBits, Descending>,
+              hipcub::BlockRadixRank<BlockSize,
+                                     RadixBits,
+                                     Descending,
+                                     Algorithm == RadixRankAlgorithm::RADIX_RANK_MEMOIZE>>;
 
     using KeyExchangeType  = hipcub::BlockExchange<KeyType, BlockSize, ItemsPerThread>;
     using RankExchangeType = hipcub::BlockExchange<int, BlockSize, ItemsPerThread>;
@@ -594,8 +594,8 @@ void rank_with_prefix_sum_kernel(const KeyType* keys_input,
 
     hipcub::StoreDirectBlocked(lid, ranks_output + block_offset, ranks);
 
-    const size_t pfs_size       = (1 << RadixBits);
-    const size_t pfs_offset     = (blockIdx.x * pfs_size) + (threadIdx.x * bins_tracked_per_thread);
+    const size_t pfs_size   = (1 << RadixBits);
+    const size_t pfs_offset = (blockIdx.x * pfs_size) + (threadIdx.x * bins_tracked_per_thread);
 
     for(size_t i = 0; i < bins_tracked_per_thread; i++)
     {
@@ -608,13 +608,13 @@ void rank_with_prefix_sum_kernel(const KeyType* keys_input,
 
 /**
  * name this function fall_back_exclusive_scan to prevent
- * ambiguous name error 
+ * ambiguous name error
  */
-template <typename It, typename OutIt, typename T>
+template<typename It, typename OutIt, typename T>
 void fall_back_exclusive_scan(It first, It last, OutIt out, T init)
 {
     // Fallback implementation for exclusive scan if gcc version is < 9
-    for (; first != last; ++first)
+    for(; first != last; ++first)
     {
         *out++ = init;
         init += *first;
@@ -665,11 +665,11 @@ void test_radix_rank_with_prefix_sum_output()
             // Generate data
             std::vector<key_type> keys_input;
 
-            keys_input = test_utils::get_random_data<key_type>(
-                size,
-                test_utils::numeric_limits<key_type>::min(),
-                test_utils::numeric_limits<key_type>::max(),
-                seed_value);
+            keys_input
+                = test_utils::get_random_data<key_type>(size,
+                                                        test_utils::numeric_limits<key_type>::min(),
+                                                        test_utils::numeric_limits<key_type>::max(),
+                                                        seed_value);
 
             test_utils::add_special_values(keys_input, seed_value);
 
@@ -721,17 +721,17 @@ void test_radix_rank_with_prefix_sum_output()
 
                     ++histogram[bit_rep];
                 }
-                #if defined(_WIN32) || (defined(_GLIBCXX_RELEASE) && (GLIBCXX_RELEASE >= 9))
-                    std::exclusive_scan(histogram.begin(),
-                                        histogram.end(),
-                                        pfs_expected.begin() + pfs_offset,
-                                        0);
-                #else
-                    fall_back_exclusive_scan(histogram.begin(),
-                                        histogram.end(),
-                                        pfs_expected.begin() + pfs_offset,
-                                        0);
-                #endif
+#if defined(_WIN32) || (defined(_GLIBCXX_RELEASE) && (GLIBCXX_RELEASE >= 9))
+                std::exclusive_scan(histogram.begin(),
+                                    histogram.end(),
+                                    pfs_expected.begin() + pfs_offset,
+                                    0);
+#else
+                fall_back_exclusive_scan(histogram.begin(),
+                                         histogram.end(),
+                                         pfs_expected.begin() + pfs_offset,
+                                         0);
+#endif
             }
 
             // Preparing device

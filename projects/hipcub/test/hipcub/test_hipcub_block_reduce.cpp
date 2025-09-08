@@ -122,14 +122,14 @@ using SingleValueTestParams = ::testing::Types<
 TYPED_TEST_SUITE(HipcubBlockReduceSingleValueTests, SingleValueTestParams);
 
 template<unsigned int BlockSize, hipcub::BlockReduceAlgorithm Algorithm, class T>
-__global__
-__launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void reduce_kernel(T* device_output, T* device_output_reductions)
 {
-    const unsigned int                         index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
-    T                                          value = device_output[index];
-    using breduce_t = hipcub::BlockReduce<T, BlockSize, Algorithm>;
-    __shared__ typename breduce_t::TempStorage temp_storage;
+    const unsigned int index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
+    T                  value = device_output[index];
+    using breduce_t          = hipcub::BlockReduce<T, BlockSize, Algorithm>;
+    __shared__
+    typename breduce_t::TempStorage temp_storage;
     value = breduce_t(temp_storage).Reduce(value, hipcub::Sum());
     if(hipThreadIdx_x == 0)
     {
@@ -223,14 +223,14 @@ TYPED_TEST(HipcubBlockReduceSingleValueTests, Reduce)
 }
 
 template<unsigned int BlockSize, hipcub::BlockReduceAlgorithm Algorithm, class T>
-__global__
-__launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void sum_kernel(T* device_output, T* device_output_reductions)
 {
-    const unsigned int                         index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
-    T                                          value = device_output[index];
-    using breduce_t = hipcub::BlockReduce<T, BlockSize, Algorithm>;
-    __shared__ typename breduce_t::TempStorage temp_storage;
+    const unsigned int index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
+    T                  value = device_output[index];
+    using breduce_t          = hipcub::BlockReduce<T, BlockSize, Algorithm>;
+    __shared__
+    typename breduce_t::TempStorage temp_storage;
     value = breduce_t(temp_storage).Sum(value);
     if(hipThreadIdx_x == 0)
     {
@@ -326,16 +326,16 @@ TYPED_TEST(HipcubBlockReduceSingleValueTests, Sum)
 TYPED_TEST_SUITE(HipcubBlockReduceSingleValueTests, SingleValueTestParams);
 
 template<unsigned int BlockSize, hipcub::BlockReduceAlgorithm Algorithm, class T>
-__global__
-__launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void reduce_valid_kernel(T*                 device_output,
                          T*                 device_output_reductions,
                          const unsigned int valid_items)
 {
-    const unsigned int                         index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
-    T                                          value = device_output[index];
-    using breduce_t = hipcub::BlockReduce<T, BlockSize, Algorithm>;
-    __shared__ typename breduce_t::TempStorage temp_storage;
+    const unsigned int index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
+    T                  value = device_output[index];
+    using breduce_t          = hipcub::BlockReduce<T, BlockSize, Algorithm>;
+    __shared__
+    typename breduce_t::TempStorage temp_storage;
     value = breduce_t(temp_storage).Reduce(value, hipcub::Sum(), valid_items);
     if(hipThreadIdx_x == 0)
     {
@@ -434,14 +434,14 @@ TYPED_TEST(HipcubBlockReduceSingleValueTests, ReduceValid)
 }
 
 template<unsigned int BlockSize, hipcub::BlockReduceAlgorithm Algorithm, class T>
-__global__
-__launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void sum_valid_kernel(T* device_output, T* device_output_reductions, const unsigned int valid_items)
 {
-    const unsigned int                         index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
-    T                                          value = device_output[index];
-    using breduce_t = hipcub::BlockReduce<T, BlockSize, Algorithm>;
-    __shared__ typename breduce_t::TempStorage temp_storage;
+    const unsigned int index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
+    T                  value = device_output[index];
+    using breduce_t          = hipcub::BlockReduce<T, BlockSize, Algorithm>;
+    __shared__
+    typename breduce_t::TempStorage temp_storage;
     value = breduce_t(temp_storage).Sum(value, valid_items);
     if(hipThreadIdx_x == 0)
     {
@@ -587,8 +587,7 @@ template<unsigned int                 BlockSize,
          unsigned int                 ItemsPerThread,
          hipcub::BlockReduceAlgorithm Algorithm,
          class T>
-__global__
-__launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void reduce_array_kernel(T* device_output, T* device_output_reductions)
 {
     const unsigned int index = ((hipBlockIdx_x * BlockSize) + hipThreadIdx_x) * ItemsPerThread;
@@ -599,9 +598,10 @@ void reduce_array_kernel(T* device_output, T* device_output_reductions)
         in_out[j] = device_output[index + j];
     }
 
-    T                                          reduction;
+    T reduction;
     using breduce_t = hipcub::BlockReduce<T, BlockSize, Algorithm>;
-    __shared__ typename breduce_t::TempStorage temp_storage;
+    __shared__
+    typename breduce_t::TempStorage temp_storage;
     reduction = breduce_t(temp_storage).Reduce(in_out, hipcub::Sum());
 
     if(hipThreadIdx_x == 0)
@@ -713,8 +713,7 @@ template<unsigned int                 BlockSize,
          unsigned int                 ItemsPerThread,
          hipcub::BlockReduceAlgorithm Algorithm,
          class T>
-__global__
-__launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void sum_array_kernel(T* device_output, T* device_output_reductions)
 {
     const unsigned int index = ((hipBlockIdx_x * BlockSize) + hipThreadIdx_x) * ItemsPerThread;
@@ -725,9 +724,10 @@ void sum_array_kernel(T* device_output, T* device_output_reductions)
         in_out[j] = device_output[index + j];
     }
 
-    T                                          reduction;
+    T reduction;
     using breduce_t = hipcub::BlockReduce<T, BlockSize, Algorithm>;
-    __shared__ typename breduce_t::TempStorage temp_storage;
+    __shared__
+    typename breduce_t::TempStorage temp_storage;
     reduction = breduce_t(temp_storage).Sum(in_out);
 
     if(hipThreadIdx_x == 0)

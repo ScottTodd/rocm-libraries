@@ -32,7 +32,8 @@
 template<class T>
 struct device_plus
 {
-    __device__ inline constexpr T operator()(const T& a, const T& b) const
+    __device__
+    inline constexpr T operator()(const T& a, const T& b) const
     {
         return a + b;
     }
@@ -84,7 +85,8 @@ TYPED_TEST(RocprimInvokeResultBinOpTests, HostInvokeResult)
 template<typename FromType, typename ToType>
 struct static_cast_op
 {
-    __device__ inline constexpr ToType operator()(FromType a) const
+    __device__
+    inline constexpr ToType operator()(FromType a) const
     {
         return static_cast<ToType>(a);
     }

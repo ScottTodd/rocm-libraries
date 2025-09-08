@@ -47,7 +47,8 @@ template<class T,
          unsigned int       BlockSize,
          unsigned int       ItemsPerThread,
          unsigned int       Trials>
-__global__ __launch_bounds__(BlockSize) void rank_kernel(const T* keys_input, int* ranks_output)
+__global__ __launch_bounds__(BlockSize)
+void rank_kernel(const T* keys_input, int* ranks_output)
 {
     const unsigned int lid          = hipThreadIdx_x;
     const unsigned int block_offset = hipBlockIdx_x * ItemsPerThread * BlockSize;
@@ -81,10 +82,11 @@ __global__ __launch_bounds__(BlockSize) void rank_kernel(const T* keys_input, in
 #pragma nounroll
     for(unsigned int trial = 0; trial < Trials; trial++)
     {
-        __shared__ typename RankType::TempStorage storage;
-        RankType                                  rank(storage);
-        unsigned                                  begin_bit = 0;
-        const unsigned                            end_bit   = sizeof(T) * 8;
+        __shared__
+        typename RankType::TempStorage storage;
+        RankType                       rank(storage);
+        unsigned                       begin_bit = 0;
+        const unsigned                 end_bit   = sizeof(T) * 8;
 
         while(begin_bit < end_bit)
         {

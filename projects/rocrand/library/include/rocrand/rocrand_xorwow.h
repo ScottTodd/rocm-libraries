@@ -30,33 +30,37 @@
  *
  *  @{
  */
- /**
+/**
  * \def ROCRAND_XORWOW_DEFAULT_SEED
  * \brief Default seed for XORWOW PRNG.
  */
- #define ROCRAND_XORWOW_DEFAULT_SEED 0ULL
- /** @} */ // end of group rocranddevice
+#define ROCRAND_XORWOW_DEFAULT_SEED 0ULL
+/** @} */ // end of group rocranddevice
 
-namespace rocrand_device {
-namespace detail {
-
-__forceinline__ __device__ __host__ void copy_vec(unsigned int* dst, const unsigned int* src)
+namespace rocrand_device
 {
-    for (int i = 0; i < XORWOW_N; i++)
+namespace detail
+{
+
+__forceinline__ __device__ __host__
+void copy_vec(unsigned int* dst, const unsigned int* src)
+{
+    for(int i = 0; i < XORWOW_N; i++)
     {
         dst[i] = src[i];
     }
 }
 
-__forceinline__ __device__ __host__ void mul_mat_vec_inplace(const unsigned int* m, unsigned int* v)
+__forceinline__ __device__ __host__
+void mul_mat_vec_inplace(const unsigned int* m, unsigned int* v)
 {
-    unsigned int r[XORWOW_N] = { 0 };
-    for (int ij = 0; ij < XORWOW_N * XORWOW_M; ij++)
+    unsigned int r[XORWOW_N] = {0};
+    for(int ij = 0; ij < XORWOW_N * XORWOW_M; ij++)
     {
-        const int i = ij / XORWOW_M;
-        const int j = ij % XORWOW_M;
+        const int          i = ij / XORWOW_M;
+        const int          j = ij % XORWOW_M;
         const unsigned int b = (v[i] & (1U << j)) ? 0xffffffff : 0x0;
-        for (int k = 0; k < XORWOW_N; k++)
+        for(int k = 0; k < XORWOW_N; k++)
         {
             r[k] ^= b & m[i * XORWOW_M * XORWOW_N + j * XORWOW_N + k];
         }
@@ -64,7 +68,7 @@ __forceinline__ __device__ __host__ void mul_mat_vec_inplace(const unsigned int*
     copy_vec(v, r);
 }
 
-} // end detail namespace
+} // namespace detail
 
 class xorwow_engine
 {
@@ -74,7 +78,7 @@ public:
         // Weyl sequence value
         unsigned int d;
 
-    #ifndef ROCRAND_DETAIL_BM_NOT_IN_STATE
+#ifndef ROCRAND_DETAIL_BM_NOT_IN_STATE
         // The Box–Muller transform requires two inputs to convert uniformly
         // distributed real values [0; 1] to normally distributed real values
         // (with mean = 0, and stddev = 1). Often user wants only one
@@ -82,15 +86,16 @@ public:
         // numbers the 2nd value is saved for future requests.
         unsigned int boxmuller_float_state; // is there a float in boxmuller_float
         unsigned int boxmuller_double_state; // is there a double in boxmuller_double
-        float boxmuller_float; // normally distributed float
-        double boxmuller_double; // normally distributed double
-    #endif
+        float        boxmuller_float; // normally distributed float
+        double       boxmuller_double; // normally distributed double
+#endif
 
         // Xorshift values (160 bits)
         unsigned int x[5];
     };
 
-    __forceinline__ __device__ __host__ xorwow_engine()
+    __forceinline__ __device__ __host__
+    xorwow_engine()
         : xorwow_engine(ROCRAND_XORWOW_DEFAULT_SEED, 0, 0)
     {}
 
@@ -99,9 +104,10 @@ public:
     /// and skips \p offset random numbers.
     ///
     /// A subsequence is 2^67 numbers long.
-    __forceinline__ __device__ __host__ xorwow_engine(const unsigned long long seed,
-                                                      const unsigned long long subsequence,
-                                                      const unsigned long long offset)
+    __forceinline__ __device__ __host__
+    xorwow_engine(const unsigned long long seed,
+                  const unsigned long long subsequence,
+                  const unsigned long long offset)
     {
         m_state.x[0] = 123456789U;
         m_state.x[1] = 362436069U;
@@ -126,20 +132,21 @@ public:
         discard_subsequence(subsequence);
         discard(offset);
 
-    #ifndef ROCRAND_DETAIL_BM_NOT_IN_STATE
-        m_state.boxmuller_float_state = 0;
+#ifndef ROCRAND_DETAIL_BM_NOT_IN_STATE
+        m_state.boxmuller_float_state  = 0;
         m_state.boxmuller_double_state = 0;
-    #endif
+#endif
     }
 
     /// Advances the internal state to skip \p offset numbers.
-    __forceinline__ __device__ __host__ void discard(unsigned long long offset)
+    __forceinline__ __device__ __host__
+    void discard(unsigned long long offset)
     {
-        #ifdef __HIP_DEVICE_COMPILE__
+#ifdef __HIP_DEVICE_COMPILE__
         jump(offset, d_xorwow_jump_matrices);
-        #else
+#else
         jump(offset, h_xorwow_jump_matrices);
-        #endif
+#endif
 
         // Apply n steps to Weyl sequence value as well
         m_state.d += static_cast<unsigned int>(offset) * 362437;
@@ -147,31 +154,34 @@ public:
 
     /// Advances the internal state to skip \p subsequence subsequences.
     /// A subsequence is 2^67 numbers long.
-    __forceinline__ __device__ __host__ void discard_subsequence(unsigned long long subsequence)
+    __forceinline__ __device__ __host__
+    void discard_subsequence(unsigned long long subsequence)
     {
-        // Discard n * 2^67 samples
-        #ifdef __HIP_DEVICE_COMPILE__
+// Discard n * 2^67 samples
+#ifdef __HIP_DEVICE_COMPILE__
         jump(subsequence, d_xorwow_sequence_jump_matrices);
-        #else
+#else
         jump(subsequence, h_xorwow_sequence_jump_matrices);
-        #endif
+#endif
 
         // d has the same value because 2^67 is divisible by 2^32 (d is 32-bit)
     }
 
-    __forceinline__ __device__ __host__ unsigned int operator()()
+    __forceinline__ __device__ __host__
+    unsigned int operator()()
     {
         return next();
     }
 
-    __forceinline__ __device__ __host__ unsigned int next()
+    __forceinline__ __device__ __host__
+    unsigned int next()
     {
         const unsigned int t = m_state.x[0] ^ (m_state.x[0] >> 2);
-        m_state.x[0] = m_state.x[1];
-        m_state.x[1] = m_state.x[2];
-        m_state.x[2] = m_state.x[3];
-        m_state.x[3] = m_state.x[4];
-        m_state.x[4] = (m_state.x[4] ^ (m_state.x[4] << 4)) ^ (t ^ (t << 1));
+        m_state.x[0]         = m_state.x[1];
+        m_state.x[1]         = m_state.x[2];
+        m_state.x[2]         = m_state.x[3];
+        m_state.x[3]         = m_state.x[4];
+        m_state.x[4]         = (m_state.x[4] ^ (m_state.x[4] << 4)) ^ (t ^ (t << 1));
 
         m_state.d += 362437;
 
@@ -179,9 +189,9 @@ public:
     }
 
 protected:
-    __forceinline__ __device__ __host__ void
-        jump(unsigned long long v,
-             const unsigned int jump_matrices[XORWOW_JUMP_MATRICES][XORWOW_SIZE])
+    __forceinline__ __device__ __host__
+    void jump(unsigned long long v,
+              const unsigned int jump_matrices[XORWOW_JUMP_MATRICES][XORWOW_SIZE])
     {
         // x~(n + v) = (A^v mod m)x~n mod m
         // The matrix (A^v mod m) can be precomputed for selected values of v.
@@ -197,10 +207,10 @@ protected:
         // Intermediate powers can be calculated as multiplication of the powers above.
 
         unsigned int mi = 0;
-        while (v > 0)
+        while(v > 0)
         {
             const unsigned int is = static_cast<unsigned int>(v) & ((1 << XORWOW_JUMP_LOG2) - 1);
-            for (unsigned int i = 0; i < is; i++)
+            for(unsigned int i = 0; i < is; i++)
             {
                 detail::mul_mat_vec_inplace(jump_matrices[mi], m_state.x);
             }
@@ -213,9 +223,9 @@ protected:
     // State
     xorwow_state m_state;
 
-    #ifndef ROCRAND_DETAIL_BM_NOT_IN_STATE
+#ifndef ROCRAND_DETAIL_BM_NOT_IN_STATE
     friend struct detail::engine_boxmuller_helper<xorwow_engine>;
-    #endif
+#endif
 
 }; // xorwow_engine class
 

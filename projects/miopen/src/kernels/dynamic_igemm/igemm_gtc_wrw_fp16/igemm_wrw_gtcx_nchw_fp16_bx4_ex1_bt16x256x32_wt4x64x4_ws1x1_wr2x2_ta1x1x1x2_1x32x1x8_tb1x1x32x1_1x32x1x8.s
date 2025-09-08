@@ -189,10 +189,10 @@
 ; precision                  : 'fp16'
 ; nxb                        : 4
 ; nxe                        : 1
-; 
+;
 ; block_size                 : 256
 ; lds_total                  : 32768
-; 
+;
 .set k_p_in, 0
 .set k_p_wei, 8
 .set k_p_out, 16
@@ -551,7 +551,7 @@ igemm_wrw_gtcx_nchw_fp16_bx4_ex1_bt16x256x32_wt4x64x4_ws1x1_wr2x2_ta1x1x1x2_1x32
 
     s_lshl_b32 s[s_out_stride_k], s[s_out_stride_k], 1
 
-    
+
     ; load output
     v_mov_b32 v[v_out_flag_prev], v[v_out_flag]
     buffer_load_short_d16 v[v_gld_a+0], v[v_out_os], s[s_p_out:s_p_out+3], 0 offen offset:0
@@ -559,8 +559,8 @@ igemm_wrw_gtcx_nchw_fp16_bx4_ex1_bt16x256x32_wt4x64x4_ws1x1_wr2x2_ta1x1x1x2_1x32
 
     v_mov_b32 v[v_tmp+5], v0
     ; xdlops mapping, get source matrix gemm index
-    v_and_b32 v[v_gemm_in], 3, v[v_tmp+5]           ; block_n index 
-    v_and_b32 v[v_gemm_im], 3, v[v_tmp+5]           ; block_m index 
+    v_and_b32 v[v_gemm_in], 3, v[v_tmp+5]           ; block_n index
+    v_and_b32 v[v_gemm_im], 3, v[v_tmp+5]           ; block_m index
     v_lshrrev_b32 v[v_tmp+5], 2, v[v_tmp+5]
     v_and_b32 v[v_tmp + 0], 15, v[v_tmp+5]          ; block_n_per_wave index
     v_lshl_or_b32 v[v_gemm_in], v[v_tmp + 0], 2, v[v_gemm_in]
@@ -712,7 +712,7 @@ igemm_wrw_gtcx_nchw_fp16_bx4_ex1_bt16x256x32_wt4x64x4_ws1x1_wr2x2_ta1x1x1x2_1x32
     v_cndmask_b32 v[v_gld_b+29], 0, v[v_gld_b+29], vcc
     v_cndmask_b32 v[v_gld_b+30], 0, v[v_gld_b+30], vcc
     v_cndmask_b32 v[v_gld_b+31], 0, v[v_gld_b+31], vcc
-    ds_write_b16 v[v_sst_b_os], v[v_gld_b+0] 
+    ds_write_b16 v[v_sst_b_os], v[v_gld_b+0]
     ds_write_b16 v[v_sst_b_os], v[v_gld_b+0+1] offset:64
     ds_write_b16 v[v_sst_b_os], v[v_gld_b+2] offset:128
     ds_write_b16 v[v_sst_b_os], v[v_gld_b+2+1] offset:192
@@ -749,7 +749,7 @@ igemm_wrw_gtcx_nchw_fp16_bx4_ex1_bt16x256x32_wt4x64x4_ws1x1_wr2x2_ta1x1x1x2_1x32
     v_cmp_eq_u32 vcc, 1, v[v_out_flag_prev]
     v_cndmask_b32 v[v_gld_a], 0, v[v_gld_a], vcc
     v_cndmask_b32 v[v_gld_a+1], 0, v[v_gld_a+1], vcc
-    ds_write_b16 v[v_sst_a_os], v[v_gld_a+0] 
+    ds_write_b16 v[v_sst_a_os], v[v_gld_a+0]
     ds_write_b16 v[v_sst_a_os], v[v_gld_a+0+1] offset:8
 
     .v_clear_acc_c a_c, 16
@@ -804,8 +804,8 @@ igemm_wrw_gtcx_nchw_fp16_bx4_ex1_bt16x256x32_wt4x64x4_ws1x1_wr2x2_ta1x1x1x2_1x32
     s_barrier
 L_igemm_wrw_gtcx_nchw_fp16_bx4_ex1_bt16x256x32_wt4x64x4_ws1x1_wr2x2_ta1x1x1x2_1x32x1x8_tb1x1x32x1_1x32x1x8_mfma_body:
     ; do fma accumulate with unroll 32
-    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os] 
-    ds_read_b64 v[v_b:v_b+1], v[v_sld_b_os] 
+    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os]
+    ds_read_b64 v[v_b:v_b+1], v[v_sld_b_os]
     ds_read_b64 v[v_b+2:v_b+2+1], v[v_sld_b_os] offset:1024
     ds_read_b64 v[v_a+2:v_a+2+1], v[v_sld_a_os] offset:64
     s_waitcnt lgkmcnt(2)
@@ -1041,8 +1041,8 @@ L_igemm_wrw_gtcx_nchw_fp16_bx4_ex1_bt16x256x32_wt4x64x4_ws1x1_wr2x2_ta1x1x1x2_1x
 L_igemm_wrw_gtcx_nchw_fp16_bx4_ex1_bt16x256x32_wt4x64x4_ws1x1_wr2x2_ta1x1x1x2_1x32x1x8_tb1x1x32x1_1x32x1x8_mfma_end:
     s_waitcnt lgkmcnt(0)
     s_barrier
-    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os] 
-    ds_read_b64 v[v_b:v_b+1], v[v_sld_b_os] 
+    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os]
+    ds_read_b64 v[v_b:v_b+1], v[v_sld_b_os]
     ds_read_b64 v[v_b+2:v_b+2+1], v[v_sld_b_os] offset:1024
     ds_read_b64 v[v_a+2:v_a+2+1], v[v_sld_a_os] offset:64
     ; k iteration : 0
@@ -1223,7 +1223,7 @@ L_igemm_wrw_gtcx_nchw_fp16_bx4_ex1_bt16x256x32_wt4x64x4_ws1x1_wr2x2_ta1x1x1x2_1x
     s_waitcnt lgkmcnt(0)
     s_barrier
     ;   load from lds
-    ds_read_b64 v[v_c:v_c+1], v[v_co_sld] 
+    ds_read_b64 v[v_c:v_c+1], v[v_co_sld]
     ds_read_b64 v[v_c+2:v_c+2+1], v[v_co_sld] offset:2048
     ds_read_b64 v[v_c+4:v_c+4+1], v[v_co_sld] offset:4096
     ds_read_b64 v[v_c+6:v_c+6+1], v[v_co_sld] offset:6144

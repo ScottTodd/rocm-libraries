@@ -18,26 +18,40 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include <iostream>
-#include <iomanip>
-#include <vector>
-#include <string>
-#include <chrono>
-#include <numeric>
-#include <utility>
 #include <algorithm>
+#include <chrono>
+#include <iomanip>
+#include <iostream>
+#include <numeric>
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "cmdparser.hpp"
 
 #include <cuda_runtime.h>
 #include <curand.h>
 
-#define CUDA_CALL(x) do { if((x)!=cudaSuccess) { \
-    printf("Error at %s:%d\n",__FILE__,__LINE__);\
-    exit(EXIT_FAILURE);}} while(0)
-#define CURAND_CALL(x) do { if((x)!=CURAND_STATUS_SUCCESS) { \
-    printf("Error at %s:%d\n",__FILE__,__LINE__);\
-    exit(EXIT_FAILURE);}} while(0)
+#define CUDA_CALL(x)                                        \
+    do                                                      \
+    {                                                       \
+        if((x) != cudaSuccess)                              \
+        {                                                   \
+            printf("Error at %s:%d\n", __FILE__, __LINE__); \
+            exit(EXIT_FAILURE);                             \
+        }                                                   \
+    }                                                       \
+    while(0)
+#define CURAND_CALL(x)                                      \
+    do                                                      \
+    {                                                       \
+        if((x) != CURAND_STATUS_SUCCESS)                    \
+        {                                                   \
+            printf("Error at %s:%d\n", __FILE__, __LINE__); \
+            exit(EXIT_FAILURE);                             \
+        }                                                   \
+    }                                                       \
+    while(0)
 
 #ifndef DEFAULT_RAND_N
 const size_t DEFAULT_RAND_N = 1024 * 1024 * 128;
@@ -46,7 +60,7 @@ const size_t DEFAULT_RAND_N = 1024 * 1024 * 128;
 typedef curandRngType rng_type_t;
 
 template<typename T>
-using generate_func_type = std::function<curandStatus_t(curandGenerator_t, T *, size_t)>;
+using generate_func_type = std::function<curandStatus_t(curandGenerator_t, T*, size_t)>;
 
 template<typename T>
 void run_benchmark(const cli::Parser&    parser,
@@ -64,14 +78,14 @@ void run_benchmark(const cli::Parser&    parser,
     const size_t      size       = (size0 / dimensions) * dimensions;
     const std::string format     = parser.get<std::string>("format");
 
-    T * data;
+    T* data;
     CUDA_CALL(cudaMalloc(&data, size * sizeof(T)));
 
     curandGenerator_t generator;
     CURAND_CALL(curandCreateGenerator(&generator, rng_type));
 
     curandStatus_t status = curandSetQuasiRandomGeneratorDimensions(generator, dimensions);
-    if (status != CURAND_STATUS_TYPE_ERROR) // If the RNG is not quasi-random
+    if(status != CURAND_STATUS_TYPE_ERROR) // If the RNG is not quasi-random
     {
         CURAND_CALL(status);
     }
@@ -79,7 +93,7 @@ void run_benchmark(const cli::Parser&    parser,
     CURAND_CALL(curandSetStream(generator, stream));
 
     status = curandSetGeneratorOffset(generator, offset);
-    if (status != CURAND_STATUS_TYPE_ERROR) // If the RNG is not pseudo-random
+    if(status != CURAND_STATUS_TYPE_ERROR) // If the RNG is not pseudo-random
     {
         CURAND_CALL(status);
     }
@@ -96,7 +110,7 @@ void run_benchmark(const cli::Parser&    parser,
     CUDA_CALL(cudaEventCreate(&start));
     CUDA_CALL(cudaEventCreate(&stop));
     CUDA_CALL(cudaEventRecord(start, stream));
-    for (size_t i = 0; i < trials; i++)
+    for(size_t i = 0; i < trials; i++)
     {
         CURAND_CALL(generate_func(generator, data, size));
     }
@@ -148,7 +162,7 @@ void run_benchmarks(const cli::Parser& parser,
                     cudaStream_t       stream)
 {
     const std::string format = parser.get<std::string>("format");
-    if (distribution == "uniform-uint")
+    if(distribution == "uniform-uint")
     {
         if(rng_type != CURAND_RNG_QUASI_SOBOL64 && rng_type != CURAND_RNG_QUASI_SCRAMBLED_SOBOL64)
         {
@@ -162,7 +176,7 @@ void run_benchmarks(const cli::Parser& parser,
                 engine);
         }
     }
-    if (distribution == "uniform-long-long")
+    if(distribution == "uniform-long-long")
     {
         if(rng_type == CURAND_RNG_QUASI_SOBOL64 || rng_type == CURAND_RNG_QUASI_SCRAMBLED_SOBOL64)
         {
@@ -176,7 +190,7 @@ void run_benchmarks(const cli::Parser& parser,
                 engine);
         }
     }
-    if (distribution == "uniform-float")
+    if(distribution == "uniform-float")
     {
         run_benchmark<float>(
             parser,
@@ -187,7 +201,7 @@ void run_benchmarks(const cli::Parser& parser,
             distribution,
             engine);
     }
-    if (distribution == "uniform-double")
+    if(distribution == "uniform-double")
     {
         run_benchmark<double>(
             parser,
@@ -198,7 +212,7 @@ void run_benchmarks(const cli::Parser& parser,
             distribution,
             engine);
     }
-    if (distribution == "normal-float")
+    if(distribution == "normal-float")
     {
         run_benchmark<float>(
             parser,
@@ -209,7 +223,7 @@ void run_benchmarks(const cli::Parser& parser,
             distribution,
             engine);
     }
-    if (distribution == "normal-double")
+    if(distribution == "normal-double")
     {
         run_benchmark<double>(
             parser,
@@ -220,7 +234,7 @@ void run_benchmarks(const cli::Parser& parser,
             distribution,
             engine);
     }
-    if (distribution == "log-normal-float")
+    if(distribution == "log-normal-float")
     {
         run_benchmark<float>(
             parser,
@@ -231,7 +245,7 @@ void run_benchmarks(const cli::Parser& parser,
             distribution,
             engine);
     }
-    if (distribution == "log-normal-double")
+    if(distribution == "log-normal-double")
     {
         run_benchmark<double>(
             parser,
@@ -242,15 +256,15 @@ void run_benchmarks(const cli::Parser& parser,
             distribution,
             engine);
     }
-    if (distribution == "poisson")
+    if(distribution == "poisson")
     {
         const auto lambdas = parser.get<std::vector<double>>("lambda");
-        for (double lambda : lambdas)
+        for(double lambda : lambdas)
         {
             if(format.compare("console") == 0)
             {
-                std::cout << "    "
-                          << "lambda " << std::fixed << std::setprecision(1) << lambda << std::endl;
+                std::cout << "    " << "lambda " << std::fixed << std::setprecision(1) << lambda
+                          << std::endl;
             }
             run_benchmark<unsigned int>(
                 parser,
@@ -277,46 +291,55 @@ const std::vector<std::string> all_engines = {
     "scrambled_sobol64",
 };
 
-const std::vector<std::string> all_distributions = {
-    "uniform-uint",
-    "uniform-long-long",
-    "uniform-float",
-    "uniform-double",
-    "normal-float",
-    "normal-double",
-    "log-normal-float",
-    "log-normal-double",
-    "poisson"
-};
+const std::vector<std::string> all_distributions = {"uniform-uint",
+                                                    "uniform-long-long",
+                                                    "uniform-float",
+                                                    "uniform-double",
+                                                    "normal-float",
+                                                    "normal-double",
+                                                    "log-normal-float",
+                                                    "log-normal-double",
+                                                    "poisson"};
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     cli::Parser parser(argc, argv);
 
-    const std::string distribution_desc =
-        "space-separated list of distributions:" +
-        std::accumulate(all_distributions.begin(), all_distributions.end(), std::string(),
-            [](std::string a, std::string b) {
-                return a + "\n      " + b;
-            }
-        ) +
-        "\n      or all";
-    const std::string engine_desc =
-        "space-separated list of random number engines:" +
-        std::accumulate(all_engines.begin(), all_engines.end(), std::string(),
-            [](std::string a, std::string b) {
-                return a + "\n      " + b;
-            }
-        ) +
-        "\n      or all";
+    const std::string distribution_desc
+        = "space-separated list of distributions:"
+          + std::accumulate(all_distributions.begin(),
+                            all_distributions.end(),
+                            std::string(),
+                            [](std::string a, std::string b) { return a + "\n      " + b; })
+          + "\n      or all";
+    const std::string engine_desc
+        = "space-separated list of random number engines:"
+          + std::accumulate(all_engines.begin(),
+                            all_engines.end(),
+                            std::string(),
+                            [](std::string a, std::string b) { return a + "\n      " + b; })
+          + "\n      or all";
 
     parser.set_optional<size_t>("size", "size", DEFAULT_RAND_N, "number of values");
-    parser.set_optional<size_t>("dimensions", "dimensions", 1, "number of dimensions of quasi-random values");
+    parser.set_optional<size_t>("dimensions",
+                                "dimensions",
+                                1,
+                                "number of dimensions of quasi-random values");
     parser.set_optional<size_t>("offset", "offset", 0, "offset of generated pseudo-random values");
     parser.set_optional<size_t>("trials", "trials", 20, "number of trials");
-    parser.set_optional<std::vector<std::string>>("dis", "dis", {"uniform-uint"}, distribution_desc.c_str());
-    parser.set_optional<std::vector<std::string>>("engine", "engine", {"philox"}, engine_desc.c_str());
-    parser.set_optional<std::vector<double>>("lambda", "lambda", {10.0}, "space-separated list of lambdas of Poisson distribution");
+    parser.set_optional<std::vector<std::string>>("dis",
+                                                  "dis",
+                                                  {"uniform-uint"},
+                                                  distribution_desc.c_str());
+    parser.set_optional<std::vector<std::string>>("engine",
+                                                  "engine",
+                                                  {"philox"},
+                                                  engine_desc.c_str());
+    parser.set_optional<std::vector<double>>(
+        "lambda",
+        "lambda",
+        {10.0},
+        "space-separated list of lambdas of Poisson distribution");
     parser.set_optional<std::string>("format",
                                      "format",
                                      {"console"},
@@ -326,15 +349,15 @@ int main(int argc, char *argv[])
     std::vector<std::string> engines;
     {
         auto es = parser.get<std::vector<std::string>>("engine");
-        if (std::find(es.begin(), es.end(), "all") != es.end())
+        if(std::find(es.begin(), es.end(), "all") != es.end())
         {
             engines = all_engines;
         }
         else
         {
-            for (auto e : all_engines)
+            for(auto e : all_engines)
             {
-                if (std::find(es.begin(), es.end(), e) != es.end())
+                if(std::find(es.begin(), es.end(), e) != es.end())
                     engines.push_back(e);
             }
         }
@@ -343,15 +366,15 @@ int main(int argc, char *argv[])
     std::vector<std::string> distributions;
     {
         auto ds = parser.get<std::vector<std::string>>("dis");
-        if (std::find(ds.begin(), ds.end(), "all") != ds.end())
+        if(std::find(ds.begin(), ds.end(), "all") != ds.end())
         {
             distributions = all_distributions;
         }
         else
         {
-            for (auto d : all_distributions)
+            for(auto d : all_distributions)
             {
-                if (std::find(ds.begin(), ds.end(), d) != ds.end())
+                if(std::find(ds.begin(), ds.end(), d) != ds.end())
                     distributions.push_back(d);
             }
         }
@@ -386,26 +409,26 @@ int main(int argc, char *argv[])
         std::cout << ",,GB/s,GSample/s,ms),ms),values," << std::endl;
     }
 
-    for (auto engine : engines)
+    for(auto engine : engines)
     {
         rng_type_t rng_type = CURAND_RNG_PSEUDO_XORWOW;
-        if (engine == "xorwow")
+        if(engine == "xorwow")
             rng_type = CURAND_RNG_PSEUDO_XORWOW;
-        else if (engine == "mrg32k3a")
+        else if(engine == "mrg32k3a")
             rng_type = CURAND_RNG_PSEUDO_MRG32K3A;
-        else if (engine == "mtgp32")
+        else if(engine == "mtgp32")
             rng_type = CURAND_RNG_PSEUDO_MTGP32;
-        else if (engine == "mt19937")
+        else if(engine == "mt19937")
             rng_type = CURAND_RNG_PSEUDO_MT19937;
-        else if (engine == "philox")
+        else if(engine == "philox")
             rng_type = CURAND_RNG_PSEUDO_PHILOX4_32_10;
-        else if (engine == "sobol32")
+        else if(engine == "sobol32")
             rng_type = CURAND_RNG_QUASI_SOBOL32;
-        else if (engine == "scrambled_sobol32")
+        else if(engine == "scrambled_sobol32")
             rng_type = CURAND_RNG_QUASI_SCRAMBLED_SOBOL32;
-        else if (engine == "sobol64")
+        else if(engine == "sobol64")
             rng_type = CURAND_RNG_QUASI_SOBOL64;
-        else if (engine == "scrambled_sobol64")
+        else if(engine == "scrambled_sobol64")
             rng_type = CURAND_RNG_QUASI_SCRAMBLED_SOBOL64;
         else
         {
@@ -416,7 +439,7 @@ int main(int argc, char *argv[])
         if(console_output)
             std::cout << engine << ":" << std::endl;
 
-        for (auto distribution : distributions)
+        for(auto distribution : distributions)
         {
             if(console_output)
                 std::cout << "  " << distribution << ":" << std::endl;

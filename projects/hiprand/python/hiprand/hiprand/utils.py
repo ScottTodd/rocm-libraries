@@ -20,6 +20,7 @@
 
 import os
 
+
 def expand_paths(paths, subpaths):
     results = []
     for path in paths:
@@ -29,6 +30,7 @@ def expand_paths(paths, subpaths):
                 if os.path.exists(full_path):
                     results.append(full_path)
     return results
+
 
 def find_library(paths, name):
     paths = expand_paths(paths, ["", "lib", "lib64"])

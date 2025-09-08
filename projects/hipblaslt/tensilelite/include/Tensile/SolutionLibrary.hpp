@@ -31,8 +31,8 @@
 #include <string>
 #include <vector>
 
-#include <Tensile/Tensile.hpp>
 #include <Tensile/Task.hpp>
+#include <Tensile/Tensile.hpp>
 
 namespace TensileLite
 {
@@ -142,7 +142,8 @@ namespace TensileLite
             return std::shared_ptr<MySolution>();
         }
 
-        virtual std::shared_ptr<MySolution> getSolutionByIndex(Hardware const&  hardware, const int index) const
+        virtual std::shared_ptr<MySolution> getSolutionByIndex(Hardware const& hardware,
+                                                               const int       index) const
         {
             throw std::runtime_error("[getSolutionByIndex] You should not reach here.");
             return std::shared_ptr<MySolution>();

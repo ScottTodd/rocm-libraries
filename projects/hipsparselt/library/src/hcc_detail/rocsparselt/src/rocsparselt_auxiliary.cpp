@@ -148,8 +148,14 @@ rocsparselt_status rocsparselt_dense_descr_init(const rocsparselt_handle* handle
         // Allocate
         try
         {
-            auto status = validateMatrixArgs(
-                _handle, rows, cols, ld, alignment, valueType, order, rocsparselt_matrix_type_dense);
+            auto status = validateMatrixArgs(_handle,
+                                             rows,
+                                             cols,
+                                             ld,
+                                             alignment,
+                                             valueType,
+                                             order,
+                                             rocsparselt_matrix_type_dense);
             if(status != rocsparselt_status_success)
                 throw status;
 
@@ -1150,7 +1156,12 @@ rocsparselt_status
             }
 
             auto _algSelection = reinterpret_cast<_rocsparselt_matmul_alg_selection*>(algSelection);
-            _rocsparselt_matmul_datatype matmul_datatype = is_matmul_datatype_valid(_matmulDescr->matrix_A->type, _matmulDescr->matrix_B->type, _matmulDescr->matrix_C->type, _matmulDescr->matrix_D->type, _matmulDescr->compute_type);
+            _rocsparselt_matmul_datatype matmul_datatype
+                = is_matmul_datatype_valid(_matmulDescr->matrix_A->type,
+                                           _matmulDescr->matrix_B->type,
+                                           _matmulDescr->matrix_C->type,
+                                           _matmulDescr->matrix_D->type,
+                                           _matmulDescr->compute_type);
 
             int                               config_max_id = 0;
             _rocsparselt_matmul_alg_selection tmpAlgSelection(_handle);

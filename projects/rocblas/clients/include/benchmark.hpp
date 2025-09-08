@@ -45,7 +45,7 @@ public:
         , m_arg(arg)
         , m_flush_batch_count(flush_batch_count)
         , m_hot_time(0)
-        , m_cold_time(0){};
+        , m_cold_time(0) {};
 
     void   run_timer();
     double get_hot_time() const;

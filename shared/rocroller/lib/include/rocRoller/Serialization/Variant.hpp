@@ -35,8 +35,7 @@ namespace rocRoller
     namespace Serialization
     {
         template <typename T>
-        concept CVariant = requires
-        {
+        concept CVariant = requires {
             // clang-format off
              { std::variant_size<T>::value } -> std::convertible_to<size_t>;
             // clang-format on
@@ -46,8 +45,7 @@ namespace rocRoller
         static_assert(!CVariant<std::string>);
 
         template <typename T>
-        concept CNamedVariant = requires(T const& t)
-        {
+        concept CNamedVariant = requires(T const& t) {
             // clang-format off
             requires CVariant<T>;
             { name(t) } -> std::convertible_to<std::string>;
@@ -149,8 +147,8 @@ namespace rocRoller
             static void mapping(IO& io, T& exp, Context& ctx)
             {
                 // Only Empty or String is supported.
-                static_assert(
-                    std::same_as<Context, EmptyContext> || std::same_as<Context, std::string>);
+                static_assert(std::same_as<Context, EmptyContext>
+                              || std::same_as<Context, std::string>);
                 std::string myTypePath;
                 // std::string typeName;
                 std::string typeKey = VariantTypeKeySpecifier<T>::TypeKey();
@@ -224,7 +222,8 @@ namespace rocRoller
             }
 
             template <typename T>
-            requires(!CVariant<T>) std::string operator()(T const&)
+                requires(!CVariant<T>)
+            std::string operator()(T const&)
             {
                 return "";
             }

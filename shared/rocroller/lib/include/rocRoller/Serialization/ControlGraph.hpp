@@ -41,9 +41,8 @@ namespace rocRoller
     namespace Serialization
     {
         template <typename T, typename IO, typename Context>
-        requires(std::constructible_from<KernelGraph::ControlGraph::ControlEdge,
-                                         T>) struct MappingTraits<T, IO, Context>
-            : public EmptyMappingTraits<T, IO, Context>
+            requires(std::constructible_from<KernelGraph::ControlGraph::ControlEdge, T>)
+        struct MappingTraits<T, IO, Context> : public EmptyMappingTraits<T, IO, Context>
         {
         };
 
@@ -310,15 +309,15 @@ namespace rocRoller
         };
 
         template <typename Op, typename IO, typename Context>
-        requires(
-            CIsAnyOf<Op,
-                     KernelGraph::ControlGraph::Exchange,
-                     KernelGraph::ControlGraph::LoadLinear,
-                     KernelGraph::ControlGraph::LoadTiled,
-                     KernelGraph::ControlGraph::LoadVGPR,
-                     KernelGraph::ControlGraph::LoadSGPR,
-                     KernelGraph::ControlGraph::LoadTileDirect2LDS,
-                     KernelGraph::ControlGraph::LoadLDSTile>) struct MappingTraits<Op, IO, Context>
+            requires(CIsAnyOf<Op,
+                              KernelGraph::ControlGraph::Exchange,
+                              KernelGraph::ControlGraph::LoadLinear,
+                              KernelGraph::ControlGraph::LoadTiled,
+                              KernelGraph::ControlGraph::LoadVGPR,
+                              KernelGraph::ControlGraph::LoadSGPR,
+                              KernelGraph::ControlGraph::LoadTileDirect2LDS,
+                              KernelGraph::ControlGraph::LoadLDSTile>)
+        struct MappingTraits<Op, IO, Context>
         {
             using iot = IOTraits<IO>;
             static void mapping(IO& io, Op& op, Context&)
@@ -378,11 +377,11 @@ namespace rocRoller
         };
 
         template <typename Op, typename IO, typename Context>
-        requires(
-            CIsAnyOf<Op,
-                     KernelGraph::ControlGraph::StoreTiled,
-                     KernelGraph::ControlGraph::StoreSGPR,
-                     KernelGraph::ControlGraph::StoreLDSTile>) struct MappingTraits<Op, IO, Context>
+            requires(CIsAnyOf<Op,
+                              KernelGraph::ControlGraph::StoreTiled,
+                              KernelGraph::ControlGraph::StoreSGPR,
+                              KernelGraph::ControlGraph::StoreLDSTile>)
+        struct MappingTraits<Op, IO, Context>
         {
             using iot = IOTraits<IO>;
             static void mapping(IO& io, Op& op, Context&)
@@ -436,9 +435,9 @@ namespace rocRoller
         };
 
         template <typename T, typename IO, typename Context>
-        requires(std::constructible_from<KernelGraph::ControlGraph::Operation, T>&& T::HasValue
-                 == false) struct MappingTraits<T, IO, Context>
-            : public EmptyMappingTraits<T, IO, Context>
+            requires(std::constructible_from<KernelGraph::ControlGraph::Operation, T>
+                     && T::HasValue == false)
+        struct MappingTraits<T, IO, Context> : public EmptyMappingTraits<T, IO, Context>
         {
         };
 

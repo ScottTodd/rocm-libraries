@@ -51,10 +51,13 @@ struct dummy
 #ifdef HIPCUB_ROCPRIM_API
     HIPCUB_HOST_DEVICE
 #endif
-    dummy() = default;
+    dummy()
+        = default;
 
     template<class U>
-    HIPCUB_HOST_DEVICE dummy(U a) : x(a + 1), y(a * 2)
+    HIPCUB_HOST_DEVICE
+    dummy(U a)
+        : x(a + 1), y(a * 2)
     {}
 
     HIPCUB_HOST_DEVICE
@@ -93,8 +96,7 @@ using Params = ::testing::Types<
 TYPED_TEST_SUITE(HipcubBlockExchangeTests, Params);
 
 template<class Type, class OutputType, unsigned int ItemsPerBlock, unsigned int ItemsPerThread>
-__global__
-__launch_bounds__(512)
+__global__ __launch_bounds__(512)
 void blocked_to_striped_kernel(Type* device_input, OutputType* device_output)
 {
     constexpr unsigned int block_size   = (ItemsPerBlock / ItemsPerThread);
@@ -199,8 +201,7 @@ TYPED_TEST(HipcubBlockExchangeTests, BlockedToStriped)
 }
 
 template<class Type, class OutputType, unsigned int ItemsPerBlock, unsigned int ItemsPerThread>
-__global__
-__launch_bounds__(512)
+__global__ __launch_bounds__(512)
 void striped_to_blocked_kernel(Type* device_input, OutputType* device_output)
 {
     constexpr unsigned int block_size   = (ItemsPerBlock / ItemsPerThread);
@@ -304,8 +305,7 @@ TYPED_TEST(HipcubBlockExchangeTests, StripedToBlocked)
 }
 
 template<class Type, class OutputType, unsigned int ItemsPerBlock, unsigned int ItemsPerThread>
-__global__
-__launch_bounds__(512)
+__global__ __launch_bounds__(512)
 void blocked_to_warp_striped_kernel(Type* device_input, OutputType* device_output)
 {
     constexpr unsigned int block_size   = (ItemsPerBlock / ItemsPerThread);
@@ -444,8 +444,7 @@ TYPED_TEST(HipcubBlockExchangeTests, BlockedToWarpStriped)
 }
 
 template<class Type, class OutputType, unsigned int ItemsPerBlock, unsigned int ItemsPerThread>
-__global__
-__launch_bounds__(512)
+__global__ __launch_bounds__(512)
 void warp_striped_to_blocked_kernel(Type* device_input, OutputType* device_output)
 {
     constexpr unsigned int block_size   = (ItemsPerBlock / ItemsPerThread);
@@ -584,8 +583,7 @@ TYPED_TEST(HipcubBlockExchangeTests, WarpStripedToBlocked)
 }
 
 template<class Type, class OutputType, unsigned int ItemsPerBlock, unsigned int ItemsPerThread>
-__global__
-__launch_bounds__(512)
+__global__ __launch_bounds__(512)
 void scatter_to_blocked_kernel(Type*         device_input,
                                OutputType*   device_output,
                                unsigned int* device_ranks)
@@ -713,8 +711,7 @@ TYPED_TEST(HipcubBlockExchangeTests, ScatterToBlocked)
 }
 
 template<class Type, class OutputType, unsigned int ItemsPerBlock, unsigned int ItemsPerThread>
-__global__
-__launch_bounds__(512)
+__global__ __launch_bounds__(512)
 void scatter_to_striped_kernel(Type*         device_input,
                                OutputType*   device_output,
                                unsigned int* device_ranks)
@@ -935,7 +932,9 @@ TYPED_TEST(HipcubBlockExchangeTests, ScatterToStripedGuarded)
         device_output,
         device_ranks);
 
-    [[maybe_unused]] type* host_output = new type[size];
+    [[maybe_unused]]
+    type* host_output
+        = new type[size];
     HIP_CHECK(hipMemcpy(host_output, device_output, sizeof(type) * size, hipMemcpyDeviceToHost));
 
     for(size_t i = 0; i < size; i++)
@@ -1079,8 +1078,7 @@ TYPED_TEST(HipcubBlockExchangeTests, ScatterToStripedFlagged)
 }
 
 template<class Type, unsigned int ItemsPerBlock, unsigned int ItemsPerThread>
-__global__
-__launch_bounds__(512)
+__global__ __launch_bounds__(512)
 void striped_to_blocked_one_param_kernel(Type* device_input)
 {
     constexpr unsigned int block_size   = (ItemsPerBlock / ItemsPerThread);
@@ -1171,8 +1169,7 @@ TYPED_TEST(HipcubBlockExchangeTests, StripedToBlockedOneParam)
 }
 
 template<class Type, unsigned int ItemsPerBlock, unsigned int ItemsPerThread>
-__global__
-__launch_bounds__(512)
+__global__ __launch_bounds__(512)
 void blocked_to_striped_one_param_kernel(Type* device_input)
 {
     constexpr unsigned int block_size   = (ItemsPerBlock / ItemsPerThread);
@@ -1263,8 +1260,7 @@ TYPED_TEST(HipcubBlockExchangeTests, BlockedToStripedOneParam)
 }
 
 template<class Type, unsigned int ItemsPerBlock, unsigned int ItemsPerThread>
-__global__
-__launch_bounds__(512)
+__global__ __launch_bounds__(512)
 void warp_striped_to_blocked_one_param_kernel(Type* device_input)
 {
     constexpr unsigned int block_size   = (ItemsPerBlock / ItemsPerThread);
@@ -1387,8 +1383,7 @@ TYPED_TEST(HipcubBlockExchangeTests, WarpStripedToBlockedOneParam)
 }
 
 template<class Type, unsigned int ItemsPerBlock, unsigned int ItemsPerThread>
-__global__
-__launch_bounds__(512)
+__global__ __launch_bounds__(512)
 void blocked_to_warp_striped_one_param_kernel(Type* device_input)
 {
     constexpr unsigned int block_size   = (ItemsPerBlock / ItemsPerThread);
@@ -1517,8 +1512,7 @@ TYPED_TEST(HipcubBlockExchangeTests, BlockedToWarpStripedOneParam)
 }
 
 template<class Type, unsigned int ItemsPerBlock, unsigned int ItemsPerThread>
-__global__
-__launch_bounds__(512)
+__global__ __launch_bounds__(512)
 void scatter_to_blocked_no_output_param_kernel(Type* device_input, unsigned int* device_ranks)
 {
     constexpr unsigned int block_size   = (ItemsPerBlock / ItemsPerThread);
@@ -1634,8 +1628,7 @@ TYPED_TEST(HipcubBlockExchangeTests, ScatterToBlockedNoOutputParam)
 }
 
 template<class Type, unsigned int ItemsPerBlock, unsigned int ItemsPerThread>
-__global__
-__launch_bounds__(512)
+__global__ __launch_bounds__(512)
 void scatter_to_striped_no_output_param_kernel(Type* device_input, unsigned int* device_ranks)
 {
     constexpr unsigned int block_size   = (ItemsPerBlock / ItemsPerThread);

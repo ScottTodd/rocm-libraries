@@ -178,9 +178,10 @@ namespace TensileLite
 
             if(Debug::Instance().printLibraryLogicIndex())
             {
-                if(!solutions.empty()) {
+                if(!solutions.empty())
+                {
                     std::cout << "Library logic index of top solutions: ";
-                    for (auto &rv : solutions)
+                    for(auto& rv : solutions)
                         std::cout << rv->libraryLogicIndex << ", ";
                     std::cout << std::endl;
                 }

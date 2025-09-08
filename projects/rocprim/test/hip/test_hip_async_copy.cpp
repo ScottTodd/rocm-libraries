@@ -101,12 +101,12 @@ protected:
     static constexpr int          seed       = 543897;
     static constexpr unsigned int block_size = 1024;
 
-    std::vector<size_t>                    sizes;
-    std::vector<vector_type>               inputs;
-    std::vector<vector_type>               expecteds;
-    std::vector<common::device_ptr<T>>     d_inputs;
-    std::vector<vector_type>               outputs;
-    std::vector<hipStream_t>               streams;
+    std::vector<size_t>                sizes;
+    std::vector<vector_type>           inputs;
+    std::vector<vector_type>           expecteds;
+    std::vector<common::device_ptr<T>> d_inputs;
+    std::vector<vector_type>           outputs;
+    std::vector<hipStream_t>           streams;
 
     void SetUp() override
     {
@@ -249,8 +249,8 @@ TEST(HipAsyncCopyTestsExtra, StreamInStruct)
                    std::back_inserter(expected),
                    [](const auto& val) { return val + static_cast<T>(1); });
 
-    common::device_ptr<T>     d_input(input);
-    const unsigned int        grid_size = (size + block_size - 1) / block_size;
+    common::device_ptr<T> d_input(input);
+    const unsigned int    grid_size = (size + block_size - 1) / block_size;
     hipLaunchKernelGGL(HIP_KERNEL_NAME(increment_kernel),
                        dim3(grid_size),
                        dim3(block_size),

@@ -42,7 +42,7 @@ namespace rocRoller
      * array is full.
      */
     template <typename T, size_t N, typename C>
-    requires CInputRangeOf<C, T>
+        requires CInputRangeOf<C, T>
     void append(std::array<T, N>& array, C values);
 }
 

@@ -81,7 +81,8 @@ void test_global(rocprim::uint128_t* ptr,
 __global__
 void test_shared(bool* error, const uint32_t* test_data, size_t random_size)
 {
-    __shared__ rocprim::uint128_t shared_data;
+    __shared__
+    rocprim::uint128_t shared_data;
     if(threadIdx.x == 0)
     {
         shared_data = 0;
@@ -98,7 +99,8 @@ void test_flat(rocprim::uint128_t* global_ptr,
                const uint32_t*     test_data,
                size_t              random_size)
 {
-    __shared__ rocprim::uint128_t shared_data;
+    __shared__
+    rocprim::uint128_t shared_data;
     if(threadIdx.x == 0)
     {
         shared_data = 0;

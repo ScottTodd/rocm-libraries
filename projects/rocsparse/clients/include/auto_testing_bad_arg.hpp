@@ -52,8 +52,8 @@ rocsparse_status rocsparse_argdescr_get_function_name(const void* argdescr, cons
 template <typename... T>
 struct auto_testing_bad_arg_t
 {
-    inline auto_testing_bad_arg_t(){};
-    inline auto_testing_bad_arg_t(int current, int ith, rocsparse_status& status){};
+    inline auto_testing_bad_arg_t() {};
+    inline auto_testing_bad_arg_t(int current, int ith, rocsparse_status& status) {};
 };
 
 template <typename T, typename... Rest>

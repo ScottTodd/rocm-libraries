@@ -30,23 +30,22 @@
 #include <hipblaslt/hipblaslt.h>
 #include <iostream>
 
-
 void simpleGemmBgradb(hipblasLtHandle_t  handle,
-                     hipblasOperation_t trans_a,
-                     hipblasOperation_t trans_b,
-                     int64_t            m,
-                     int64_t            n,
-                     int64_t            k,
-                     int64_t            batch_count,
-                     float&             alpha,
-                     float&             beta,
-                     void*              d_a,
-                     void*              d_b,
-                     void*              d_c,
-                     void*              d_d,
-                     void*              d_workspace,
-                     int64_t            max_workspace_size,
-                     hipStream_t        stream);
+                      hipblasOperation_t trans_a,
+                      hipblasOperation_t trans_b,
+                      int64_t            m,
+                      int64_t            n,
+                      int64_t            k,
+                      int64_t            batch_count,
+                      float&             alpha,
+                      float&             beta,
+                      void*              d_a,
+                      void*              d_b,
+                      void*              d_c,
+                      void*              d_d,
+                      void*              d_workspace,
+                      int64_t            max_workspace_size,
+                      hipStream_t        stream);
 
 int main()
 {
@@ -55,42 +54,42 @@ int main()
 
     runner.run([&runner] {
         simpleGemmBgradb(runner.handle,
-                        HIPBLAS_OP_N,
-                        HIPBLAS_OP_N,
-                        runner.m,
-                        runner.n,
-                        runner.k,
-                        runner.batch_count,
-                        runner.alpha,
-                        runner.beta,
-                        runner.d_a,
-                        runner.d_b,
-                        runner.d_c,
-                        runner.d_d,
-                        runner.d_workspace,
-                        runner.max_workspace_size,
-                        runner.stream);
+                         HIPBLAS_OP_N,
+                         HIPBLAS_OP_N,
+                         runner.m,
+                         runner.n,
+                         runner.k,
+                         runner.batch_count,
+                         runner.alpha,
+                         runner.beta,
+                         runner.d_a,
+                         runner.d_b,
+                         runner.d_c,
+                         runner.d_d,
+                         runner.d_workspace,
+                         runner.max_workspace_size,
+                         runner.stream);
     });
 
     return 0;
 }
 
 void simpleGemmBgradb(hipblasLtHandle_t  handle,
-                     hipblasOperation_t trans_a,
-                     hipblasOperation_t trans_b,
-                     int64_t            m,
-                     int64_t            n,
-                     int64_t            k,
-                     int64_t            batch_count,
-                     float&             alpha,
-                     float&             beta,
-                     void*              d_a,
-                     void*              d_b,
-                     void*              d_c,
-                     void*              d_d,
-                     void*              d_workspace,
-                     int64_t            max_workspace_size,
-                     hipStream_t        stream)
+                      hipblasOperation_t trans_a,
+                      hipblasOperation_t trans_b,
+                      int64_t            m,
+                      int64_t            n,
+                      int64_t            k,
+                      int64_t            batch_count,
+                      float&             alpha,
+                      float&             beta,
+                      void*              d_a,
+                      void*              d_b,
+                      void*              d_c,
+                      void*              d_d,
+                      void*              d_workspace,
+                      int64_t            max_workspace_size,
+                      hipStream_t        stream)
 {
     hipblasLtMatrixLayout_t matA, matB, matC, matD;
     CHECK_HIPBLASLT_ERROR(hipblasLtMatrixLayoutCreate(&matA, HIP_R_16F, m, k, m));
@@ -129,17 +128,15 @@ void simpleGemmBgradb(hipblasLtHandle_t  handle,
     hipDataType computeTypeA = HIP_R_16F;
     hipDataType computeTypeB = HIP_R_16F;
 
-    hipblasLtMatmulDescSetAttribute(
-        matmul, 
-        HIPBLASLT_MATMUL_DESC_COMPUTE_INPUT_TYPE_A_EXT, 
-        &computeTypeA, 
-        sizeof(computeTypeA));
+    hipblasLtMatmulDescSetAttribute(matmul,
+                                    HIPBLASLT_MATMUL_DESC_COMPUTE_INPUT_TYPE_A_EXT,
+                                    &computeTypeA,
+                                    sizeof(computeTypeA));
 
-    hipblasLtMatmulDescSetAttribute(
-        matmul, 
-        HIPBLASLT_MATMUL_DESC_COMPUTE_INPUT_TYPE_B_EXT, 
-        &computeTypeB, 
-        sizeof(computeTypeB));
+    hipblasLtMatmulDescSetAttribute(matmul,
+                                    HIPBLASLT_MATMUL_DESC_COMPUTE_INPUT_TYPE_B_EXT,
+                                    &computeTypeB,
+                                    sizeof(computeTypeB));
 
     CHECK_HIPBLASLT_ERROR(hipblasLtMatmulDescSetAttribute(
         matmul, HIPBLASLT_MATMUL_DESC_TRANSA, &trans_a, sizeof(int32_t)));
@@ -152,13 +149,14 @@ void simpleGemmBgradb(hipblasLtHandle_t  handle,
 
     // Set Desc Bias Data Type
     hipDataType bias_data_type = HIP_R_16F;
-    CHECK_HIPBLASLT_ERROR(hipblasLtMatmulDescSetAttribute(matmul, HIPBLASLT_MATMUL_DESC_BIAS_DATA_TYPE, &bias_data_type, sizeof(hipDataType)));
+    CHECK_HIPBLASLT_ERROR(hipblasLtMatmulDescSetAttribute(
+        matmul, HIPBLASLT_MATMUL_DESC_BIAS_DATA_TYPE, &bias_data_type, sizeof(hipDataType)));
 
     // Allocate and the bias tensor, the bias gradient will be stored in d_bias buffer
-    
-    void*                      d_bias;
+
+    void* d_bias;
     CHECK_HIP_ERROR(hipMalloc(&d_bias, k * sizeof(hipblasLtHalf)));
-    
+
     CHECK_HIPBLASLT_ERROR(hipblasLtMatmulDescSetAttribute(
         matmul, HIPBLASLT_MATMUL_DESC_BIAS_POINTER, &d_bias, sizeof(void*)));
 
@@ -211,8 +209,6 @@ void simpleGemmBgradb(hipblasLtHandle_t  handle,
                                           d_workspace,
                                           workspace_size,
                                           stream));
-
-   
 
     CHECK_HIPBLASLT_ERROR(hipblasLtMatrixLayoutDestroy(matA));
     CHECK_HIPBLASLT_ERROR(hipblasLtMatrixLayoutDestroy(matB));

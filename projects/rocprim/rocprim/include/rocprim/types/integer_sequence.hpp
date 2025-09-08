@@ -28,11 +28,11 @@
 BEGIN_ROCPRIM_NAMESPACE
 #if defined(__cpp_lib_integer_sequence) && !defined(DOXYGEN_SHOULD_SKIP_THIS)
 // For C++14 or newer we just use standard implementation
-using std::integer_sequence;
 using std::index_sequence;
-using std::make_integer_sequence;
-using std::make_index_sequence;
 using std::index_sequence_for;
+using std::integer_sequence;
+using std::make_index_sequence;
+using std::make_integer_sequence;
 #else
 /// \brief Compile-time sequence of integers
 ///
@@ -69,10 +69,9 @@ struct integer_sequence_cat<T, ::rocprim::integer_sequence<T, Indices...>>
 };
 
 template<class T, size_t Count>
-struct make_integer_sequence_impl :
-    integer_sequence_cat<T, typename make_integer_sequence_impl<T, Count - 1>::type>
-{
-};
+struct make_integer_sequence_impl
+    : integer_sequence_cat<T, typename make_integer_sequence_impl<T, Count - 1>::type>
+{};
 
 template<class T>
 struct make_integer_sequence_impl<T, 0>
@@ -80,7 +79,7 @@ struct make_integer_sequence_impl<T, 0>
     using type = ::rocprim::integer_sequence<T>;
 };
 
-} // end detail namespace
+} // namespace detail
 
 /// \brief Generates a compile time integer sequence.
 /// \tparam T the integer type to use

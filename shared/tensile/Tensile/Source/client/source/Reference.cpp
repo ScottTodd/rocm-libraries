@@ -723,7 +723,7 @@ namespace Tensile
 
                                 auto aVal = inZeroPads ? static_cast<typename Inputs::AType>(0.0)
                                                        : Transform<typename Inputs::AType>::Input(
-                                                           inputs.a[aIndex], false);
+                                                             inputs.a[aIndex], false);
 
                                 auto bIndex = weightTensor.index(bCoord);
                                 auto bVal   = Transform<typename Inputs::BType>::Input(
@@ -732,8 +732,7 @@ namespace Tensile
                                 if(db2)
                                 {
                                     std::cout << "  n,cin,spatialCoord,cout=" << n << "," << cin
-                                              << ","
-                                              << "," << cout << ","
+                                              << "," << "," << cout << ","
                                               << " spatialCoord[2,1,0]=" << spatialCoord[2] << ","
                                               << spatialCoord[1] << "," << spatialCoord[0]
                                               << " filterCoord[2,1,0]=" << filterCoord[2] << ","
@@ -752,9 +751,8 @@ namespace Tensile
                         auto dIndex = outputTensor.index(dCoord);
                         if(db1)
                         {
-                            std::cout << "output: [n,spatialCoord,cout=" << n << ","
-                                      << "," << cout << "]"
-                                      << " spatialCoord[2,1,0]=" << spatialCoord[2] << ","
+                            std::cout << "output: [n,spatialCoord,cout=" << n << "," << "," << cout
+                                      << "]" << " spatialCoord[2,1,0]=" << spatialCoord[2] << ","
                                       << spatialCoord[1] << "," << spatialCoord[0]
                                       << " dIndex=" << dIndex << " value=" << value << "\n";
                         }

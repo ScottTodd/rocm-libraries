@@ -30,15 +30,20 @@
 #ifndef EXAMPLES_EXAMPLE_UTILS_HPP
 #define EXAMPLES_EXAMPLE_UTILS_HPP
 #include "mersenne.h"
-#include <vector>
-#include <sstream>
 #include <iostream>
+#include <sstream>
+#include <vector>
 
-#include <hipcub/util_type.hpp>
-#include <hipcub/util_allocator.hpp>
 #include <hipcub/iterator/discard_output_iterator.hpp>
+#include <hipcub/util_allocator.hpp>
+#include <hipcub/util_type.hpp>
 
-#define AssertEquals(a, b) if ((a) != (b)) { std::cerr << "\n(" << __FILE__ << ": " << __LINE__ << ")\n"; exit(1);}
+#define AssertEquals(a, b)                                           \
+    if((a) != (b))                                                   \
+    {                                                                \
+        std::cerr << "\n(" << __FILE__ << ": " << __LINE__ << ")\n"; \
+        exit(1);                                                     \
+    }
 
 #define HIP_CHECK(condition)                                                           \
     do                                                                                 \
@@ -52,14 +57,26 @@
     }                                                                                  \
     while(0);
 
-template <typename T>
-T CoutCast(T val) { return val; }
+template<typename T>
+T CoutCast(T val)
+{
+    return val;
+}
 
-int CoutCast(char val) { return val; }
+int CoutCast(char val)
+{
+    return val;
+}
 
-int CoutCast(unsigned char val) { return val; }
+int CoutCast(unsigned char val)
+{
+    return val;
+}
 
-int CoutCast(signed char val) { return val; }
+int CoutCast(signed char val)
+{
+    return val;
+}
 /******************************************************************************
  * Command-line parsing functionality
  ******************************************************************************/
@@ -70,43 +87,44 @@ int CoutCast(signed char val) { return val; }
 struct CommandLineArgs
 {
 
-    std::vector<std::string>    keys;
-    std::vector<std::string>    values;
-    std::vector<std::string>    args;
-    hipDeviceProp_t             deviceProp;
-    float                       device_giga_bandwidth;
-    std::size_t                 device_free_physmem;
-    std::size_t                 device_total_physmem;
+    std::vector<std::string> keys;
+    std::vector<std::string> values;
+    std::vector<std::string> args;
+    hipDeviceProp_t          deviceProp;
+    float                    device_giga_bandwidth;
+    std::size_t              device_free_physmem;
+    std::size_t              device_total_physmem;
 
     /**
      * Constructor
      */
-    CommandLineArgs(int argc, char **argv) :
-        keys(10),
-        values(10)
+    CommandLineArgs(int argc, char** argv) : keys(10), values(10)
     {
         using namespace std;
 
         // Initialize mersenne generator
-        unsigned int mersenne_init[4]=  {0x123, 0x234, 0x345, 0x456};
+        unsigned int mersenne_init[4] = {0x123, 0x234, 0x345, 0x456};
         mersenne::init_by_array(mersenne_init, 4);
 
-        for (int i = 1; i < argc; i++)
+        for(int i = 1; i < argc; i++)
         {
             string arg = argv[i];
 
-            if ((arg[0] != '-') || (arg[1] != '-'))
+            if((arg[0] != '-') || (arg[1] != '-'))
             {
                 args.push_back(arg);
                 continue;
             }
 
             string::size_type pos;
-            string key, val;
-            if ((pos = arg.find('=')) == string::npos) {
+            string            key, val;
+            if((pos = arg.find('=')) == string::npos)
+            {
                 key = string(arg, 2, arg.length() - 2);
                 val = "";
-            } else {
+            }
+            else
+            {
                 key = string(arg, 2, pos - 2);
                 val = string(arg, pos + 1, arg.length() - 1);
             }
@@ -116,7 +134,6 @@ struct CommandLineArgs
         }
     }
 
-
     /**
      * Checks whether a flag "--<flag>" is present in the commandline
      */
@@ -124,33 +141,32 @@ struct CommandLineArgs
     {
         using namespace std;
 
-        for (std::size_t i = 0; i < keys.size(); ++i)
+        for(std::size_t i = 0; i < keys.size(); ++i)
         {
-            if (keys[i] == string(arg_name))
+            if(keys[i] == string(arg_name))
                 return true;
         }
         return false;
     }
 
-
     /**
      * Returns number of naked (non-flag and non-key-value) commandline parameters
      */
-    template <typename T>
+    template<typename T>
     int NumNakedArgs()
     {
         return args.size();
     }
 
-
     /**
      * Returns the commandline parameter for a given index (not including flags)
      */
-    template <typename T>
-    void GetCmdLineArgument(std::size_t index, T &val)
+    template<typename T>
+    void GetCmdLineArgument(std::size_t index, T& val)
     {
         using namespace std;
-        if (index < args.size()) {
+        if(index < args.size())
+        {
             std::istringstream str_stream(args[index]);
             str_stream >> val;
         }
@@ -159,14 +175,14 @@ struct CommandLineArgs
     /**
      * Returns the value specified for a given commandline parameter --<flag>=<value>
      */
-    template <typename T>
-    void GetCmdLineArgument(const char *arg_name, T &val)
+    template<typename T>
+    void GetCmdLineArgument(const char* arg_name, T& val)
     {
         using namespace std;
 
-        for (std::size_t i = 0; i < keys.size(); ++i)
+        for(std::size_t i = 0; i < keys.size(); ++i)
         {
-            if (keys[i] == string(arg_name))
+            if(keys[i] == string(arg_name))
             {
                 std::istringstream str_stream(values[i]);
                 str_stream >> val;
@@ -174,35 +190,34 @@ struct CommandLineArgs
         }
     }
 
-
     /**
      * Returns the values specified for a given commandline parameter --<flag>=<value>,<value>*
      */
-    template <typename T>
-    void GetCmdLineArguments(const char *arg_name, std::vector<T> &vals)
+    template<typename T>
+    void GetCmdLineArguments(const char* arg_name, std::vector<T>& vals)
     {
         using namespace std;
 
-        if (CheckCmdLineFlag(arg_name))
+        if(CheckCmdLineFlag(arg_name))
         {
             // Clear any default values
             vals.clear();
 
             // Recover from multi-value string
-            for (std::size_t i = 0; i < keys.size(); ++i)
+            for(std::size_t i = 0; i < keys.size(); ++i)
             {
-                if (keys[i] == string(arg_name))
+                if(keys[i] == string(arg_name))
                 {
-                    string val_string(values[i]);
+                    string             val_string(values[i]);
                     std::istringstream str_stream(val_string);
-                    string::size_type old_pos = 0;
-                    string::size_type new_pos = 0;
+                    string::size_type  old_pos = 0;
+                    string::size_type  new_pos = 0;
 
                     // Iterate comma-separated values
                     T val;
-                    while ((new_pos = val_string.find(',', old_pos)) != string::npos)
+                    while((new_pos = val_string.find(',', old_pos)) != string::npos)
                     {
-                        if (new_pos != old_pos)
+                        if(new_pos != old_pos)
                         {
                             str_stream.width(new_pos - old_pos);
                             str_stream >> val;
@@ -222,13 +237,12 @@ struct CommandLineArgs
         }
     }
 
-
     /**
      * The number of pairs parsed
      */
     int ParsedArgc()
     {
-        return (int) keys.size();
+        return (int)keys.size();
     }
 
     /**
@@ -242,23 +256,26 @@ struct CommandLineArgs
         {
             int deviceCount;
             error = hipGetDeviceCount(&deviceCount);
-            if (error) break;
+            if(error)
+                break;
 
-            if (deviceCount == 0) {
+            if(deviceCount == 0)
+            {
                 fprintf(stderr, "No devices supporting CUDA.\n");
                 exit(1);
             }
-            if (dev < 0)
+            if(dev < 0)
             {
                 GetCmdLineArgument("device", dev);
             }
-            if ((dev > deviceCount - 1) || (dev < 0))
+            if((dev > deviceCount - 1) || (dev < 0))
             {
                 dev = 0;
             }
 
             error = hipSetDevice(dev);
-            if (error) break;
+            if(error)
+                break;
 
             HIP_CHECK(hipMemGetInfo(&device_free_physmem, &device_total_physmem));
 
@@ -267,34 +284,36 @@ struct CommandLineArgs
             // if (error) break;
 
             error = hipGetDeviceProperties(&deviceProp, dev);
-            if (error) break;
+            if(error)
+                break;
 
-            if (deviceProp.major < 1) {
+            if(deviceProp.major < 1)
+            {
                 fprintf(stderr, "Device does not support Hip.\n");
                 exit(1);
             }
 
-            device_giga_bandwidth = float(deviceProp.memoryBusWidth) * deviceProp.memoryClockRate * 2 / 8 / 1000 / 1000;
+            device_giga_bandwidth = float(deviceProp.memoryBusWidth) * deviceProp.memoryClockRate
+                                    * 2 / 8 / 1000 / 1000;
 
-            if (!CheckCmdLineFlag("quiet"))
+            if(!CheckCmdLineFlag("quiet"))
             {
-                printf(
-                        "Using device %d: %s ( SM%d, %d SMs, "
-                        "%lld free / %lld total MB physmem, "
-                        "%.3f GB/s @ %d kHz mem clock, ECC %s)\n",
-                    dev,
-                    deviceProp.name,
-                    deviceProp.major * 100 + deviceProp.minor * 10,
-                    deviceProp.multiProcessorCount,
-                    (unsigned long long) device_free_physmem / 1024 / 1024,
-                    (unsigned long long) device_total_physmem / 1024 / 1024,
-                    device_giga_bandwidth,
-                    deviceProp.memoryClockRate,
-                    (deviceProp.ECCEnabled) ? "on" : "off");
+                printf("Using device %d: %s ( SM%d, %d SMs, "
+                       "%lld free / %lld total MB physmem, "
+                       "%.3f GB/s @ %d kHz mem clock, ECC %s)\n",
+                       dev,
+                       deviceProp.name,
+                       deviceProp.major * 100 + deviceProp.minor * 10,
+                       deviceProp.multiProcessorCount,
+                       (unsigned long long)device_free_physmem / 1024 / 1024,
+                       (unsigned long long)device_total_physmem / 1024 / 1024,
+                       device_giga_bandwidth,
+                       deviceProp.memoryClockRate,
+                       (deviceProp.ECCEnabled) ? "on" : "off");
                 fflush(stdout);
             }
-
-        } while (0);
+        }
+        while(0);
 
         return error;
     }
@@ -303,52 +322,50 @@ struct CommandLineArgs
  * Helper routines for list comparison and display
  ******************************************************************************/
 
-
 /**
  * Compares the equivalence of two arrays
  */
-template <typename S, typename T, typename OffsetT>
+template<typename S, typename T, typename OffsetT>
 int CompareResults(T* computed, S* reference, OffsetT len, bool verbose = true)
 {
-    for (OffsetT i = 0; i < len; i++)
+    for(OffsetT i = 0; i < len; i++)
     {
-        if (computed[i] != reference[i])
+        if(computed[i] != reference[i])
         {
-            if (verbose) std::cout << "INCORRECT: [" << i << "]: "
-                << CoutCast(computed[i]) << " != "
-                << CoutCast(reference[i]);
+            if(verbose)
+                std::cout << "INCORRECT: [" << i << "]: " << CoutCast(computed[i])
+                          << " != " << CoutCast(reference[i]);
             return 1;
         }
     }
     return 0;
 }
 
-
 /**
  * Compares the equivalence of two arrays
  */
-template <typename OffsetT>
+template<typename OffsetT>
 int CompareResults(float* computed, float* reference, OffsetT len, bool verbose = true)
 {
-    for (OffsetT i = 0; i < len; i++)
+    for(OffsetT i = 0; i < len; i++)
     {
-        if (computed[i] != reference[i])
+        if(computed[i] != reference[i])
         {
-            float difference = std::abs(computed[i]-reference[i]);
-            float fraction = difference / std::abs(reference[i]);
+            float difference = std::abs(computed[i] - reference[i]);
+            float fraction   = difference / std::abs(reference[i]);
 
-            if (fraction > 0.0001)
+            if(fraction > 0.0001)
             {
-                if (verbose) std::cout << "INCORRECT: [" << i << "]: "
-                    << "(computed) " << CoutCast(computed[i]) << " != "
-                    << CoutCast(reference[i]) << " (difference:" << difference << ", fraction: " << fraction << ")";
+                if(verbose)
+                    std::cout << "INCORRECT: [" << i << "]: " << "(computed) "
+                              << CoutCast(computed[i]) << " != " << CoutCast(reference[i])
+                              << " (difference:" << difference << ", fraction: " << fraction << ")";
                 return 1;
             }
         }
     }
     return 0;
 }
-
 
 /**
  * Compares the equivalence of two arrays
@@ -362,28 +379,28 @@ int CompareResults(float* computed, float* reference, OffsetT len, bool verbose 
 /**
  * Compares the equivalence of two arrays
  */
-template <typename OffsetT>
+template<typename OffsetT>
 int CompareResults(double* computed, double* reference, OffsetT len, bool verbose = true)
 {
-    for (OffsetT i = 0; i < len; i++)
+    for(OffsetT i = 0; i < len; i++)
     {
-        if (computed[i] != reference[i])
+        if(computed[i] != reference[i])
         {
-            double difference = std::abs(computed[i]-reference[i]);
-            double fraction = difference / std::abs(reference[i]);
+            double difference = std::abs(computed[i] - reference[i]);
+            double fraction   = difference / std::abs(reference[i]);
 
-            if (fraction > 0.0001)
+            if(fraction > 0.0001)
             {
-                if (verbose) std::cout << "INCORRECT: [" << i << "]: "
-                    << CoutCast(computed[i]) << " != "
-                    << CoutCast(reference[i]) << " (difference:" << difference << ", fraction: " << fraction << ")";
+                if(verbose)
+                    std::cout << "INCORRECT: [" << i << "]: " << CoutCast(computed[i])
+                              << " != " << CoutCast(reference[i]) << " (difference:" << difference
+                              << ", fraction: " << fraction << ")";
                 return 1;
             }
         }
     }
     return 0;
 }
-
 
 // /**
 //  * Verify the contents of a device array match those
@@ -418,30 +435,29 @@ int CompareResults(double* computed, double* reference, OffsetT len, bool verbos
  * Verify the contents of a device array match those
  * of a host array
  */
-template <typename S, typename T>
-int CompareDeviceResults(
-    S *h_reference,
-    T *d_data,
-    std::size_t num_items,
-    bool verbose = true,
-    bool display_data = false)
+template<typename S, typename T>
+int CompareDeviceResults(S*          h_reference,
+                         T*          d_data,
+                         std::size_t num_items,
+                         bool        verbose      = true,
+                         bool        display_data = false)
 {
     // Allocate array on host
-    T *h_data = (T*) malloc(num_items * sizeof(T));
+    T* h_data = (T*)malloc(num_items * sizeof(T));
 
     // Copy data back
     HIP_CHECK(hipMemcpy(h_data, d_data, sizeof(T) * num_items, hipMemcpyDeviceToHost));
 
     // Display data
-    if (display_data)
+    if(display_data)
     {
         printf("Reference:\n");
-        for (std::size_t i = 0; i < num_items; i++)
+        for(std::size_t i = 0; i < num_items; i++)
         {
             std::cout << CoutCast(h_reference[i]) << ", ";
         }
         printf("\n\nComputed:\n");
-        for (std::size_t i = 0; i < num_items; i++)
+        for(std::size_t i = 0; i < num_items; i++)
         {
             std::cout << CoutCast(h_data[i]) << ", ";
         }
@@ -452,41 +468,41 @@ int CompareDeviceResults(
     int retval = CompareResults(h_data, h_reference, num_items, verbose);
 
     // Cleanup
-    if (h_data) free(h_data);
+    if(h_data)
+        free(h_data);
 
     return retval;
 }
-
 
 /**
  * Verify the contents of a device array match those
  * of a device array
  */
-template <typename T>
-int CompareDeviceDeviceResults(
-    T *d_reference,
-    T *d_data,
-    std::size_t num_items,
-    bool verbose = true,
-    bool display_data = false)
+template<typename T>
+int CompareDeviceDeviceResults(T*          d_reference,
+                               T*          d_data,
+                               std::size_t num_items,
+                               bool        verbose      = true,
+                               bool        display_data = false)
 {
     // Allocate array on host
-    T *h_reference = (T*) malloc(num_items * sizeof(T));
-    T *h_data = (T*) malloc(num_items * sizeof(T));
+    T* h_reference = (T*)malloc(num_items * sizeof(T));
+    T* h_data      = (T*)malloc(num_items * sizeof(T));
 
     // Copy data back
     HIP_CHECK(hipMemcpy(h_reference, d_reference, sizeof(T) * num_items, hipMemcpyDeviceToHost));
     HIP_CHECK(hipMemcpy(h_data, d_data, sizeof(T) * num_items, hipMemcpyDeviceToHost));
 
     // Display data
-    if (display_data) {
+    if(display_data)
+    {
         printf("Reference:\n");
-        for (std::size_t i = 0; i < num_items; i++)
+        for(std::size_t i = 0; i < num_items; i++)
         {
             std::cout << CoutCast(h_reference[i]) << ", ";
         }
         printf("\n\nComputed:\n");
-        for (std::size_t i = 0; i < num_items; i++)
+        for(std::size_t i = 0; i < num_items; i++)
         {
             std::cout << CoutCast(h_data[i]) << ", ";
         }
@@ -497,8 +513,10 @@ int CompareDeviceDeviceResults(
     int retval = CompareResults(h_data, h_reference, num_items, verbose);
 
     // Cleanup
-    if (h_reference) free(h_reference);
-    if (h_data) free(h_data);
+    if(h_reference)
+        free(h_reference);
+    if(h_data)
+        free(h_data);
 
     return retval;
 }
@@ -506,19 +524,16 @@ int CompareDeviceDeviceResults(
 /**
  * Print the contents of a host array
  */
-template <typename InputIteratorT>
-void DisplayResults(
-    InputIteratorT h_data,
-    std::size_t num_items)
+template<typename InputIteratorT>
+void DisplayResults(InputIteratorT h_data, std::size_t num_items)
 {
     // Display data
-    for (std::size_t i = 0; i < num_items; i++)
+    for(std::size_t i = 0; i < num_items; i++)
     {
         std::cout << CoutCast(h_data[i]) << ", ";
     }
     printf("\n");
 }
-
 
 int g_num_rand_samples = 0;
 /**
@@ -543,32 +558,28 @@ int g_num_rand_samples = 0;
  * ...                  | ...
  *
  */
-template <typename K>
-void RandomBits(
-    K &key,
-    int entropy_reduction = 0,
-    int begin_bit = 0,
-    int end_bit = sizeof(K) * 8)
+template<typename K>
+void RandomBits(K& key, int entropy_reduction = 0, int begin_bit = 0, int end_bit = sizeof(K) * 8)
 {
-    const int NUM_BYTES = sizeof(K);
+    const int NUM_BYTES  = sizeof(K);
     const int WORD_BYTES = sizeof(unsigned int);
-    const int NUM_WORDS = (NUM_BYTES + WORD_BYTES - 1) / WORD_BYTES;
+    const int NUM_WORDS  = (NUM_BYTES + WORD_BYTES - 1) / WORD_BYTES;
 
     unsigned int word_buff[NUM_WORDS];
 
-    if (entropy_reduction == -1)
+    if(entropy_reduction == -1)
     {
-        memset((void *) &key, 0, sizeof(key));
+        memset((void*)&key, 0, sizeof(key));
         return;
     }
 
-    if (end_bit < 0)
+    if(end_bit < 0)
         end_bit = sizeof(K) * 8;
 
-    while (true)
+    while(true)
     {
         // Generate random word_buff
-        for (int j = 0; j < NUM_WORDS; j++)
+        for(int j = 0; j < NUM_WORDS; j++)
         {
             int current_bit = j * WORD_BYTES * 8;
 
@@ -576,7 +587,7 @@ void RandomBits(
             word &= 0xffffffff << std::max(0, begin_bit - current_bit);
             word &= 0xffffffff >> std::max(0, (current_bit + (WORD_BYTES * 8)) - end_bit);
 
-            for (int i = 0; i <= entropy_reduction; i++)
+            for(int i = 0; i <= entropy_reduction; i++)
             {
                 // Grab some of the higher bits from rand (better entropy, supposedly)
                 word &= mersenne::genrand_int32();
@@ -607,16 +618,18 @@ void RandomBits(
 }
 
 /// Randomly select number between [0:max)
-template <typename T>
+template<typename T>
 T RandomValue(T max)
 {
     unsigned int bits;
-    unsigned int max_int = (unsigned int) -1;
-    do {
+    unsigned int max_int = (unsigned int)-1;
+    do
+    {
         RandomBits(bits);
-    } while (bits == max_int);
+    }
+    while(bits == max_int);
 
-    return (T) ((double(bits) / double(max_int)) * double(max));
+    return (T)((double(bits) / double(max_int)) * double(max));
 }
 
 struct GpuTimer

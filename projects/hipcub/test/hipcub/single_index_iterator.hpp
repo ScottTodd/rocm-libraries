@@ -35,13 +35,13 @@ public:
     class conditional_discard_value
     {
     public:
-        HIPCUB_HOST_DEVICE inline explicit conditional_discard_value(T* const value, bool keep)
+        HIPCUB_HOST_DEVICE
+        inline explicit conditional_discard_value(T* const value, bool keep)
             : value_{value}, keep_{keep}
         {}
 
         HIPCUB_HOST_DEVICE
-        inline conditional_discard_value&
-            operator=(T value)
+        inline conditional_discard_value& operator=(T value)
         {
             if(keep_)
             {
@@ -66,9 +66,8 @@ public:
     using iterator_category = std::random_access_iterator_tag;
     using difference_type   = std::ptrdiff_t;
 
-    HIPCUB_HOST_DEVICE inline single_index_iterator(T*     value,
-                                                    size_t expected_index,
-                                                    size_t index = 0)
+    HIPCUB_HOST_DEVICE
+    inline single_index_iterator(T* value, size_t expected_index, size_t index = 0)
         : value_{value}, expected_index_{expected_index}, index_{index}
     {}
 
@@ -78,91 +77,78 @@ public:
     ~single_index_iterator() = default;
 
     HIPCUB_HOST_DEVICE
-    inline bool
-        operator==(const single_index_iterator& rhs) const
+    inline bool operator==(const single_index_iterator& rhs) const
     {
         return index_ == rhs.index_;
     }
     HIPCUB_HOST_DEVICE
-    inline bool
-        operator!=(const single_index_iterator& rhs) const
+    inline bool operator!=(const single_index_iterator& rhs) const
     {
         return !(this == rhs);
     }
 
     HIPCUB_HOST_DEVICE
-    inline reference
-        operator*()
+    inline reference operator*()
     {
         return value_type{value_, index_ == expected_index_};
     }
 
     HIPCUB_HOST_DEVICE
-    inline reference
-        operator[](const difference_type distance) const
+    inline reference operator[](const difference_type distance) const
     {
         return *(*this + distance);
     }
 
     HIPCUB_HOST_DEVICE
-    inline single_index_iterator&
-        operator+=(const difference_type rhs)
+    inline single_index_iterator& operator+=(const difference_type rhs)
     {
         index_ += rhs;
         return *this;
     }
     HIPCUB_HOST_DEVICE
-    inline single_index_iterator&
-        operator-=(const difference_type rhs)
+    inline single_index_iterator& operator-=(const difference_type rhs)
     {
         index_ -= rhs;
         return *this;
     }
 
     HIPCUB_HOST_DEVICE
-    inline difference_type
-        operator-(const single_index_iterator& rhs) const
+    inline difference_type operator-(const single_index_iterator& rhs) const
     {
         return index_ - rhs.index_;
     }
 
     HIPCUB_HOST_DEVICE
-    inline single_index_iterator
-        operator+(const difference_type rhs) const
+    inline single_index_iterator operator+(const difference_type rhs) const
     {
         return single_index_iterator(*this) += rhs;
     }
     HIPCUB_HOST_DEVICE
-    inline single_index_iterator
-        operator-(const difference_type rhs) const
+    inline single_index_iterator operator-(const difference_type rhs) const
     {
         return single_index_iterator(*this) -= rhs;
     }
 
     HIPCUB_HOST_DEVICE
-    inline single_index_iterator&
-        operator++()
+    inline single_index_iterator& operator++()
     {
         ++index_;
         return *this;
     }
     HIPCUB_HOST_DEVICE
-    inline single_index_iterator&
-        operator--()
+    inline single_index_iterator& operator--()
     {
         --index_;
         return *this;
     }
 
     HIPCUB_HOST_DEVICE
-    inline single_index_iterator
-        operator++(int)
+    inline single_index_iterator operator++(int)
     {
         return ++single_index_iterator{*this};
     }
     HIPCUB_HOST_DEVICE
-    inline single_index_iterator
-        operator--(int)
+    inline single_index_iterator operator--(int)
     {
         return --single_index_iterator{*this};
     }

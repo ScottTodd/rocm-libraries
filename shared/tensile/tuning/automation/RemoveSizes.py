@@ -33,13 +33,15 @@ import argparse
 import csv
 import yaml
 
+
 def parseArgs():
     argParser = argparse.ArgumentParser()
 
-    h = {"inLogic"  : "Input library logic file",
-         "outLogic" : "Output library logic file",
-         "sizeList" : "CSV file containing list of sizes to remove",
-         "verbose"  : "Verbose output"
+    h = {
+        "inLogic": "Input library logic file",
+        "outLogic": "Output library logic file",
+        "sizeList": "CSV file containing list of sizes to remove",
+        "verbose": "Verbose output",
     }
 
     argParser.add_argument("inLogic", type=str, help=h["inLogic"])
@@ -48,6 +50,7 @@ def parseArgs():
     argParser.add_argument("--verbose", "-v", action="store_true", help=h["verbose"])
 
     return argParser.parse_args()
+
 
 def main():
     args = parseArgs()
@@ -85,10 +88,18 @@ def main():
         print("Final size count = {}".format(len(mapping)))
 
     with open(args.outLogic, "w") as outFile:
-        yaml.dump(logicData, outFile, yamlDumper, default_flow_style=None, sort_keys=False, width=5000)
+        yaml.dump(
+            logicData,
+            outFile,
+            yamlDumper,
+            default_flow_style=None,
+            sort_keys=False,
+            width=5000,
+        )
 
     if args.verbose:
         print("Done writing new logic file")
+
 
 if __name__ == "__main__":
     main()

@@ -54,14 +54,14 @@ template<class AIteratorT,
          class CoordinateT,
          class BinaryFunction
          = rocprim::less<typename std::iterator_traits<AIteratorT>::value_type>>
-ROCPRIM_HOST_DEVICE inline void merge_path_search(OffsetT        diagonal,
-                                                  AIteratorT     a,
-                                                  BIteratorT     b,
-                                                  OffsetT        a_len,
-                                                  OffsetT        b_len,
-                                                  CoordinateT&   path_coordinate,
-                                                  BinaryFunction compare_function
-                                                  = BinaryFunction())
+ROCPRIM_HOST_DEVICE
+inline void merge_path_search(OffsetT        diagonal,
+                              AIteratorT     a,
+                              BIteratorT     b,
+                              OffsetT        a_len,
+                              OffsetT        b_len,
+                              CoordinateT&   path_coordinate,
+                              BinaryFunction compare_function = BinaryFunction())
 {
     OffsetT split_min = rocprim::detail::merge_path(a, b, a_len, b_len, diagonal, compare_function);
     path_coordinate.x = ::rocprim::min(split_min, a_len);
@@ -77,7 +77,8 @@ ROCPRIM_HOST_DEVICE inline void merge_path_search(OffsetT        diagonal,
 /// \param val       [in]    Search Key
 /// \return                  Offset at which val was found
 template<typename InputIteratorT, typename OffsetT, typename T>
-ROCPRIM_DEVICE ROCPRIM_INLINE OffsetT lower_bound(InputIteratorT input, OffsetT num_items, T val)
+ROCPRIM_DEVICE ROCPRIM_INLINE
+OffsetT lower_bound(InputIteratorT input, OffsetT num_items, T val)
 {
     OffsetT retval = 0;
     while(num_items > 0)
@@ -106,7 +107,8 @@ ROCPRIM_DEVICE ROCPRIM_INLINE OffsetT lower_bound(InputIteratorT input, OffsetT 
 /// \param val       [in]    Search Key
 /// \return                  Offset at which val was found
 template<typename InputIteratorT, typename OffsetT, typename T>
-ROCPRIM_DEVICE ROCPRIM_INLINE OffsetT upper_bound(InputIteratorT input, OffsetT num_items, T val)
+ROCPRIM_DEVICE ROCPRIM_INLINE
+OffsetT upper_bound(InputIteratorT input, OffsetT num_items, T val)
 {
     OffsetT retval = 0;
     while(num_items > 0)
@@ -137,9 +139,8 @@ ROCPRIM_DEVICE ROCPRIM_INLINE OffsetT upper_bound(InputIteratorT input, OffsetT 
 /// \param val       [in]    Search Key
 /// \return                  Offset at which val was found
 template<int MaxNumItems, typename InputIteratorT, typename OffsetT, typename T>
-ROCPRIM_DEVICE ROCPRIM_INLINE OffsetT static_upper_bound(InputIteratorT input,
-                                                         OffsetT        num_items,
-                                                         T              val)
+ROCPRIM_DEVICE ROCPRIM_INLINE
+OffsetT static_upper_bound(InputIteratorT input, OffsetT num_items, T val)
 {
     OffsetT lower_bound = 0;
     OffsetT upper_bound = num_items;

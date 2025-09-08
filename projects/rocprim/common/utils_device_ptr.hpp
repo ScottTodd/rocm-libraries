@@ -50,7 +50,7 @@ private:
 public:
     static constexpr size_t value_size = sizeof(value_type_proxy);
 
-    device_ptr() : device_raw_ptr_(nullptr), number_of_ele_(0){};
+    device_ptr() : device_raw_ptr_(nullptr), number_of_ele_(0) {};
 
     /// \brief Construct with a pre-allocated memory space.
     device_ptr(size_type pre_alloc_number_of_ele)
@@ -294,7 +294,7 @@ public:
                 = common::hipMallocHelper(&device_temp_ptr, new_number_of_ele * value_size);
             if(err == hipErrorOutOfMemory)
             {
-                (void) hipGetLastError(); // reset internally recorded HIP error
+                (void)hipGetLastError(); // reset internally recorded HIP error
                 return false;
             }
             HIP_CHECK(err);

@@ -32,7 +32,7 @@
 
 #include <hip/hip_runtime.h>
 
-ROCSPARSELT_KERNEL void init_kernel(){};
+ROCSPARSELT_KERNEL void init_kernel() {};
 
 void _rocsparselt_handle::init()
 {
@@ -134,8 +134,7 @@ void _rocsparselt_handle::destroy()
 
 std::ostream& operator<<(std::ostream& stream, const _rocsparselt_mat_descr& t)
 {
-    stream << "{"
-           << "ptr=" << (&t) << ", format=" << rocsparselt_matrix_type_to_string(t.m_type)
+    stream << "{" << "ptr=" << (&t) << ", format=" << rocsparselt_matrix_type_to_string(t.m_type)
            << ", row=" << t.m << ", col=" << t.n << ", ld=" << t.ld << ", alignment=" << t.alignment
            << ", datatype=" << hip_datatype_to_string(t.type)
            << ", order=" << rocsparselt_order_to_string(t.order);
@@ -148,8 +147,7 @@ std::ostream& operator<<(std::ostream& stream, const _rocsparselt_mat_descr& t)
 
 std::ostream& operator<<(std::ostream& stream, const _rocsparselt_matmul_descr& t)
 {
-    stream << "{"
-           << "ptr=" << (&t) << ", opA=" << rocsparselt_operation_to_string(t.op_A)
+    stream << "{" << "ptr=" << (&t) << ", opA=" << rocsparselt_operation_to_string(t.op_A)
            << ", opB=" << rocsparselt_operation_to_string(t.op_B) << ", matA=" << *(t.matrix_A)
            << ", matB=" << *(t.matrix_B) << ", matC=" << *(t.matrix_C);
     if(t.matrix_C != t.matrix_D)
@@ -163,15 +161,14 @@ std::ostream& operator<<(std::ostream& stream, const _rocsparselt_matmul_descr& 
            << ", activation_tanh_beta=" << t.activation_tanh_beta
            << ", activation_gelu_scaling=" << t.activation_gelu_scaling
            << ", bias_pointer=" << t.bias_pointer << ", bias_stride=" << t.bias_stride
-           << ", bias_type=" << hip_datatype_to_string(t.bias_type) << ", m=" << t.m << ", n=" << t.n
-           << ", k=" << t.k << ", is_sparse_a=" << t.is_sparse_a << "}";
+           << ", bias_type=" << hip_datatype_to_string(t.bias_type) << ", m=" << t.m
+           << ", n=" << t.n << ", k=" << t.k << ", is_sparse_a=" << t.is_sparse_a << "}";
     return stream;
 }
 
 std::ostream& operator<<(std::ostream& stream, const _rocsparselt_matmul_alg_selection& t)
 {
-    stream << "{"
-           << "ptr=" << (&t) << ", alg=" << t.alg << ", config_id=" << t.config_id
+    stream << "{" << "ptr=" << (&t) << ", alg=" << t.alg << ", config_id=" << t.config_id
            << ", config_max_id=" << t.config_max_id << ", search_iterations=" << t.search_iterations
            << "}";
     return stream;
@@ -179,8 +176,7 @@ std::ostream& operator<<(std::ostream& stream, const _rocsparselt_matmul_alg_sel
 
 std::ostream& operator<<(std::ostream& stream, const _rocsparselt_matmul_plan& t)
 {
-    stream << "{"
-           << "ptr=" << (&t) << ", matmul=" << *(t.matmul_descr)
+    stream << "{" << "ptr=" << (&t) << ", matmul=" << *(t.matmul_descr)
            << ", alg_selection=" << *(t.alg_selection) << "}";
     return stream;
 }
@@ -216,12 +212,13 @@ bool check_is_init_plan(const _rocsparselt_matmul_plan* plan)
     return false;
 }
 
-_rocsparselt_matmul_datatype is_matmul_datatype_valid(hipDataType a, hipDataType b, hipDataType c, hipDataType d, rocsparselt_compute_type compute)
+_rocsparselt_matmul_datatype is_matmul_datatype_valid(
+    hipDataType a, hipDataType b, hipDataType c, hipDataType d, rocsparselt_compute_type compute)
 {
     for(auto valid : valid_matmul_datatypes)
     {
         if(a == valid.a && b == valid.b && c == valid.c && d == valid.d && compute == valid.compute)
-          return valid.type;
+            return valid.type;
     }
     return MATMUL_DATATYPE_UNKNOWN;
 };

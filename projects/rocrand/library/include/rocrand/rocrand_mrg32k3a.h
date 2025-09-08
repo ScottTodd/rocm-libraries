@@ -45,14 +45,15 @@
  *
  *  @{
  */
- /**
+/**
  * \def ROCRAND_MRG32K3A_DEFAULT_SEED
  * \brief Default seed for MRG32K3A PRNG.
  */
- #define ROCRAND_MRG32K3A_DEFAULT_SEED 12345ULL
- /** @} */ // end of group rocranddevice
+#define ROCRAND_MRG32K3A_DEFAULT_SEED 12345ULL
+/** @} */ // end of group rocranddevice
 
-namespace rocrand_device {
+namespace rocrand_device
+{
 
 class mrg32k3a_engine
 {
@@ -62,7 +63,7 @@ public:
         unsigned int g1[3];
         unsigned int g2[3];
 
-    #ifndef ROCRAND_DETAIL_BM_NOT_IN_STATE
+#ifndef ROCRAND_DETAIL_BM_NOT_IN_STATE
         // The Box–Muller transform requires two inputs to convert uniformly
         // distributed real values [0; 1] to normally distributed real values
         // (with mean = 0, and stddev = 1). Often user wants only one
@@ -70,12 +71,13 @@ public:
         // numbers the 2nd value is saved for future requests.
         unsigned int boxmuller_float_state; // is there a float in boxmuller_float
         unsigned int boxmuller_double_state; // is there a double in boxmuller_double
-        float boxmuller_float; // normally distributed float
-        double boxmuller_double; // normally distributed double
-    #endif
+        float        boxmuller_float; // normally distributed float
+        double       boxmuller_double; // normally distributed double
+#endif
     };
 
-    __forceinline__ __device__ __host__ mrg32k3a_engine()
+    __forceinline__ __device__ __host__
+    mrg32k3a_engine()
     {
         this->seed(ROCRAND_MRG32K3A_DEFAULT_SEED, 0, 0);
     }
@@ -88,9 +90,10 @@ public:
     /// zero, value \p ROCRAND_MRG32K3A_DEFAULT_SEED is used instead.
     ///
     /// A subsequence is 2^76 numbers long.
-    __forceinline__ __device__ __host__ mrg32k3a_engine(const unsigned long long seed,
-                                                        const unsigned long long subsequence,
-                                                        const unsigned long long offset)
+    __forceinline__ __device__ __host__
+    mrg32k3a_engine(const unsigned long long seed,
+                    const unsigned long long subsequence,
+                    const unsigned long long offset)
     {
         this->seed(seed, subsequence, offset);
     }
@@ -103,57 +106,62 @@ public:
     /// zero, value \p ROCRAND_MRG32K3A_DEFAULT_SEED is used instead.
     ///
     /// A subsequence is 2^76 numbers long.
-    __forceinline__ __device__ __host__ void seed(unsigned long long       seed_value,
-                                                  const unsigned long long subsequence,
-                                                  const unsigned long long offset)
+    __forceinline__ __device__ __host__
+    void seed(unsigned long long       seed_value,
+              const unsigned long long subsequence,
+              const unsigned long long offset)
     {
         if(seed_value == 0)
         {
             seed_value = ROCRAND_MRG32K3A_DEFAULT_SEED;
         }
-        unsigned int x = (unsigned int) seed_value ^ 0x55555555U;
-        unsigned int y = (unsigned int) ((seed_value >> 32) ^ 0xAAAAAAAAU);
-        m_state.g1[0] = mod_mul_m1(x, seed_value);
-        m_state.g1[1] = mod_mul_m1(y, seed_value);
-        m_state.g1[2] = mod_mul_m1(x, seed_value);
-        m_state.g2[0] = mod_mul_m2(y, seed_value);
-        m_state.g2[1] = mod_mul_m2(x, seed_value);
-        m_state.g2[2] = mod_mul_m2(y, seed_value);
+        unsigned int x = (unsigned int)seed_value ^ 0x55555555U;
+        unsigned int y = (unsigned int)((seed_value >> 32) ^ 0xAAAAAAAAU);
+        m_state.g1[0]  = mod_mul_m1(x, seed_value);
+        m_state.g1[1]  = mod_mul_m1(y, seed_value);
+        m_state.g1[2]  = mod_mul_m1(x, seed_value);
+        m_state.g2[0]  = mod_mul_m2(y, seed_value);
+        m_state.g2[1]  = mod_mul_m2(x, seed_value);
+        m_state.g2[2]  = mod_mul_m2(y, seed_value);
         this->restart(subsequence, offset);
     }
 
     /// Advances the internal state to skip \p offset numbers.
-    __forceinline__ __device__ __host__ void discard(unsigned long long offset)
+    __forceinline__ __device__ __host__
+    void discard(unsigned long long offset)
     {
         this->discard_impl(offset);
     }
 
     /// Advances the internal state to skip \p subsequence subsequences.
     /// A subsequence is 2^76 numbers long.
-    __forceinline__ __device__ __host__ void discard_subsequence(unsigned long long subsequence)
+    __forceinline__ __device__ __host__
+    void discard_subsequence(unsigned long long subsequence)
     {
         this->discard_subsequence_impl(subsequence);
     }
 
     /// Advances the internal state to skip \p sequence sequences.
     /// A sequence is 2^127 numbers long.
-    __forceinline__ __device__ __host__ void discard_sequence(unsigned long long sequence)
+    __forceinline__ __device__ __host__
+    void discard_sequence(unsigned long long sequence)
     {
         this->discard_sequence_impl(sequence);
     }
 
-    __forceinline__ __device__ __host__ void restart(const unsigned long long subsequence,
-                                                     const unsigned long long offset)
+    __forceinline__ __device__ __host__
+    void restart(const unsigned long long subsequence, const unsigned long long offset)
     {
-    #ifndef ROCRAND_DETAIL_BM_NOT_IN_STATE
-        m_state.boxmuller_float_state = 0;
+#ifndef ROCRAND_DETAIL_BM_NOT_IN_STATE
+        m_state.boxmuller_float_state  = 0;
         m_state.boxmuller_double_state = 0;
-    #endif
+#endif
         this->discard_subsequence_impl(subsequence);
         this->discard_impl(offset);
     }
 
-    __forceinline__ __device__ __host__ unsigned int operator()()
+    __forceinline__ __device__ __host__
+    unsigned int operator()()
     {
         return this->next();
     }
@@ -187,26 +195,29 @@ public:
 protected:
     // Advances the internal state to skip \p offset numbers.
     // DOES NOT CALCULATE NEW ULONGLONG
-    __forceinline__ __device__ __host__ void discard_impl(unsigned long long offset)
+    __forceinline__ __device__ __host__
+    void discard_impl(unsigned long long offset)
     {
         discard_state(offset);
     }
 
     // DOES NOT CALCULATE NEW ULONGLONG
-    __forceinline__ __device__ __host__ void
-        discard_subsequence_impl(unsigned long long subsequence)
+    __forceinline__ __device__ __host__
+    void discard_subsequence_impl(unsigned long long subsequence)
     {
         int i = 0;
 
-        while(subsequence > 0) {
-            if (subsequence & 1) {
-                #if defined(__HIP_DEVICE_COMPILE__)
+        while(subsequence > 0)
+        {
+            if(subsequence & 1)
+            {
+#if defined(__HIP_DEVICE_COMPILE__)
                 mod_mat_vec_m1(d_A1P76 + i, m_state.g1);
                 mod_mat_vec_m2(d_A2P76 + i, m_state.g2);
-                #else
+#else
                 mod_mat_vec_m1(h_A1P76 + i, m_state.g1);
                 mod_mat_vec_m2(h_A2P76 + i, m_state.g2);
-                #endif
+#endif
             }
             subsequence >>= 1;
             i += 9;
@@ -214,19 +225,22 @@ protected:
     }
 
     // DOES NOT CALCULATE NEW ULONGLONG
-    __forceinline__ __device__ __host__ void discard_sequence_impl(unsigned long long sequence)
+    __forceinline__ __device__ __host__
+    void discard_sequence_impl(unsigned long long sequence)
     {
         int i = 0;
 
-        while(sequence > 0) {
-            if (sequence & 1) {
-                #if defined(__HIP_DEVICE_COMPILE__)
+        while(sequence > 0)
+        {
+            if(sequence & 1)
+            {
+#if defined(__HIP_DEVICE_COMPILE__)
                 mod_mat_vec_m1(d_A1P127 + i, m_state.g1);
                 mod_mat_vec_m2(d_A2P127 + i, m_state.g2);
-                #else
+#else
                 mod_mat_vec_m1(h_A1P127 + i, m_state.g1);
                 mod_mat_vec_m2(h_A2P127 + i, m_state.g2);
-                #endif
+#endif
             }
             sequence >>= 1;
             i += 9;
@@ -235,19 +249,22 @@ protected:
 
     // Advances the internal state by offset times.
     // DOES NOT CALCULATE NEW ULONGLONG
-    __forceinline__ __device__ __host__ void discard_state(unsigned long long offset)
+    __forceinline__ __device__ __host__
+    void discard_state(unsigned long long offset)
     {
         int i = 0;
 
-        while(offset > 0) {
-            if (offset & 1) {
-                #if defined(__HIP_DEVICE_COMPILE__)
+        while(offset > 0)
+        {
+            if(offset & 1)
+            {
+#if defined(__HIP_DEVICE_COMPILE__)
                 mod_mat_vec_m1(d_A1 + i, m_state.g1);
                 mod_mat_vec_m2(d_A2 + i, m_state.g2);
-                #else
+#else
                 mod_mat_vec_m1(h_A1 + i, m_state.g1);
                 mod_mat_vec_m2(h_A2 + i, m_state.g2);
-                #endif
+#endif
             }
             offset >>= 1;
             i += 9;
@@ -256,7 +273,8 @@ protected:
 
     // Advances the internal state to the next state
     // DOES NOT CALCULATE NEW ULONGLONG
-    __forceinline__ __device__ __host__ void discard_state()
+    __forceinline__ __device__ __host__
+    void discard_state()
     {
         discard_state(1);
     }
@@ -286,18 +304,18 @@ private:
         s[2] = mod_m2(mod_m2(A[6] * x[0]) + mod_m2(A[7] * x[1]) + mod_m2(A[8] * x[2]));
     }
 
-    __forceinline__ __device__ __host__ static unsigned long long mod_mul_m1(unsigned int       i,
-                                                                             unsigned long long j)
+    __forceinline__ __device__ __host__
+    static unsigned long long mod_mul_m1(unsigned int i, unsigned long long j)
     {
         long long hi, lo, temp1, temp2;
 
-        hi = i / 131072;
-        lo = i - (hi * 131072);
+        hi    = i / 131072;
+        lo    = i - (hi * 131072);
         temp1 = mod_m1(hi * j) * 131072;
         temp2 = mod_m1(lo * j);
-        lo = mod_m1(temp1 + temp2);
+        lo    = mod_m1(temp1 + temp2);
 
-        if (lo < 0)
+        if(lo < 0)
             lo += ROCRAND_MRG32K3A_M1;
         return lo;
     }
@@ -319,13 +337,13 @@ private:
     {
         long long hi, lo, temp1, temp2;
 
-        hi = i / 131072;
-        lo = i - (hi * 131072);
+        hi    = i / 131072;
+        lo    = i - (hi * 131072);
         temp1 = mod_m2(hi * j) * 131072;
         temp2 = mod_m2(lo * j);
-        lo = mod_m2(temp1 + temp2);
+        lo    = mod_m2(temp1 + temp2);
 
-        if (lo < 0)
+        if(lo < 0)
             lo += ROCRAND_MRG32K3A_M2;
         return lo;
     }
@@ -349,9 +367,9 @@ protected:
     // State
     mrg32k3a_state m_state;
 
-    #ifndef ROCRAND_DETAIL_BM_NOT_IN_STATE
+#ifndef ROCRAND_DETAIL_BM_NOT_IN_STATE
     friend struct detail::engine_boxmuller_helper<mrg32k3a_engine>;
-    #endif
+#endif
 
 }; // mrg32k3a_engine class
 

@@ -47,7 +47,7 @@ namespace rocRoller
         public:
             ACCVGPRReadWrite() {}
             ACCVGPRReadWrite(ContextPtr context)
-                : WaitStateObserver<ACCVGPRReadWrite>(context){};
+                : WaitStateObserver<ACCVGPRReadWrite>(context) {};
 
             constexpr static bool required(GPUArchitectureTarget const& target)
             {

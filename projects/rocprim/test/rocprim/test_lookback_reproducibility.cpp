@@ -82,22 +82,20 @@ struct RocprimLookbackReproducibilityTests : public testing::Test
     const bool debug_synchronous = false;
 };
 
-using Suite = testing::Types<
-    TestParams<int>,
-    TestParams<rocprim::bfloat16>,
-    TestParams<rocprim::half>,
-    TestParams<float>,
-    TestParams<double>,
-    TestParams<common::custom_type<double, double, true>>
->;
+using Suite = testing::Types<TestParams<int>,
+                             TestParams<rocprim::bfloat16>,
+                             TestParams<rocprim::half>,
+                             TestParams<float>,
+                             TestParams<double>,
+                             TestParams<common::custom_type<double, double, true>>>;
 
 TYPED_TEST_SUITE(RocprimLookbackReproducibilityTests, Suite);
 
 template<typename S, typename F>
 void test_reproducibility(S scan_op, F run_test)
 {
-    common::device_ptr<int>     d_enable_sleep_ptr(1);
-    int*                        d_enable_sleep = d_enable_sleep_ptr.get();
+    common::device_ptr<int> d_enable_sleep_ptr(1);
+    int*                    d_enable_sleep = d_enable_sleep_ptr.get();
 
     // Delay the operator by a semi-random amount to increase the likelyhood
     // of changing the number of lookback steps between the runs.
@@ -177,13 +175,13 @@ TYPED_TEST(RocprimLookbackReproducibilityTests, Scan)
 
             common::device_ptr<T> d_input(input);
             common::device_ptr<T> d_output(input.size());
-            scan_op_type scan_op;
+            scan_op_type          scan_op;
 
             test_reproducibility(
                 scan_op,
                 [&](auto test_scan_op)
                 {
-                    size_t temp_storage_size_bytes;
+                    size_t                   temp_storage_size_bytes;
                     common::device_ptr<void> d_temp_storage;
                     HIP_CHECK(rocprim::deterministic_inclusive_scan<Config>(nullptr,
                                                                             temp_storage_size_bytes,
@@ -225,10 +223,11 @@ TYPED_TEST(RocprimLookbackReproducibilityTests, ScanByKey)
     HIP_CHECK(hipGetDeviceProperties(&attributes, 0));
 
     // Disable int test case for Navi3X because of known issue
-    if (std::is_same_v<V, int> && attributes.major == 11){
+    if(std::is_same_v<V, int> && attributes.major == 11)
+    {
         GTEST_SKIP();
     }
-    
+
     const size_t min_segment_length = 1000;
     const size_t max_segment_length = 10000;
 
@@ -265,8 +264,8 @@ TYPED_TEST(RocprimLookbackReproducibilityTests, ScanByKey)
             test_reproducibility(scan_op,
                                  [&](auto test_scan_op)
                                  {
-                                     size_t                       temp_storage_size_bytes;
-                                     common::device_ptr<void>     d_temp_storage;
+                                     size_t                   temp_storage_size_bytes;
+                                     common::device_ptr<void> d_temp_storage;
                                      HIP_CHECK(rocprim::deterministic_inclusive_scan_by_key<Config>(
                                          nullptr,
                                          temp_storage_size_bytes,
@@ -348,47 +347,48 @@ TYPED_TEST(RocprimLookbackReproducibilityTests, ReduceByKey)
             // reduce_by_key tests.
             auto d_discard_unique_output = rocprim::make_discard_iterator();
 
-            test_reproducibility(
-                scan_op,
-                [&](auto test_scan_op)
-                {
-                    size_t                       temp_storage_size_bytes;
-                    common::device_ptr<void>     d_temp_storage;
-                    HIP_CHECK(
-                        rocprim::deterministic_reduce_by_key<Config>(nullptr,
-                                                                     temp_storage_size_bytes,
-                                                                     d_keys.get(),
-                                                                     d_input.get(),
-                                                                     input.size(),
-                                                                     d_discard_unique_output,
-                                                                     d_output.get(),
-                                                                     d_unique_count_output.get(),
-                                                                     test_scan_op,
-                                                                     compare_op,
-                                                                     stream,
-                                                                     debug_synchronous));
-                    d_temp_storage.resize(temp_storage_size_bytes);
+            test_reproducibility(scan_op,
+                                 [&](auto test_scan_op)
+                                 {
+                                     size_t                   temp_storage_size_bytes;
+                                     common::device_ptr<void> d_temp_storage;
+                                     HIP_CHECK(rocprim::deterministic_reduce_by_key<Config>(
+                                         nullptr,
+                                         temp_storage_size_bytes,
+                                         d_keys.get(),
+                                         d_input.get(),
+                                         input.size(),
+                                         d_discard_unique_output,
+                                         d_output.get(),
+                                         d_unique_count_output.get(),
+                                         test_scan_op,
+                                         compare_op,
+                                         stream,
+                                         debug_synchronous));
+                                     d_temp_storage.resize(temp_storage_size_bytes);
 
-                    HIP_CHECK(
-                        rocprim::deterministic_reduce_by_key<Config>(d_temp_storage.get(),
-                                                                     temp_storage_size_bytes,
-                                                                     d_keys.get(),
-                                                                     d_input.get(),
-                                                                     input.size(),
-                                                                     d_discard_unique_output,
-                                                                     d_output.get(),
-                                                                     d_unique_count_output.get(),
-                                                                     test_scan_op,
-                                                                     compare_op,
-                                                                     stream,
-                                                                     debug_synchronous));
-                    HIP_CHECK(hipGetLastError());
+                                     HIP_CHECK(rocprim::deterministic_reduce_by_key<Config>(
+                                         d_temp_storage.get(),
+                                         temp_storage_size_bytes,
+                                         d_keys.get(),
+                                         d_input.get(),
+                                         input.size(),
+                                         d_discard_unique_output,
+                                         d_output.get(),
+                                         d_unique_count_output.get(),
+                                         test_scan_op,
+                                         compare_op,
+                                         stream,
+                                         debug_synchronous));
+                                     HIP_CHECK(hipGetLastError());
 
-                    [[maybe_unused]] size_t unique_count_output = d_unique_count_output.load()[0];
+                                     [[maybe_unused]]
+                                     size_t unique_count_output
+                                         = d_unique_count_output.load()[0];
 
-                    std::vector<V> output = d_output.load();
-                    return output;
-                });
+                                     std::vector<V> output = d_output.load();
+                                     return output;
+                                 });
         }
     }
 }

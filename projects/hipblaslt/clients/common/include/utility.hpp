@@ -71,9 +71,7 @@
 #if defined(GOOGLE_TEST) || defined(HIPBLASLT_BENCH)
 #undef stdout
 #undef stderr
-#pragma GCC poison cout cerr clog stdout stderr gets puts putchar fputs fprintf printf sprintf    \
-    vfprintf vprintf vsprintf perror strerror strtok gmtime ctime asctime localtime tmpnam putenv \
-        clearenv fcloseall ecvt fcvt sleep abort strsignal
+#pragma GCC poison cout cerr clog stdout stderr gets puts putchar fputs fprintf printf sprintf vfprintf vprintf vsprintf perror strerror strtok gmtime ctime asctime localtime tmpnam putenv clearenv fcloseall ecvt fcvt sleep abort strsignal
 #else
 // Suppress warnings about hipMalloc(), hipFree() except in hipblaslt-test and hipblaslt-bench
 #undef hipMalloc
@@ -121,8 +119,8 @@ enum class hipblaslt_batch_type
 class hipblaslt_local_handle
 {
     hipblasLtHandle_t m_handle;
-    std::string    m_sol_selec_saved_status = "";
-    bool           m_sol_selec_env_set{false};
+    std::string       m_sol_selec_saved_status = "";
+    bool              m_sol_selec_env_set{false};
 
 public:
     hipblaslt_local_handle();
@@ -321,7 +319,7 @@ public:
 
 /* ============================================================================================ */
 /*  device query and print out their ID and name */
-int64_t query_device_property(int device_id, hipDeviceProp_t &props);
+int64_t query_device_property(int device_id, hipDeviceProp_t& props);
 
 /*  set current device to device_id */
 void set_device(int64_t device_id);
@@ -528,4 +526,4 @@ typename std::enable_if<!std::is_same<int8_t, T>::value, T>::type saturate_cast(
 
 std::vector<void*> benchmark_allocation();
 int32_t            hipblaslt_get_arch_major();
-void hipblaslt_print_version();
+void               hipblaslt_print_version();

@@ -38,8 +38,7 @@ namespace rocRoller
 
             if(m_variableType.dataType != DataType::None)
                 msg << "." << m_variableType.dataType;
-            msg << ".d" << m_numDims << " " << m_tag << ", "
-                << "(base=";
+            msg << ".d" << m_numDims << " " << m_tag << ", " << "(base=";
             if(m_pointer)
             {
                 if(runtime_args)

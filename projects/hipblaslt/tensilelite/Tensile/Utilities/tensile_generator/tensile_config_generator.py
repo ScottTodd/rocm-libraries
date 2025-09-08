@@ -37,50 +37,53 @@ import concurrent.futures
 # Paths to the input and output files
 parser = argparse.ArgumentParser(description="""Generate Tensile config file""")
 
-parser.add_argument(
-    "--hipblaslt_log",
-    type=str,
-    help="Path to hipblaslt log file")
+parser.add_argument("--hipblaslt_log", type=str, help="Path to hipblaslt log file")
+
+parser.add_argument("--tensile_config", type=str, help="Path to tensile config file")
 
 parser.add_argument(
-    "--tensile_config", type=str,
-    help="Path to tensile config file")
+    "--gpus", type=int, default=1, help="Number of gpus for tuning hipblaslt"
+)
+
+parser.add_argument("--topk", type=int, default=None, help="Top k gemms for tuning")
+
+parser.add_argument("--iters", type=int, default=100, help="Max tuning iterations")
 
 parser.add_argument(
-    "--gpus", type=int, default=1,
-    help="Number of gpus for tuning hipblaslt")
+    "--fast",
+    type=bool,
+    default=False,
+    help="If enabled, only tune the matrix instruction with min tile sizes, else, tune full matrix instructions",
+)
 
 parser.add_argument(
-    "--topk", type=int, default=None,
-    help="Top k gemms for tuning")
+    "--groups",
+    type=bool,
+    default=False,
+    help="If enabled, will replace MatrixInstruction with GroupedMatrixInstruction",
+)
 
 parser.add_argument(
-    "--iters", type=int, default=100,
-    help="Max tuning iterations")
+    "--gridbase_config", type=str, default=None, help="Range config path"
+)
 
 parser.add_argument(
-    "--fast", type=bool, default=False,
-    help="If enabled, only tune the matrix instruction with min tile sizes, else, tune full matrix instructions")
+    "--full_mfma",
+    type=bool,
+    default=False,
+    help="If enabled, will search for all mfma instructions",
+)
 
 parser.add_argument(
-    "--groups", type=bool, default=False,
-    help="If enabled, will replace MatrixInstruction with GroupedMatrixInstruction")
+    "--full_stage",
+    type=bool,
+    default=False,
+    help="If enabled, will search for all stages instructions",
+)
 
 parser.add_argument(
-    "--gridbase_config", type=str, default=None,
-    help="Range config path")
-
-parser.add_argument(
-    "--full_mfma", type=bool, default=False,
-    help="If enabled, will search for all mfma instructions")
-
-parser.add_argument(
-    "--full_stage", type=bool, default=False,
-    help="If enabled, will search for all stages instructions")
-
-parser.add_argument(
-    "--num_stages", type=int, default=8,
-    help="How many times to divide matrix")
+    "--num_stages", type=int, default=8, help="How many times to divide matrix"
+)
 
 args = parser.parse_args()
 
@@ -91,8 +94,8 @@ LibraryType = "GridBased"
 CU_RE = r"Compute Unit:(?P<COMPUTE_UNIT>[\w ]+)"
 
 NUM_STAGES = args.num_stages
-DIV_MI = 3 # 33.3%
-MIN_MI = 5 # min 5 solutions
+DIV_MI = 3  # 33.3%
+MIN_MI = 5  # min 5 solutions
 NONTEMPORALRATIO = 8
 MAX_MT = int(os.environ.get("MAX_MT", 256))
 
@@ -105,48 +108,91 @@ if ArchitectureName is None:
         res = subprocess.run(OFFLOAD_ARCH, stdout=subprocess.PIPE)
         ArchitectureName = res.stdout.decode("utf-8").strip()
     else:
-        raise FileNotFoundError(f"{OFFLOAD_ARCH} not found, please specific GPU_TARGET environment variable.")
+        raise FileNotFoundError(
+            f"{OFFLOAD_ARCH} not found, please specific GPU_TARGET environment variable."
+        )
 
 CU = os.environ.get("CU", None)
 if CU is None:
-    res = subprocess.run("rocminfo | grep Compute", stdout=subprocess.PIPE, shell=True, env={"ROCR_VISIBLE_DEVICES":"0"})
-    match = re.search(CU_RE, res.stdout.decode("utf-8").split('\n')[-2])
+    res = subprocess.run(
+        "rocminfo | grep Compute",
+        stdout=subprocess.PIPE,
+        shell=True,
+        env={"ROCR_VISIBLE_DEVICES": "0"},
+    )
+    match = re.search(CU_RE, res.stdout.decode("utf-8").split("\n")[-2])
     if match:
-        CU = int(match.group('COMPUTE_UNIT').strip())
+        CU = int(match.group("COMPUTE_UNIT").strip())
     else:
-        raise RuntimeError("Failed to get compute unit from rocminfo, please specific CU environment variable.")
+        raise RuntimeError(
+            "Failed to get compute unit from rocminfo, please specific CU environment variable."
+        )
 else:
     CU = int(CU)
 
 XCC = os.environ.get("XCC", None)
-if ArchitectureName == 'gfx942':
+if ArchitectureName == "gfx942":
     if XCC is None:
         if os.path.exists(NUM_INST):
             res = subprocess.run(["cat", NUM_INST], stdout=subprocess.PIPE)
             XCC = int(res.stdout.decode("utf-8").strip())
         else:
-            raise FileNotFoundError(f"{NUM_INST} not found, please specific XCC environment variable.")
+            raise FileNotFoundError(
+                f"{NUM_INST} not found, please specific XCC environment variable."
+            )
     else:
         XCC = int(XCC)
     DeviceNames = ["Device 0049", "Device 0050"]
     ScheduleName = "aquavanjaram"
-elif ArchitectureName == 'gfx90a':
+elif ArchitectureName == "gfx90a":
     XCC = 1
-    DeviceNames = ["Device 0050", "Device 0051", "Device 0052", "Device 0054", "Device 0062", "Device 7400", "Device 740c"]
+    DeviceNames = [
+        "Device 0050",
+        "Device 0051",
+        "Device 0052",
+        "Device 0054",
+        "Device 0062",
+        "Device 7400",
+        "Device 740c",
+    ]
     ScheduleName = "aldebaran"
 
 if args.full_mfma:
-    fp16_instructions = [[32,32,4,2], [32,32,8,1], [16,16,4,4], [16,16,16,1], [4,4,4,16]]
-    bf16_instructions = [[32,32,4,2], [32,32,8,1], [16,16,4,4], [16,16,16,1], [4,4,4,16]]
-    tf32_instructions = [[32,32,2,2], [32,32,4,1], [16,16,2,4], [16,16,8,1], [4,4,2,16]]
-    fp32_instructions = [[32,32,1,2], [32,32,2,1], [16,16,1,4], [16,16,4,1], [4,4,1,16]]
-    fp8_instructions = [[32,32,16,1], [16,16,32,1]]
+    fp16_instructions = [
+        [32, 32, 4, 2],
+        [32, 32, 8, 1],
+        [16, 16, 4, 4],
+        [16, 16, 16, 1],
+        [4, 4, 4, 16],
+    ]
+    bf16_instructions = [
+        [32, 32, 4, 2],
+        [32, 32, 8, 1],
+        [16, 16, 4, 4],
+        [16, 16, 16, 1],
+        [4, 4, 4, 16],
+    ]
+    tf32_instructions = [
+        [32, 32, 2, 2],
+        [32, 32, 4, 1],
+        [16, 16, 2, 4],
+        [16, 16, 8, 1],
+        [4, 4, 2, 16],
+    ]
+    fp32_instructions = [
+        [32, 32, 1, 2],
+        [32, 32, 2, 1],
+        [16, 16, 1, 4],
+        [16, 16, 4, 1],
+        [4, 4, 1, 16],
+    ]
+    fp8_instructions = [[32, 32, 16, 1], [16, 16, 32, 1]]
 else:
-    fp16_instructions = [[16,16,16,1], [32,32,8,1]]
-    bf16_instructions = [[16,16,16,1], [32,32,8,1]]
-    tf32_instructions = [[16,16,8,1], [32,32,4,1]]
-    fp32_instructions = [[16,16,4,1], [32,32,2,1]]
-    fp8_instructions = [[16,16,32,1]]
+    fp16_instructions = [[16, 16, 16, 1], [32, 32, 8, 1]]
+    bf16_instructions = [[16, 16, 16, 1], [32, 32, 8, 1]]
+    tf32_instructions = [[16, 16, 8, 1], [32, 32, 4, 1]]
+    fp32_instructions = [[16, 16, 4, 1], [32, 32, 2, 1]]
+    fp8_instructions = [[16, 16, 32, 1]]
 
 
 HIPBLASLT_BENCH_BASE = (
@@ -196,32 +242,42 @@ def build_pattern(has_bias=False):
     pattern += TYPE_PATTERN
     return pattern
 
+
 # Create the four variations
 HIPBLASLT_BENCH_RE = build_pattern()
 HIPBLASLT_BENCH_RE_BIAS = build_pattern(has_bias=True)
 
-FP8_DTYPES = ["F8","F8N","B8","B8N","F8B8N","B8F8N","F8B8","B8F8"]
+FP8_DTYPES = ["F8", "F8N", "B8", "B8N", "F8B8N", "B8F8N", "F8B8", "B8F8"]
+
 
 def is_fp8(dtype):
     return dtype in FP8_DTYPES
 
+
 # Function to extract problem sizes from a line
 def extract_problem_size(match):
-    return [int(match.group('M').strip()), int(match.group('N').strip()), int(match.group('BATCH_COUNT').strip()), int(match.group('K').strip())]
+    return [
+        int(match.group("M").strip()),
+        int(match.group("N").strip()),
+        int(match.group("BATCH_COUNT").strip()),
+        int(match.group("K").strip()),
+    ]
+
 
 def instruction_map(dtype_dict):
-    if dtype_dict["DataType"] == 'S' and dtype_dict["F32XdlMathOp"] == 'x':
+    if dtype_dict["DataType"] == "S" and dtype_dict["F32XdlMathOp"] == "x":
         return tf32_instructions
-    elif dtype_dict["DataType"] == 'S' and dtype_dict["F32XdlMathOp"] == 0:
+    elif dtype_dict["DataType"] == "S" and dtype_dict["F32XdlMathOp"] == 0:
         return fp32_instructions
-    elif dtype_dict["DataType"] == 'H':
+    elif dtype_dict["DataType"] == "H":
         return fp16_instructions
-    elif dtype_dict["DataType"] == 'B':
+    elif dtype_dict["DataType"] == "B":
         return bf16_instructions
     elif is_fp8(dtype_dict["DataType"]):
         return fp8_instructions
     else:
         return None
+
 
 def datatype_map(dtype):
     if dtype == "f16_r":
@@ -239,6 +295,7 @@ def datatype_map(dtype):
     else:
         return None
 
+
 def trans_map(trans):
     if trans == "T":
         return 1
@@ -247,19 +304,21 @@ def trans_map(trans):
     else:
         return None
 
+
 def bias_datatype_map(dtype):
     if dtype == "f16_r":
-        return [datatype_map('f32_r'), datatype_map('f16_r')]
+        return [datatype_map("f32_r"), datatype_map("f16_r")]
     elif dtype == "f32_r":
-        return [datatype_map('f32_r')]
+        return [datatype_map("f32_r")]
     elif dtype == "xf32_r":
-        return [datatype_map('xf32_r')]
+        return [datatype_map("xf32_r")]
     elif dtype == "bf16_r":
-        return [datatype_map('f32_r'), datatype_map('bf16_r')]
+        return [datatype_map("f32_r"), datatype_map("bf16_r")]
     elif dtype == "f8_r":
-        return [datatype_map('f32_r'), datatype_map('f8_r')]
+        return [datatype_map("f32_r"), datatype_map("f8_r")]
     else:
         return []
+
 
 def get_high_precision_accumulate(DataType):
     if DataType in ["H", "B"] + FP8_DTYPES:
@@ -267,16 +326,18 @@ def get_high_precision_accumulate(DataType):
     else:
         return False
 
+
 def adapt_xf32(ComputeDataType):
     if ComputeDataType == "XS":
-        return 'S', 'x'
+        return "S", "x"
     else:
         return ComputeDataType, 0
 
+
 def extract_dtype(match):
     gdict = match.groupdict()
-    DataTypeA = datatype_map(gdict.get('A_TYPE', '').strip())
-    DataTypeB = datatype_map(gdict.get('B_TYPE', '').strip())
+    DataTypeA = datatype_map(gdict.get("A_TYPE", "").strip())
+    DataTypeB = datatype_map(gdict.get("B_TYPE", "").strip())
 
     if is_fp8(DataTypeA) and is_fp8(DataTypeB):
         if DataTypeA != DataTypeB:
@@ -289,25 +350,38 @@ def extract_dtype(match):
             DataType += "N"
     else:
         DataType = DataTypeA
-    
-    DestDataType = datatype_map(gdict.get('C_TYPE', '').strip())
-    ComputeDataType = datatype_map(gdict.get('COMPUTE_TYPE', '').strip())
-    TransposeA = trans_map(gdict.get('TRANS_A', '').strip())
-    TransposeB = trans_map(gdict.get('TRANS_B', '').strip())
+
+    DestDataType = datatype_map(gdict.get("C_TYPE", "").strip())
+    ComputeDataType = datatype_map(gdict.get("COMPUTE_TYPE", "").strip())
+    TransposeA = trans_map(gdict.get("TRANS_A", "").strip())
+    TransposeB = trans_map(gdict.get("TRANS_B", "").strip())
     if None in [DataType, DestDataType, ComputeDataType, TransposeA, TransposeB]:
         return None
     scaleA = gdict.get("SCALE_A").strip()
     scaleB = gdict.get("SCALE_B").strip()
     activation_type = gdict.get("ACTIVATION_TYPE").strip()
-    bias_source = gdict.get('BIAS_SOURCE', '').strip().upper()
+    bias_source = gdict.get("BIAS_SOURCE", "").strip().upper()
     HighPrecisionAccumulate = get_high_precision_accumulate(DataType)
     ComputeDataType, F32XdlMathOp = adapt_xf32(ComputeDataType)
-    res = {"Batched": True, "DataType": DataType, "DestDataType": DestDataType, "ComputeDataType": ComputeDataType, "TransposeA": TransposeA, "TransposeB": TransposeB, "HighPrecisionAccumulate": HighPrecisionAccumulate, "F32XdlMathOp": F32XdlMathOp, "OperationType": "GEMM", "UseBeta": True}
+    res = {
+        "Batched": True,
+        "DataType": DataType,
+        "DestDataType": DestDataType,
+        "ComputeDataType": ComputeDataType,
+        "TransposeA": TransposeA,
+        "TransposeB": TransposeB,
+        "HighPrecisionAccumulate": HighPrecisionAccumulate,
+        "F32XdlMathOp": F32XdlMathOp,
+        "OperationType": "GEMM",
+        "UseBeta": True,
+    }
 
     if bias_source:
         res["UseBias"] = 1
         res["BiasSrc"] = bias_source
-        res["BiasDataTypeList"] = list(bias_datatype_map(gdict.get("BIAS_TYPE", '').strip()))
+        res["BiasDataTypeList"] = list(
+            bias_datatype_map(gdict.get("BIAS_TYPE", "").strip())
+        )
     if activation_type != "none":
         res["Activation"] = True
         res["ActivationType"] = "hipblaslt_all"
@@ -319,9 +393,10 @@ def extract_dtype(match):
         res["UseScaleAlphaVec"] = 1
     return res
 
+
 def find_matmul_instruction(mfma_instruction, size):
-    for bm in range(int(math.log(mfma_instruction[3],2))+1):
-        for m_tiles in reversed(range(1, CU+1)):
+    for bm in range(int(math.log(mfma_instruction[3], 2)) + 1):
+        for m_tiles in reversed(range(1, CU + 1)):
             m_tile_size = size[0] // m_tiles
             # TODO:fp8 384x384
             if m_tile_size > MAX_MT:
@@ -329,7 +404,7 @@ def find_matmul_instruction(mfma_instruction, size):
             wave_tile_m = math.ceil(m_tile_size / mfma_instruction[0])
             if wave_tile_m <= 0:
                 continue
-            for n_tiles in reversed(range(1, CU+1)):
+            for n_tiles in reversed(range(1, CU + 1)):
                 n_tile_size = size[1] // n_tiles
                 if n_tile_size > MAX_MT:
                     continue
@@ -343,10 +418,14 @@ def find_matmul_instruction(mfma_instruction, size):
                         matmul_instruction[-2] = 2**k
 
                         for l in reversed(range(3)):
-                            if wave_tile_n // (2**l) >= 1 and wave_tile_n // (2**l) <= 32:
+                            if (
+                                wave_tile_n // (2**l) >= 1
+                                and wave_tile_n // (2**l) <= 32
+                            ):
                                 matmul_instruction[-3] = wave_tile_n // (2**l)
                                 matmul_instruction[-1] = 2**l
                                 yield copy.deepcopy(matmul_instruction)
+
 
 def get_groups(matmul_instruction_gen):
     # Extract skinny MTs for Groups
@@ -365,40 +444,48 @@ def get_groups(matmul_instruction_gen):
                 mi_left.append(mi)
     return mi_groups0, mi_groups1, mi_left
 
+
 def match_pattern(line):
     if line.startswith("hipblaslt-bench"):
-        if 'bias_vector' in line:
-            match = re.search(
-                HIPBLASLT_BENCH_RE_BIAS, line
-            )
+        if "bias_vector" in line:
+            match = re.search(HIPBLASLT_BENCH_RE_BIAS, line)
         else:
-            match = re.search(
-                HIPBLASLT_BENCH_RE, line
-            )
+            match = re.search(HIPBLASLT_BENCH_RE, line)
         if match is None:
             print("WARNING: can't find match for", line)
         return match
     else:
         return None
 
+
 def extract_range(data):
     shapes = []
-    if 'Exact' in data:
-        shapes += [int(shape) for shape in data['Exact'].split(',')]
-    if 'Range' in data:
-        shape_range = data['Range'].split(':')
-        points = data['Points']
-        shapes += list(set(np.round(np.linspace(int(shape_range[0]), int(shape_range[1]), int(points))).astype(int).tolist()))
+    if "Exact" in data:
+        shapes += [int(shape) for shape in data["Exact"].split(",")]
+    if "Range" in data:
+        shape_range = data["Range"].split(":")
+        points = data["Points"]
+        shapes += list(
+            set(
+                np.round(
+                    np.linspace(int(shape_range[0]), int(shape_range[1]), int(points))
+                )
+                .astype(int)
+                .tolist()
+            )
+        )
     return shapes
+
 
 def split_gemms_by_gpus(unique_gemms, gpus):
     unique_gemms_subgroups = [None] * gpus
     for i, (k, v) in enumerate(unique_gemms.items()):
-        if unique_gemms_subgroups[i%gpus] is not None:
-            unique_gemms_subgroups[i%gpus].append((k, v))
+        if unique_gemms_subgroups[i % gpus] is not None:
+            unique_gemms_subgroups[i % gpus].append((k, v))
         else:
-            unique_gemms_subgroups[i%gpus] = [(k, v)]
+            unique_gemms_subgroups[i % gpus] = [(k, v)]
     return unique_gemms_subgroups
+
 
 def calculate_min_flops(m_sum, n_sum, batch_sum, k_sum, samples_num, iters):
     m_avg = m_sum / samples_num
@@ -408,15 +495,32 @@ def calculate_min_flops(m_sum, n_sum, batch_sum, k_sum, samples_num, iters):
 
     return (ENQUEUES_PER_SYNC + iters) * m_avg * n_avg * batch_avg * k_avg / 2
 
+
 def calculate_gsu(matmul_instruction, size):
     mt0 = matmul_instruction[0] * matmul_instruction[5] * matmul_instruction[7]
     mt1 = matmul_instruction[1] * matmul_instruction[6] * matmul_instruction[8]
     return max(1, CU // (math.ceil(size[0] / mt0) * math.ceil(size[1] / mt1)))
 
-def dump_yaml(gpu_idx, gemm_group, yaml_file, m_sum, n_sum, batch_sum, k_sum, samples_num, iters, groups, gsu_group, matmul_instructions):
-    MinFlopsPerSync = calculate_min_flops(m_sum, n_sum, batch_sum, k_sum, samples_num, iters)
+
+def dump_yaml(
+    gpu_idx,
+    gemm_group,
+    yaml_file,
+    m_sum,
+    n_sum,
+    batch_sum,
+    k_sum,
+    samples_num,
+    iters,
+    groups,
+    gsu_group,
+    matmul_instructions,
+):
+    MinFlopsPerSync = calculate_min_flops(
+        m_sum, n_sum, batch_sum, k_sum, samples_num, iters
+    )
     # Read the YAML file
-    with open(yaml_file, 'r') as f:
+    with open(yaml_file, "r") as f:
         data = yaml.safe_load(f)
 
     data["GlobalParameters"]["EnqueuesPerSync"] = ENQUEUES_PER_SYNC
@@ -429,10 +533,16 @@ def dump_yaml(gpu_idx, gemm_group, yaml_file, m_sum, n_sum, batch_sum, k_sum, sa
         dtype = json.loads(dtype_str)
 
         if i >= len(data["BenchmarkProblems"]):
-            data["BenchmarkProblems"].append(copy.deepcopy(data["BenchmarkProblems"][0]))
-        data["BenchmarkProblems"][i][1]["BenchmarkFinalParameters"][0]["ProblemSizes"] = gemm_group[dtype_str]
+            data["BenchmarkProblems"].append(
+                copy.deepcopy(data["BenchmarkProblems"][0])
+            )
+        data["BenchmarkProblems"][i][1]["BenchmarkFinalParameters"][0][
+            "ProblemSizes"
+        ] = gemm_group[dtype_str]
         if "BiasDataTypeList" in dtype:
-            data["BenchmarkProblems"][i][1]["BenchmarkFinalParameters"].append({"BiasTypeArgs": list(dtype["BiasDataTypeList"])})
+            data["BenchmarkProblems"][i][1]["BenchmarkFinalParameters"].append(
+                {"BiasTypeArgs": list(dtype["BiasDataTypeList"])}
+            )
 
         # Add groupd here if needed
         group_params = [[]]
@@ -458,12 +568,16 @@ def dump_yaml(gpu_idx, gemm_group, yaml_file, m_sum, n_sum, batch_sum, k_sum, sa
                     g = dict()
                     g["MatrixInstruction"] = list(v)
                     group_params[0].append(g)
-                for index, item in enumerate(data["BenchmarkProblems"][i][1]["ForkParameters"]):
+                for index, item in enumerate(
+                    data["BenchmarkProblems"][i][1]["ForkParameters"]
+                ):
                     if "MatrixInstruction" in item:
                         del item["MatrixInstruction"]
                         item["Groups"] = {}
             else:
-                for index, item in enumerate(data["BenchmarkProblems"][i][1]["ForkParameters"]):
+                for index, item in enumerate(
+                    data["BenchmarkProblems"][i][1]["ForkParameters"]
+                ):
                     if "Groups" in item:
                         del item["Groups"]
                         item["MatrixInstruction"] = {}
@@ -472,7 +586,9 @@ def dump_yaml(gpu_idx, gemm_group, yaml_file, m_sum, n_sum, batch_sum, k_sum, sa
             if ("Groups" in item) and group_params[0]:
                 item["Groups"] = group_params
             elif "MatrixInstruction" in item:
-                item["MatrixInstruction"] = [list(v) for v in matmul_instructions[dtype_str].values()]
+                item["MatrixInstruction"] = [
+                    list(v) for v in matmul_instructions[dtype_str].values()
+                ]
             if "WorkGroupMappingXCCGroup" in item:
                 item["WorkGroupMappingXCCGroup"] = [CU]
             if "WorkGroupMappingXCC" in item:
@@ -482,13 +598,16 @@ def dump_yaml(gpu_idx, gemm_group, yaml_file, m_sum, n_sum, batch_sum, k_sum, sa
         data["BenchmarkProblems"][i][0] = dtype
     data["LibraryLogic"]["DeviceNames"] = DeviceNames
     data["LibraryLogic"]["ScheduleName"] = ScheduleName
-    data["LibraryLogic"]["ArchitectureName"] = {"Architecture": ArchitectureName, "CUCount": CU}
+    data["LibraryLogic"]["ArchitectureName"] = {
+        "Architecture": ArchitectureName,
+        "CUCount": CU,
+    }
     data["LibraryLogic"]["LibraryType"] = LibraryType
     # Write the updated YAML file
     yaml_file = os.path.basename(yaml_file)
-    slices = yaml_file.split('.')
-    fname = slices[0]+'.'+str(gpu_idx)+'.'+slices[1]
-    with open(fname, 'w') as f:
+    slices = yaml_file.split(".")
+    fname = slices[0] + "." + str(gpu_idx) + "." + slices[1]
+    with open(fname, "w") as f:
         yaml.dump(data, f, default_flow_style=None)
     print(f"Dumped yaml to {fname}")
 
@@ -497,15 +616,18 @@ if args.hipblaslt_log and args.gridbase_config is None:
     LibraryType = "Equality"
     unique_gemms = {}
     # Read problem sizes from the input file
-    with open(args.hipblaslt_log, 'r') as f:
+    with open(args.hipblaslt_log, "r") as f:
         lines = f.readlines()
+
         def _extract_gemms(line):
             match = match_pattern(line)
             if match:
                 size = extract_problem_size(match)
                 dtype = extract_dtype(match)
                 if dtype is None:
-                    print(f"WARNING: Can't find dtype for {line}, please contact hipblaslt expert")
+                    print(
+                        f"WARNING: Can't find dtype for {line}, please contact hipblaslt expert"
+                    )
                     return None
                 size_str = json.dumps(size)
                 dtype_str = json.dumps(dtype)
@@ -522,7 +644,12 @@ if args.hipblaslt_log and args.gridbase_config is None:
                 else:
                     unique_gemms[(size_str, dtype_str)] = 1
 
-    unique_gemms = {k: v for k, v in sorted(unique_gemms.items(), key=lambda item: item[1], reverse=True)[:args.topk]}
+    unique_gemms = {
+        k: v
+        for k, v in sorted(
+            unique_gemms.items(), key=lambda item: item[1], reverse=True
+        )[: args.topk]
+    }
     for k, v in unique_gemms.items():
         print("Gemm config:", k, "Number:", v)
 
@@ -557,20 +684,30 @@ if args.hipblaslt_log and args.gridbase_config is None:
             for mfma_instruction in mfma_instructions:
                 size = copy.deepcopy(original_size)
                 for _ in range(NUM_STAGES):
-                    matmul_instruction_gen = list(find_matmul_instruction(mfma_instruction, size))
+                    matmul_instruction_gen = list(
+                        find_matmul_instruction(mfma_instruction, size)
+                    )
                     if args.groups:
-                        mi_groups0, mi_groups1, matmul_instruction_gen = get_groups(matmul_instruction_gen)
+                        mi_groups0, mi_groups1, matmul_instruction_gen = get_groups(
+                            matmul_instruction_gen
+                        )
                     else:
                         mi_groups0 = []
                         mi_groups1 = []
 
-                    total_inst = min(len(matmul_instruction_gen) // DIV_MI, MIN_MI)  # At least 5 insts and max of 33.3% of insts.
+                    total_inst = min(
+                        len(matmul_instruction_gen) // DIV_MI, MIN_MI
+                    )  # At least 5 insts and max of 33.3% of insts.
                     for index, matmul_instruction in enumerate(matmul_instruction_gen):
                         if matmul_instruction is not None:
-                            gsu_group[dtype_str].add(calculate_gsu(matmul_instruction, size))
+                            gsu_group[dtype_str].add(
+                                calculate_gsu(matmul_instruction, size)
+                            )
                             if dtype_str not in matmul_instructions:
                                 matmul_instructions[dtype_str] = dict()
-                            matmul_instructions[dtype_str][str(matmul_instruction)] = matmul_instruction
+                            matmul_instructions[dtype_str][
+                                str(matmul_instruction)
+                            ] = matmul_instruction
                             if args.fast and (index > total_inst):
                                 break
                     total_inst = min(len(mi_groups0) // DIV_MI, MIN_MI)
@@ -578,7 +715,7 @@ if args.hipblaslt_log and args.gridbase_config is None:
                         if mi_0 is not None:
                             gsu_group[dtype_str].add(calculate_gsu(mi_0, size))
                             if dtype_str not in groups:
-                                groups[dtype_str] = [{},{}]
+                                groups[dtype_str] = [{}, {}]
                                 groups[dtype_str][0]["MatrixInstruction"] = {}
                                 groups[dtype_str][1]["MatrixInstruction"] = {}
                             groups[dtype_str][0]["MatrixInstruction"][str(mi_0)] = mi_0
@@ -589,13 +726,17 @@ if args.hipblaslt_log and args.gridbase_config is None:
                         if mi_1 is not None:
                             gsu_group[dtype_str].add(calculate_gsu(mi_1, size))
                             if dtype_str not in groups:
-                                groups[dtype_str] = [{},{}]
+                                groups[dtype_str] = [{}, {}]
                                 groups[dtype_str][0]["MatrixInstruction"] = {}
                                 groups[dtype_str][1]["MatrixInstruction"] = {}
                             groups[dtype_str][1]["MatrixInstruction"][str(mi_1)] = mi_1
                             if args.fast and (index > total_inst):
                                 break
-                    if len(matmul_instruction_gen) > 0 or len(mi_groups0) > 0 or len(mi_groups1) > 0:
+                    if (
+                        len(matmul_instruction_gen) > 0
+                        or len(mi_groups0) > 0
+                        or len(mi_groups1) > 0
+                    ):
                         matmul_instruction_found = True
                         if not args.full_stage:
                             break
@@ -604,46 +745,75 @@ if args.hipblaslt_log and args.gridbase_config is None:
                     size[max_dim] = size[max_dim] // 2
 
             if not matmul_instruction_found:
-                print(f"WARNING: Can't find mfma instructions for {original_size}, please contact hipblaslt expert")
+                print(
+                    f"WARNING: Can't find mfma instructions for {original_size}, please contact hipblaslt expert"
+                )
             else:
                 if dtype_str in gemm_group:
-                    gemm_group[dtype_str].append({'Exact': list(original_size)})
+                    gemm_group[dtype_str].append({"Exact": list(original_size)})
                 else:
-                    gemm_group[dtype_str] = [{'Exact': list(original_size)}]
+                    gemm_group[dtype_str] = [{"Exact": list(original_size)}]
                 m_sum += original_size[0]
                 n_sum += original_size[1]
                 batch_sum += original_size[2]
                 k_sum += original_size[3]
         samples_num = len(unique_gemms_subgroup)
-        return dump_yaml(gpu_idx, gemm_group, args.tensile_config, m_sum, n_sum, batch_sum, k_sum, samples_num, args.iters, groups, gsu_group, matmul_instructions)
-
+        return dump_yaml(
+            gpu_idx,
+            gemm_group,
+            args.tensile_config,
+            m_sum,
+            n_sum,
+            batch_sum,
+            k_sum,
+            samples_num,
+            args.iters,
+            groups,
+            gsu_group,
+            matmul_instructions,
+        )
 
 elif args.gridbase_config and args.hipblaslt_log is None:
     LibraryType = "GridBased"
     unique_gemms = {}
     gpus = args.gpus
 
-    with open(args.gridbase_config, 'r') as f:
+    with open(args.gridbase_config, "r") as f:
         datas = yaml.safe_load(f)
         for data in datas:
-            m_shapes = extract_range(data['M'])
-            n_shapes = extract_range(data['N'])
-            batch_shapes = extract_range(data['Batch'])
-            k_shapes = extract_range(data['K'])
-            DataType = datatype_map(data['DataType'].strip())
-            DestDataType = datatype_map(data['DestDataType'].strip())
-            ComputeDataType = datatype_map(data['ComputeDataType'].strip())
-            TransposeA = trans_map(data['TransposeA'])
-            TransposeB = trans_map(data['TransposeB'])
+            m_shapes = extract_range(data["M"])
+            n_shapes = extract_range(data["N"])
+            batch_shapes = extract_range(data["Batch"])
+            k_shapes = extract_range(data["K"])
+            DataType = datatype_map(data["DataType"].strip())
+            DestDataType = datatype_map(data["DestDataType"].strip())
+            ComputeDataType = datatype_map(data["ComputeDataType"].strip())
+            TransposeA = trans_map(data["TransposeA"])
+            TransposeB = trans_map(data["TransposeB"])
             HighPrecisionAccumulate = get_high_precision_accumulate(DataType)
             ComputeDataType, F32XdlMathOp = adapt_xf32(ComputeDataType)
-            dtype = {"Batched": True, "DataType": DataType, "DestDataType": DestDataType, "ComputeDataType": ComputeDataType, "TransposeA": TransposeA, "TransposeB": TransposeB, "HighPrecisionAccumulate": HighPrecisionAccumulate, "F32XdlMathOp": F32XdlMathOp, "OperationType": "GEMM", "UseBeta": True, "UseBias": 1, "Activation": True, "ActivationType": "hipblaslt_all", "UseScaleAlphaVec": 1}
+            dtype = {
+                "Batched": True,
+                "DataType": DataType,
+                "DestDataType": DestDataType,
+                "ComputeDataType": ComputeDataType,
+                "TransposeA": TransposeA,
+                "TransposeB": TransposeB,
+                "HighPrecisionAccumulate": HighPrecisionAccumulate,
+                "F32XdlMathOp": F32XdlMathOp,
+                "OperationType": "GEMM",
+                "UseBeta": True,
+                "UseBias": 1,
+                "Activation": True,
+                "ActivationType": "hipblaslt_all",
+                "UseScaleAlphaVec": 1,
+            }
             dtype_str = json.dumps(dtype)
             for m in m_shapes:
                 for n in n_shapes:
                     for batch in batch_shapes:
                         for k in k_shapes:
-                            unique_gemms[(dtype_str,m,n,batch,k)] = [m,n,batch,k]
+                            unique_gemms[(dtype_str, m, n, batch, k)] = [m, n, batch, k]
 
     unique_gemms_subgroups = split_gemms_by_gpus(unique_gemms, args.gpus)
 
@@ -670,14 +840,22 @@ elif args.gridbase_config and args.hipblaslt_log is None:
             for mfma_instruction in mfma_instructions:
                 size = copy.deepcopy(original_size)
                 for _ in range(NUM_STAGES):
-                    matmul_instruction_gen = list(find_matmul_instruction(mfma_instruction, size))
-                    total_inst = min(len(matmul_instruction_gen) // 3, 5)  # At least 5 insts and max of 33.3% of insts.
+                    matmul_instruction_gen = list(
+                        find_matmul_instruction(mfma_instruction, size)
+                    )
+                    total_inst = min(
+                        len(matmul_instruction_gen) // 3, 5
+                    )  # At least 5 insts and max of 33.3% of insts.
                     for index, matmul_instruction in enumerate(matmul_instruction_gen):
                         if matmul_instruction is not None:
-                            gsu_group[dtype_str].add(calculate_gsu(matmul_instruction, size))
+                            gsu_group[dtype_str].add(
+                                calculate_gsu(matmul_instruction, size)
+                            )
                             if dtype_str not in matmul_instructions:
                                 matmul_instructions[dtype_str] = dict()
-                            matmul_instructions[dtype_str][str(matmul_instruction)] = matmul_instruction
+                            matmul_instructions[dtype_str][
+                                str(matmul_instruction)
+                            ] = matmul_instruction
                             if args.fast and (index > total_inst):
                                 break
 
@@ -690,19 +868,35 @@ elif args.gridbase_config and args.hipblaslt_log is None:
                     size[max_dim] = size[max_dim] // 2
 
             if not matmul_instruction_found:
-                print(f"WARNING: Can't find mfma instructions for {original_size}, please contact hipblaslt expert")
+                print(
+                    f"WARNING: Can't find mfma instructions for {original_size}, please contact hipblaslt expert"
+                )
             else:
                 if dtype_str in gemm_group:
-                    gemm_group[dtype_str].append({'Exact': list(original_size)})
+                    gemm_group[dtype_str].append({"Exact": list(original_size)})
                 else:
-                    gemm_group[dtype_str] = [{'Exact': list(original_size)}]
+                    gemm_group[dtype_str] = [{"Exact": list(original_size)}]
 
                 m_sum += original_size[0]
                 n_sum += original_size[1]
                 batch_sum += original_size[2]
                 k_sum += original_size[3]
         samples_num = len(unique_gemms_subgroup)
-        return dump_yaml(gpu_idx, gemm_group, args.tensile_config, m_sum, n_sum, batch_sum, k_sum, samples_num, args.iters, {}, gsu_group, matmul_instructions)
+        return dump_yaml(
+            gpu_idx,
+            gemm_group,
+            args.tensile_config,
+            m_sum,
+            n_sum,
+            batch_sum,
+            k_sum,
+            samples_num,
+            args.iters,
+            {},
+            gsu_group,
+            matmul_instructions,
+        )
+
 
 with concurrent.futures.ProcessPoolExecutor(args.gpus) as executor:
     results = executor.map(_process_gemms, list(enumerate(unique_gemms_subgroups)))

@@ -25,19 +25,20 @@
 
 // Global utility defines
 #define test_suite_type_def_helper(name, suffix) \
-template<class Params> \
-class name ## suffix : public ::testing::Test { \
-public: \
-    using params = Params; \
-};
+    template<class Params>                       \
+    class name##suffix : public ::testing::Test  \
+    {                                            \
+    public:                                      \
+        using params = Params;                   \
+    };
 
 #define test_suite_type_def(name, suffix) test_suite_type_def_helper(name, suffix)
 
-#define typed_test_suite_def_helper(name, suffix, params) TYPED_TEST_SUITE(name ## suffix, params)
+#define typed_test_suite_def_helper(name, suffix, params) TYPED_TEST_SUITE(name##suffix, params)
 
 #define typed_test_suite_def(name, suffix, params) typed_test_suite_def_helper(name, suffix, params)
 
-#define typed_test_def_helper(suite, suffix, name) TYPED_TEST(suite ## suffix, name)
+#define typed_test_def_helper(suite, suffix, name) TYPED_TEST(suite##suffix, name)
 
 #define typed_test_def(suite, suffix, name) typed_test_def_helper(suite, suffix, name)
 

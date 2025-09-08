@@ -66,7 +66,7 @@ namespace rocRoller
             // Swap sides depending if we use SCC or !SCC
             if(!cond->isSCC())
             {
-                co_yield(
+                co_yield (
                     Instruction::Lock(Scheduling::Dependency::SCC, "Start of Conditional(SCC)"));
                 co_yield generateOp<Expression::Equal>(
                     m_context->getSCC(), cond, Register::Value::Literal(0));
@@ -95,7 +95,7 @@ namespace rocRoller
 
             if(!cond->isSCC())
             {
-                co_yield(Instruction::Unlock("End of Conditional(SCC)"));
+                co_yield (Instruction::Unlock("End of Conditional(SCC)"));
             }
         }
         else

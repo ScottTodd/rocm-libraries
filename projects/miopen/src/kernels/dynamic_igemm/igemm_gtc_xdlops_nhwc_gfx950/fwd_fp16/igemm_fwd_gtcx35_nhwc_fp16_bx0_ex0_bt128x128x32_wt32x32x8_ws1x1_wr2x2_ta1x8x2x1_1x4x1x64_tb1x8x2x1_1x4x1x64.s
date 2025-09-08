@@ -49,11 +49,11 @@
 ; nxb                        : 0
 ; nxe                        : 0
 ; vector_c                   : 1
-; 
+;
 ; block_size                 : 256
 ; lds_total                  : 16384
 ; lds_buffer_num             : 1
-; 
+;
 .set k_p_in, 0
 .set k_p_wei, 8
 .set k_p_out, 16
@@ -265,7 +265,7 @@ igemm_fwd_gtcx35_nhwc_fp16_bx0_ex0_bt128x128x32_wt32x32x8_ws1x1_wr2x2_ta1x8x2x1_
 
     s_lshl_b32 s[s_wei_stride_k0], s[s_wei_stride_k0], 1
 
-    
+
     .v_clear_nc v_gld_b, 8
     s_mov_b32 s[s_p_wei+2], 0xffffffff
     s_mov_b32 s[s_p_wei+3], 0x27000
@@ -330,8 +330,8 @@ igemm_fwd_gtcx35_nhwc_fp16_bx0_ex0_bt128x128x32_wt32x32x8_ws1x1_wr2x2_ta1x8x2x1_
 
     v_mov_b32 v[v_tmp+5], v0
     ; xdlops mapping, get source matrix gemm index, k_pack:8, v_pack:1, k_pack_per_thread:2
-    v_and_b32 v[v_gemm_in], 31, v[v_tmp+5]           ; block_n index 
-    v_and_b32 v[v_gemm_im], 31, v[v_tmp+5]           ; block_m index 
+    v_and_b32 v[v_gemm_in], 31, v[v_tmp+5]           ; block_n index
+    v_and_b32 v[v_gemm_im], 31, v[v_tmp+5]           ; block_m index
     v_lshlrev_b32 v[v_gemm_in], 3, v[v_gemm_in]   ; shift left k_pack:8
     v_lshlrev_b32 v[v_gemm_im], 3, v[v_gemm_im]   ; shift left k_pack:8
     v_lshrrev_b32 v[v_tmp+5], 5, v[v_tmp+5]
@@ -431,11 +431,11 @@ igemm_fwd_gtcx35_nhwc_fp16_bx0_ex0_bt128x128x32_wt32x32x8_ws1x1_wr2x2_ta1x8x2x1_
     s_mov_b32 s[s_p_out+3], 0x27000
     ; start MFMA loop, 32x32 wave tile with 2x2 repeat, 1x1 step, k_pack:8
     s_waitcnt vmcnt(2)
-    ds_write_b128 v[v_sst_b_os], v[v_gld_b+0:v_gld_b+0+3] 
+    ds_write_b128 v[v_sst_b_os], v[v_gld_b+0:v_gld_b+0+3]
     ds_write_b128 v[v_sst_b_os], v[v_gld_b+4:v_gld_b+4+3] offset:1024
 
     s_waitcnt vmcnt(0)
-    ds_write_b128 v[v_sst_a_os], v[v_gld_a+0:v_gld_a+0+3] 
+    ds_write_b128 v[v_sst_a_os], v[v_gld_a+0:v_gld_a+0+3]
     ds_write_b128 v[v_sst_a_os], v[v_gld_a+4:v_gld_a+4+3] offset:1024
 
     .v_clear_nc a_c, 64
@@ -447,7 +447,7 @@ igemm_fwd_gtcx35_nhwc_fp16_bx0_ex0_bt128x128x32_wt32x32x8_ws1x1_wr2x2_ta1x8x2x1_
     s_add_u32 s[s_in_offset],  s[s_move_slice_k_stride_c], s[s_in_offset]
     v_add_u32 v[v_wei_os], s[s_move_slice_k_stride_c], v[v_wei_os]
 
-    
+
     s_waitcnt lgkmcnt(0)
     s_barrier
     ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os] offset:0
@@ -495,10 +495,10 @@ L_igemm_fwd_gtcx35_nhwc_fp16_bx0_ex0_bt128x128x32_wt32x32x8_ws1x1_wr2x2_ta1x8x2x
     v_add_u32 v[v_wei_os], s[s_move_slice_k_stride_c], v[v_wei_os]
     ds_read_b64 v[v_b+4:v_b+4+1], v[v_sld_b_os] offset:6144 ; load i_k:3 into local buffer 1, repeat 0
     v_mfma_f32_32x32x8f16 v[a_c+48:a_c+63], v[v_a+6:v_a+7], v[v_b+6:v_b+7], v[a_c+48:a_c+63]     ; repeat:1x1, step:0x0, num_a_c:16
-    
+
     ds_read_b64 v[v_b+6:v_b+6+1], v[v_sld_b_os] offset:7168 ; load i_k:3 into local buffer 1, repeat 1
     ds_read_b64 v[v_a+6:v_a+6+1], v[v_sld_a_os] offset:7168 ; load i_k:3 into local buffer 1, repeat 1
-    
+
     s_waitcnt lgkmcnt(0)
     s_barrier
     s_waitcnt vmcnt(2)

@@ -46,7 +46,8 @@ struct params
 };
 
 template<class Params>
-class HipcubDeviceReduceByKey : public ::testing::Test {
+class HipcubDeviceReduceByKey : public ::testing::Test
+{
 public:
     using params = Params;
 };
@@ -88,7 +89,7 @@ TYPED_TEST(HipcubDeviceReduceByKey, ReduceByKey)
         std::uniform_real_distribution<test_utils::convert_to_fundamental_t<key_type>>,
         std::uniform_int_distribution<test_utils::convert_to_fundamental_t<key_type>>>::type;
 
-    reduce_op_type reduce_op;
+    reduce_op_type   reduce_op;
     hipcub::Equality key_compare_op;
 
     hipStream_t stream = 0; // default
@@ -109,24 +110,19 @@ TYPED_TEST(HipcubDeviceReduceByKey, ReduceByKey)
             SCOPED_TRACE(testing::Message() << "with size= " << size);
 
             // Generate data and calculate expected results
-            std::vector<key_type> unique_expected;
+            std::vector<key_type>       unique_expected;
             std::vector<aggregate_type> aggregates_expected;
-            size_t unique_count_expected = 0;
+            size_t                      unique_count_expected = 0;
 
-            std::vector<key_type> keys_input(size);
-            key_distribution_type key_delta_dis(1, 5);
+            std::vector<key_type>                 keys_input(size);
+            key_distribution_type                 key_delta_dis(1, 5);
             std::uniform_int_distribution<size_t> key_count_dis(
                 TestFixture::params::min_segment_length,
-                TestFixture::params::max_segment_length
-            );
-            std::vector<value_type> values_input = test_utils::get_random_data<value_type>(
-                size,
-                0,
-                100,
-                seed_value
-            );
+                TestFixture::params::max_segment_length);
+            std::vector<value_type> values_input
+                = test_utils::get_random_data<value_type>(size, 0, 100, seed_value);
 
-            size_t offset = 0;
+            size_t                     offset = 0;
             std::default_random_engine gen(seed_value + seed_value_addition);
             native_key_type            current_key
                 = static_cast<native_key_type>(key_distribution_type(0, 100)(gen));
@@ -164,31 +160,30 @@ TYPED_TEST(HipcubDeviceReduceByKey, ReduceByKey)
                 offset += key_count;
             }
 
-            key_type * d_keys_input;
-            value_type * d_values_input;
+            key_type*   d_keys_input;
+            value_type* d_values_input;
             HIP_CHECK(test_common_utils::hipMallocHelper(&d_keys_input, size * sizeof(key_type)));
-            HIP_CHECK(test_common_utils::hipMallocHelper(&d_values_input, size * sizeof(value_type)));
             HIP_CHECK(
-                hipMemcpy(
-                    d_keys_input, keys_input.data(),
-                    size * sizeof(key_type),
-                    hipMemcpyHostToDevice
-                )
-            );
-            HIP_CHECK(
-                hipMemcpy(
-                    d_values_input, values_input.data(),
-                    size * sizeof(value_type),
-                    hipMemcpyHostToDevice
-                )
-            );
+                test_common_utils::hipMallocHelper(&d_values_input, size * sizeof(value_type)));
+            HIP_CHECK(hipMemcpy(d_keys_input,
+                                keys_input.data(),
+                                size * sizeof(key_type),
+                                hipMemcpyHostToDevice));
+            HIP_CHECK(hipMemcpy(d_values_input,
+                                values_input.data(),
+                                size * sizeof(value_type),
+                                hipMemcpyHostToDevice));
 
-            key_type * d_unique_output;
-            aggregate_type * d_aggregates_output;
-            unsigned int * d_unique_count_output;
-            HIP_CHECK(test_common_utils::hipMallocHelper(&d_unique_output, unique_count_expected * sizeof(key_type)));
-            HIP_CHECK(test_common_utils::hipMallocHelper(&d_aggregates_output, unique_count_expected * sizeof(aggregate_type)));
-            HIP_CHECK(test_common_utils::hipMallocHelper(&d_unique_count_output, sizeof(unsigned int)));
+            key_type*       d_unique_output;
+            aggregate_type* d_aggregates_output;
+            unsigned int*   d_unique_count_output;
+            HIP_CHECK(test_common_utils::hipMallocHelper(&d_unique_output,
+                                                         unique_count_expected * sizeof(key_type)));
+            HIP_CHECK(
+                test_common_utils::hipMallocHelper(&d_aggregates_output,
+                                                   unique_count_expected * sizeof(aggregate_type)));
+            HIP_CHECK(
+                test_common_utils::hipMallocHelper(&d_unique_count_output, sizeof(unsigned int)));
 
             size_t temporary_storage_bytes = 0;
 
@@ -205,11 +200,12 @@ TYPED_TEST(HipcubDeviceReduceByKey, ReduceByKey)
 
             ASSERT_GT(temporary_storage_bytes, 0U);
 
-            void * d_temporary_storage;
-            HIP_CHECK(test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
+            void* d_temporary_storage;
+            HIP_CHECK(
+                test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             HIP_CHECK(hipcub::DeviceReduce::ReduceByKey(d_temporary_storage,
@@ -223,35 +219,26 @@ TYPED_TEST(HipcubDeviceReduceByKey, ReduceByKey)
                                                         size,
                                                         stream));
 
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipFree(d_temporary_storage));
 
-            std::vector<key_type> unique_output(unique_count_expected);
+            std::vector<key_type>       unique_output(unique_count_expected);
             std::vector<aggregate_type> aggregates_output(unique_count_expected);
-            std::vector<unsigned int> unique_count_output(1);
-            HIP_CHECK(
-                hipMemcpy(
-                    unique_output.data(), d_unique_output,
-                    unique_count_expected * sizeof(key_type),
-                    hipMemcpyDeviceToHost
-                )
-            );
-            HIP_CHECK(
-                hipMemcpy(
-                    aggregates_output.data(), d_aggregates_output,
-                    unique_count_expected * sizeof(aggregate_type),
-                    hipMemcpyDeviceToHost
-                )
-            );
-            HIP_CHECK(
-                hipMemcpy(
-                    unique_count_output.data(), d_unique_count_output,
-                    sizeof(unsigned int),
-                    hipMemcpyDeviceToHost
-                )
-            );
+            std::vector<unsigned int>   unique_count_output(1);
+            HIP_CHECK(hipMemcpy(unique_output.data(),
+                                d_unique_output,
+                                unique_count_expected * sizeof(key_type),
+                                hipMemcpyDeviceToHost));
+            HIP_CHECK(hipMemcpy(aggregates_output.data(),
+                                d_aggregates_output,
+                                unique_count_expected * sizeof(aggregate_type),
+                                hipMemcpyDeviceToHost));
+            HIP_CHECK(hipMemcpy(unique_count_output.data(),
+                                d_unique_count_output,
+                                sizeof(unsigned int),
+                                hipMemcpyDeviceToHost));
 
             HIP_CHECK(hipFree(d_keys_input));
             HIP_CHECK(hipFree(d_values_input));

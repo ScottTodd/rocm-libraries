@@ -70,7 +70,7 @@ namespace Tensile
                 , anchorPos(-1)
                 , boundIndex(bi)
                 , padStart(ps)
-                , padEnd(pe){};
+                , padEnd(pe) {};
 
             int32_t anchorIndex;
             int32_t anchorPos; //! position of anchorIndex in A or B tensor
@@ -117,7 +117,7 @@ namespace Tensile
                 : a(xa)
                 , b(xb)
                 , aMirror(aMirror)
-                , bMirror(bMirror){};
+                , bMirror(bMirror) {};
             size_t  a, b; //! positions in a or b tensor
             ZeroPad aZeroPad;
             ZeroPad bZeroPad;
@@ -959,7 +959,7 @@ namespace Tensile
                                Beta     _beta,
                                void*    _ws = nullptr)
             : TypedContractionInputs(
-                _a, _b, _c, _d, nullptr, nullptr, nullptr, nullptr, _alpha, _beta){};
+                  _a, _b, _c, _d, nullptr, nullptr, nullptr, nullptr, _alpha, _beta) {};
 
         TypedContractionInputs(A const*        _a,
                                B const*        _b,

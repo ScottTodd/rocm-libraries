@@ -218,7 +218,7 @@ void rocsparseio_cmdline_t::disp() const
     }
 };
 
-rocsparseio_cmdline_t::~rocsparseio_cmdline_t(){};
+rocsparseio_cmdline_t::~rocsparseio_cmdline_t() {};
 
 rocsparseio_cmdline_t::rocsparseio_cmdline_t(int argc_, char** argv_)
 {

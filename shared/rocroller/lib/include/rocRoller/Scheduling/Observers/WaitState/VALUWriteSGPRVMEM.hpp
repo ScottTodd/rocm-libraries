@@ -47,7 +47,7 @@ namespace rocRoller
         public:
             VALUWriteSGPRVMEM() {}
             VALUWriteSGPRVMEM(ContextPtr context)
-                : WaitStateObserver<VALUWriteSGPRVMEM>(context){};
+                : WaitStateObserver<VALUWriteSGPRVMEM>(context) {};
 
             constexpr static bool required(GPUArchitectureTarget const& target)
             {

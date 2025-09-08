@@ -30,7 +30,8 @@
 
 using rocprim::detail::target_arch;
 
-__global__ void write_target_arch(target_arch* dest_arch)
+__global__
+void write_target_arch(target_arch* dest_arch)
 {
     static constexpr auto arch = rocprim::detail::device_target_arch();
     *dest_arch                 = arch;
@@ -123,10 +124,10 @@ TEST(RocprimConfigDispatchTests, DeviceIdFromStream)
     ASSERT_EQ(result, device_id);
 
     // hipStreamLegacy support was added in ROCm 6.2.0
-#if (HIP_VERSION_MAJOR >= 6 && HIP_VERSION_MINOR >= 2)
+    #if(HIP_VERSION_MAJOR >= 6 && HIP_VERSION_MINOR >= 2)
     HIP_CHECK(get_device_from_stream(hipStreamLegacy, result));
     ASSERT_EQ(result, device_id);
-#endif
+    #endif
 
     hipStream_t stream;
     HIP_CHECK(hipStreamCreate(&stream));

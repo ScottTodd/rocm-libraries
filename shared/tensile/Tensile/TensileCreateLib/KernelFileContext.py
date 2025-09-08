@@ -104,10 +104,14 @@ def _openFilesWithFixedNames(outputPath: Path) -> Tuple[TextIOWrapper, TextIOWra
     """
     srcFilename = Path(outputPath).resolve() / "Kernels.cpp"
     hdrFilename = Path(outputPath).resolve() / "Kernels.h"
-    return open(srcFilename, "a", encoding="utf-8"), open(hdrFilename, "a", encoding="utf-8")
+    return open(srcFilename, "a", encoding="utf-8"), open(
+        hdrFilename, "a", encoding="utf-8"
+    )
 
 
-def _openFilesBasedOnFirstKernel(kernelFiles: List[str]) -> Tuple[TextIOWrapper, TextIOWrapper]:
+def _openFilesBasedOnFirstKernel(
+    kernelFiles: List[str],
+) -> Tuple[TextIOWrapper, TextIOWrapper]:
     """Opens two files for appending based on the name of the first kernel file in the list.
 
     Args:
@@ -208,7 +212,9 @@ class KernelFileContextManager:
 
         if self.lazyLoading:
             if not self.mergeFiles:
-                raise ValueError("If lazy loading is enabled, merge files must be as well")
+                raise ValueError(
+                    "If lazy loading is enabled, merge files must be as well"
+                )
 
         if not self.mergeFiles:
             if self.numMergedFiles > 1:

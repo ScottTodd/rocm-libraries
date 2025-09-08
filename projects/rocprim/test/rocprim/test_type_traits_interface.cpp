@@ -59,23 +59,26 @@ struct custom_int_type
     int x;
 
     // Constructor for the data generation utilities, simply ignore the second number
-    ROCPRIM_HOST_DEVICE custom_int_type(int val, int /*ignored*/) : x{val}
+    ROCPRIM_HOST_DEVICE
+    custom_int_type(int val, int /*ignored*/)
+        : x{val}
     {}
 
-    ROCPRIM_HOST_DEVICE custom_int_type(int val) : x{val} {}
+    ROCPRIM_HOST_DEVICE
+    custom_int_type(int val)
+        : x{val}
+    {}
 
     custom_int_type() = default;
 
     ROCPRIM_HOST_DEVICE
-    custom_int_type
-        operator+(const custom_int_type& other) const
+    custom_int_type operator+(const custom_int_type& other) const
     {
         return custom_int_type(x + other.x);
     }
 
     ROCPRIM_HOST_DEVICE
-    custom_int_type
-        operator-(const custom_int_type& other) const
+    custom_int_type operator-(const custom_int_type& other) const
     {
         return custom_int_type(x - other.x);
     }
@@ -195,7 +198,9 @@ TYPED_TEST(RocprimFloatingPointTests, FloatingPoint)
         ASSERT_NE(input_traits.is_floating_point(), rocprim::is_floating_point<input_type>::value);
     }
 
-    [[maybe_unused]] constexpr auto float_bit_mask = input_traits.float_bit_mask();
+    [[maybe_unused]]
+    constexpr auto float_bit_mask
+        = input_traits.float_bit_mask();
 }
 
 TYPED_TEST(RocprimIntegralTests, Integral)

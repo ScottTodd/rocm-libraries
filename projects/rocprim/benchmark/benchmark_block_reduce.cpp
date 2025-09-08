@@ -66,7 +66,8 @@ struct reduce
         }
 
         using breduce_t = rocprim::block_reduce<T, BlockSize, algorithm>;
-        __shared__ typename breduce_t::storage_type storage;
+        __shared__
+        typename breduce_t::storage_type storage;
 
         ROCPRIM_NO_UNROLL
         for(unsigned int trial = 0; trial < Trials; ++trial)
@@ -98,7 +99,7 @@ void run_benchmark(benchmark_utils::state&& state)
     constexpr auto items_per_block = BlockSize * ItemsPerThread;
     const auto     size = items_per_block * ((N + items_per_block - 1) / items_per_block);
     // Allocate and fill memory
-    std::vector<T> input(size, T(1));
+    std::vector<T>        input(size, T(1));
     common::device_ptr<T> d_input(input);
     common::device_ptr<T> d_output(size);
     HIP_CHECK(hipDeviceSynchronize());

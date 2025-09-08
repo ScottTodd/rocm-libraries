@@ -66,8 +66,8 @@ int main(void)
   {
     if (h_output[i] != expected[i])
     {
-      std::cout << "Failure: output (" << h_output[i] << ") != expected (" << expected[i] << ")"
-                << "  at index:" << i << std::endl;
+      std::cout << "Failure: output (" << h_output[i] << ") != expected (" << expected[i] << ")" << "  at index:" << i
+                << std::endl;
       return 1;
     }
   }

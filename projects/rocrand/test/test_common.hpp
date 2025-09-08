@@ -33,25 +33,25 @@
 // GoogleTest-compatible HIP_CHECK macro. FAIL is called to log the Google Test trace.
 // The lambda is invoked immediately as assertions that generate a fatal failure can
 // only be used in void-returning functions.
-#define HIP_CHECK(condition)                                                                \
-    {                                                                                       \
-        hipError_t error = condition;                                                       \
-        if(error != hipSuccess)                                                             \
-        {                                                                                   \
-            [error]()                                                                       \
-                { FAIL() << "HIP error " << error << ": " << hipGetErrorString(error); }(); \
-            exit(error);                                                                    \
-        }                                                                                   \
+#define HIP_CHECK(condition)                                                                      \
+    {                                                                                             \
+        hipError_t error = condition;                                                             \
+        if(error != hipSuccess)                                                                   \
+        {                                                                                         \
+            [error]() { FAIL() << "HIP error " << error << ": " << hipGetErrorString(error); }(); \
+            exit(error);                                                                          \
+        }                                                                                         \
     }
 
-#define HIP_CHECK_NON_VOID(condition)         \
-{                                    \
-    hipError_t error = condition;    \
-    if(error != hipSuccess){         \
-        std::cout << "HIP error: " << error << " line: " << __LINE__ << std::endl; \
-        exit(error); \
-    } \
-}
+#define HIP_CHECK_NON_VOID(condition)                                                  \
+    {                                                                                  \
+        hipError_t error = condition;                                                  \
+        if(error != hipSuccess)                                                        \
+        {                                                                              \
+            std::cout << "HIP error: " << error << " line: " << __LINE__ << std::endl; \
+            exit(error);                                                               \
+        }                                                                              \
+    }
 
 #ifdef __HIP_PLATFORM_NVCC__
     #include <cuda/std/cmath>
@@ -109,10 +109,10 @@ inline bool use_hmm()
 
 // Helper for HMM allocations: if HMM is requested through
 // setting environment variable ROCRAND_USE_HMM=1
-template <class T>
+template<class T>
 hipError_t hipMallocHelper(T** devPtr, size_t size)
 {
-    if (use_hmm())
+    if(use_hmm())
     {
         return hipMallocManaged(devPtr, size);
     }

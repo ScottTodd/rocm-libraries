@@ -140,7 +140,8 @@ namespace rocRoller
     }
 
     template <std::integral T>
-    requires(!std::same_as<bool, T>) bool GPUArchitecture::isSupportedConstantValue(T value) const
+        requires(!std::same_as<bool, T>)
+    bool GPUArchitecture::isSupportedConstantValue(T value) const
     {
         auto range = supportedConstantRange<T>();
         return value >= range.first && value <= range.second;

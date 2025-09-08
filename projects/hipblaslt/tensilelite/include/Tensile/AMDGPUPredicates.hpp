@@ -69,8 +69,7 @@ namespace TensileLite
                     return gpu.processor == value;
                 }
 
-                virtual bool debugEval(AMDGPU const& gpu,
-                                       std::ostream& stream) const override
+                virtual bool debugEval(AMDGPU const& gpu, std::ostream& stream) const override
                 {
                     return debugEvalCmp(gpu, stream, "prob", gpu.processor, "==", "sol", value);
                 }
@@ -101,10 +100,10 @@ namespace TensileLite
                     return gpu.computeUnitCount == value;
                 }
 
-                virtual bool debugEval(AMDGPU const& gpu,
-                                       std::ostream& stream) const override
+                virtual bool debugEval(AMDGPU const& gpu, std::ostream& stream) const override
                 {
-                    return debugEvalCmp(gpu, stream, "prob", gpu.computeUnitCount, "==", "sol", value);
+                    return debugEvalCmp(
+                        gpu, stream, "prob", gpu.computeUnitCount, "==", "sol", value);
                 }
             };
 
@@ -133,8 +132,7 @@ namespace TensileLite
                     return gpu.runsKernelTargeting(value);
                 }
 
-                virtual bool debugEval(AMDGPU const& gpu,
-                                       std::ostream& stream) const override
+                virtual bool debugEval(AMDGPU const& gpu, std::ostream& stream) const override
                 {
                     bool rv = (*this)(gpu);
                     stream << rv << ": " << this->type() << std::endl;

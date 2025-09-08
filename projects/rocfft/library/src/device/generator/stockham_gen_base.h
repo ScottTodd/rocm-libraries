@@ -74,7 +74,7 @@ struct StockhamKernel : public StockhamGeneratorSpecs
         R.size                    = Expression{nregisters};
         lds_reg_sync.decl_default = Literal{"true"};
     }
-    virtual ~StockhamKernel(){};
+    virtual ~StockhamKernel() {};
 
     unsigned int nregisters;
     unsigned int transforms_per_block;

@@ -22,11 +22,11 @@
 #define ROCPRIM_WARP_WARP_STORE_HPP_
 
 #include "../config.hpp"
-#include "../intrinsics.hpp"
 #include "../detail/various.hpp"
+#include "../intrinsics.hpp"
 
-#include "warp_exchange.hpp"
 #include "../block/block_store_func.hpp"
+#include "warp_exchange.hpp"
 
 /// \addtogroup warpmodule
 /// @{
@@ -131,24 +131,25 @@ private:
     using storage_type_ = typename ::rocprim::detail::empty_storage_type;
 
 public:
-    ROCPRIM_INLINE ROCPRIM_HOST_DEVICE warp_store()
+    ROCPRIM_INLINE ROCPRIM_HOST_DEVICE
+    warp_store()
     {
         detail::check_virtual_wave_size<VirtualWaveSize>();
     }
 
-    /// \brief Struct used to allocate a temporary memory that is required for thread
-    /// communication during operations provided by related parallel primitive.
-    ///
-    /// Depending on the implemention the operations exposed by parallel primitive may
-    /// require a temporary storage for thread communication. The storage should be allocated
-    /// using keywords \p __shared__. It can be aliased to
-    /// an externally allocated memory, or be a part of a union with other storage types
-    /// to increase shared memory reusability.
-    #ifndef DOXYGEN_SHOULD_SKIP_THIS // hides storage_type implementation for Doxygen
+/// \brief Struct used to allocate a temporary memory that is required for thread
+/// communication during operations provided by related parallel primitive.
+///
+/// Depending on the implemention the operations exposed by parallel primitive may
+/// require a temporary storage for thread communication. The storage should be allocated
+/// using keywords \p __shared__. It can be aliased to
+/// an externally allocated memory, or be a part of a union with other storage types
+/// to increase shared memory reusability.
+#ifndef DOXYGEN_SHOULD_SKIP_THIS // hides storage_type implementation for Doxygen
     using storage_type = typename ::rocprim::detail::empty_storage_type;
-    #else
+#else
     using storage_type = storage_type_; // only for Doxygen
-    #endif
+#endif
 
     /// \brief Stores an arrangement of items from across the warp into an
     /// arrangement on continuous memory.
@@ -168,9 +169,7 @@ public:
     /// or repurposed: \p __syncthreads() or \p rocprim::syncthreads().
     template<class OutputIterator>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void store(OutputIterator output,
-               T (&items)[ItemsPerThread],
-               storage_type& /*storage*/)
+    void store(OutputIterator output, T (&items)[ItemsPerThread], storage_type& /*storage*/)
     {
         using value_type = typename std::iterator_traits<OutputIterator>::value_type;
         static_assert(std::is_convertible<T, value_type>::value,
@@ -265,7 +264,8 @@ class warp_store<T,
                   "Logical warp size must be a power of two.");
 
 public:
-    ROCPRIM_INLINE ROCPRIM_HOST_DEVICE warp_store()
+    ROCPRIM_INLINE ROCPRIM_HOST_DEVICE
+    warp_store()
     {
         detail::check_virtual_wave_size<VirtualWaveSize>();
     }
@@ -274,9 +274,7 @@ public:
 
     template<class OutputIterator>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void store(OutputIterator output,
-               T (&items)[ItemsPerThread],
-               storage_type& /*storage*/)
+    void store(OutputIterator output, T (&items)[ItemsPerThread], storage_type& /*storage*/)
     {
         using value_type = typename std::iterator_traits<OutputIterator>::value_type;
         static_assert(std::is_convertible<T, value_type>::value,
@@ -317,7 +315,8 @@ class warp_store<T,
                   "Logical warp size must be a power of two.");
 
 public:
-    ROCPRIM_INLINE ROCPRIM_HOST_DEVICE warp_store()
+    ROCPRIM_INLINE ROCPRIM_HOST_DEVICE
+    warp_store()
     {
         detail::check_virtual_wave_size<VirtualWaveSize>();
     }
@@ -325,9 +324,7 @@ public:
     using storage_type = typename ::rocprim::detail::empty_storage_type;
 
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void store(T* output,
-               T (&items)[ItemsPerThread],
-               storage_type& /*storage*/)
+    void store(T* output, T (&items)[ItemsPerThread], storage_type& /*storage*/)
     {
         const unsigned int flat_id = ::rocprim::detail::logical_lane_id<VirtualWaveSize>();
         block_store_direct_blocked_vectorized(flat_id, output, items);
@@ -335,9 +332,7 @@ public:
 
     template<class OutputIterator>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void store(OutputIterator output,
-               T (&items)[ItemsPerThread],
-               storage_type& /*storage*/)
+    void store(OutputIterator output, T (&items)[ItemsPerThread], storage_type& /*storage*/)
     {
         using value_type = typename std::iterator_traits<OutputIterator>::value_type;
         static_assert(std::is_convertible<T, value_type>::value,
@@ -381,7 +376,8 @@ private:
     using exchange_type = ::rocprim::warp_exchange<T, ItemsPerThread, VirtualWaveSize>;
 
 public:
-    ROCPRIM_INLINE ROCPRIM_HOST_DEVICE warp_store()
+    ROCPRIM_INLINE ROCPRIM_HOST_DEVICE
+    warp_store()
     {
         detail::check_virtual_wave_size<VirtualWaveSize>();
     }
@@ -390,9 +386,7 @@ public:
 
     template<class OutputIterator>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void store(OutputIterator output,
-               T (&items)[ItemsPerThread],
-               storage_type& storage)
+    void store(OutputIterator output, T (&items)[ItemsPerThread], storage_type& storage)
     {
         using value_type = typename std::iterator_traits<OutputIterator>::value_type;
         static_assert(std::is_convertible<T, value_type>::value,
@@ -407,7 +401,7 @@ public:
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void store(OutputIterator output,
                T (&items)[ItemsPerThread],
-               unsigned int valid,
+               unsigned int  valid,
                storage_type& storage)
     {
         using value_type = typename std::iterator_traits<OutputIterator>::value_type;

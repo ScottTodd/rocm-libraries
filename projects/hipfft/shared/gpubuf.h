@@ -47,7 +47,7 @@ public:
         std::swap(device, other.device);
         return *this;
     }
-    gpubuf_t(const gpubuf_t&) = delete;
+    gpubuf_t(const gpubuf_t&)            = delete;
     gpubuf_t& operator=(const gpubuf_t&) = delete;
 
     static gpubuf_t make_nonowned(T* p, size_t size_bytes = 0)

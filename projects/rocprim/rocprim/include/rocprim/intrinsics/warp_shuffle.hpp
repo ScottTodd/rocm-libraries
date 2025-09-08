@@ -41,12 +41,15 @@ namespace detail
 {
 template<class T, class ShuffleOp>
 ROCPRIM_DEVICE ROCPRIM_INLINE
-typename std::enable_if<std::is_trivially_copyable<T>::value && (sizeof(T) % sizeof(int) == 0), T>::type
-warp_shuffle_op(const T& input, ShuffleOp&& op)
+typename std::enable_if<std::is_trivially_copyable<T>::value && (sizeof(T) % sizeof(int) == 0),
+                        T>::type warp_shuffle_op(const T& input, ShuffleOp&& op)
 {
     constexpr int words_no = (sizeof(T) + sizeof(int) - 1) / sizeof(int);
 
-    struct V { int words[words_no]; };
+    struct V
+    {
+        int words[words_no];
+    };
 
     auto a = ::rocprim::detail::bit_cast<V>(input);
 
@@ -61,8 +64,8 @@ warp_shuffle_op(const T& input, ShuffleOp&& op)
 
 template<class T, class ShuffleOp>
 ROCPRIM_DEVICE ROCPRIM_INLINE
-typename std::enable_if<!(std::is_trivially_copyable<T>::value && (sizeof(T) % sizeof(int) == 0)), T>::type
-warp_shuffle_op(const T& input, ShuffleOp&& op)
+typename std::enable_if<!(std::is_trivially_copyable<T>::value && (sizeof(T) % sizeof(int) == 0)),
+                        T>::type warp_shuffle_op(const T& input, ShuffleOp&& op)
 {
     constexpr int words_no = (sizeof(T) + sizeof(int) - 1) / sizeof(int);
 
@@ -78,7 +81,6 @@ warp_shuffle_op(const T& input, ShuffleOp&& op)
     }
 
     return output;
-
 }
 
 template<class T, int dpp_ctrl, int row_mask = 0xf, int bank_mask = 0xf, bool bound_ctrl = false>
@@ -109,13 +111,9 @@ template<class T, int mask>
 ROCPRIM_DEVICE ROCPRIM_INLINE
 T warp_swizzle(const T& input)
 {
-    return detail::warp_shuffle_op(
-        input,
-        [=](int v) -> int
-        {
-            return ::__builtin_amdgcn_ds_swizzle(v, mask);
-        }
-    );
+    return detail::warp_shuffle_op(input,
+                                   [=](int v) -> int
+                                   { return ::__builtin_amdgcn_ds_swizzle(v, mask); });
 }
 
 } // end namespace detail
@@ -138,13 +136,7 @@ template<class T>
 ROCPRIM_DEVICE ROCPRIM_INLINE
 T warp_shuffle(const T& input, const int src_lane, const int width = arch::wavefront::min_size())
 {
-    return detail::warp_shuffle_op(
-        input,
-        [=](int v) -> int
-        {
-            return __shfl(v, src_lane, width);
-        }
-    );
+    return detail::warp_shuffle_op(input, [=](int v) -> int { return __shfl(v, src_lane, width); });
 }
 
 /// \brief Shuffle up for any data type.
@@ -165,13 +157,7 @@ T warp_shuffle_up(const T&           input,
                   const unsigned int delta,
                   const int          width = arch::wavefront::min_size())
 {
-    return detail::warp_shuffle_op(
-        input,
-        [=](int v) -> int
-        {
-            return __shfl_up(v, delta, width);
-        }
-    );
+    return detail::warp_shuffle_op(input, [=](int v) -> int { return __shfl_up(v, delta, width); });
 }
 
 /// \brief Shuffle down for any data type.
@@ -192,13 +178,8 @@ T warp_shuffle_down(const T&           input,
                     const unsigned int delta,
                     const int          width = arch::wavefront::min_size())
 {
-    return detail::warp_shuffle_op(
-        input,
-        [=](int v) -> int
-        {
-            return __shfl_down(v, delta, width);
-        }
-    );
+    return detail::warp_shuffle_op(input,
+                                   [=](int v) -> int { return __shfl_down(v, delta, width); });
 }
 
 /// \brief Shuffle XOR for any data type.
@@ -218,13 +199,8 @@ T warp_shuffle_xor(const T&  input,
                    const int lane_mask,
                    const int width = arch::wavefront::min_size())
 {
-    return detail::warp_shuffle_op(
-        input,
-        [=](int v) -> int
-        {
-            return __shfl_xor(v, lane_mask, width);
-        }
-    );
+    return detail::warp_shuffle_op(input,
+                                   [=](int v) -> int { return __shfl_xor(v, lane_mask, width); });
 }
 
 namespace detail
@@ -280,7 +256,7 @@ T warp_permute(const T& input, const int dst_lane, const int width = arch::wavef
 {
     // The amdgcn intrinsic does not support virtual warp sizes, so in order to support those, manually
     // wrap around the dst_lane within groups of log2(width) bits.
-    const int self  = lane_id();
+    const int self = lane_id();
     // Construct a mask of bits which make up a virtual warp. If the warp size is `width` (a power of 2),
     // then the lower `width - 1` bits indicate the position within a virtual warp, and the remainder
     // indicate the position of the virtual warp within the real warp.
@@ -308,7 +284,8 @@ T warp_permute(const T& input, const int dst_lane, const int width = arch::wavef
 ///
 /// \param input the value to broadcast
 template<typename T>
-ROCPRIM_DEVICE ROCPRIM_INLINE T warp_readfirstlane(const T& input)
+ROCPRIM_DEVICE ROCPRIM_INLINE
+T warp_readfirstlane(const T& input)
 {
     return detail::warp_shuffle_op(input,
                                    [](int v) -> int { return __builtin_amdgcn_readfirstlane(v); });
@@ -327,7 +304,8 @@ ROCPRIM_DEVICE ROCPRIM_INLINE T warp_readfirstlane(const T& input)
 /// \param input the value to broadcast
 /// \param src_lane the lane whose value to broadcast to other threads in the warp
 template<typename T>
-ROCPRIM_DEVICE ROCPRIM_INLINE T warp_readlane(const T& input, const int src_lane)
+ROCPRIM_DEVICE ROCPRIM_INLINE
+T warp_readlane(const T& input, const int src_lane)
 {
     return detail::warp_shuffle_op(input,
                                    [=](int v) -> int

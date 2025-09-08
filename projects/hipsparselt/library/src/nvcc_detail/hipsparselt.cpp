@@ -521,9 +521,9 @@ hipsparseStatus_t hipsparseLtInit(hipsparseLtHandle_t* handle)
     }
     if((log_env = getenv("HIPSPARSELT_LOG_MASK")) != NULL)
     {
-        int mask = strtol(log_env, nullptr, 0);
+        int  mask = strtol(log_env, nullptr, 0);
         char mask_str[11];
-        snprintf(mask_str, 11, "%d",mask);
+        snprintf(mask_str, 11, "%d", mask);
         setenv("CUSPARSELT_LOG_MASK", mask_str, 0);
     }
     if((log_env = getenv("HIPSPARSELT_LOG_FILE")) != NULL)

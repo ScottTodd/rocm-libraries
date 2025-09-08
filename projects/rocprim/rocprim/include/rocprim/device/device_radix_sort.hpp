@@ -51,15 +51,15 @@ namespace detail
 {
 
 template<class Tuple, size_t Index>
-constexpr auto tuple_bit_size_impl()
-    -> std::enable_if_t<Index == ::rocprim::tuple_size<Tuple>::value, size_t>
+constexpr auto
+    tuple_bit_size_impl() -> std::enable_if_t<Index == ::rocprim::tuple_size<Tuple>::value, size_t>
 {
     return 0;
 }
 
 template<class Tuple, size_t Index>
-constexpr auto tuple_bit_size_impl()
-    -> std::enable_if_t<Index != ::rocprim::tuple_size<Tuple>::value, size_t>
+constexpr auto
+    tuple_bit_size_impl() -> std::enable_if_t<Index != ::rocprim::tuple_size<Tuple>::value, size_t>
 {
     using element_t = std::decay_t<::rocprim::tuple_element_t<Index, Tuple>>;
     return 8 * sizeof(element_t) + tuple_bit_size_impl<Tuple, Index + 1>();

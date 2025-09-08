@@ -27,9 +27,11 @@ from copy import deepcopy
 import pickle
 import timeit
 
+
 def fastdeepcopy(x):
     # Note: Some object can't be pickled
     return pickle.loads(pickle.dumps(x))
+
 
 def test_code():
     label = code.Label("label", comment="comment")
@@ -37,7 +39,7 @@ def test_code():
     tesxtblock = code.TextBlock("textblock")
     print(tesxtblock)
 
-    #Test Module
+    # Test Module
     module = code.Module("module")
     module.add(SMovB32(dst=sgpr(1), src=sgpr(2)))
     module2 = module.add(code.Module("module2"))
@@ -57,23 +59,25 @@ def test_code():
         testpop.append(item)
     print("Test pop", testpop)
 
-
-    srdUpperValue = code.SrdUpperValue((9,4,2))
+    srdUpperValue = code.SrdUpperValue((9, 4, 2))
     print(srdUpperValue.desc())
     assert srdUpperValue.getValue() == 131072
 
-    signature = code.SignatureBase(kernelName="123",
-                                    kernArgsVersion=1,
-                                    codeObjectVersion="4",
-                                    groupSegmentSize=256,
-                                    sgprWorkGroup=(1, 1, 100),
-                                    vgprWorkItem=1,
-                                    flatWorkGroupSize=(256),
-                                    preloadKernArgs=True)
+    signature = code.SignatureBase(
+        kernelName="123",
+        kernArgsVersion=1,
+        codeObjectVersion="4",
+        groupSegmentSize=256,
+        sgprWorkGroup=(1, 1, 100),
+        vgprWorkItem=1,
+        flatWorkGroupSize=(256),
+        preloadKernArgs=True,
+    )
     print(signature)
 
     vs = code.ValueSet("BufferLimit", 0xFFFFFFFF, format=1)
     print(vs)
+
 
 def timeit_decorator(func):
     def wrapper(*args, **kwargs):
@@ -82,7 +86,9 @@ def timeit_decorator(func):
         end_time = timeit.default_timer()
         print(f"Function {func.__name__} took {end_time - start_time:.6f} seconds")
         return result
+
     return wrapper
+
 
 def copyfunc(obj, noPickle=False):
     obj2 = deepcopy(obj)
@@ -91,6 +97,7 @@ def copyfunc(obj, noPickle=False):
         return
     obj3 = fastdeepcopy(obj)
     print("Copied item using pickle:", obj3)
+
 
 def test_copy():
     label = code.Label("label", comment="comment")
@@ -106,6 +113,7 @@ def test_copy():
 
     valueset = code.ValueSet("Test", 1)
     copyfunc(valueset)
+
 
 test_code()
 test_copy()

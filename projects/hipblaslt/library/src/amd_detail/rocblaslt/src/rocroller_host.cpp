@@ -29,9 +29,9 @@
  *********************************************************/
 
 #include "rocroller_host.hpp"
-#include "rocroller_host_internal.hpp"
 #include "Debug.hpp"
 #include "handle.h"
+#include "rocroller_host_internal.hpp"
 #include "utility.hpp"
 
 #include <rocRoller/CommandSolution.hpp>
@@ -120,8 +120,8 @@ struct SolutionParameters
     bool prefetchScale = true;
 
     // Workgroup Mapping
-    int workgroupMappingDim = 0;
-    bool workgroupRemapXCC = true;
+    int  workgroupMappingDim = 0;
+    bool workgroupRemapXCC   = true;
 
     std::string toString() const;
 };
@@ -490,7 +490,8 @@ std::string SolutionParameters::toString() const
     result << " A:" << (direct2LDSA ? "DirectToLDS" : (loadLDSA ? "On" : "Off"));
     result << " B:" << (direct2LDSB ? "DirectToLDS" : (loadLDSB ? "On" : "Off"));
     result << " D:" << (storeLDSD ? "On" : "Off") << std::endl;
-    result << "Workgroup Mapping: Dim:" << workgroupMappingDim << " RemapXCC:" << workgroupRemapXCC << std::endl;
+    result << "Workgroup Mapping: Dim:" << workgroupMappingDim << " RemapXCC:" << workgroupRemapXCC
+           << std::endl;
     result << "Prefetch:" << prefetch << " InFlight:" << prefetchInFlight
            << " LDSFactor:" << prefetchLDSFactor << " MixMemOps:" << prefetchMixMemOps << std::endl;
     result << "Block Scale Options:" << " Swizzle Scale:" << swizzleScale
@@ -582,24 +583,24 @@ TensileLite::analytical::DataType rocroller_type_to_analytical_type(rocRoller::D
 {
     switch(type)
     {
-        case rocRoller::DataType::Half:
-            return TensileLite::analytical::DataType::Half;
-        case rocRoller::DataType::Float:
-            return TensileLite::analytical::DataType::Float;
-        case rocRoller::DataType::BFloat16:
-            return TensileLite::analytical::DataType::BFloat16;
-        case rocRoller::DataType::FP8:
-            return TensileLite::analytical::DataType::Float8;
-        case rocRoller::DataType::BF8:
-            return TensileLite::analytical::DataType::BFloat8;
-        case rocRoller::DataType::FP6:
-            return TensileLite::analytical::DataType::Float6;
-        case rocRoller::DataType::BF6:
-            return TensileLite::analytical::DataType::BFloat6;
-        case rocRoller::DataType::FP4:
-            return TensileLite::analytical::DataType::Float4;
-        default:
-            return TensileLite::analytical::DataType::None;
+    case rocRoller::DataType::Half:
+        return TensileLite::analytical::DataType::Half;
+    case rocRoller::DataType::Float:
+        return TensileLite::analytical::DataType::Float;
+    case rocRoller::DataType::BFloat16:
+        return TensileLite::analytical::DataType::BFloat16;
+    case rocRoller::DataType::FP8:
+        return TensileLite::analytical::DataType::Float8;
+    case rocRoller::DataType::BF8:
+        return TensileLite::analytical::DataType::BFloat8;
+    case rocRoller::DataType::FP6:
+        return TensileLite::analytical::DataType::Float6;
+    case rocRoller::DataType::BF6:
+        return TensileLite::analytical::DataType::BFloat6;
+    case rocRoller::DataType::FP4:
+        return TensileLite::analytical::DataType::Float4;
+    default:
+        return TensileLite::analytical::DataType::None;
     }
 }
 
@@ -635,7 +636,6 @@ KernelType genKernelType(const RocblasltContractionProblem& prob)
     return kernelType;
 }
 
-
 /**
  * @brief Choose the SolutionIndexParameters to use for a given problem
  *
@@ -653,19 +653,21 @@ std::vector<SolutionIndexParameters> chooseSolutionIndexParameters(
 {
     std::vector<SolutionIndexParameters> params;
 
-    std::vector<TensileLite::analytical::TileTuple> tile_list = getTileListForKernelType(kernelType);
+    std::vector<TensileLite::analytical::TileTuple> tile_list
+        = getTileListForKernelType(kernelType);
 
     size_t elementSizeA_bits = rocRoller::DataTypeInfo::Get(kernelType.typeA).elementBits;
     size_t elementSizeB_bits = rocRoller::DataTypeInfo::Get(kernelType.typeB).elementBits;
     size_t elementSizeC_bits = rocRoller::DataTypeInfo::Get(kernelType.typeC).elementBits;
 
     TensileLite::analytical::DataType dataType;
-    if (elementSizeA_bits < elementSizeB_bits)
+    if(elementSizeA_bits < elementSizeB_bits)
         dataType = rocroller_type_to_analytical_type(kernelType.typeB);
     else
         dataType = rocroller_type_to_analytical_type(kernelType.typeA);
 
-    const TensileLite::analytical::Hardware analaytical_hardware = TensileLite::analytical::Hardware::getHardwareForDevice(0);
+    const TensileLite::analytical::Hardware analaytical_hardware
+        = TensileLite::analytical::Hardware::getHardwareForDevice(0);
 
     int WGM = std::sqrt(std::floor(analaytical_hardware.N_CU / analaytical_hardware.NUM_XCD));
 
@@ -690,7 +692,9 @@ std::vector<SolutionIndexParameters> chooseSolutionIndexParameters(
 
     for(auto const& selected_tile : selected_tiles)
     {
-        WorkGroupTileSize wgt{(int)std::get<1>(selected_tile), (int)std::get<2>(selected_tile), (int)std::get<3>(selected_tile)};
+        WorkGroupTileSize wgt{(int)std::get<1>(selected_tile),
+                              (int)std::get<2>(selected_tile),
+                              (int)std::get<3>(selected_tile)};
         int unrollAmount = preferredUnrolling(kernelType.typeA, kernelType.typeB, wgt);
         wgt.k /= unrollAmount;
 
@@ -715,14 +719,14 @@ std::vector<SolutionIndexParameters> chooseSolutionIndexParameters(
                 continue;
 
             params.push_back({wgt, 1, true});
-            while (unrollAmount > 1 && (prob.k % (wgt.k * unrollAmount) != 0))
+            while(unrollAmount > 1 && (prob.k % (wgt.k * unrollAmount) != 0))
             {
                 unrollAmount = unrollAmount / 2;
             }
 
             params.back().prefetchInFlight = unrollAmount;
 
-            if (prob.k < USE_WORKGROUP_MAPPING_K_SIZE)
+            if(prob.k < USE_WORKGROUP_MAPPING_K_SIZE)
             {
                 params.back().workgroupMapping = false;
             }
@@ -732,44 +736,49 @@ std::vector<SolutionIndexParameters> chooseSolutionIndexParameters(
     return params;
 }
 
-int chooseStreamKGridSize(std::shared_ptr<GemmKernel>        gemm,
-                          const RocblasltContractionProblem& prob)
+int chooseStreamKGridSize(std::shared_ptr<GemmKernel> gemm, const RocblasltContractionProblem& prob)
 {
-    const TensileLite::analytical::Hardware analaytical_hardware = TensileLite::analytical::Hardware::getHardwareForDevice(0);
+    const TensileLite::analytical::Hardware analaytical_hardware
+        = TensileLite::analytical::Hardware::getHardwareForDevice(0);
 
-    size_t elementSizeA_bits = rocRoller::DataTypeInfo::Get(gemm->params->kernelType.typeA).elementBits;
-    size_t elementSizeB_bits = rocRoller::DataTypeInfo::Get(gemm->params->kernelType.typeB).elementBits;
-    size_t elementSizeD_bits = rocRoller::DataTypeInfo::Get(gemm->params->kernelType.typeD).elementBits;
-    size_t elementSizeAcc = rocRoller::DataTypeInfo::Get(gemm->params->kernelType.typeAcc).elementBytes;
+    size_t elementSizeA_bits
+        = rocRoller::DataTypeInfo::Get(gemm->params->kernelType.typeA).elementBits;
+    size_t elementSizeB_bits
+        = rocRoller::DataTypeInfo::Get(gemm->params->kernelType.typeB).elementBits;
+    size_t elementSizeD_bits
+        = rocRoller::DataTypeInfo::Get(gemm->params->kernelType.typeD).elementBits;
+    size_t elementSizeAcc
+        = rocRoller::DataTypeInfo::Get(gemm->params->kernelType.typeAcc).elementBytes;
 
     TensileLite::analytical::DataType dataType;
-    if (elementSizeA_bits < elementSizeB_bits)
+    if(elementSizeA_bits < elementSizeB_bits)
         dataType = rocroller_type_to_analytical_type(gemm->params->kernelType.typeB);
     else
         dataType = rocroller_type_to_analytical_type(gemm->params->kernelType.typeA);
 
-    auto result = TensileLite::analytical::streamk::select_streamk_grid(prob.m,
-        prob.n,
-        prob.k,
-        prob.batch_count,
-        prob.trans_a == HIPBLAS_OP_T,
-        prob.trans_b == HIPBLAS_OP_T,
-        elementSizeA_bits,
-        elementSizeB_bits,
-        elementSizeD_bits,
-        dataType,
-        prob.workspaceSize,
-        gemm->params->workgroupTile.m,
-        gemm->params->workgroupTile.n,
-        gemm->params->workgroupTile.k,
-        gemm->params->machineInstruction.m,
-        gemm->params->machineInstruction.n,
-        gemm->params->machineInstruction.k,
-        DEFAULT_WGM,
-        elementSizeAcc,
-        gemm->occupancy,
-        analaytical_hardware,
-        6);
+    auto result
+        = TensileLite::analytical::streamk::select_streamk_grid(prob.m,
+                                                                prob.n,
+                                                                prob.k,
+                                                                prob.batch_count,
+                                                                prob.trans_a == HIPBLAS_OP_T,
+                                                                prob.trans_b == HIPBLAS_OP_T,
+                                                                elementSizeA_bits,
+                                                                elementSizeB_bits,
+                                                                elementSizeD_bits,
+                                                                dataType,
+                                                                prob.workspaceSize,
+                                                                gemm->params->workgroupTile.m,
+                                                                gemm->params->workgroupTile.n,
+                                                                gemm->params->workgroupTile.k,
+                                                                gemm->params->machineInstruction.m,
+                                                                gemm->params->machineInstruction.n,
+                                                                gemm->params->machineInstruction.k,
+                                                                DEFAULT_WGM,
+                                                                elementSizeAcc,
+                                                                gemm->occupancy,
+                                                                analaytical_hardware,
+                                                                6);
 
     return result;
 }
@@ -796,16 +805,16 @@ std::pair<int, int> pickWorkgroupSize(std::shared_ptr<SolutionParameters> gemm)
     if(requiredX != -1 && requiredY == -1)
     {
         x = requiredX;
-        if (gemm->swizzleScale && (gemm->workgroupTile.n / SWIZZLE_BLOCK_SIZE) % 4 == 0)
+        if(gemm->swizzleScale && (gemm->workgroupTile.n / SWIZZLE_BLOCK_SIZE) % 4 == 0)
             y = 4;
     }
-    else if (requiredX == -1 && requiredY != -1)
+    else if(requiredX == -1 && requiredY != -1)
     {
         y = requiredY;
-        if (gemm->swizzleScale && (gemm->workgroupTile.m / SWIZZLE_BLOCK_SIZE) % 4 == 0)
+        if(gemm->swizzleScale && (gemm->workgroupTile.m / SWIZZLE_BLOCK_SIZE) % 4 == 0)
             x = 4;
     }
-    else if (requiredX != -1 && requiredY != -1)
+    else if(requiredX != -1 && requiredY != -1)
     {
         x = requiredX;
         y = requiredY;
@@ -834,7 +843,8 @@ std::shared_ptr<SolutionParameters>
 
     gemm->workgroupTile = solutionIndexParameters.workgroupTile;
 
-    gemm->machineInstruction = pickMI(gemm->kernelType.typeA, gemm->kernelType.typeB, gemm->workgroupTile);
+    gemm->machineInstruction
+        = pickMI(gemm->kernelType.typeA, gemm->kernelType.typeB, gemm->workgroupTile);
 
     if(solutionIndexParameters.prefetchInFlight == 1)
     {
@@ -847,16 +857,16 @@ std::shared_ptr<SolutionParameters>
 
     // Swizzle Scale only support in certain situations
     // Swizzle Scale also runs out of registers with FP8
-    if (kernelType.scaleAMode != rocRoller::Operations::ScaleMode::Separate || 
-        kernelType.scaleBMode != rocRoller::Operations::ScaleMode::Separate)
+    if(kernelType.scaleAMode != rocRoller::Operations::ScaleMode::Separate
+       || kernelType.scaleBMode != rocRoller::Operations::ScaleMode::Separate)
     {
-        gemm->swizzleScale = false;
+        gemm->swizzleScale  = false;
         gemm->prefetchScale = false;
         gemm->loadLDSScaleA = false;
         gemm->loadLDSScaleB = false;
     }
     else if(solutionIndexParameters.workgroupTile.m >= 128
-        && solutionIndexParameters.workgroupTile.n >= 128)
+            && solutionIndexParameters.workgroupTile.n >= 128)
     {
         gemm->swizzleScale  = true;
         gemm->loadLDSScaleA = false;
@@ -870,7 +880,7 @@ std::shared_ptr<SolutionParameters>
         gemm->loadLDSScaleB = true;
     }
 
-    auto workgroupSize = pickWorkgroupSize(gemm);
+    auto workgroupSize   = pickWorkgroupSize(gemm);
     gemm->workgroupSizeX = workgroupSize.first;
     gemm->workgroupSizeY = workgroupSize.second;
 
@@ -895,19 +905,21 @@ std::shared_ptr<SolutionParameters>
 
     // LDS can only be used for scaling data with certain workgroup tile sizes
     auto workgroupSizeTotal = gemm->workgroupSizeX * gemm->workgroupSizeY;
-    auto numScaleElementsA = 0;
+    auto numScaleElementsA  = 0;
     if(gemm->kernelType.scaleABlockRowSize * gemm->kernelType.scaleABlockColSize != 0)
     {
-        numScaleElementsA = gemm->workgroupTile.m
-          * (gemm->workgroupTile.k
-             / (gemm->kernelType.scaleABlockRowSize * gemm->kernelType.scaleABlockColSize));
+        numScaleElementsA
+            = gemm->workgroupTile.m
+              * (gemm->workgroupTile.k
+                 / (gemm->kernelType.scaleABlockRowSize * gemm->kernelType.scaleABlockColSize));
     }
     auto numScaleElementsB = 0;
     if(gemm->kernelType.scaleBBlockRowSize * gemm->kernelType.scaleBBlockColSize != 0)
     {
-        numScaleElementsB = gemm->workgroupTile.n
-          * (gemm->workgroupTile.k
-             / (gemm->kernelType.scaleBBlockRowSize * gemm->kernelType.scaleBBlockColSize));
+        numScaleElementsB
+            = gemm->workgroupTile.n
+              * (gemm->workgroupTile.k
+                 / (gemm->kernelType.scaleBBlockRowSize * gemm->kernelType.scaleBBlockColSize));
     }
     if(numScaleElementsA % workgroupSizeTotal != 0)
     {
@@ -923,20 +935,20 @@ std::shared_ptr<SolutionParameters>
     if(!solutionIndexParameters.workgroupMapping)
     {
         gemm->workgroupMappingDim = -1;
-        gemm->workgroupRemapXCC = false;
+        gemm->workgroupRemapXCC   = false;
     }
     else
     {
         gemm->workgroupMappingDim = 0;
-        gemm->workgroupRemapXCC = true;
+        gemm->workgroupRemapXCC   = true;
     }
 
     // TODO: StreamK is not currently working with prefetching or workgroup mapping
     if(gemm->streamK)
     {
-        gemm->prefetch = false;
+        gemm->prefetch            = false;
         gemm->workgroupMappingDim = -1;
-        gemm->workgroupRemapXCC = false;
+        gemm->workgroupRemapXCC   = false;
     }
 
     return gemm;
@@ -1041,9 +1053,9 @@ std::string genKernelName(std::shared_ptr<SolutionParameters> gemm)
 
     rv << "_UR_" << gemm->prefetchInFlight;
 
-    if (gemm->workgroupMappingDim != -1)
+    if(gemm->workgroupMappingDim != -1)
     {
-        rv <<"_WGM_";
+        rv << "_WGM_";
     }
 
     return rv.str();
@@ -1182,31 +1194,28 @@ std::shared_ptr<GemmKernel> genGemmKernel(std::shared_ptr<SolutionParameters> ge
         command->addOperation(rocRoller::Operations::T_Store_Tiled(tagCvt, tagTensorD));
     }
 
-    if (gemm->streamK)
+    if(gemm->streamK)
     {
         tagSKGrid = command->allocateTag();
         command->allocateArgument(DataType::UInt32,
-                                *tagSKGrid,
-                                ArgumentType::Value,
-                                DataDirection::ReadOnly,
-                                rocRoller::NUMWGS);
+                                  *tagSKGrid,
+                                  ArgumentType::Value,
+                                  DataDirection::ReadOnly,
+                                  rocRoller::NUMWGS);
 
         tagScratch = command->allocateTag();
         command->allocateArgument(VariableType(DataType::UInt32, PointerType::PointerGlobal),
-                                *tagScratch,
-                                ArgumentType::Value,
-                                DataDirection::ReadWrite,
-                                rocRoller::SCRATCH);
+                                  *tagScratch,
+                                  ArgumentType::Value,
+                                  DataDirection::ReadWrite,
+                                  rocRoller::SCRATCH);
     }
 
     if(gemm->workgroupMappingDim != -1)
     {
         tagWGM = command->allocateTag();
-        command->allocateArgument(DataType::Int32,
-                                *tagWGM,
-                                ArgumentType::Value,
-                                DataDirection::ReadOnly,
-                                rocRoller::WGM);
+        command->allocateArgument(
+            DataType::Int32, *tagWGM, ArgumentType::Value, DataDirection::ReadOnly, rocRoller::WGM);
     }
 
     // -------------------------------------------------------------
@@ -1353,8 +1362,10 @@ std::shared_ptr<GemmKernel> genGemmKernel(std::shared_ptr<SolutionParameters> ge
         params->prefetch = false;
     }
 
-    params->transposeMemoryAccess.set(LayoutType::MATRIX_A, gemm->kernelType.transA == HIPBLAS_OP_T);
-    params->transposeMemoryAccess.set(LayoutType::MATRIX_B, gemm->kernelType.transB == HIPBLAS_OP_T);
+    params->transposeMemoryAccess.set(LayoutType::MATRIX_A,
+                                      gemm->kernelType.transA == HIPBLAS_OP_T);
+    params->transposeMemoryAccess.set(LayoutType::MATRIX_B,
+                                      gemm->kernelType.transB == HIPBLAS_OP_T);
 
     uint workgroupSizeX = gemm->workgroupSizeX * gemm->workgroupSizeY;
     uint workgroupSizeY = 1;
@@ -1362,12 +1373,11 @@ std::shared_ptr<GemmKernel> genGemmKernel(std::shared_ptr<SolutionParameters> ge
     // Workgroup Mapping
     if(gemm->workgroupMappingDim != -1)
     {
-        auto dim  = gemm->workgroupMappingDim;
+        auto dim = gemm->workgroupMappingDim;
 
-        AssertFatal(
-            dim == 0 || dim == 1,
-            "Only 0 (M) or 1 (N) are supported dimensions for workgroup mapping.",
-            ShowValue(dim));
+        AssertFatal(dim == 0 || dim == 1,
+                    "Only 0 (M) or 1 (N) are supported dimensions for workgroup mapping.",
+                    ShowValue(dim));
 
         params->workgroupMapping = {dim, nullptr};
     }
@@ -1379,7 +1389,7 @@ std::shared_ptr<GemmKernel> genGemmKernel(std::shared_ptr<SolutionParameters> ge
 
     if(gemm->streamK)
     {
-        params->streamK = true;
+        params->streamK                       = true;
         params->loopOverOutputTilesDimensions = {0, 1};
         if(gemm->streamKTwoTile)
             params->streamKTwoTile = true;
@@ -1437,11 +1447,10 @@ std::shared_ptr<GemmKernel> genGemmKernel(std::shared_ptr<SolutionParameters> ge
     setPredicates(gemmKernel);
 
     auto flatWorkgroupSize = workgroupSizeX;
-    int occupancy;
-    AssertFatal(
-        hipModuleOccupancyMaxActiveBlocksPerMultiprocessor(
-            &occupancy, commandKernel->getHipFunction(), flatWorkgroupSize, 0)
-        == (hipError_t)HIP_SUCCESS);
+    int  occupancy;
+    AssertFatal(hipModuleOccupancyMaxActiveBlocksPerMultiprocessor(
+                    &occupancy, commandKernel->getHipFunction(), flatWorkgroupSize, 0)
+                == (hipError_t)HIP_SUCCESS);
 
     gemmKernel->occupancy = occupancy;
 
@@ -1475,7 +1484,7 @@ rocblaslt_status
 
 /**
  * @brief Return the amount of workspace that is required to execute a kernel.
- * 
+ *
  * Note: This only takes into account the workspace required for StreamK kernels.
  */
 size_t workspaceRequired(std::shared_ptr<GemmKernel> gemm, const RocblasltContractionProblem& prob)
@@ -1484,7 +1493,8 @@ size_t workspaceRequired(std::shared_ptr<GemmKernel> gemm, const RocblasltContra
 
     if(gemm->params->streamK)
     {
-        commandArgs.setArgument(gemm->tagSKGrid, ArgumentType::Value, chooseStreamKGridSize(gemm, prob));
+        commandArgs.setArgument(
+            gemm->tagSKGrid, ArgumentType::Value, chooseStreamKGridSize(gemm, prob));
     }
 
     auto runtimeArgs = commandArgs.runtimeArguments();
@@ -1573,7 +1583,7 @@ rocblaslt_status
         // If kernel doesn't already exist, generate it
         if(existingSolutionIndex == rocroller_handle->generatedKernels[kernelType].end())
         {
-            auto                        status = genKernelFromSolutionIndexParameters(
+            auto status = genKernelFromSolutionIndexParameters(
                 rocroller_handle, kernelType, solutionIndexParameter, index, kernel);
             if(status != rocblaslt_status_success)
                 continue;
@@ -1615,8 +1625,8 @@ rocblaslt_status
 {
     heuristicResults.resize(possibleTileSizes.size());
     int  returnAlgoCount;
-    auto result
-        = getRocRollerBestSolutions(handle, prob, -1, heuristicResults.data(), maxWorkSpaceBytes, &returnAlgoCount);
+    auto result = getRocRollerBestSolutions(
+        handle, prob, -1, heuristicResults.data(), maxWorkSpaceBytes, &returnAlgoCount);
     heuristicResults.resize(returnAlgoCount);
     return result;
 }
@@ -1651,7 +1661,7 @@ void getRocRollerSolutionsFromIndex(
  */
 CommandArguments createCommandArguments(std::shared_ptr<GemmKernel>        gemm,
                                         const RocblasltContractionProblem& prob,
-                                        int wgm)
+                                        int                                wgm)
 {
     CommandArguments commandArgs = gemm->command->createArguments();
 
@@ -1715,16 +1725,16 @@ CommandArguments createCommandArguments(std::shared_ptr<GemmKernel>        gemm,
 
     if(gemm->params->workgroupMappingDim != -1)
     {
-        AssertFatal(wgm > 0,
-                    "Workgroup mapping size must be a positive non-zero integer.",
-                    ShowValue(wgm));
+        AssertFatal(
+            wgm > 0, "Workgroup mapping size must be a positive non-zero integer.", ShowValue(wgm));
 
         commandArgs.setArgument(gemm->tagWGM, ArgumentType::Value, wgm);
     }
 
     if(gemm->params->streamK)
     {
-        commandArgs.setArgument(gemm->tagSKGrid, ArgumentType::Value, chooseStreamKGridSize(gemm, prob));
+        commandArgs.setArgument(
+            gemm->tagSKGrid, ArgumentType::Value, chooseStreamKGridSize(gemm, prob));
     }
 
     return commandArgs;
@@ -1869,8 +1879,8 @@ rocblaslt_status runRocRollerContractionProblem(rocblaslt_handle                
     if(algo == nullptr)
     {
         int  returnAlgoCount;
-        auto status
-            = getRocRollerBestSolutions(handle, prob, 1, &heuristicResult, prob.workspaceSize, &returnAlgoCount);
+        auto status = getRocRollerBestSolutions(
+            handle, prob, 1, &heuristicResult, prob.workspaceSize, &returnAlgoCount);
         if(status != rocblaslt_status_success)
             return status;
         if(returnAlgoCount == 0)

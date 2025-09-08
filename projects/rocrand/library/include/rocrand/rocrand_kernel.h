@@ -37,11 +37,11 @@
 #include "rocrand/rocrand_threefry4x64_20.h"
 #include "rocrand/rocrand_xorwow.h"
 
-#include "rocrand/rocrand_uniform.h"
-#include "rocrand/rocrand_normal.h"
-#include "rocrand/rocrand_log_normal.h"
-#include "rocrand/rocrand_poisson.h"
 #include "rocrand/rocrand_discrete.h"
+#include "rocrand/rocrand_log_normal.h"
+#include "rocrand/rocrand_normal.h"
+#include "rocrand/rocrand_poisson.h"
+#include "rocrand/rocrand_uniform.h"
 // IWYU pragma: end_exports
 
 #endif // ROCRAND_KERNEL_H_

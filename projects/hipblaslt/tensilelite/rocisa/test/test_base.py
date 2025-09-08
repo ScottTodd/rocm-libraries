@@ -25,17 +25,21 @@ from copy import deepcopy
 import pickle
 import os
 
-isa = (9,0,10)
+isa = (9, 0, 10)
+
 
 def fastdeepcopy(x):
     # Note: Some object can't be pickled
     return pickle.loads(pickle.dumps(x))
 
+
 def getInstance():
     return rocisa.rocIsa.getInstance()
 
+
 def getGfxName(isa):
     return rocisa.isaToGfx(isa)
+
 
 def test_rocisa():
     rocm_path = os.environ.get("ROCM_PATH", "/opt/rocm")
@@ -50,8 +54,9 @@ def test_rocisa():
 
     assert ki.isa == isa
     assert isa == ki.isa
-    assert (0,0,0,0) != ki.isa
+    assert (0, 0, 0, 0) != ki.isa
     assert ki.isa == ki.isa
+
 
 class Item2(rocisa.base.Item):
     def __init__(self, name):
@@ -60,9 +65,13 @@ class Item2(rocisa.base.Item):
 
     def __getstate__(self):
         base_state = super().__getstate__()
-        py_state = {key: value for key, value in self.__dict__.items() if not key.startswith("__")}
+        py_state = {
+            key: value
+            for key, value in self.__dict__.items()
+            if not key.startswith("__")
+        }
         return (base_state, py_state)
-    
+
     def __setstate__(self, state):
         base_state, py_state = state
         super().__setstate__(base_state)
@@ -70,10 +79,11 @@ class Item2(rocisa.base.Item):
 
     def __deepcopy__(self, memo):
         assert 0, "Not implemented"
-        
+
     def print(self):
         for i in self.itemList:
             print(i)
+
 
 def test_item():
     item = rocisa.base.Item("Tested Item")
@@ -81,15 +91,15 @@ def test_item():
     print("Test property 2:", item.kernel.isa)
     print("PrettyPrint:", item.prettyPrint(""))
 
-
     item2 = Item2("Tested Item 2")
     item2.itemList.append(rocisa.base.Item("Tested Item 3"))
     item2.print()
 
+
 def test_copy():
     getInstance2 = fastdeepcopy(getInstance)
-    global_isa   = rocisa.rocIsa.getInstance()
-    global_isa2  = getInstance2()
+    global_isa = rocisa.rocIsa.getInstance()
+    global_isa2 = getInstance2()
     assert global_isa is global_isa2
 
     ki = global_isa.getKernel()
@@ -110,9 +120,11 @@ def test_copy():
     deepcopiedFunction = fastdeepcopy(getGfxName)
     print("This is a deepcopied function:", deepcopiedFunction(isa))
 
+
 def test_functions():
     print("GLC:", rocisa.getGlcBitName(True))
     print("SLC:", rocisa.getSlcBitName(False))
+
 
 test_rocisa()
 test_item()

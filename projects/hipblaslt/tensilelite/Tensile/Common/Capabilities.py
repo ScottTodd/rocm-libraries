@@ -29,7 +29,9 @@ from typing import List, Dict
 from .Types import IsaVersion, IsaInfo
 
 
-def makeIsaInfoMap(targetIsas: List[IsaVersion], cxxCompiler: str) -> Dict[IsaVersion, IsaInfo]:
+def makeIsaInfoMap(
+    targetIsas: List[IsaVersion], cxxCompiler: str
+) -> Dict[IsaVersion, IsaInfo]:
     """Computes the supported capabilities for requested ISAs and compiler.
 
     Given a list of ISAs and a compiler, the ASM, Arch, Register capabilities

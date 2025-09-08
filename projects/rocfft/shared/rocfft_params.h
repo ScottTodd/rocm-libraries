@@ -175,7 +175,7 @@ public:
     explicit rocfft_params_base() = default;
 
     explicit rocfft_params_base(Funcs&& funcs)
-        : rocfft(std::move(funcs)){};
+        : rocfft(std::move(funcs)) {};
 
     explicit rocfft_params_base(const fft_params& p, Funcs&& funcs)
         : fft_params(p)
@@ -188,11 +188,11 @@ public:
     {
     }
 
-    rocfft_params_base(const rocfft_params_base&) = delete;
+    rocfft_params_base(const rocfft_params_base&)            = delete;
     rocfft_params_base& operator=(const rocfft_params_base&) = delete;
 
     // move construct
-    rocfft_params_base(rocfft_params_base&&) = default;
+    rocfft_params_base(rocfft_params_base&&)            = default;
     rocfft_params_base& operator=(rocfft_params_base&&) = default;
 
     ~rocfft_params_base()
@@ -814,7 +814,7 @@ struct dyna_rocfft_funcs
     }
 
     // copy not allowed
-    dyna_rocfft_funcs(const dyna_rocfft_funcs&) = delete;
+    dyna_rocfft_funcs(const dyna_rocfft_funcs&)            = delete;
     dyna_rocfft_funcs& operator=(const dyna_rocfft_funcs&) = delete;
 
     void swap(dyna_rocfft_funcs& other)

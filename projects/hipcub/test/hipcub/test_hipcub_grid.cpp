@@ -49,7 +49,7 @@ void KernelGridBarrier(hipcub::GridBarrier global_barrier, int iterations)
     HIPCUB_CLANG_SUPPRESS_DEPRECATED_POP
 #endif
 {
-    for (int i = 0; i < iterations; i++)
+    for(int i = 0; i < iterations; i++)
     {
         global_barrier.Sync();
     }
@@ -64,24 +64,24 @@ TEST(HipcubGridTests, GridBarrier)
     constexpr int32_t block_size = 256;
     // NOTE increasing iterations will cause huge latency for tests
     constexpr int32_t iterations = 3;
-    int32_t grid_size = -1;
+    int32_t           grid_size  = -1;
 
     int32_t sm_count;
     int32_t max_block_threads;
     int32_t max_sm_occupancy;
 
     HIP_CHECK(hipDeviceGetAttribute(&sm_count, hipDeviceAttributeMultiprocessorCount, device_id));
-    HIP_CHECK(hipDeviceGetAttribute(&max_block_threads, hipDeviceAttributeMaxThreadsPerBlock, device_id));
+    HIP_CHECK(
+        hipDeviceGetAttribute(&max_block_threads, hipDeviceAttributeMaxThreadsPerBlock, device_id));
 
-    HIP_CHECK(hipOccupancyMaxActiveBlocksPerMultiprocessor(
-        &max_sm_occupancy,
-        KernelGridBarrier,
-        HIPCUB_HOST_WARP_THREADS,
-        0));
+    HIP_CHECK(hipOccupancyMaxActiveBlocksPerMultiprocessor(&max_sm_occupancy,
+                                                           KernelGridBarrier,
+                                                           HIPCUB_HOST_WARP_THREADS,
+                                                           0));
 
     int32_t occupancy = std::min((max_block_threads / block_size), max_sm_occupancy);
 
-    if (grid_size == -1)
+    if(grid_size == -1)
     {
         grid_size = occupancy * sm_count;
     }
@@ -105,18 +105,15 @@ TEST(HipcubGridTests, GridBarrier)
     KernelGridBarrier<<<grid_size, block_size>>>(global_barrier, iterations);
 }
 
-template<
-    int32_t BlockSize,
-    class T,
-    typename OffsetT
->
-__global__ void KernelGridEvenShare(
-    const T* device_output,
-    T* device_output_reductions,
-    hipcub::GridEvenShare<OffsetT>  even_share)
+template<int32_t BlockSize, class T, typename OffsetT>
+__global__
+void KernelGridEvenShare(const T*                       device_output,
+                         T*                             device_output_reductions,
+                         hipcub::GridEvenShare<OffsetT> even_share)
 {
     using breduce_t = hipcub::BlockReduce<T, BlockSize>;
-    __shared__ typename breduce_t::TempStorage temp_storage;
+    __shared__
+    typename breduce_t::TempStorage temp_storage;
 
     even_share.template BlockInit<BlockSize, hipcub::GRID_MAPPING_RAKE>();
 
@@ -141,15 +138,16 @@ TEST(HipcubGridTests, GridEvenShare)
     SCOPED_TRACE(testing::Message() << "with device_id= " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using OffsetT = int32_t;
-    using T = uint32_t;
+    using OffsetT               = int32_t;
+    using T                     = uint32_t;
     constexpr size_t block_size = 256;
-    constexpr size_t size = block_size * 113;
-    constexpr size_t grid_size = size / block_size;
+    constexpr size_t size       = block_size * 113;
+    constexpr size_t grid_size  = size / block_size;
 
-    for (size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
+    for(size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed= " << seed_value);
 
         // Generate data
@@ -175,31 +173,22 @@ TEST(HipcubGridTests, GridEvenShare)
         T* device_output_reductions;
         HIP_CHECK(hipMalloc(&device_output_reductions, output_reductions.size() * sizeof(T)));
 
-        HIP_CHECK(
-            hipMemcpy(
-                device_output, output.data(),
-                output.size() * sizeof(T),
-                hipMemcpyHostToDevice
-            )
-        );
+        HIP_CHECK(hipMemcpy(device_output,
+                            output.data(),
+                            output.size() * sizeof(T),
+                            hipMemcpyHostToDevice));
 
         hipcub::GridEvenShare<OffsetT> even_share;
         even_share.DispatchInit(size, grid_size, block_size);
 
         KernelGridEvenShare<block_size, T, OffsetT>
-            <<<grid_size, block_size>>>
-                (device_output,
-                 device_output_reductions,
-                 even_share);
+            <<<grid_size, block_size>>>(device_output, device_output_reductions, even_share);
 
         // Reading results back
-        HIP_CHECK(
-            hipMemcpy(
-                output_reductions.data(), device_output_reductions,
-                output_reductions.size() * sizeof(T),
-                hipMemcpyDeviceToHost
-            )
-        );
+        HIP_CHECK(hipMemcpy(output_reductions.data(),
+                            device_output_reductions,
+                            output_reductions.size() * sizeof(T),
+                            hipMemcpyDeviceToHost));
 
         for(size_t i = 0; i < output_reductions.size(); i++)
         {
@@ -212,28 +201,27 @@ TEST(HipcubGridTests, GridEvenShare)
 }
 
 template<typename OffsetT>
-__global__ void KernelGridQueueInit(hipcub::GridQueue<OffsetT> tile_queue)
+__global__
+void KernelGridQueueInit(hipcub::GridQueue<OffsetT> tile_queue)
 {
-    if ((threadIdx.x == 0) && (blockIdx.x == 0))
+    if((threadIdx.x == 0) && (blockIdx.x == 0))
     {
         (void)tile_queue.ResetDrain();
     }
 }
 
-template<
-    int32_t BlockSize,
-    class T,
-    typename OffsetT
->
-__global__ void KernelGridQueue(
-    const T* device_output,
-    T* device_output_reductions,
-    OffsetT num_tiles,
-    hipcub::GridQueue<OffsetT> tile_queue)
+template<int32_t BlockSize, class T, typename OffsetT>
+__global__
+void KernelGridQueue(const T*                   device_output,
+                     T*                         device_output_reductions,
+                     OffsetT                    num_tiles,
+                     hipcub::GridQueue<OffsetT> tile_queue)
 {
     using breduce_t = hipcub::BlockReduce<T, BlockSize>;
-    __shared__ typename breduce_t::TempStorage temp_storage;
-    __shared__ int32_t block_tile_index;
+    __shared__
+    typename breduce_t::TempStorage temp_storage;
+    __shared__
+    int32_t                         block_tile_index;
 
     if(hipThreadIdx_x == 0)
     {
@@ -247,8 +235,8 @@ __global__ void KernelGridQueue(
     }
 
     int32_t index = block_tile_index * BlockSize + hipThreadIdx_x;
-    T value = device_output[index];
-    value = breduce_t(temp_storage).Reduce(value, hipcub::Sum());
+    T       value = device_output[index];
+    value         = breduce_t(temp_storage).Reduce(value, hipcub::Sum());
 
     if(hipThreadIdx_x == 0)
     {
@@ -262,15 +250,16 @@ TEST(HipcubGridTests, GridQueue)
     SCOPED_TRACE(testing::Message() << "with device_id= " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using OffsetT = int32_t;
-    using T = uint32_t;
+    using OffsetT               = int32_t;
+    using T                     = uint32_t;
     constexpr size_t block_size = 256;
-    constexpr size_t size = block_size * 113;
-    constexpr size_t grid_size = size / block_size;
+    constexpr size_t size       = block_size * 113;
+    constexpr size_t grid_size  = size / block_size;
 
-    for (size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
+    for(size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed= " << seed_value);
 
         // Generate data
@@ -296,13 +285,10 @@ TEST(HipcubGridTests, GridQueue)
         T* device_output_reductions;
         HIP_CHECK(hipMalloc(&device_output_reductions, output_reductions.size() * sizeof(T)));
 
-        HIP_CHECK(
-            hipMemcpy(
-                device_output, output.data(),
-                output.size() * sizeof(T),
-                hipMemcpyHostToDevice
-            )
-        );
+        HIP_CHECK(hipMemcpy(device_output,
+                            output.data(),
+                            output.size() * sizeof(T),
+                            hipMemcpyHostToDevice));
 
         OffsetT* queue_allocations;
         HIP_CHECK(hipMalloc(&queue_allocations, hipcub::GridQueue<OffsetT>().AllocationSize()));
@@ -311,19 +297,12 @@ TEST(HipcubGridTests, GridQueue)
         KernelGridQueueInit<OffsetT><<<1, 1>>>(tile_queue);
 
         KernelGridQueue<block_size, T, OffsetT>
-            <<<grid_size, block_size>>>
-                (device_output,
-                 device_output_reductions,
-                 113,
-                 tile_queue);
+            <<<grid_size, block_size>>>(device_output, device_output_reductions, 113, tile_queue);
 
-        HIP_CHECK(
-            hipMemcpy(
-                output_reductions.data(), device_output_reductions,
-                output_reductions.size() * sizeof(T),
-                hipMemcpyDeviceToHost
-            )
-        );
+        HIP_CHECK(hipMemcpy(output_reductions.data(),
+                            device_output_reductions,
+                            output_reductions.size() * sizeof(T),
+                            hipMemcpyDeviceToHost));
 
         for(size_t i = 0; i < output_reductions.size(); i++)
         {

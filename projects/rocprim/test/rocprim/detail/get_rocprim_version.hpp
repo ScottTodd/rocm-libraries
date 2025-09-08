@@ -23,8 +23,8 @@
 #ifndef ROCPRIM_TEST_DETAIL_GET_ROCPRIM_VERSION_HPP_
 #define ROCPRIM_TEST_DETAIL_GET_ROCPRIM_VERSION_HPP_
 
-#include <iostream>
 #include <cstdio>
+#include <iostream>
 
 // rocPRIM API
 #include <rocprim/rocprim.hpp>

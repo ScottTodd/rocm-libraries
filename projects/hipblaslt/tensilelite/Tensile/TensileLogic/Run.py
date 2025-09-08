@@ -47,7 +47,10 @@ class Check(NamedTuple):
 
 
 def _runChecks(
-    logicPath: Path, isaInfoMap: Dict[IsaVersion, IsaInfo], check: Check, files: List[Path]
+    logicPath: Path,
+    isaInfoMap: Dict[IsaVersion, IsaInfo],
+    check: Check,
+    files: List[Path],
 ):
     """
     Run checks on the given logic files.
@@ -85,7 +88,9 @@ def _runChecks(
             s["ProblemType"] = problemType
             if all(
                 [
-                    _validateMatrixInstruction(s, isaInfoMap, file.relative_to(logicPath)),
+                    _validateMatrixInstruction(
+                        s, isaInfoMap, file.relative_to(logicPath)
+                    ),
                     _validateWorkGroup(s, file.relative_to(logicPath)),
                 ]
             ):

@@ -51,11 +51,11 @@
 ; gemm_k_global_split        : 1
 ; vector_c                   : 1
 ; vector_store               : 1
-; 
+;
 ; block_size                 : 256
 ; lds_total                  : 16384
 ; lds_buffer_num             : 2
-; 
+;
 .set k_p_in, 0
 .set k_p_wei, 8
 .set k_p_out, 16
@@ -384,8 +384,8 @@ igemm_wrw_gtcx35_nhwc_bf16_bx0_ex1_bt64x64x32_wt32x32x8_ws1x1_wr1x1_ta1x8x1x1_1x
 
     v_mov_b32 v[v_tmp+5], v0
     ; xdlops mapping, get source matrix gemm index, k_pack:8, v_pack:1, k_pack_per_thread:2
-    v_and_b32 v[v_gemm_in], 31, v[v_tmp+5]           ; block_n index 
-    v_and_b32 v[v_gemm_im], 31, v[v_tmp+5]           ; block_m index 
+    v_and_b32 v[v_gemm_in], 31, v[v_tmp+5]           ; block_n index
+    v_and_b32 v[v_gemm_im], 31, v[v_tmp+5]           ; block_m index
     v_lshlrev_b32 v[v_gemm_in], 3, v[v_gemm_in]   ; shift left k_pack:8
     v_lshlrev_b32 v[v_gemm_im], 3, v[v_gemm_im]   ; shift left k_pack:8
     v_lshrrev_b32 v[v_tmp+5], 5, v[v_tmp+5]
@@ -508,8 +508,8 @@ igemm_wrw_gtcx35_nhwc_bf16_bx0_ex1_bt64x64x32_wt32x32x8_ws1x1_wr1x1_ta1x8x1x1_1x
     ; convert dswo and dsho to dswi and dshi, dswi=dswo*stride_w, dshi=dsho*stride_h
     s_mul_i32 s[s_move_slice_n_dswo], s[s_move_slice_n_dswo], s[s_stride_w]
     s_mul_i32 s[s_move_slice_n_dsho], s[s_move_slice_n_dsho], s[s_stride_h]
-    
-    
+
+
     s_mul_i32 s[s_in_stride_n_n], s[s_move_slice_n], s[s_in_stride_n]
     s_mul_i32 s[s_out_stride_n_n], s[s_move_slice_n], s[s_out_stride_n]
     s_lshl_b32 s[s_in_stride_move_n], s[s_in_stride_n], 3
@@ -526,14 +526,14 @@ igemm_wrw_gtcx35_nhwc_bf16_bx0_ex1_bt64x64x32_wt32x32x8_ws1x1_wr1x1_ta1x8x1x1_1x
     v_pack_b32_f16 v[v_tmp+1], v[v_gld_b+2], v[v_gld_b+3]
     v_pack_b32_f16 v[v_tmp+2], v[v_gld_b+4], v[v_gld_b+5]
     v_pack_b32_f16 v[v_tmp+3], v[v_gld_b+6], v[v_gld_b+7]
-    ds_write_b128 v[v_sst_b_os], v[v_tmp:v_tmp+3] 
+    ds_write_b128 v[v_sst_b_os], v[v_tmp:v_tmp+3]
 
     s_waitcnt vmcnt(0)
     v_pack_b32_f16 v[v_tmp], v[v_gld_a], v[v_gld_a+1]
     v_pack_b32_f16 v[v_tmp+1], v[v_gld_a+2], v[v_gld_a+3]
     v_pack_b32_f16 v[v_tmp+2], v[v_gld_a+4], v[v_gld_a+5]
     v_pack_b32_f16 v[v_tmp+3], v[v_gld_a+6], v[v_gld_a+7]
-    ds_write_b128 v[v_sst_a_os], v[v_tmp:v_tmp+3] 
+    ds_write_b128 v[v_sst_a_os], v[v_tmp:v_tmp+3]
 
     .v_clear_nc a_c, 16
     ; make sure acc WAR harzard, at least 1 nop for src_c
@@ -637,14 +637,14 @@ L_igemm_wrw_gtcx35_nhwc_bf16_bx0_ex1_bt64x64x32_wt32x32x8_ws1x1_wr1x1_ta1x8x1x1_
     v_pack_b32_f16 v[v_tmp+1], v[v_gld_b+2], v[v_gld_b+3]
     v_pack_b32_f16 v[v_tmp+2], v[v_gld_b+4], v[v_gld_b+5]
     v_pack_b32_f16 v[v_tmp+3], v[v_gld_b+6], v[v_gld_b+7]
-    ds_write_b128 v[v_sst_b_os], v[v_tmp:v_tmp+3] 
+    ds_write_b128 v[v_sst_b_os], v[v_tmp:v_tmp+3]
     s_waitcnt vmcnt(0)
     v_pack_b32_f16 v[v_tmp], v[v_gld_a], v[v_gld_a+1]
     v_pack_b32_f16 v[v_tmp+1], v[v_gld_a+2], v[v_gld_a+3]
     v_pack_b32_f16 v[v_tmp+2], v[v_gld_a+4], v[v_gld_a+5]
     v_pack_b32_f16 v[v_tmp+3], v[v_gld_a+6], v[v_gld_a+7]
-    ds_write_b128 v[v_sst_a_os], v[v_tmp:v_tmp+3] 
-    
+    ds_write_b128 v[v_sst_a_os], v[v_tmp:v_tmp+3]
+
     v_xor_b32 v[v_sld_b_os], 8192, v[v_sld_b_os] ; switch double buffer b load
     v_xor_b32 v[v_sld_a_os], 8192, v[v_sld_a_os] ; switch double buffer a load
     s_sub_i32 s[s_kitr], s[s_kitr], 32

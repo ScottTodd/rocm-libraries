@@ -33,12 +33,15 @@ import numpy as np
 
 import pandas as pd
 
+
 def RunPlot():
 
     userArgs = sys.argv[1:]
 
     argParser = argparse.ArgumentParser()
-    argParser.add_argument("current_file", help="path where the current results are located")
+    argParser.add_argument(
+        "current_file", help="path where the current results are located"
+    )
     argParser.add_argument("plot_file", help="path of plot")
 
     args = argParser.parse_args(userArgs)
@@ -46,16 +49,15 @@ def RunPlot():
     currentFileName = args.current_file
     plotFileName = args.plot_file
 
-
     current_data = pd.read_csv(currentFileName)
     headers = current_data.columns.values.tolist()
 
-    n_series = current_data['N']
-    p_series = current_data['speedup']
+    n_series = current_data["N"]
+    p_series = current_data["speedup"]
 
     fig, ax = plt.subplots()
 
-    ax.plot(n_series,p_series,'+')
+    ax.plot(n_series, p_series, "+")
     ax.set_xlabel("N")
     ax.set_ylabel("speedup")
 

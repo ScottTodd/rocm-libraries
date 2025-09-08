@@ -32,7 +32,6 @@
 #ifndef _HIPBLASLT_TYPES_H_
 #define _HIPBLASLT_TYPES_H_
 
-
 #if defined(__HIPCC__)
 #include <hip/hip_fp8.h>
 #endif

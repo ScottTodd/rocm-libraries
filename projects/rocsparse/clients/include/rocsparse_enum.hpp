@@ -65,8 +65,7 @@ struct rocsparse_itilu0_alg_t
 
             case rocsparse_itilu0_alg_default:
             {
-                out_ << rocsparse_itilu0_alg_default << " : "
-                     << "rocsparse_itilu0_alg_default";
+                out_ << rocsparse_itilu0_alg_default << " : " << "rocsparse_itilu0_alg_default";
             }
                 LOCAL_CASE(rocsparse_itilu0_alg_async_inplace);
                 LOCAL_CASE(rocsparse_itilu0_alg_async_split);

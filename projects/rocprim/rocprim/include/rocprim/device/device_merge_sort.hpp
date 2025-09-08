@@ -88,13 +88,14 @@ inline hipError_t launch_block_sort(detail::target_arch  arch,
         using key_type   = typename std::iterator_traits<KeysInputIterator>::value_type;
         using value_type = typename std::iterator_traits<ValuesInputIterator>::value_type;
 
-        using sort_impl = block_sort_impl<key_type,
-                                          value_type,
-                                          params.kernel_config.block_size,
-                                          params.kernel_config.items_per_thread>;
+        using sort_impl    = block_sort_impl<key_type,
+                                             value_type,
+                                             params.kernel_config.block_size,
+                                             params.kernel_config.items_per_thread>;
         using VSmemHelperT = detail::vsmem_helper_impl<sort_impl>;
 
-        ROCPRIM_SHARED_MEMORY typename VSmemHelperT::static_temp_storage_t static_temp_storage;
+        ROCPRIM_SHARED_MEMORY
+        typename VSmemHelperT::static_temp_storage_t static_temp_storage;
 
         typename sort_impl::storage_type& storage
             = VSmemHelperT::get_temp_storage(static_temp_storage, vsmem);
@@ -193,7 +194,8 @@ inline hipError_t launch_device_block_merge_mergepath(detail::target_arch  arch,
                                             params.merge_mergepath_config.items_per_thread>;
 
         using VSmemHelperT = detail::vsmem_helper_impl<merge_impl>;
-        ROCPRIM_SHARED_MEMORY typename VSmemHelperT::static_temp_storage_t static_temp_storage;
+        ROCPRIM_SHARED_MEMORY
+        typename VSmemHelperT::static_temp_storage_t static_temp_storage;
 
         typename merge_impl::storage_type& storage
             = VSmemHelperT::get_temp_storage(static_temp_storage, vsmem);

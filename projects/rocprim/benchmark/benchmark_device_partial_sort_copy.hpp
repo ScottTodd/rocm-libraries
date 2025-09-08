@@ -88,9 +88,9 @@ struct device_partial_sort_copy_benchmark : public benchmark_utils::autotune_int
         common::device_ptr<key_type> d_keys_input(keys_input);
         common::device_ptr<key_type> d_keys_output(size);
 
-        rocprim::less<key_type> lesser_op;
+        rocprim::less<key_type>  lesser_op;
         common::device_ptr<void> d_temporary_storage;
-        size_t                  temporary_storage_bytes = 0;
+        size_t                   temporary_storage_bytes = 0;
         HIP_CHECK(rocprim::partial_sort_copy(d_temporary_storage.get(),
                                              temporary_storage_bytes,
                                              d_keys_input.get(),

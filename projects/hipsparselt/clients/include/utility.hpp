@@ -31,10 +31,10 @@
 #include <hipsparselt/hipsparselt.h>
 #include <iomanip>
 #include <iostream>
+#include <stdlib.h>
 #include <string>
 #include <type_traits>
 #include <vector>
-#include <stdlib.h>
 
 /*!\file
  * \brief provide common utilities
@@ -72,9 +72,7 @@
 #if defined(GOOGLE_TEST) || defined(HIPSPARSELT_BENCH)
 #undef stdout
 #undef stderr
-#pragma GCC poison cout cerr clog stdout stderr gets puts putchar fputs fprintf printf sprintf    \
-    vfprintf vprintf vsprintf perror strerror strtok gmtime ctime asctime localtime tmpnam putenv \
-        clearenv fcloseall ecvt fcvt sleep abort strsignal
+#pragma GCC poison cout cerr clog stdout stderr gets puts putchar fputs fprintf printf sprintf vfprintf vprintf vsprintf perror strerror strtok gmtime ctime asctime localtime tmpnam putenv clearenv fcloseall ecvt fcvt sleep abort strsignal
 #else
 // Suppress warnings about hipMalloc(), hipFree() except in hipsparselt-test and hipsparselt-bench
 #undef hipMalloc
@@ -646,7 +644,7 @@ class Logger
 public:
     Logger(int log_level)
     {
-        this->log_level = log_level;
+        this->log_level     = log_level;
         this->pre_log_level = -1;
         if(this->log_level)
         {
@@ -664,7 +662,7 @@ public:
         {
             if(this->pre_log_level == -1)
                 unsetenv("HIPSPARSELT_LOG_LEVEL");
-            else 
+            else
                 setenv("HIPSPARSELT_LOG_LEVEL", std::to_string(this->pre_log_level).c_str(), 1);
         }
     }

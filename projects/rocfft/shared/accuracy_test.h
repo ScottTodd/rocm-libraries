@@ -820,8 +820,8 @@ inline void fft_vs_reference_impl(Tparams& params, bool round_trip)
             else
             {
                 ss << "hipMalloc failure for input buffer " << i << " size " << ibuffer_sizes[i]
-                   << "(" << bytes_to_GiB(ibuffer_sizes[i]) << " GiB)"
-                   << " with code " << hipError_to_string(hip_status);
+                   << "(" << bytes_to_GiB(ibuffer_sizes[i]) << " GiB)" << " with code "
+                   << hipError_to_string(hip_status);
             }
             ++n_hip_failures;
             if(skip_runtime_fails)
@@ -1224,8 +1224,8 @@ inline void fft_vs_reference_impl(Tparams& params, bool round_trip)
                 ++n_hip_failures;
                 std::stringstream ss;
                 ss << "hipMalloc failure for output buffer " << i << " size " << obuffer_sizes[i]
-                   << "(" << bytes_to_GiB(obuffer_sizes[i]) << " GiB)"
-                   << " with code " << hipError_to_string(hip_status);
+                   << "(" << bytes_to_GiB(obuffer_sizes[i]) << " GiB)" << " with code "
+                   << hipError_to_string(hip_status);
                 if(skip_runtime_fails)
                 {
                     throw ROCFFT_SKIP{ss.str()};

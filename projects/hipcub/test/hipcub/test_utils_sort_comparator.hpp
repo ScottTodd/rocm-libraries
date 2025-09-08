@@ -26,7 +26,7 @@
 #include <cstdint>
 #include <type_traits>
 #ifdef __HIP_PLATFORM_AMD__
-#include <rocprim/type_traits.hpp>
+    #include <rocprim/type_traits.hpp>
 #endif
 
 #include "test_utils_bfloat16.hpp"
@@ -102,11 +102,11 @@ auto to_bits(const Key& key)
     using inner_t            = typename inner_type<Key>::type;
     using unsigned_bits_type = typename hipcub::NumericTraits<inner_t>::UnsignedBits;
     using result_bits_type   = std::conditional_t<
-        sizeof(inner_t) == 1,
-        uint16_t,
-        std::conditional_t<sizeof(inner_t) == 2,
-                           uint32_t,
-                           std::conditional_t<sizeof(inner_t) == 4, uint64_t, void>>>;
+          sizeof(inner_t) == 1,
+          uint16_t,
+          std::conditional_t<sizeof(inner_t) == 2,
+                             uint32_t,
+                             std::conditional_t<sizeof(inner_t) == 4, uint64_t, void>>>;
 
     auto bit_key_upper = static_cast<unsigned_bits_type>(to_bits<0, sizeof(key.x) * 8>(key.x));
     auto bit_key_lower = static_cast<unsigned_bits_type>(to_bits<0, sizeof(key.y) * 8>(key.y));
@@ -167,10 +167,11 @@ struct custom_test_type_decomposer
                   "custom_test_type_decomposer can only be used with custom_test_type<T>");
     using inner_t = typename inner_type<CustomTestType>::type;
 
-    __host__ __device__ auto operator()(CustomTestType& key) const
+    __host__ __device__
+    auto operator()(CustomTestType& key) const
     {
         return ::hipcub::tuple<inner_t&, inner_t&>{key.x, key.y};
     }
 };
-}
+} // namespace test_utils
 #endif // TEST_UTILS_SORT_COMPARATOR_HPP_

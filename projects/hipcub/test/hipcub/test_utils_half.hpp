@@ -21,8 +21,8 @@
 #ifndef HIPCUB_TEST_TEST_UTILS_HALF_HPP_
 #define HIPCUB_TEST_TEST_UTILS_HALF_HPP_
 
-#include <type_traits>
 #include <hipcub/util_type.hpp>
+#include <type_traits>
 
 #include "half.hpp"
 
@@ -30,107 +30,107 @@ namespace test_utils
 {
 
 /// \brief Half-precision floating point type
-using half = ::__half;
+using half        = ::__half;
 using native_half = half_t;
 
 HIPCUB_HOST_DEVICE
 inline test_utils::half native_to_half(const test_utils::native_half& x)
 {
-    return *reinterpret_cast<const test_utils::half *>(&x);
+    return *reinterpret_cast<const test_utils::half*>(&x);
 }
 
 struct half_equal_to
 {
-    HIPCUB_HOST_DEVICE inline
-    bool operator()(const test_utils::half& a, const test_utils::half& b) const
+    HIPCUB_HOST_DEVICE
+    inline bool operator()(const test_utils::half& a, const test_utils::half& b) const
     {
-        #if defined(__HIP_DEVICE_COMPILE__) && defined(__HIP_PLATFORM_AMD__) || __CUDA_ARCH__ >= 530
+#if defined(__HIP_DEVICE_COMPILE__) && defined(__HIP_PLATFORM_AMD__) || __CUDA_ARCH__ >= 530
         return __heq(a, b);
-        #else
+#else
         return test_utils::native_half(a) == test_utils::native_half(b);
-        #endif
+#endif
     }
 };
 
 struct half_not_equal_to
 {
-    HIPCUB_HOST_DEVICE inline
-    bool operator()(const test_utils::half& a, const test_utils::half& b) const
+    HIPCUB_HOST_DEVICE
+    inline bool operator()(const test_utils::half& a, const test_utils::half& b) const
     {
-        #if defined(__HIP_DEVICE_COMPILE__) && defined(__HIP_PLATFORM_AMD__) || __CUDA_ARCH__ >= 530
+#if defined(__HIP_DEVICE_COMPILE__) && defined(__HIP_PLATFORM_AMD__) || __CUDA_ARCH__ >= 530
         return __hne(a, b);
-        #else
+#else
         return test_utils::native_half(a) != test_utils::native_half(b);
-        #endif
+#endif
     }
 };
 
 struct half_plus
 {
-    HIPCUB_HOST_DEVICE inline
-    test_utils::half operator()(const test_utils::half& a, const test_utils::half& b) const
+    HIPCUB_HOST_DEVICE
+    inline test_utils::half operator()(const test_utils::half& a, const test_utils::half& b) const
     {
-        #if defined(__HIP_DEVICE_COMPILE__) && defined(__HIP_PLATFORM_AMD__) || __CUDA_ARCH__ >= 530
+#if defined(__HIP_DEVICE_COMPILE__) && defined(__HIP_PLATFORM_AMD__) || __CUDA_ARCH__ >= 530
         return __hadd(a, b);
-        #else
+#else
         return native_to_half(test_utils::native_half(a) + test_utils::native_half(b));
-        #endif
+#endif
     }
 };
 
 struct half_minus
 {
-    HIPCUB_HOST_DEVICE inline
-    test_utils::half operator()(const test_utils::half& a, const test_utils::half& b) const
+    HIPCUB_HOST_DEVICE
+    inline test_utils::half operator()(const test_utils::half& a, const test_utils::half& b) const
     {
-        #if defined(__HIP_DEVICE_COMPILE__) && defined(__HIP_PLATFORM_AMD__) || __CUDA_ARCH__ >= 530
+#if defined(__HIP_DEVICE_COMPILE__) && defined(__HIP_PLATFORM_AMD__) || __CUDA_ARCH__ >= 530
         return __hsub(a, b);
-        #else
+#else
         return native_to_half(test_utils::native_half(a) - test_utils::native_half(b));
-        #endif
+#endif
     }
 };
 
 struct half_multiplies
 {
-    HIPCUB_HOST_DEVICE inline
-    test_utils::half operator()(const test_utils::half& a, const test_utils::half& b) const
+    HIPCUB_HOST_DEVICE
+    inline test_utils::half operator()(const test_utils::half& a, const test_utils::half& b) const
     {
-        #if defined(__HIP_DEVICE_COMPILE__) && defined(__HIP_PLATFORM_AMD__) || __CUDA_ARCH__ >= 530
+#if defined(__HIP_DEVICE_COMPILE__) && defined(__HIP_PLATFORM_AMD__) || __CUDA_ARCH__ >= 530
         return __hmul(a, b);
-        #else
+#else
         return native_to_half(test_utils::native_half(a) * test_utils::native_half(b));
-        #endif
+#endif
     }
 };
 
 struct half_maximum
 {
-    HIPCUB_HOST_DEVICE inline
-    test_utils::half operator()(const test_utils::half& a, const test_utils::half& b) const
+    HIPCUB_HOST_DEVICE
+    inline test_utils::half operator()(const test_utils::half& a, const test_utils::half& b) const
     {
-        #if defined(__HIP_DEVICE_COMPILE__) && defined(__HIP_PLATFORM_AMD__) || __CUDA_ARCH__ >= 530
+#if defined(__HIP_DEVICE_COMPILE__) && defined(__HIP_PLATFORM_AMD__) || __CUDA_ARCH__ >= 530
         return __hlt(a, b) ? b : a;
-        #else
+#else
         return test_utils::native_half(a) < test_utils::native_half(b) ? b : a;
-        #endif
+#endif
     }
 };
 
 struct half_minimum
 {
-    HIPCUB_HOST_DEVICE inline
-    test_utils::half operator()(const test_utils::half& a, const test_utils::half& b) const
+    HIPCUB_HOST_DEVICE
+    inline test_utils::half operator()(const test_utils::half& a, const test_utils::half& b) const
     {
-        #if defined(__HIP_DEVICE_COMPILE__) && defined(__HIP_PLATFORM_AMD__) || __CUDA_ARCH__ >= 530
+#if defined(__HIP_DEVICE_COMPILE__) && defined(__HIP_PLATFORM_AMD__) || __CUDA_ARCH__ >= 530
         return __hlt(a, b) ? a : b;
-        #else
+#else
         return test_utils::native_half(a) < test_utils::native_half(b) ? a : b;
-        #endif
+#endif
     }
 };
 
-}
+} // namespace test_utils
 
 inline std::ostream& operator<<(std::ostream& stream, const test_utils::half& value)
 {

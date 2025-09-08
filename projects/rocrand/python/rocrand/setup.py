@@ -26,5 +26,7 @@ setup(
     command_options={
         "build_sphinx": {
             "version": ("setup.py", version),
-            "release": ("setup.py", release)}},
+            "release": ("setup.py", release),
+        }
+    },
 )

@@ -134,7 +134,7 @@ namespace TensileLite
         int         m_value2;
         bool        m_naivePropertySearch = false;
         bool        m_debugSelection      = false;
-        bool        m_dataParallel      = false;
+        bool        m_dataParallel        = false;
         int         m_experimentSelection = 0;
         int         m_solution_index      = -1;
         bool        m_solselTrace         = false;

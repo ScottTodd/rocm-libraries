@@ -54,8 +54,8 @@ std::string hipsparse_exepath();
 // BSR indexing macros
 #define BSR_IND(j, bi, bj, dir) \
     ((dir == HIPSPARSE_DIRECTION_ROW) ? BSR_IND_R(j, bi, bj) : BSR_IND_C(j, bi, bj))
-#define BSR_IND_R(j, bi, bj) (bsr_dim * bsr_dim * (j) + (bi)*bsr_dim + (bj))
-#define BSR_IND_C(j, bi, bj) (bsr_dim * bsr_dim * (j) + (bi) + (bj)*bsr_dim)
+#define BSR_IND_R(j, bi, bj) (bsr_dim * bsr_dim * (j) + (bi) * bsr_dim + (bj))
+#define BSR_IND_C(j, bi, bj) (bsr_dim * bsr_dim * (j) + (bi) + (bj) * bsr_dim)
 
 #define CHECK_HIP_ERROR(error)                \
     if(error != hipSuccess)                   \

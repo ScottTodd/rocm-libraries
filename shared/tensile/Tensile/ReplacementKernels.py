@@ -26,6 +26,7 @@ from .Common import globalParameters
 
 import os
 
+
 class ReplacementKernels:
     def __init__(self, dirpath, codeObjectVersion):
         self.dirpath = dirpath
@@ -34,16 +35,16 @@ class ReplacementKernels:
 
     @property
     def marker(self):
-        return '.amdhsa_kernel'
+        return ".amdhsa_kernel"
 
     def getKernelName(self, filename):
         marker = self.marker
 
         try:
-            with open(filename, 'r') as f:
+            with open(filename, "r") as f:
                 for line in f:
                     if line.startswith(marker):
-                        return line[len(marker):].strip()
+                        return line[len(marker) :].strip()
         except Exception:
             print(filename)
             raise
@@ -62,11 +63,15 @@ class ReplacementKernels:
         cache = {}
 
         for filename in os.listdir(self.dirpath):
-            if filename.endswith('.txt'):
+            if filename.endswith(".txt"):
                 filepath = os.path.join(self.dirpath, filename)
                 kernelName = self.getKernelName(filepath)
                 if kernelName in cache:
-                    raise RuntimeError("Duplicate replacement kernels.  Kernel name: {}, file names: {}, {}".format(kernelName, cache[kernelName], filepath))
+                    raise RuntimeError(
+                        "Duplicate replacement kernels.  Kernel name: {}, file names: {}, {}".format(
+                            kernelName, cache[kernelName], filepath
+                        )
+                    )
                 cache[kernelName] = filepath
 
         return cache
@@ -80,11 +85,12 @@ class ReplacementKernels:
     @classmethod
     def Directory(cls):
         scriptDir = os.path.dirname(os.path.realpath(__file__))
-        dirName = 'ReplacementKernels-cov3'
+        dirName = "ReplacementKernels-cov3"
 
         return os.path.join(scriptDir, dirName)
 
     _instance = None
+
     @classmethod
     def Instance(cls):
         if cls._instance:

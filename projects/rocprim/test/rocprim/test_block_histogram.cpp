@@ -23,9 +23,9 @@
 #include "../common_test_header.hpp"
 
 // required rocprim headers
+#include <rocprim/block/block_histogram.hpp>
 #include <rocprim/block/block_load.hpp>
 #include <rocprim/block/block_store.hpp>
-#include <rocprim/block/block_histogram.hpp>
 
 // required test headers
 #include "test_utils_types.hpp"

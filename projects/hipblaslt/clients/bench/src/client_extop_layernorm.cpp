@@ -123,7 +123,8 @@ int parseArgs(
             {
                 const std::string initStr{argv[++i]};
 
-                if(initStr != "rand_int" && initStr != "trig_float" && initStr != "hpl" && initStr != "special" && initStr != "zero")
+                if(initStr != "rand_int" && initStr != "trig_float" && initStr != "hpl"
+                   && initStr != "special" && initStr != "zero")
                 {
                     std::cerr << "Invalid initialization type: " << initStr << '\n';
                     return EXIT_FAILURE;
@@ -187,8 +188,7 @@ void compare(const char* title, const std::vector<T>& cpuOutput, const std::vect
         }
     }
 
-    std::cout << "----- " << title << " result"
-              << " -----" << std::endl;
+    std::cout << "----- " << title << " result" << " -----" << std::endl;
     if(gpunan)
         std::cout << "gpunan: " << gpunan << std::endl;
     if(cpunan)

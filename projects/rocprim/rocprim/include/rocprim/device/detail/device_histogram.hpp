@@ -48,7 +48,8 @@ private:
     T values[Size];
 
 public:
-    ROCPRIM_HOST_DEVICE fixed_array(const T values[Size])
+    ROCPRIM_HOST_DEVICE
+    fixed_array(const T values[Size])
     {
         for(unsigned int i = 0; i < Size; i++)
         {
@@ -63,8 +64,7 @@ public:
     }
 
     ROCPRIM_HOST_DEVICE
-    const T&
-        operator[](size_t index) const
+    const T& operator[](size_t index) const
     {
         return values[index];
     }
@@ -78,11 +78,12 @@ struct sample_to_bin_even
     Level  upper_level;
     Level  scale;
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE sample_to_bin_even() = default;
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    sample_to_bin_even()
+        = default;
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE sample_to_bin_even(size_t bins,
-                                                         Level  lower_level,
-                                                         Level  upper_level)
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    sample_to_bin_even(size_t bins, Level lower_level, Level upper_level)
         : bins(bins)
         , lower_level(lower_level)
         , upper_level(upper_level)
@@ -114,11 +115,12 @@ struct sample_to_bin_even<
     Level         upper_level;
     uint_fast_div scale;
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE sample_to_bin_even() = default;
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    sample_to_bin_even()
+        = default;
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE sample_to_bin_even(size_t bins,
-                                                         Level  lower_level,
-                                                         Level  upper_level)
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    sample_to_bin_even(size_t bins, Level lower_level, Level upper_level)
         : bins(bins)
         , lower_level(lower_level)
         , upper_level(upper_level)
@@ -126,8 +128,7 @@ struct sample_to_bin_even<
     {}
 
     template<class Sample>
-    ROCPRIM_HOST_DEVICE
-    ROCPRIM_INLINE
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
     bool operator()(Sample sample, size_t& bin) const
     {
         const Level s = static_cast<Level>(sample);
@@ -150,11 +151,12 @@ struct sample_to_bin_even<Level,
     Level  upper_level;
     Level  inv_scale;
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE sample_to_bin_even() = default;
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    sample_to_bin_even()
+        = default;
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE sample_to_bin_even(size_t bins,
-                                                         Level  lower_level,
-                                                         Level  upper_level)
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    sample_to_bin_even(size_t bins, Level lower_level, Level upper_level)
         : bins(bins)
         , lower_level(lower_level)
         , upper_level(upper_level)
@@ -162,8 +164,7 @@ struct sample_to_bin_even<Level,
     {}
 
     template<class Sample>
-    ROCPRIM_HOST_DEVICE
-    ROCPRIM_INLINE
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
     bool operator()(Sample sample, size_t& bin) const
     {
         const Level s = static_cast<Level>(sample);
@@ -202,18 +203,20 @@ unsigned int upper_bound(const T* values, unsigned int count, T value)
 template<class Level>
 struct sample_to_bin_range
 {
-    size_t bins;
+    size_t       bins;
     const Level* level_values;
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE sample_to_bin_range() = default;
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    sample_to_bin_range()
+        = default;
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE sample_to_bin_range(size_t bins, const Level* level_values)
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    sample_to_bin_range(size_t bins, const Level* level_values)
         : bins(bins), level_values(level_values)
     {}
 
     template<class Sample>
-    ROCPRIM_HOST_DEVICE
-    ROCPRIM_INLINE
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
     bool operator()(Sample sample, size_t& bin) const
     {
         const Level s = static_cast<Level>(sample);
@@ -264,7 +267,7 @@ typename std::enable_if<is_sample_vectorizable<ItemsPerThread, Channels, Sample>
 
 template<unsigned int BlockSize, unsigned int ItemsPerThread, unsigned int Channels, class Sample>
 ROCPRIM_DEVICE ROCPRIM_INLINE
-    typename std::enable_if<!is_sample_vectorizable<ItemsPerThread, Channels, Sample>::value>::type
+typename std::enable_if<!is_sample_vectorizable<ItemsPerThread, Channels, Sample>::value>::type
     load_samples(unsigned int flat_id,
                  Sample*      samples,
                  sample_vector<Sample, Channels> (&values)[ItemsPerThread])
@@ -280,10 +283,10 @@ template<unsigned int BlockSize,
          unsigned int Channels,
          class Sample,
          class SampleIterator>
-ROCPRIM_DEVICE ROCPRIM_INLINE void
-    load_samples(unsigned int   flat_id,
-                 SampleIterator samples,
-                 sample_vector<Sample, Channels> (&values)[ItemsPerThread])
+ROCPRIM_DEVICE ROCPRIM_INLINE
+void load_samples(unsigned int   flat_id,
+                  SampleIterator samples,
+                  sample_vector<Sample, Channels> (&values)[ItemsPerThread])
 {
     Sample tmp[Channels * ItemsPerThread];
     block_load_direct_blocked(flat_id, samples, tmp);
@@ -301,11 +304,11 @@ template<unsigned int BlockSize,
          unsigned int Channels,
          class Sample,
          class SampleIterator>
-ROCPRIM_DEVICE ROCPRIM_INLINE void
-    load_samples(unsigned int   flat_id,
-                 SampleIterator samples,
-                 sample_vector<Sample, Channels> (&values)[ItemsPerThread],
-                 unsigned int valid_count)
+ROCPRIM_DEVICE ROCPRIM_INLINE
+void load_samples(unsigned int   flat_id,
+                  SampleIterator samples,
+                  sample_vector<Sample, Channels> (&values)[ItemsPerThread],
+                  unsigned int valid_count)
 {
     Sample tmp[Channels * ItemsPerThread];
     block_load_direct_blocked(flat_id, samples, tmp, valid_count * Channels);
@@ -552,10 +555,11 @@ void histogram_private_global(SampleIterator                                   s
 
     constexpr unsigned int items_per_block = BlockSize * ItemsPerThread;
 
-    const unsigned int flat_id = ::rocprim::flat_block_thread_id();
+    const unsigned int flat_id       = ::rocprim::flat_block_thread_id();
     const unsigned int flat_block_id = ::rocprim::flat_block_id();
 
-    __shared__ unsigned int block_id_count_shared;
+    __shared__
+    unsigned int       block_id_count_shared;
 
     // Store the start of the first histogram for each channel
     Counter* block_histogram[ActiveChannels];

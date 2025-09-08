@@ -46,7 +46,7 @@ namespace rocRoller
         public:
             VALUWriteReadlane94x() {}
             VALUWriteReadlane94x(ContextPtr context)
-                : WaitStateObserver<VALUWriteReadlane94x>(context){};
+                : WaitStateObserver<VALUWriteReadlane94x>(context) {};
 
             constexpr static bool required(GPUArchitectureTarget const& target)
             {

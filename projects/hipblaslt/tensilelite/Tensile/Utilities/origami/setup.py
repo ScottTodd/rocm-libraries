@@ -18,16 +18,22 @@ HIPCC_PATH = os.path.join(ROCM_PATH, "bin", "hipcc")
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Origami Python Bindings Setup Script")
-    parser.add_argument("--source", "-s", type=str, default=Path(__file__).parent.parent.parent.resolve() / "Source", help="Path to TensileLite source directory.")
+    parser.add_argument(
+        "--source",
+        "-s",
+        type=str,
+        default=Path(__file__).parent.parent.parent.resolve() / "Source",
+        help="Path to TensileLite source directory.",
+    )
     args, unknown = parser.parse_known_args()
     return args, unknown
 
 
 class HIPCCBuildExt(build_ext):
     def build_extensions(self):
-        if hasattr(self.compiler, 'compiler_so'):
+        if hasattr(self.compiler, "compiler_so"):
             self.compiler.set_executable("compiler_so", HIPCC_PATH)
-        if hasattr(self.compiler, 'compiler_cxx'):
+        if hasattr(self.compiler, "compiler_cxx"):
             self.compiler.set_executable("compiler_cxx", HIPCC_PATH)
         # self.compiler.set_executable("linker_so", HIPCC_PATH) # optional
         super().build_extensions()
@@ -53,7 +59,13 @@ if __name__ == "__main__":
                 os.path.join(ROCM_PATH, "include"),
             ],
             language="c++",
-            extra_compile_args=["-D__HIP_PLATFORM_AMD__", "-fPIC", "-std=c++17", "-O3", "-Wall"],
+            extra_compile_args=[
+                "-D__HIP_PLATFORM_AMD__",
+                "-fPIC",
+                "-std=c++17",
+                "-O3",
+                "-Wall",
+            ],
             extra_link_args=[f"-L{os.path.join(ROCM_PATH, 'lib')}"],
         ),
     ]

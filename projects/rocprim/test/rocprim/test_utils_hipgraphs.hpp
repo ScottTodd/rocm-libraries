@@ -18,7 +18,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-
 #ifndef ROCPRIM_TEST_UTILS_HIPGRAPHS_HPP
 #define ROCPRIM_TEST_UTILS_HIPGRAPHS_HPP
 
@@ -28,65 +27,72 @@
 
 // Helper functions for testing with hipGraph stream capture.
 // Note: graphs will not work on the default stream.
-    
+
 namespace test_utils
 {
-    class GraphHelper{
-        private:
-            hipGraph_t graph;
-            hipGraphExec_t graph_instance;
-        public:
+class GraphHelper
+{
+private:
+    hipGraph_t     graph;
+    hipGraphExec_t graph_instance;
 
-            inline void startStreamCapture(hipStream_t & stream){
-                HIP_CHECK(hipStreamBeginCapture(stream, hipStreamCaptureModeGlobal));
-            }
+public:
+    inline void startStreamCapture(hipStream_t& stream)
+    {
+        HIP_CHECK(hipStreamBeginCapture(stream, hipStreamCaptureModeGlobal));
+    }
 
-            inline void endStreamCapture(hipStream_t & stream){
-                HIP_CHECK(hipStreamEndCapture(stream, &graph));
-            }
-            
-            inline void createGraph(){
-                HIP_CHECK(hipGraphInstantiate(&graph_instance, graph, nullptr, nullptr, 0));
-            }
+    inline void endStreamCapture(hipStream_t& stream)
+    {
+        HIP_CHECK(hipStreamEndCapture(stream, &graph));
+    }
 
-            inline void launchGraph(hipStream_t & stream, const bool sync=false){
-                HIP_CHECK(hipGraphLaunch(graph_instance, stream));
+    inline void createGraph()
+    {
+        HIP_CHECK(hipGraphInstantiate(&graph_instance, graph, nullptr, nullptr, 0));
+    }
 
-                if (sync)
-                    HIP_CHECK(hipStreamSynchronize(stream));
-            }
+    inline void launchGraph(hipStream_t& stream, const bool sync = false)
+    {
+        HIP_CHECK(hipGraphLaunch(graph_instance, stream));
 
-            inline void createAndLaunchGraph(hipStream_t & stream, const bool launchGraph=true, const bool sync=true){
-                
-                endStreamCapture(stream);
-                
-                HIP_CHECK(hipGraphInstantiate(&graph_instance, graph, nullptr, nullptr, 0));
+        if(sync)
+            HIP_CHECK(hipStreamSynchronize(stream));
+    }
 
-                // Optionally launch the graph
-                if (launchGraph)
-                    HIP_CHECK(hipGraphLaunch(graph_instance, stream));
+    inline void createAndLaunchGraph(hipStream_t& stream,
+                                     const bool   launchGraph = true,
+                                     const bool   sync        = true)
+    {
 
-                // Optionally synchronize the stream when we're done
-                if (sync)
-                    HIP_CHECK(hipStreamSynchronize(stream));
-            }
+        endStreamCapture(stream);
 
-            inline void cleanupGraphHelper()
-            {
-                HIP_CHECK(hipGraphDestroy(this->graph));
-                HIP_CHECK(hipGraphExecDestroy(this->graph_instance));
-            }
+        HIP_CHECK(hipGraphInstantiate(&graph_instance, graph, nullptr, nullptr, 0));
 
-            inline void resetGraphHelper(hipStream_t& stream, const bool beginCapture=true)
-            {
-                // Destroy the old graph and instance
-                cleanupGraphHelper();
+        // Optionally launch the graph
+        if(launchGraph)
+            HIP_CHECK(hipGraphLaunch(graph_instance, stream));
 
-                if(beginCapture)
-                    startStreamCapture(stream);
+        // Optionally synchronize the stream when we're done
+        if(sync)
+            HIP_CHECK(hipStreamSynchronize(stream));
+    }
 
-            }
-    };
+    inline void cleanupGraphHelper()
+    {
+        HIP_CHECK(hipGraphDestroy(this->graph));
+        HIP_CHECK(hipGraphExecDestroy(this->graph_instance));
+    }
+
+    inline void resetGraphHelper(hipStream_t& stream, const bool beginCapture = true)
+    {
+        // Destroy the old graph and instance
+        cleanupGraphHelper();
+
+        if(beginCapture)
+            startStreamCapture(stream);
+    }
+};
 
 } // end namespace test_utils
 

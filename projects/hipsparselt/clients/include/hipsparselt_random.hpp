@@ -295,14 +295,16 @@ inline T random_hpl_generator()
 template <>
 inline hipsparselt_fp8_e4m3 random_hpl_generator()
 {
-    return hipsparselt_fp8_e4m3(std::uniform_real_distribution<float>(-0.5, 0.5)(t_hipsparselt_rng));
+    return hipsparselt_fp8_e4m3(
+        std::uniform_real_distribution<float>(-0.5, 0.5)(t_hipsparselt_rng));
 }
 
 /*! \brief  generate a random number in HPL-like [-0.5,0.5] doubles  */
 template <>
 inline hipsparselt_fp8_e5m2 random_hpl_generator()
 {
-    return hipsparselt_fp8_e5m2(std::uniform_real_distribution<float>(-0.5, 0.5)(t_hipsparselt_rng));
+    return hipsparselt_fp8_e5m2(
+        std::uniform_real_distribution<float>(-0.5, 0.5)(t_hipsparselt_rng));
 }
 #endif
 /*! \brief  generate a random number in [-1.0,1.0] doubles  */

@@ -125,19 +125,19 @@ public:
    */
   template <typename OtherElement, typename OtherPointer, typename OtherDerived>
   THRUST_HOST_DEVICE
-    /*! \cond
-     */
-    typename std::enable_if<
-      std::is_convertible<typename reference<OtherElement, OtherPointer, OtherDerived>::pointer, pointer>::value,
-      /*! \endcond
-       */
-      derived_type&
-      /*! \cond
-       */
-      >::type
+  /*! \cond
+   */
+  typename std::enable_if<
+    std::is_convertible<typename reference<OtherElement, OtherPointer, OtherDerived>::pointer, pointer>::value,
     /*! \endcond
      */
-    operator=(reference<OtherElement, OtherPointer, OtherDerived> const& other)
+    derived_type&
+    /*! \cond
+     */
+    >::type
+  /*! \endcond
+   */
+  operator=(reference<OtherElement, OtherPointer, OtherDerived> const& other)
   {
     assign_from(&other);
     return derived();

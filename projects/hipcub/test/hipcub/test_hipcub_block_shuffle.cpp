@@ -76,8 +76,7 @@ using SingleValueTestParams = ::testing::Types<
 TYPED_TEST_SUITE(HipcubBlockShuffleTests, SingleValueTestParams);
 
 template<unsigned int BlockSize, class T>
-__global__
-__launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void shuffle_offset_kernel(T* device_input, T* device_output, int distance)
 {
     const unsigned int                 index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
@@ -159,8 +158,7 @@ TYPED_TEST(HipcubBlockShuffleTests, BlockOffset)
 }
 
 template<unsigned int BlockSize, class T>
-__global__
-__launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void shuffle_rotate_kernel(T* device_input, T* device_output, int distance)
 {
     const unsigned int                 index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
@@ -239,8 +237,7 @@ TYPED_TEST(HipcubBlockShuffleTests, BlockRotate)
 }
 
 template<unsigned int BlockSize, unsigned int ItemsPerThread, class T>
-__global__
-__launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void shuffle_up_kernel(T(*device_input), T(*device_output))
 {
     const unsigned int                 index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
@@ -327,8 +324,7 @@ TYPED_TEST(HipcubBlockShuffleTests, BlockUp)
 }
 
 template<unsigned int BlockSize, unsigned int ItemsPerThread, class T>
-__global__
-__launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void shuffle_up_with_suffix_kernel(T* device_input, T* device_output, T* device_suffix)
 {
     const unsigned int                 index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
@@ -431,8 +427,7 @@ TYPED_TEST(HipcubBlockShuffleTests, BlockUpWithSuffix)
 }
 
 template<unsigned int BlockSize, unsigned int ItemsPerThread, class T>
-__global__
-__launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void shuffle_down_kernel(T(*device_input), T(*device_output))
 {
     const unsigned int                 index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;
@@ -520,8 +515,7 @@ TYPED_TEST(HipcubBlockShuffleTests, BlockDown)
 }
 
 template<unsigned int BlockSize, unsigned int ItemsPerThread, class T>
-__global__
-__launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void shuffle_down_with_prefix_kernel(T* device_input, T* device_output, T* device_prefix)
 {
     const unsigned int                 index = (hipBlockIdx_x * BlockSize) + hipThreadIdx_x;

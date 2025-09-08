@@ -492,14 +492,13 @@ inline auto get_random_value(typename T::value_type min,
 template<class T>
 inline std::vector<T> get_random_data01(size_t size, float p, seed_type seed_value)
 {
-    const size_t max_random_size = 1024 * 1024;
-    engine_type gen{seed_value};
+    const size_t                max_random_size = 1024 * 1024;
+    engine_type                 gen{seed_value};
     std::bernoulli_distribution distribution(p);
-    std::vector<T> data(size);
-    std::generate(
-        data.begin(), data.begin() + std::min(size, max_random_size),
-        [&]() { return static_cast<T>(distribution(gen)); }
-    );
+    std::vector<T>              data(size);
+    std::generate(data.begin(),
+                  data.begin() + std::min(size, max_random_size),
+                  [&]() { return static_cast<T>(distribution(gen)); });
     for(size_t i = max_random_size; i < size; i += max_random_size)
     {
         std::copy_n(data.begin(), std::min(size - i, max_random_size), data.begin() + i);

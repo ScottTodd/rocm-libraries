@@ -50,11 +50,11 @@
 ; nxb                        : 0
 ; nxe                        : 0
 ; vector_c                   : 1
-; 
+;
 ; block_size                 : 256
 ; lds_total                  : 8192
 ; lds_buffer_num             : 1
-; 
+;
 .set k_p_in, 0
 .set k_p_wei, 8
 .set k_p_out, 16
@@ -343,8 +343,8 @@ igemm_bwd_gtcx3_nhwc_fp32_bx0_ex0_bt128x64x32_wt32x32x2_ws1x1_wr1x2_ta1x16x1x1_1
 
     v_mov_b32 v[v_tmp+5], v0
     ; xdlops mapping, get source matrix gemm index, k_pack:4, v_pack:4, k_pack_per_thread:4
-    v_and_b32 v[v_gemm_in], 31, v[v_tmp+5]           ; block_n index 
-    v_and_b32 v[v_gemm_im], 31, v[v_tmp+5]           ; block_m index 
+    v_and_b32 v[v_gemm_in], 31, v[v_tmp+5]           ; block_n index
+    v_and_b32 v[v_gemm_im], 31, v[v_tmp+5]           ; block_m index
     v_lshlrev_b32 v[v_gemm_in], 2, v[v_gemm_in]   ; shift left k_pack:4
     v_lshlrev_b32 v[v_gemm_im], 2, v[v_gemm_im]   ; shift left k_pack:4
     v_lshrrev_b32 v[v_tmp+5], 5, v[v_tmp+5]
@@ -428,7 +428,7 @@ igemm_bwd_gtcx3_nhwc_fp32_bx0_ex0_bt128x64x32_wt32x32x2_ws1x1_wr1x2_ta1x16x1x1_1
     ; start MFMA loop, wave tile:32x32, repeat:1x2, step:1x1, k_pack:4, p_issue:1, q_issue:1, local_prefetch_num:1
     .v_clear_nc a_c, 32
     s_waitcnt vmcnt(4)
-    ds_write_b128 v[v_sst_b_os], v[v_gld_b:v_gld_b+3] 
+    ds_write_b128 v[v_sst_b_os], v[v_gld_b:v_gld_b+3]
     ds_write_b128 v[v_sst_b_os], v[v_gld_b+4:v_gld_b+4+3] offset:512
 
     s_waitcnt lgkmcnt(0)
@@ -441,13 +441,13 @@ igemm_bwd_gtcx3_nhwc_fp32_bx0_ex0_bt128x64x32_wt32x32x2_ws1x1_wr1x2_ta1x16x1x1_1
 
 L_igemm_bwd_gtcx3_nhwc_fp32_bx0_ex0_bt128x64x32_wt32x32x2_ws1x1_wr1x2_ta1x16x1x1_1x2x4x32_tb1x4x2x1_1x8x1x32_pta_mfma_body:
     ; do fma accumulate with unroll 32, mfma_v_pack_slot:8
-    
+
     s_add_u32 s[s_p_out], s[s_move_slice_out_stride_k], s[s_p_out]
     s_addc_u32 s[s_p_out+1], 0, s[s_p_out+1]
     v_add_u32 v[v_wei_os], s[s_move_slice_wei_stride_k], v[v_wei_os]
 
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:512
-    
+
     s_waitcnt lgkmcnt(1) vmcnt(0)
     v_mov_b32 v[v_gld_a], v[v_gld_a_gpf]
     v_mov_b32 v[v_gld_a+1], v[v_gld_a_gpf+1]
@@ -501,44 +501,44 @@ L_igemm_bwd_gtcx3_nhwc_fp32_bx0_ex0_bt128x64x32_wt32x32x2_ws1x1_wr1x2_ta1x16x1x1
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+2], v[v_b+2], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:0, v:2, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+3], v[v_b+3], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:0, v:3, num_a_c:16
     ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] offset:2048 ; i_r:0, i_b:0, i_k:1
-    s_waitcnt lgkmcnt(1) 
+    s_waitcnt lgkmcnt(1)
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a], v[v_b+4], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:0, v:0, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+1], v[v_b+5], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:0, v:1, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+2], v[v_b+6], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:0, v:2, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+3], v[v_b+7], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:0, v:3, num_a_c:16
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:2560 ; i_r:1, i_b:0, i_k:1
-    s_waitcnt lgkmcnt(1) 
+    s_waitcnt lgkmcnt(1)
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+4], v[v_b], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:1, v:0, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+5], v[v_b+1], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:1, v:1, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+6], v[v_b+2], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:1, v:2, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+7], v[v_b+3], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:1, v:3, num_a_c:16
     ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] offset:4096 ; i_r:0, i_b:0, i_k:2
-    s_waitcnt lgkmcnt(1) 
+    s_waitcnt lgkmcnt(1)
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+4], v[v_b+4], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:1, v:0, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+5], v[v_b+5], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:1, v:1, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+6], v[v_b+6], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:1, v:2, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+7], v[v_b+7], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:1, v:3, num_a_c:16
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:4608 ; i_r:1, i_b:0, i_k:2
-    s_waitcnt lgkmcnt(1) 
+    s_waitcnt lgkmcnt(1)
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+8], v[v_b], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:2, v:0, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+9], v[v_b+1], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:2, v:1, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+10], v[v_b+2], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:2, v:2, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+11], v[v_b+3], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:2, v:3, num_a_c:16
     ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] offset:6144 ; i_r:0, i_b:0, i_k:3
-    s_waitcnt lgkmcnt(1) 
+    s_waitcnt lgkmcnt(1)
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+8], v[v_b+4], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:2, v:0, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+9], v[v_b+5], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:2, v:1, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+10], v[v_b+6], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:2, v:2, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+11], v[v_b+7], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:2, v:3, num_a_c:16
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:6656 ; i_r:1, i_b:0, i_k:3
-    s_waitcnt lgkmcnt(1) 
+    s_waitcnt lgkmcnt(1)
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+12], v[v_b], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:3, v:0, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+13], v[v_b+1], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:3, v:1, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+14], v[v_b+2], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:3, v:2, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+15], v[v_b+3], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:3, v:3, num_a_c:16
     s_waitcnt lgkmcnt(0) vmcnt(4)
     s_barrier
-    ds_write_b128 v[v_sst_b_os], v[v_gld_b:v_gld_b+3] 
+    ds_write_b128 v[v_sst_b_os], v[v_gld_b:v_gld_b+3]
     ds_write_b128 v[v_sst_b_os], v[v_gld_b+4:v_gld_b+4+3] offset:512
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+12], v[v_b+4], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:3, v:0, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+13], v[v_b+5], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:3, v:1, num_a_c:16
@@ -574,42 +574,42 @@ L_igemm_bwd_gtcx3_nhwc_fp32_bx0_ex0_bt128x64x32_wt32x32x2_ws1x1_wr1x2_ta1x16x1x1
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+2], v[v_b+2], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:0, v:2, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+3], v[v_b+3], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:0, v:3, num_a_c:16
     ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] offset:2048 ; i_r:0, i_b:0, i_k:1
-    s_waitcnt lgkmcnt(1) 
+    s_waitcnt lgkmcnt(1)
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a], v[v_b+4], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:0, v:0, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+1], v[v_b+5], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:0, v:1, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+2], v[v_b+6], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:0, v:2, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+3], v[v_b+7], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:0, v:3, num_a_c:16
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:2560 ; i_r:1, i_b:0, i_k:1
-    s_waitcnt lgkmcnt(1) 
+    s_waitcnt lgkmcnt(1)
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+4], v[v_b], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:1, v:0, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+5], v[v_b+1], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:1, v:1, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+6], v[v_b+2], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:1, v:2, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+7], v[v_b+3], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:1, v:3, num_a_c:16
     ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] offset:4096 ; i_r:0, i_b:0, i_k:2
-    s_waitcnt lgkmcnt(1) 
+    s_waitcnt lgkmcnt(1)
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+4], v[v_b+4], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:1, v:0, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+5], v[v_b+5], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:1, v:1, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+6], v[v_b+6], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:1, v:2, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+7], v[v_b+7], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:1, v:3, num_a_c:16
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:4608 ; i_r:1, i_b:0, i_k:2
-    s_waitcnt lgkmcnt(1) 
+    s_waitcnt lgkmcnt(1)
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+8], v[v_b], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:2, v:0, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+9], v[v_b+1], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:2, v:1, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+10], v[v_b+2], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:2, v:2, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+11], v[v_b+3], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:2, v:3, num_a_c:16
     ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] offset:6144 ; i_r:0, i_b:0, i_k:3
-    s_waitcnt lgkmcnt(1) 
+    s_waitcnt lgkmcnt(1)
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+8], v[v_b+4], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:2, v:0, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+9], v[v_b+5], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:2, v:1, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+10], v[v_b+6], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:2, v:2, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+11], v[v_b+7], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:2, v:3, num_a_c:16
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:6656 ; i_r:1, i_b:0, i_k:3
-    s_waitcnt lgkmcnt(1) 
+    s_waitcnt lgkmcnt(1)
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+12], v[v_b], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:3, v:0, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+13], v[v_b+1], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:3, v:1, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+14], v[v_b+2], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:3, v:2, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_gld_a+15], v[v_b+3], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, k:3, v:3, num_a_c:16
-    s_waitcnt lgkmcnt(0) 
+    s_waitcnt lgkmcnt(0)
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+12], v[v_b+4], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:3, v:0, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+13], v[v_b+5], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:3, v:1, num_a_c:16
     v_mfma_f32_32x32x2f32 v[a_c+16:a_c+31], v[v_gld_a+14], v[v_b+6], v[a_c+16:a_c+31]     ; repeat:0x1, step:0x0, k:3, v:2, num_a_c:16

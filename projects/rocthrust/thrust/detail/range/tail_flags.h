@@ -74,14 +74,14 @@ public:
   THRUST_EXEC_CHECK_DISABLE
   THRUST_HOST_DEVICE tail_flags(RandomAccessIterator first, RandomAccessIterator last)
       : m_begin(
-        thrust::make_transform_iterator(thrust::counting_iterator<IndexType>(0), tail_flag_functor(first, last)))
+          thrust::make_transform_iterator(thrust::counting_iterator<IndexType>(0), tail_flag_functor(first, last)))
       , m_end(m_begin + (last - first))
   {}
 
   THRUST_EXEC_CHECK_DISABLE
   THRUST_HOST_DEVICE tail_flags(RandomAccessIterator first, RandomAccessIterator last, BinaryPredicate binary_pred)
       : m_begin(thrust::make_transform_iterator(
-        thrust::counting_iterator<IndexType>(0), tail_flag_functor(first, last, binary_pred)))
+          thrust::counting_iterator<IndexType>(0), tail_flag_functor(first, last, binary_pred)))
       , m_end(m_begin + (last - first))
   {}
 

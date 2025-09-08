@@ -24,17 +24,18 @@
 // At least C++11 required
 #if defined(__cplusplus) && __cplusplus >= 201103L
 
-#include <random>
-#include <exception>
-#include <string>
-#include <sstream>
-#include <type_traits>
-#include <limits>
+    #include <exception>
+    #include <limits>
+    #include <random>
+    #include <sstream>
+    #include <string>
+    #include <type_traits>
 
-#include "hiprand/hiprand.h"
-#include "hiprand/hiprand_kernel.h"
+    #include "hiprand/hiprand.h"
+    #include "hiprand/hiprand_kernel.h"
 
-namespace hiprand_cpp {
+namespace hiprand_cpp
+{
 
 /// \addtogroup hiprandhostcpp
 /// @{
@@ -53,15 +54,9 @@ public:
     /// Constructs new error object from error code \p error.
     ///
     /// \param error error code
-    error(error_type error) noexcept
-        : m_error(error),
-          m_error_string(to_string(error))
-    {
-    }
+    error(error_type error) noexcept : m_error(error), m_error_string(to_string(error)) {}
 
-    ~error() noexcept
-    {
-    }
+    ~error() noexcept {}
 
     /// Returns the numeric error code.
     error_type error_code() const noexcept
@@ -91,58 +86,49 @@ public:
     {
         switch(error)
         {
-            case HIPRAND_STATUS_SUCCESS:
-                return "Success";
+            case HIPRAND_STATUS_SUCCESS: return "Success";
             case HIPRAND_STATUS_VERSION_MISMATCH:
                 return "Header file and linked library version do not match";
             case HIPRAND_STATUS_NOT_INITIALIZED:
                 return "Generator was not created using hiprandCreateGenerator";
             case HIPRAND_STATUS_ALLOCATION_FAILED:
                 return "Memory allocation failed during execution";
-            case HIPRAND_STATUS_TYPE_ERROR:
-                return "Generator type is wrong";
-            case HIPRAND_STATUS_OUT_OF_RANGE:
-                return "Argument out of range";
+            case HIPRAND_STATUS_TYPE_ERROR: return "Generator type is wrong";
+            case HIPRAND_STATUS_OUT_OF_RANGE: return "Argument out of range";
             case HIPRAND_STATUS_LENGTH_NOT_MULTIPLE:
                 return "Length requested is not a multiple of dimension";
             case HIPRAND_STATUS_DOUBLE_PRECISION_REQUIRED:
                 return "GPU does not have double precision";
-            case HIPRAND_STATUS_LAUNCH_FAILURE:
-                return "Kernel launch failure";
-            case HIPRAND_STATUS_PREEXISTING_FAILURE:
-                return "Preexisting failure on library entry";
-            case HIPRAND_STATUS_INITIALIZATION_FAILED:
-                return "Initialization of HIP failed";
+            case HIPRAND_STATUS_LAUNCH_FAILURE: return "Kernel launch failure";
+            case HIPRAND_STATUS_PREEXISTING_FAILURE: return "Preexisting failure on library entry";
+            case HIPRAND_STATUS_INITIALIZATION_FAILED: return "Initialization of HIP failed";
             case HIPRAND_STATUS_ARCH_MISMATCH:
                 return "Architecture mismatch, GPU does not support requested feature";
-            case HIPRAND_STATUS_INTERNAL_ERROR:
-                return "Internal library error";
-            case HIPRAND_STATUS_NOT_IMPLEMENTED:
-                return "Feature not implemented yet";
-            default: {
-                std::stringstream s;
-                s << "Unknown hipRAND error (" << error << ")";
-                return s.str();
-            }
+            case HIPRAND_STATUS_INTERNAL_ERROR: return "Internal library error";
+            case HIPRAND_STATUS_NOT_IMPLEMENTED: return "Feature not implemented yet";
+            default:
+                {
+                    std::stringstream s;
+                    s << "Unknown hipRAND error (" << error << ")";
+                    return s.str();
+                }
         }
     }
 
     /// Compares two error objects for equality.
-    friend
-    bool operator==(const error& l, const error& r)
+    friend bool operator==(const error& l, const error& r)
     {
         return l.error_code() == r.error_code();
     }
 
     /// Compares two error objects for inequality.
-    friend
-    bool operator!=(const error& l, const error& r)
+    friend bool operator!=(const error& l, const error& r)
     {
         return !(l == r);
     }
 
 private:
-    error_type m_error;
+    error_type  m_error;
     std::string m_error_string;
 };
 
@@ -165,14 +151,10 @@ public:
     typedef IntType result_type;
 
     /// Default constructor
-    uniform_int_distribution()
-    {
-    }
+    uniform_int_distribution() {}
 
     /// Resets distribution's internal state if there is any.
-    void reset()
-    {
-    }
+    void reset() {}
 
     /// Returns the smallest possible value that can be generated.
     IntType min() const
@@ -204,17 +186,18 @@ public:
     ///
     /// See also: hiprandGenerate(), hiprandGenerateChar(), hiprandGenerateShort(), hiprandGenerateLongLong()
     template<class Generator>
-    void operator()(Generator& g, IntType * output, size_t size)
+    void operator()(Generator& g, IntType* output, size_t size)
     {
         hiprandStatus_t status;
         status = this->generate(g, output, size);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// Returns \c true if the distribution is the same as \p other.
     bool operator==(const uniform_int_distribution<IntType>& other)
     {
-        (void) other;
+        (void)other;
         return true;
     }
 
@@ -226,19 +209,19 @@ public:
 
 private:
     template<class Generator>
-    hiprandStatus_t generate(Generator& g, unsigned char * output, size_t size)
+    hiprandStatus_t generate(Generator& g, unsigned char* output, size_t size)
     {
         return hiprandGenerateChar(g.m_generator, output, size);
     }
 
     template<class Generator>
-    hiprandStatus_t generate(Generator& g, unsigned short * output, size_t size)
+    hiprandStatus_t generate(Generator& g, unsigned short* output, size_t size)
     {
         return hiprandGenerateShort(g.m_generator, output, size);
     }
 
     template<class Generator>
-    hiprandStatus_t generate(Generator& g, unsigned int * output, size_t size)
+    hiprandStatus_t generate(Generator& g, unsigned int* output, size_t size)
     {
         return hiprandGenerate(g.m_generator, output, size);
     }
@@ -258,25 +241,18 @@ private:
 template<class RealType = float>
 class uniform_real_distribution
 {
-    static_assert(
-        std::is_same<float, RealType>::value
-        || std::is_same<double, RealType>::value
-        || std::is_same<half, RealType>::value,
-        "Only float, double, and half types are supported in uniform_real_distribution"
-    );
+    static_assert(std::is_same<float, RealType>::value || std::is_same<double, RealType>::value
+                      || std::is_same<half, RealType>::value,
+                  "Only float, double, and half types are supported in uniform_real_distribution");
 
 public:
     typedef RealType result_type;
 
     /// Default constructor
-    uniform_real_distribution()
-    {
-    }
+    uniform_real_distribution() {}
 
     /// Resets distribution's internal state if there is any.
-    void reset()
-    {
-    }
+    void reset() {}
 
     /// Returns the smallest possible value that can be generated.
     RealType min() const
@@ -312,17 +288,18 @@ public:
     ///
     /// See also: hiprandGenerateUniform(), hiprandGenerateUniformDouble(), hiprandGenerateUniformHalf()
     template<class Generator>
-    void operator()(Generator& g, RealType * output, size_t size)
+    void operator()(Generator& g, RealType* output, size_t size)
     {
         hiprandStatus_t status;
         status = this->generate(g, output, size);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// Returns \c true if the distribution is the same as \p other.
     bool operator==(const uniform_real_distribution<RealType>& other)
     {
-        (void) other;
+        (void)other;
         return true;
     }
 
@@ -334,19 +311,19 @@ public:
 
 private:
     template<class Generator>
-    hiprandStatus_t generate(Generator& g, float * output, size_t size)
+    hiprandStatus_t generate(Generator& g, float* output, size_t size)
     {
         return hiprandGenerateUniform(g.m_generator, output, size);
     }
 
     template<class Generator>
-    hiprandStatus_t generate(Generator& g, double * output, size_t size)
+    hiprandStatus_t generate(Generator& g, double* output, size_t size)
     {
         return hiprandGenerateUniformDouble(g.m_generator, output, size);
     }
 
     template<class Generator>
-    hiprandStatus_t generate(Generator& g, half * output, size_t size)
+    hiprandStatus_t generate(Generator& g, half* output, size_t size)
     {
         return hiprandGenerateUniformHalf(g.m_generator, output, size);
     }
@@ -360,12 +337,9 @@ private:
 template<class RealType = float>
 class normal_distribution
 {
-    static_assert(
-        std::is_same<float, RealType>::value
-        || std::is_same<double, RealType>::value
-        || std::is_same<half, RealType>::value,
-        "Only float, double and half types are supported in normal_distribution"
-    );
+    static_assert(std::is_same<float, RealType>::value || std::is_same<double, RealType>::value
+                      || std::is_same<half, RealType>::value,
+                  "Only float, double and half types are supported in normal_distribution");
 
 public:
     typedef RealType result_type;
@@ -376,10 +350,7 @@ public:
     {
     public:
         using distribution_type = normal_distribution<RealType>;
-        param_type(RealType mean = 0.0, RealType stddev = 1.0)
-            : m_mean(mean), m_stddev(stddev)
-        {
-        }
+        param_type(RealType mean = 0.0, RealType stddev = 1.0) : m_mean(mean), m_stddev(stddev) {}
 
         /// \brief Returns the deviation distribution parameter.
         ///
@@ -408,6 +379,7 @@ public:
         {
             return !(*this == other);
         }
+
     private:
         RealType m_mean;
         RealType m_stddev;
@@ -416,22 +388,14 @@ public:
     /// \brief Constructs a new distribution object.
     /// \param mean A mean distribution parameter
     /// \param stddev A standard deviation distribution parameter
-    normal_distribution(RealType mean = 0.0, RealType stddev = 1.0)
-        : m_params(mean, stddev)
-    {
-    }
+    normal_distribution(RealType mean = 0.0, RealType stddev = 1.0) : m_params(mean, stddev) {}
 
     /// \brief Constructs a new distribution object.
     /// \param params Distribution parameters
-    normal_distribution(const param_type& params)
-        : m_params(params)
-    {
-    }
+    normal_distribution(const param_type& params) : m_params(params) {}
 
     /// Resets distribution's internal state if there is any.
-    void reset()
-    {
-    }
+    void reset() {}
 
     /// \brief Returns the mean distribution parameter.
     ///
@@ -492,11 +456,12 @@ public:
     ///
     /// See also: hiprandGenerateNormal(), hiprandGenerateNormalDouble(), hiprandGenerateNormalHalf()
     template<class Generator>
-    void operator()(Generator& g, RealType * output, size_t size)
+    void operator()(Generator& g, RealType* output, size_t size)
     {
         hiprandStatus_t status;
         status = this->generate(g, output, size);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \brief Returns \c true if the distribution is the same as \p other.
@@ -517,27 +482,25 @@ public:
 
 private:
     template<class Generator>
-    hiprandStatus_t generate(Generator& g, float * output, size_t size)
+    hiprandStatus_t generate(Generator& g, float* output, size_t size)
     {
-        return hiprandGenerateNormal(
-            g.m_generator, output, size, this->mean(), this->stddev()
-        );
+        return hiprandGenerateNormal(g.m_generator, output, size, this->mean(), this->stddev());
     }
 
     template<class Generator>
-    hiprandStatus_t generate(Generator& g, double * output, size_t size)
+    hiprandStatus_t generate(Generator& g, double* output, size_t size)
     {
-        return hiprandGenerateNormalDouble(
-            g.m_generator, output, size, this->mean(), this->stddev()
-        );
+        return hiprandGenerateNormalDouble(g.m_generator,
+                                           output,
+                                           size,
+                                           this->mean(),
+                                           this->stddev());
     }
 
     template<class Generator>
-    hiprandStatus_t generate(Generator& g, half * output, size_t size)
+    hiprandStatus_t generate(Generator& g, half* output, size_t size)
     {
-        return hiprandGenerateNormalHalf(
-            g.m_generator, output, size, this->mean(), this->stddev()
-        );
+        return hiprandGenerateNormalHalf(g.m_generator, output, size, this->mean(), this->stddev());
     }
 
     param_type m_params;
@@ -551,12 +514,9 @@ private:
 template<class RealType = float>
 class lognormal_distribution
 {
-    static_assert(
-        std::is_same<float, RealType>::value
-        || std::is_same<double, RealType>::value
-        || std::is_same<half, RealType>::value,
-        "Only float, double and half types are supported in lognormal_distribution"
-    );
+    static_assert(std::is_same<float, RealType>::value || std::is_same<double, RealType>::value
+                      || std::is_same<half, RealType>::value,
+                  "Only float, double and half types are supported in lognormal_distribution");
 
 public:
     typedef RealType result_type;
@@ -567,10 +527,7 @@ public:
     {
     public:
         using distribution_type = lognormal_distribution<RealType>;
-        param_type(RealType m = 0.0, RealType s = 1.0)
-            : m_mean(m), m_stddev(s)
-        {
-        }
+        param_type(RealType m = 0.0, RealType s = 1.0) : m_mean(m), m_stddev(s) {}
 
         /// \brief Returns the deviation distribution parameter.
         ///
@@ -599,6 +556,7 @@ public:
         {
             return !(*this == other);
         }
+
     private:
         RealType m_mean;
         RealType m_stddev;
@@ -607,22 +565,14 @@ public:
     /// \brief Constructs a new distribution object.
     /// \param m A mean distribution parameter
     /// \param s A standard deviation distribution parameter
-    lognormal_distribution(RealType m = 0.0, RealType s = 1.0)
-        : m_params(m, s)
-    {
-    }
+    lognormal_distribution(RealType m = 0.0, RealType s = 1.0) : m_params(m, s) {}
 
     /// \brief Constructs a new distribution object.
     /// \param params Distribution parameters
-    lognormal_distribution(const param_type& params)
-        : m_params(params)
-    {
-    }
+    lognormal_distribution(const param_type& params) : m_params(params) {}
 
     /// Resets distribution's internal state if there is any.
-    void reset()
-    {
-    }
+    void reset() {}
 
     /// \brief Returns the mean distribution parameter.
     ///
@@ -684,11 +634,12 @@ public:
     ///
     /// See also: hiprandGenerateLogNormal(), hiprandGenerateLogNormalDouble(), hiprandGenerateLogNormalHalf()
     template<class Generator>
-    void operator()(Generator& g, RealType * output, size_t size)
+    void operator()(Generator& g, RealType* output, size_t size)
     {
         hiprandStatus_t status;
         status = this->generate(g, output, size);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \brief Returns \c true if the distribution is the same as \p other.
@@ -709,27 +660,21 @@ public:
 
 private:
     template<class Generator>
-    hiprandStatus_t generate(Generator& g, float * output, size_t size)
+    hiprandStatus_t generate(Generator& g, float* output, size_t size)
     {
-        return hiprandGenerateLogNormal(
-            g.m_generator, output, size, this->m(), this->s()
-        );
+        return hiprandGenerateLogNormal(g.m_generator, output, size, this->m(), this->s());
     }
 
     template<class Generator>
-    hiprandStatus_t generate(Generator& g, double * output, size_t size)
+    hiprandStatus_t generate(Generator& g, double* output, size_t size)
     {
-        return hiprandGenerateLogNormalDouble(
-            g.m_generator, output, size, this->m(), this->s()
-        );
+        return hiprandGenerateLogNormalDouble(g.m_generator, output, size, this->m(), this->s());
     }
 
     template<class Generator>
-    hiprandStatus_t generate(Generator& g, half * output, size_t size)
+    hiprandStatus_t generate(Generator& g, half* output, size_t size)
     {
-        return hiprandGenerateLogNormalHalf(
-            g.m_generator, output, size, this->m(), this->s()
-        );
+        return hiprandGenerateLogNormalHalf(g.m_generator, output, size, this->m(), this->s());
     }
 
     param_type m_params;
@@ -743,10 +688,8 @@ private:
 template<class IntType = unsigned int>
 class poisson_distribution
 {
-    static_assert(
-        std::is_same<unsigned int, IntType>::value,
-        "Only unsigned int type is supported in poisson_distribution"
-    );
+    static_assert(std::is_same<unsigned int, IntType>::value,
+                  "Only unsigned int type is supported in poisson_distribution");
 
 public:
     typedef IntType result_type;
@@ -757,10 +700,7 @@ public:
     {
     public:
         using distribution_type = poisson_distribution<IntType>;
-        param_type(double mean = 1.0)
-            : m_mean(mean)
-        {
-        }
+        param_type(double mean = 1.0) : m_mean(mean) {}
 
         /// \brief Returns the mean distribution parameter.
         ///
@@ -789,22 +729,14 @@ public:
 
     /// \brief Constructs a new distribution object.
     /// \param mean A mean distribution parameter.
-    poisson_distribution(double mean = 1.0)
-        : m_params(mean)
-    {
-    }
+    poisson_distribution(double mean = 1.0) : m_params(mean) {}
 
     /// \brief Constructs a new distribution object.
     /// \param params Distribution parameters
-    poisson_distribution(const param_type& params)
-        : m_params(params)
-    {
-    }
+    poisson_distribution(const param_type& params) : m_params(params) {}
 
     /// Resets distribution's internal state if there is any.
-    void reset()
-    {
-    }
+    void reset() {}
 
     /// \brief Returns the mean distribution parameter.
     ///
@@ -858,11 +790,12 @@ public:
     ///
     /// See also: hiprandGeneratePoisson()
     template<class Generator>
-    void operator()(Generator& g, IntType * output, size_t size)
+    void operator()(Generator& g, IntType* output, size_t size)
     {
         hiprandStatus_t status;
         status = hiprandGeneratePoisson(g.m_generator, output, size, this->mean());
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \brief Returns \c true if the distribution is the same as \p other.
@@ -926,12 +859,12 @@ public:
     /// \param offset_value number of internal states that should be skipped, see also offset()
     ///
     /// See also: hiprandCreateGenerator()
-    philox4x32_10_engine(seed_type seed_value = DefaultSeed,
-                         offset_type offset_value = 0)
+    philox4x32_10_engine(seed_type seed_value = DefaultSeed, offset_type offset_value = 0)
     {
         hiprandStatus_t status;
         status = hiprandCreateGenerator(&m_generator, this->type());
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
         try
         {
             if(offset_value > 0)
@@ -955,8 +888,7 @@ public:
     /// bound to the lifetime of the engine.
     ///
     /// \param generator hipRAND generator
-    philox4x32_10_engine(hiprandGenerator_t& generator)
-        : m_generator(generator)
+    philox4x32_10_engine(hiprandGenerator_t& generator) : m_generator(generator)
     {
         if(generator == NULL)
         {
@@ -979,7 +911,8 @@ public:
     ~philox4x32_10_engine() noexcept(false)
     {
         hiprandStatus_t status = hiprandDestroyGenerator(m_generator);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \brief Sets the random number engine's \p hipStream for kernel launches.
@@ -987,7 +920,8 @@ public:
     void stream(hipStream_t value)
     {
         hiprandStatus_t status = hiprandSetStream(m_generator, value);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \brief Sets the offset of a random number engine.
@@ -1004,7 +938,8 @@ public:
     void offset(offset_type value)
     {
         hiprandStatus_t status = hiprandSetGeneratorOffset(this->m_generator, value);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \brief Sets the order of a random number engine.
@@ -1036,7 +971,8 @@ public:
     void seed(seed_type value)
     {
         hiprandStatus_t status = hiprandSetPseudoRandomGeneratorSeed(this->m_generator, value);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \brief Fills \p output with uniformly distributed random integer values.
@@ -1053,11 +989,12 @@ public:
     ///
     /// See also: hiprandGenerate()
     template<class Generator>
-    void operator()(result_type * output, size_t size)
+    void operator()(result_type* output, size_t size)
     {
         hiprandStatus_t status;
         status = hiprandGenerate(m_generator, output, size);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// Returns the smallest possible value that can be generated by the engine.
@@ -1101,7 +1038,8 @@ private:
 
 /// \cond
 template<unsigned long long DefaultSeed>
-constexpr typename philox4x32_10_engine<DefaultSeed>::seed_type philox4x32_10_engine<DefaultSeed>::default_seed;
+constexpr typename philox4x32_10_engine<DefaultSeed>::seed_type
+    philox4x32_10_engine<DefaultSeed>::default_seed;
 /// \endcond
 
 /// \brief Pseudorandom number engine based XORWOW algorithm.
@@ -1126,12 +1064,12 @@ public:
     static constexpr seed_type default_seed = DefaultSeed;
 
     /// \copydoc philox4x32_10_engine::philox4x32_10_engine(seed_type, offset_type)
-    xorwow_engine(seed_type seed_value = DefaultSeed,
-                  offset_type offset_value = 0)
+    xorwow_engine(seed_type seed_value = DefaultSeed, offset_type offset_value = 0)
     {
         hiprandStatus_t status;
         status = hiprandCreateGenerator(&m_generator, this->type());
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
         try
         {
             if(offset_value > 0)
@@ -1148,8 +1086,7 @@ public:
     }
 
     /// \copydoc philox4x32_10_engine::philox4x32_10_engine(hiprandGenerator_t&)
-    xorwow_engine(hiprandGenerator_t& generator)
-        : m_generator(generator)
+    xorwow_engine(hiprandGenerator_t& generator) : m_generator(generator)
     {
         if(generator == NULL)
         {
@@ -1170,21 +1107,24 @@ public:
     ~xorwow_engine() noexcept(false)
     {
         hiprandStatus_t status = hiprandDestroyGenerator(m_generator);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \copydoc philox4x32_10_engine::stream()
     void stream(hipStream_t value)
     {
         hiprandStatus_t status = hiprandSetStream(m_generator, value);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \copydoc philox4x32_10_engine::offset()
     void offset(offset_type value)
     {
         hiprandStatus_t status = hiprandSetGeneratorOffset(this->m_generator, value);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \copydoc philox4x32_10_engine::order()
@@ -1199,16 +1139,18 @@ public:
     void seed(seed_type value)
     {
         hiprandStatus_t status = hiprandSetPseudoRandomGeneratorSeed(this->m_generator, value);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \copydoc philox4x32_10_engine::operator()()
     template<class Generator>
-    void operator()(result_type * output, size_t size)
+    void operator()(result_type* output, size_t size)
     {
         hiprandStatus_t status;
         status = hiprandGenerate(m_generator, output, size);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \copydoc philox4x32_10_engine::min()
@@ -1276,12 +1218,12 @@ public:
     static constexpr seed_type default_seed = DefaultSeed;
 
     /// \copydoc philox4x32_10_engine::philox4x32_10_engine(seed_type, offset_type)
-    mrg32k3a_engine(seed_type seed_value = DefaultSeed,
-                    offset_type offset_value = 0)
+    mrg32k3a_engine(seed_type seed_value = DefaultSeed, offset_type offset_value = 0)
     {
         hiprandStatus_t status;
         status = hiprandCreateGenerator(&m_generator, this->type());
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
         try
         {
             if(offset_value > 0)
@@ -1298,8 +1240,7 @@ public:
     }
 
     /// \copydoc philox4x32_10_engine::philox4x32_10_engine(hiprandGenerator_t&)
-    mrg32k3a_engine(hiprandGenerator_t& generator)
-        : m_generator(generator)
+    mrg32k3a_engine(hiprandGenerator_t& generator) : m_generator(generator)
     {
         if(generator == NULL)
         {
@@ -1320,21 +1261,24 @@ public:
     ~mrg32k3a_engine() noexcept(false)
     {
         hiprandStatus_t status = hiprandDestroyGenerator(m_generator);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \copydoc philox4x32_10_engine::stream()
     void stream(hipStream_t value)
     {
         hiprandStatus_t status = hiprandSetStream(m_generator, value);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \copydoc philox4x32_10_engine::offset()
     void offset(offset_type value)
     {
         hiprandStatus_t status = hiprandSetGeneratorOffset(this->m_generator, value);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \copydoc philox4x32_10_engine::order()
@@ -1349,16 +1293,18 @@ public:
     void seed(seed_type value)
     {
         hiprandStatus_t status = hiprandSetPseudoRandomGeneratorSeed(this->m_generator, value);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \copydoc philox4x32_10_engine::operator()()
     template<class Generator>
-    void operator()(result_type * output, size_t size)
+    void operator()(result_type* output, size_t size)
     {
         hiprandStatus_t status;
         status = hiprandGenerate(m_generator, output, size);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \copydoc philox4x32_10_engine::min()
@@ -1402,7 +1348,8 @@ private:
 
 /// \cond
 template<unsigned long long DefaultSeed>
-constexpr typename mrg32k3a_engine<DefaultSeed>::seed_type mrg32k3a_engine<DefaultSeed>::default_seed;
+constexpr
+    typename mrg32k3a_engine<DefaultSeed>::seed_type mrg32k3a_engine<DefaultSeed>::default_seed;
 /// \endcond
 
 /// \brief Pseudorandom number engine based on Mersenne Twister
@@ -1436,7 +1383,8 @@ public:
     {
         hiprandStatus_t status;
         status = hiprandCreateGenerator(&m_generator, this->type());
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
         try
         {
             this->seed(seed_value);
@@ -1449,8 +1397,7 @@ public:
     }
 
     /// \copydoc philox4x32_10_engine::philox4x32_10_engine(hiprandGenerator_t&)
-    mtgp32_engine(hiprandGenerator_t& generator)
-        : m_generator(generator)
+    mtgp32_engine(hiprandGenerator_t& generator) : m_generator(generator)
     {
         if(generator == NULL)
         {
@@ -1471,14 +1418,16 @@ public:
     ~mtgp32_engine() noexcept(false)
     {
         hiprandStatus_t status = hiprandDestroyGenerator(m_generator);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \copydoc philox4x32_10_engine::stream()
     void stream(hipStream_t value)
     {
         hiprandStatus_t status = hiprandSetStream(m_generator, value);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \copydoc philox4x32_10_engine::order()
@@ -1493,16 +1442,18 @@ public:
     void seed(seed_type value)
     {
         hiprandStatus_t status = hiprandSetPseudoRandomGeneratorSeed(this->m_generator, value);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \copydoc philox4x32_10_engine::operator()()
     template<class Generator>
-    void operator()(result_type * output, size_t size)
+    void operator()(result_type* output, size_t size)
     {
         hiprandStatus_t status;
         status = hiprandGenerate(m_generator, output, size);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \copydoc philox4x32_10_engine::min()
@@ -1725,11 +1676,12 @@ public:
     ///
     /// See also: hiprandCreateGenerator()
     sobol32_engine(dimensions_num_type num_of_dimensions = DefaultNumDimensions,
-                   offset_type offset_value = 0)
+                   offset_type         offset_value      = 0)
     {
         hiprandStatus_t status;
         status = hiprandCreateGenerator(&m_generator, this->type());
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
         try
         {
             if(offset_value > 0)
@@ -1746,8 +1698,7 @@ public:
     }
 
     /// \copydoc philox4x32_10_engine::philox4x32_10_engine(hiprandGenerator_t&)
-    sobol32_engine(hiprandGenerator_t& generator)
-        : m_generator(generator)
+    sobol32_engine(hiprandGenerator_t& generator) : m_generator(generator)
     {
         if(generator == NULL)
         {
@@ -1768,21 +1719,24 @@ public:
     ~sobol32_engine() noexcept(false)
     {
         hiprandStatus_t status = hiprandDestroyGenerator(m_generator);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \copydoc philox4x32_10_engine::stream()
     void stream(hipStream_t value)
     {
         hiprandStatus_t status = hiprandSetStream(m_generator, value);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \copydoc philox4x32_10_engine::offset()
     void offset(offset_type value)
     {
         hiprandStatus_t status = hiprandSetGeneratorOffset(this->m_generator, value);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \copydoc philox4x32_10_engine::order()
@@ -1805,9 +1759,9 @@ public:
     /// See also: hiprandSetQuasiRandomGeneratorDimensions()
     void dimensions(dimensions_num_type value)
     {
-        hiprandStatus_t status =
-            hiprandSetQuasiRandomGeneratorDimensions(this->m_generator, value);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        hiprandStatus_t status = hiprandSetQuasiRandomGeneratorDimensions(this->m_generator, value);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \brief Fills \p output with uniformly distributed random integer values.
@@ -1826,11 +1780,12 @@ public:
     ////
     /// See also: hiprandGenerate()
     template<class Generator>
-    void operator()(result_type * output, size_t size)
+    void operator()(result_type* output, size_t size)
     {
         hiprandStatus_t status;
         status = hiprandGenerate(m_generator, output, size);
-        if(status != HIPRAND_STATUS_SUCCESS) throw hiprand_cpp::error(status);
+        if(status != HIPRAND_STATUS_SUCCESS)
+            throw hiprand_cpp::error(status);
     }
 
     /// \copydoc philox4x32_10_engine::min()
@@ -1875,7 +1830,7 @@ private:
 /// \cond
 template<unsigned int DefaultNumDimensions>
 constexpr typename sobol32_engine<DefaultNumDimensions>::dimensions_num_type
-sobol32_engine<DefaultNumDimensions>::default_num_dimensions;
+    sobol32_engine<DefaultNumDimensions>::default_num_dimensions;
 /// \endcond
 
 /// \brief Sobol's quasi-random sequence generator
@@ -2425,7 +2380,7 @@ typedef std::random_device random_device;
 /// \return hipRAND version number as an \p int value.
 inline int version()
 {
-    int x;
+    int             x;
     hiprandStatus_t status = hiprandGetVersion(&x);
     if(status != HIPRAND_STATUS_SUCCESS)
     {

@@ -34,103 +34,103 @@ class identity_iterator
 public:
     // Iterator traits
     using difference_type = std::ptrdiff_t;
-    using value_type = void;
-    using pointer = void;
-    using reference = T&;
+    using value_type      = void;
+    using pointer         = void;
+    using reference       = T&;
 
     using iterator_category = std::random_access_iterator_tag;
 
-    HIPCUB_HOST_DEVICE inline
-    identity_iterator(T * ptr)
+    HIPCUB_HOST_DEVICE
+    inline identity_iterator(T* ptr)
         : ptr_(ptr)
-    { }
+    {}
 
     inline ~identity_iterator() = default;
 
-    HIPCUB_HOST_DEVICE inline
-    identity_iterator& operator++()
+    HIPCUB_HOST_DEVICE
+    inline identity_iterator& operator++()
     {
         ptr_++;
         return *this;
     }
 
-    HIPCUB_HOST_DEVICE inline
-    identity_iterator operator++(int)
+    HIPCUB_HOST_DEVICE
+    inline identity_iterator operator++(int)
     {
         identity_iterator old = *this;
         ptr_++;
         return old;
     }
 
-    HIPCUB_HOST_DEVICE inline
-    identity_iterator& operator--()
+    HIPCUB_HOST_DEVICE
+    inline identity_iterator& operator--()
     {
         ptr_--;
         return *this;
     }
 
-    HIPCUB_HOST_DEVICE inline
-    identity_iterator operator--(int)
+    HIPCUB_HOST_DEVICE
+    inline identity_iterator operator--(int)
     {
         identity_iterator old = *this;
         ptr_--;
         return old;
     }
 
-    HIPCUB_HOST_DEVICE inline
-    reference operator*() const
+    HIPCUB_HOST_DEVICE
+    inline reference operator*() const
     {
         return *ptr_;
     }
 
-    HIPCUB_HOST_DEVICE inline
-    reference operator[](const difference_type& n) const
+    HIPCUB_HOST_DEVICE
+    inline reference operator[](const difference_type& n) const
     {
         return *(ptr_ + n);
     }
 
-    HIPCUB_HOST_DEVICE inline
-    identity_iterator operator+(const difference_type& distance) const
+    HIPCUB_HOST_DEVICE
+    inline identity_iterator operator+(const difference_type& distance) const
     {
         auto i = ptr_ + distance;
         return identity_iterator(i);
     }
 
-    HIPCUB_HOST_DEVICE inline
-    identity_iterator& operator+=(const difference_type& distance)
+    HIPCUB_HOST_DEVICE
+    inline identity_iterator& operator+=(const difference_type& distance)
     {
         ptr_ += distance;
         return *this;
     }
 
-    HIPCUB_HOST_DEVICE inline
-    identity_iterator operator-(const difference_type& distance) const
+    HIPCUB_HOST_DEVICE
+    inline identity_iterator operator-(const difference_type& distance) const
     {
         auto i = ptr_ - distance;
         return identity_iterator(i);
     }
 
-    HIPCUB_HOST_DEVICE inline
-    identity_iterator& operator-=(const difference_type& distance)
+    HIPCUB_HOST_DEVICE
+    inline identity_iterator& operator-=(const difference_type& distance)
     {
         ptr_ -= distance;
         return *this;
     }
 
-    HIPCUB_HOST_DEVICE inline
-    difference_type operator-(identity_iterator other) const
+    HIPCUB_HOST_DEVICE
+    inline difference_type operator-(identity_iterator other) const
     {
         return ptr_ - other.ptr_;
     }
 
-    HIPCUB_HOST_DEVICE inline
-    bool operator==(identity_iterator other) const
+    HIPCUB_HOST_DEVICE
+    inline bool operator==(identity_iterator other) const
     {
         return ptr_ == other.ptr_;
     }
 
-    HIPCUB_HOST_DEVICE inline
-    bool operator!=(identity_iterator other) const
+    HIPCUB_HOST_DEVICE
+    inline bool operator!=(identity_iterator other) const
     {
         return ptr_ != other.ptr_;
     }
@@ -140,21 +140,18 @@ private:
 };
 
 template<bool Wrap, class T>
-inline
-auto wrap_in_identity_iterator(T* ptr)
-    -> typename std::enable_if<Wrap, identity_iterator<T>>::type
+inline auto wrap_in_identity_iterator(T* ptr) ->
+    typename std::enable_if<Wrap, identity_iterator<T>>::type
 {
     return identity_iterator<T>(ptr);
 }
 
 template<bool Wrap, class T>
-inline
-auto wrap_in_identity_iterator(T* ptr)
-    -> typename std::enable_if<!Wrap, T*>::type
+inline auto wrap_in_identity_iterator(T* ptr) -> typename std::enable_if<!Wrap, T*>::type
 {
     return ptr;
 }
 
-} // end test_utils namespace
+} // namespace test_utils
 
 #endif // TEST_IDENTITY_ITERATOR_HPP_

@@ -178,8 +178,8 @@ namespace rocRoller
                                T_Predicate      edgePredicate);
 
             template <typename T, CForwardRangeOf<int> T_Inputs, CForwardRangeOf<int> T_Outputs>
-            requires(std::constructible_from<Edge, T>) void deleteElement(T_Inputs const&  inputs,
-                                                                          T_Outputs const& outputs);
+                requires(std::constructible_from<Edge, T>)
+            void deleteElement(T_Inputs const& inputs, T_Outputs const& outputs);
 
             size_t getIncidenceSize() const;
             size_t getElementCount() const;
@@ -337,31 +337,29 @@ namespace rocRoller
             std::string toDOT(Predicate edgePredicate = identity) const;
 
             template <typename T>
-            requires(std::constructible_from<Node, T> || std::constructible_from<Edge, T>)
-                Generator<int> getElements()
-            const;
+                requires(std::constructible_from<Node, T> || std::constructible_from<Edge, T>)
+            Generator<int> getElements() const;
 
             /**
              * @brief Yields indices of all Nodes of class T.
              */
             template <typename T = Node>
-            requires(std::constructible_from<Node, T>) Generator<int> getNodes()
-            const;
+                requires(std::constructible_from<Node, T>)
+            Generator<int> getNodes() const;
 
             /**
              * Return all Edges of class T.
              */
             template <typename T = Edge>
-            requires(std::constructible_from<Edge, T>) Generator<int> getEdges()
-            const;
+                requires(std::constructible_from<Edge, T>)
+            Generator<int> getEdges() const;
 
             /**
              * @brief Yields indices of nodes immediately connected to `dst` through Edges of type T, in direction Dir.
              */
             template <typename T, Direction Dir>
-            requires(std::constructible_from<Edge, T>) Generator<int> getConnectedNodeIndices(
-                int const dst)
-            const;
+                requires(std::constructible_from<Edge, T>)
+            Generator<int> getConnectedNodeIndices(int const dst) const;
 
             /**
              * @brief Yields indices of nodes immediately connected to `dst` through Edges that satisfy the edgePredicate, in direction Dir.
@@ -373,9 +371,8 @@ namespace rocRoller
              * @brief Yields indices of nodes that immediately preceed `dst` where the Edges are of type T.
              */
             template <typename T>
-            requires(std::constructible_from<Edge, T>) Generator<int> getInputNodeIndices(
-                int const dst)
-            const;
+                requires(std::constructible_from<Edge, T>)
+            Generator<int> getInputNodeIndices(int const dst) const;
 
             /**
              * @brief Yields indices of nodes that immediately preceed `dst` where the Edges satisfy the edgePredicate.
@@ -389,9 +386,8 @@ namespace rocRoller
              * @brief Yields indices of nodes that immediately follow `src` where the Edges are of type T.
              */
             template <typename T>
-            requires(std::constructible_from<Edge, T>) Generator<int> getOutputNodeIndices(
-                int const src)
-            const;
+                requires(std::constructible_from<Edge, T>)
+            Generator<int> getOutputNodeIndices(int const src) const;
 
             /**
              * @brief Yields indices of nodes that immediately follow `src` where the Edges satisfy the edgePredicate.
@@ -409,9 +405,8 @@ namespace rocRoller
              * @return std::set<int> Set of node ids expanded
              */
             template <typename T>
-            requires(std::constructible_from<Edge, T>) std::set<int> followEdges(
-                std::set<int> const& candidates)
-            const;
+                requires(std::constructible_from<Edge, T>)
+            std::set<int> followEdges(std::set<int> const& candidates) const;
 
             int nextIndex() const;
 

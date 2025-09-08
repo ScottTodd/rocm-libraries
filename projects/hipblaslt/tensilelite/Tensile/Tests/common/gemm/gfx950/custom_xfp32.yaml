@@ -116,4 +116,3 @@ BenchmarkProblems:
         - ProblemSizes:
           - Range: [[17, 235, 1024], [2, 127, 600], [1], [1, 13, 400]]
         - BiasTypeArgs: ['s']
-

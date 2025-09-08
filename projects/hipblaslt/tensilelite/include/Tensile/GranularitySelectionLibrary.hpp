@@ -122,7 +122,8 @@ namespace TensileLite
                     std::cout << std::endl;
                 }
 
-                if((*rv->problemPredicate)(problem) && (*rv->taskPredicate)(task) && (*rv->hardwarePredicate)(hardware))
+                if((*rv->problemPredicate)(problem) && (*rv->taskPredicate)(task)
+                   && (*rv->hardwarePredicate)(hardware))
                 {
                     return rv;
                 }
@@ -251,7 +252,8 @@ namespace TensileLite
                     useSolution = true;
                     if(searchType == SolutionLibrarySearchType::DEFAULT)
                     {
-                        size_t ws = (*row.second).requiredWorkspaceSizeGroupedGemm(problems, hardware);
+                        size_t ws
+                            = (*row.second).requiredWorkspaceSizeGroupedGemm(problems, hardware);
 
                         for(int idx = 0; idx < problems.size(); idx++)
                         {
@@ -259,7 +261,8 @@ namespace TensileLite
                             Task task(hardware, problem, *(row.second));
                             problem.setWorkspaceSizeGroupedGemm(ws);
                             problem.setGroupedGemmCount(problems.size());
-                            if(!(*row.second->problemPredicate)(problem) || !(*row.second->taskPredicate)(task))
+                            if(!(*row.second->problemPredicate)(problem)
+                               || !(*row.second->taskPredicate)(task))
                                 useSolution = false;
                         }
                     }
@@ -275,7 +278,8 @@ namespace TensileLite
                            == static_cast<size_t>(-1))
                         {
                             (*row.second).requiredHostWorkspaceSizePerProblem
-                                = (*row.second).requiredHostSizeGroupedGemmSingle(problems[0],hardware);
+                                = (*row.second)
+                                      .requiredHostSizeGroupedGemmSingle(problems[0], hardware);
                         }
                         rv.insert(row.second);
                     }

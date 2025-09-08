@@ -123,14 +123,15 @@ void thread_load_kernel(Type* volatile const device_input, Type* device_output)
 
 TYPED_TEST(RocprimThreadOperationTests, Load)
 {
-    using T = typename TestFixture::type;
+    using T                              = typename TestFixture::type;
     static constexpr uint32_t block_size = 256;
-    static constexpr uint32_t grid_size = 128;
-    static constexpr uint32_t size = block_size * grid_size;
+    static constexpr uint32_t grid_size  = 128;
+    static constexpr uint32_t size       = block_size * grid_size;
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
@@ -280,9 +281,9 @@ TYPED_TEST(RocprimThreadOperationTests, StoreNontemporal)
 
 struct sum_op
 {
-    template<typename T> ROCPRIM_HOST_DEVICE
-    T
-    operator()(const T& input_1,const T& input_2) const
+    template<typename T>
+    ROCPRIM_HOST_DEVICE
+    T operator()(const T& input_1, const T& input_2) const
     {
         return input_1 + input_2;
     }
@@ -562,13 +563,14 @@ struct CoordinateT
 };
 
 template<class Type, class OffsetT, class BinaryFunction, OffsetT Length>
-__global__ void thread_search_kernel(Type* const    device_input1,
-                                     Type* const    device_input2,
-                                     OffsetT*       device_output_x,
-                                     OffsetT*       device_output_y,
-                                     const OffsetT  input1_size,
-                                     const OffsetT  input2_size,
-                                     BinaryFunction bin_op)
+__global__
+void thread_search_kernel(Type* const    device_input1,
+                          Type* const    device_input2,
+                          OffsetT*       device_output_x,
+                          OffsetT*       device_output_y,
+                          const OffsetT  input1_size,
+                          const OffsetT  input2_size,
+                          BinaryFunction bin_op)
 {
     const OffsetT        flat_id         = ::rocprim::detail::block_thread_id<0>();
     const OffsetT        flat_block_id   = ::rocprim::detail::block_id<0>();

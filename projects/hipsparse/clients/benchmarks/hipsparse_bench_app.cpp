@@ -36,7 +36,7 @@ hipsparse_bench_app_base::hipsparse_bench_app_base(int argc, char** argv)
     , m_bench_cmdlines(argc, argv)
     , m_bench_timing(m_bench_cmdlines.get_nsamples(), m_bench_cmdlines.get_nruns())
 
-          {};
+{};
 
 hipsparseStatus_t hipsparse_bench_app_base::run_case(int isample, int irun, int argc, char** argv)
 {
@@ -433,9 +433,7 @@ hipsparseStatus_t hipsparse_bench_app::define_results_json(std::ostream& out)
     }
     out << "]," << std::endl << std::endl;
     ;
-    out << "\""
-        << "results"
-        << "\": [";
+    out << "\"" << "results" << "\": [";
 
     return HIPSPARSE_STATUS_SUCCESS;
 }

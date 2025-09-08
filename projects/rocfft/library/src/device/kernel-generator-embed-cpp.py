@@ -27,40 +27,41 @@ import re
 
 def filename_to_cpp_ident(filename):
     base = os.path.basename(filename)
-    return base.replace('-', '_').replace('.', '_')
+    return base.replace("-", "_").replace(".", "_")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(
-        description="Write embedded C++ generator file")
-    parser.add_argument('--embed',
-                        metavar='file',
-                        type=str,
-                        nargs='+',
-                        required=True,
-                        help='files to embed into the header')
-    parser.add_argument('--logic',
-                        metavar='file',
-                        type=str,
-                        nargs='+',
-                        required=True,
-                        help='additional files that make up generator logic')
-    parser.add_argument('--output',
-                        metavar='file',
-                        type=str,
-                        required=True,
-                        help='output file')
+    parser = argparse.ArgumentParser(description="Write embedded C++ generator file")
+    parser.add_argument(
+        "--embed",
+        metavar="file",
+        type=str,
+        nargs="+",
+        required=True,
+        help="files to embed into the header",
+    )
+    parser.add_argument(
+        "--logic",
+        metavar="file",
+        type=str,
+        nargs="+",
+        required=True,
+        help="additional files that make up generator logic",
+    )
+    parser.add_argument(
+        "--output", metavar="file", type=str, required=True, help="output file"
+    )
     args = parser.parse_args()
 
     output = args.output
 
-    outfile = open(output, 'w')
+    outfile = open(output, "w")
 
     # regex to filter out #include statements, since those can't work
     # for RTC.  The runtime ensures that all the really important
     # includes are already done for us.
-    include_regex = re.compile(r'''^\s*#include''')
+    include_regex = re.compile(r"""^\s*#include""")
 
     # embed files as strings
     outfile.write("#include <array>\n")
@@ -68,7 +69,7 @@ if __name__ == '__main__':
         ident = filename_to_cpp_ident(input)
         outfile.write(f"const char* {ident} {{\n")
         outfile.write('R"_PY_EMBED_(\n')
-        with open(input, 'r') as f:
+        with open(input, "r") as f:
             for line in f:
                 if include_regex.match(line):
                     continue
@@ -78,9 +79,9 @@ if __name__ == '__main__':
     # hash input files, write sum
     h = hashlib.sha256()
     for input in args.embed + args.logic:
-        with open(input, 'rb') as f:
+        with open(input, "rb") as f:
             h.update(f.read())
-    outfile.write('const std::array<char,32> generator_sum() { return {')
+    outfile.write("const std::array<char,32> generator_sum() { return {")
     for b in h.digest():
         outfile.write("'\\x{:02x}', ".format(b))
-    outfile.write('};}\n')
+    outfile.write("};}\n")

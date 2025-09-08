@@ -182,7 +182,7 @@ void testing_spmm_bad_arg(const Arguments& arg)
     CHECK_DEVICE_ALLOCATION(dC.memcheck());
     CHECK_DEVICE_ALLOCATION(dD.memcheck());
 
-    hipsparseLtHandle_t      handle_;
+    hipsparseLtHandle_t     handle_;
     hipsparseLtMatmulPlan_t plan_;
 
     hipsparselt_local_handle    handle{arg};
@@ -581,7 +581,7 @@ void testing_spmm(const Arguments& arg)
     hipsparselt_local_matmul_alg_selection alg_sel(handle, matmul, HIPSPARSELT_MATMUL_ALG_DEFAULT);
 
     size_t workspace_size = 0, compressed_size = 0, compress_buffer_size = 0;
-    int config_max_id = 0;
+    int    config_max_id = 0;
     hipsparseLtMatmulAlgGetAttribute(
         handle, alg_sel, HIPSPARSELT_MATMUL_ALG_CONFIG_MAX_ID, &config_max_id, sizeof(int));
     {
@@ -619,7 +619,9 @@ void testing_spmm(const Arguments& arg)
     {
         if(arg.solution_index >= config_max_id)
         {
-            hipsparselt_cerr << "The given solution_index(" << arg.solution_index << ") is out of the rang [0, " << config_max_id - 1 << "]" << std::endl;
+            hipsparselt_cerr << "The given solution_index(" << arg.solution_index
+                             << ") is out of the rang [0, " << config_max_id - 1 << "]"
+                             << std::endl;
             return;
         }
         hipsparseLtMatmulAlgSetAttribute(
@@ -875,7 +877,8 @@ void testing_spmm(const Arguments& arg)
                                                hD_gold_act + stride_d * i,
                                                ldd,
                                                tSizeD,
-                                               arg.alpha_vector_scaling ? hAlpahVector : (float*)nullptr,
+                                               arg.alpha_vector_scaling ? hAlpahVector
+                                                                        : (float*)nullptr,
                                                false);
 
                 auto pos = stride_d * i;
@@ -946,7 +949,8 @@ void testing_spmm(const Arguments& arg)
                                            hD_gold + stride_d * i,
                                            ldd,
                                            tSizeD,
-                                           arg.alpha_vector_scaling ? hAlpahVector : (float*)nullptr,
+                                           arg.alpha_vector_scaling ? hAlpahVector
+                                                                    : (float*)nullptr,
                                            false);
         }
 #undef activation_param
@@ -1063,9 +1067,9 @@ void testing_spmm(const Arguments& arg)
         default:
             break;
         }
-#define argument_param_nb                                                                                 \
-    e_sparse_b, e_transA, e_transB, e_M, e_N, e_K, e_alpha, e_lda, e_stride_a, e_beta, e_ldb, e_stride_b, \
-        e_ldc, e_stride_c, e_ldd, e_stride_d
+#define argument_param_nb                                                                     \
+    e_sparse_b, e_transA, e_transB, e_M, e_N, e_K, e_alpha, e_lda, e_stride_a, e_beta, e_ldb, \
+        e_stride_b, e_ldc, e_stride_c, e_ldd, e_stride_d
 #define argument_param argument_param_nb, e_batch_count
 
         if(do_batched || do_strided_batched)
@@ -1535,10 +1539,7 @@ void testing_aux_plan_assign(const Arguments& arg)
     CHECK_HIP_ERROR(hipStreamDestroy(stream));
 }
 
-template <typename Ti,
-          typename To,
-          typename Tc,
-          typename TBias>
+template <typename Ti, typename To, typename Tc, typename TBias>
 void testing_spmm_logging(const Arguments& arg)
 {
     Logger logger(arg.logging);

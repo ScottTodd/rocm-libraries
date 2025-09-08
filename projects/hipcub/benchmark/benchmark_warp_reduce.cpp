@@ -39,8 +39,9 @@ auto warp_reduce_kernel(const T* d_input, T* d_output)
     auto value = d_input[i];
 
     using wreduce_t = hipcub::WarpReduce<T, WarpSize>;
-    __shared__ typename wreduce_t::TempStorage storage;
-    auto                                       reduce_op = hipcub::Sum();
+    __shared__
+    typename wreduce_t::TempStorage storage;
+    auto                            reduce_op = hipcub::Sum();
 #pragma nounroll
     for(unsigned int trial = 0; trial < Trials; trial++)
     {
@@ -67,7 +68,8 @@ auto segmented_warp_reduce_kernel(const T* d_input, Flag* d_flags, T* d_output)
     auto flag  = d_flags[i];
 
     using wreduce_t = hipcub::WarpReduce<T, WarpSize>;
-    __shared__ typename wreduce_t::TempStorage storage;
+    __shared__
+    typename wreduce_t::TempStorage storage;
 #pragma nounroll
     for(unsigned int trial = 0; trial < Trials; trial++)
     {

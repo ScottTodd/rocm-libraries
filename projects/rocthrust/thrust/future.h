@@ -155,16 +155,16 @@ using host_future = host_unique_eager_future<T>;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-using device_unique_eager_event THRUST_DEPRECATED =
-  unique_eager_event_type_detail::select<thrust::system::__THRUST_DEVICE_SYSTEM_NAMESPACE::tag>;
+using device_unique_eager_event
+  THRUST_DEPRECATED = unique_eager_event_type_detail::select<thrust::system::__THRUST_DEVICE_SYSTEM_NAMESPACE::tag>;
 
 using device_event THRUST_DEPRECATED = device_unique_eager_event;
 
 ///////////////////////////////////////////////////////////////////////////////
 
 template <typename T>
-using device_unique_eager_future THRUST_DEPRECATED =
-  unique_eager_future_type_detail::select<thrust::system::__THRUST_DEVICE_SYSTEM_NAMESPACE::tag, T>;
+using device_unique_eager_future
+  THRUST_DEPRECATED = unique_eager_future_type_detail::select<thrust::system::__THRUST_DEVICE_SYSTEM_NAMESPACE::tag, T>;
 
 template <typename T>
 using device_future THRUST_DEPRECATED = device_unique_eager_future<T>;
@@ -178,7 +178,7 @@ struct THRUST_DEPRECATED new_stream_t final
 // when building header tests, we get a deprecation warning from cudafe1.stub.c if we deprecate a global variable
 THRUST_DEPRECATED
 #  endif
-  THRUST_INLINE_CONSTANT new_stream_t new_stream{};
+THRUST_INLINE_CONSTANT new_stream_t new_stream{};
 
 ///////////////////////////////////////////////////////////////////////////////
 

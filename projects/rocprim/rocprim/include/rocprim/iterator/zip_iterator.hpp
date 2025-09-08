@@ -21,8 +21,8 @@
 #ifndef ROCPRIM_ITERATOR_ZIP_ITERATOR_HPP_
 #define ROCPRIM_ITERATOR_ZIP_ITERATOR_HPP_
 
-#include <iterator>
 #include <cstddef>
+#include <iterator>
 #include <type_traits>
 
 #include "../config.hpp"
@@ -58,8 +58,8 @@ struct tuple_of_values<::rocprim::tuple<Types...>>
 struct increment_iterator
 {
     template<class Iterator>
-    ROCPRIM_HOST_DEVICE inline
-    void operator()(Iterator& it)
+    ROCPRIM_HOST_DEVICE
+    inline void operator()(Iterator& it)
     {
         ++it;
     }
@@ -68,8 +68,8 @@ struct increment_iterator
 struct decrement_iterator
 {
     template<class Iterator>
-    ROCPRIM_HOST_DEVICE inline
-    void operator()(Iterator& it)
+    ROCPRIM_HOST_DEVICE
+    inline void operator()(Iterator& it)
     {
         --it;
     }
@@ -78,15 +78,14 @@ struct decrement_iterator
 template<class Difference>
 struct advance_iterator
 {
-    ROCPRIM_HOST_DEVICE inline
-    advance_iterator(Difference distance)
+    ROCPRIM_HOST_DEVICE
+    inline advance_iterator(Difference distance)
         : distance_(distance)
-    {
-    }
+    {}
 
     template<class Iterator>
-    ROCPRIM_HOST_DEVICE inline
-    void operator()(Iterator& it)
+    ROCPRIM_HOST_DEVICE
+    inline void operator()(Iterator& it)
     {
         using it_distance_type = typename std::iterator_traits<Iterator>::difference_type;
         it += static_cast<it_distance_type>(distance_);
@@ -97,24 +96,24 @@ private:
 };
 
 template<class ReferenceTuple, class... Types, size_t... Indices>
-ROCPRIM_HOST_DEVICE inline
-ReferenceTuple dereference_iterator_tuple_impl(const ::rocprim::tuple<Types...>& t,
-                                               ::rocprim::index_sequence<Indices...>)
+ROCPRIM_HOST_DEVICE
+inline ReferenceTuple dereference_iterator_tuple_impl(const ::rocprim::tuple<Types...>& t,
+                                                      ::rocprim::index_sequence<Indices...>)
 {
-    ReferenceTuple rt { *::rocprim::get<Indices>(t)... };
+    ReferenceTuple rt{*::rocprim::get<Indices>(t)...};
     return rt;
 }
 
 template<class ReferenceTuple, class... Types>
-ROCPRIM_HOST_DEVICE inline
-ReferenceTuple dereference_iterator_tuple(const ::rocprim::tuple<Types...>& t)
+ROCPRIM_HOST_DEVICE
+inline ReferenceTuple dereference_iterator_tuple(const ::rocprim::tuple<Types...>& t)
 {
     return dereference_iterator_tuple_impl<ReferenceTuple>(
-        t, ::rocprim::index_sequence_for<Types...>()
-    );
+        t,
+        ::rocprim::index_sequence_for<Types...>());
 }
 
-} // end detail namespace
+} // namespace detail
 
 /// \class zip_iterator
 /// \brief TBD
@@ -141,56 +140,55 @@ public:
     /// The difference_type member of zip_iterator is the difference_type of
     /// the first of the iterator types in the IteratorTuple argument.
     using difference_type = typename std::iterator_traits<
-        typename ::rocprim::tuple_element<0, IteratorTuple>::type
-    >::difference_type;
+        typename ::rocprim::tuple_element<0, IteratorTuple>::type>::difference_type;
     /// The category of the iterator.
     using iterator_category = std::random_access_iterator_tag;
 
-    ROCPRIM_HOST_DEVICE inline
-    ~zip_iterator() = default;
+    ROCPRIM_HOST_DEVICE
+    inline ~zip_iterator()
+        = default;
 
     /// \brief Creates a new zip_iterator.
     ///
     /// \param iterator_tuple tuple of iterators
-    ROCPRIM_HOST_DEVICE inline
-    zip_iterator(IteratorTuple iterator_tuple)
+    ROCPRIM_HOST_DEVICE
+    inline zip_iterator(IteratorTuple iterator_tuple)
         : iterator_tuple_(iterator_tuple)
-    {
-    }
+    {}
 
-    #ifndef DOXYGEN_SHOULD_SKIP_THIS
-    ROCPRIM_HOST_DEVICE inline
-    zip_iterator& operator++()
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+    ROCPRIM_HOST_DEVICE
+    inline zip_iterator& operator++()
     {
         detail::for_each_in_tuple(iterator_tuple_, detail::increment_iterator());
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    zip_iterator operator++(int)
+    ROCPRIM_HOST_DEVICE
+    inline zip_iterator operator++(int)
     {
         zip_iterator old = *this;
         ++(*this);
         return old;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    zip_iterator& operator--()
+    ROCPRIM_HOST_DEVICE
+    inline zip_iterator& operator--()
     {
         detail::for_each_in_tuple(iterator_tuple_, detail::decrement_iterator());
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    zip_iterator operator--(int)
+    ROCPRIM_HOST_DEVICE
+    inline zip_iterator operator--(int)
     {
         zip_iterator old = *this;
         --(*this);
         return old;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    reference operator*() const
+    ROCPRIM_HOST_DEVICE
+    inline reference operator*() const
     {
         return detail::dereference_iterator_tuple<reference>(iterator_tuple_);
     }
@@ -198,95 +196,91 @@ public:
     [[deprecated("This operator is no longer supported and will be removed in the next major "
                  "release.")]]
     ROCPRIM_HOST_DEVICE
-    inline pointer
-        operator->() const
+    inline pointer operator->() const
     {
         return &(*(*this));
     }
 
     ROCPRIM_HOST_DEVICE
-    inline reference
-        operator[](difference_type distance) const
+    inline reference operator[](difference_type distance) const
     {
         zip_iterator i = (*this) + distance;
         return *i;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    zip_iterator operator+(difference_type distance) const
+    ROCPRIM_HOST_DEVICE
+    inline zip_iterator operator+(difference_type distance) const
     {
         zip_iterator copy = *this;
         copy += distance;
         return copy;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    zip_iterator& operator+=(difference_type distance)
+    ROCPRIM_HOST_DEVICE
+    inline zip_iterator& operator+=(difference_type distance)
     {
-        detail::for_each_in_tuple(
-            iterator_tuple_,
-            detail::advance_iterator<difference_type>(distance)
-        );
+        detail::for_each_in_tuple(iterator_tuple_,
+                                  detail::advance_iterator<difference_type>(distance));
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    zip_iterator operator-(difference_type distance) const
+    ROCPRIM_HOST_DEVICE
+    inline zip_iterator operator-(difference_type distance) const
     {
         auto copy = *this;
         copy -= distance;
         return copy;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    zip_iterator& operator-=(difference_type distance)
+    ROCPRIM_HOST_DEVICE
+    inline zip_iterator& operator-=(difference_type distance)
     {
         *this += -distance;
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    difference_type operator-(zip_iterator other) const
+    ROCPRIM_HOST_DEVICE
+    inline difference_type operator-(zip_iterator other) const
     {
         return ::rocprim::get<0>(iterator_tuple_) - ::rocprim::get<0>(other.iterator_tuple_);
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    bool operator==(zip_iterator other) const
+    ROCPRIM_HOST_DEVICE
+    inline bool operator==(zip_iterator other) const
     {
         return iterator_tuple_ == other.iterator_tuple_;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    bool operator!=(zip_iterator other) const
+    ROCPRIM_HOST_DEVICE
+    inline bool operator!=(zip_iterator other) const
     {
         return !(*this == other);
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    bool operator<(zip_iterator other) const
+    ROCPRIM_HOST_DEVICE
+    inline bool operator<(zip_iterator other) const
     {
         return ::rocprim::get<0>(iterator_tuple_) < ::rocprim::get<0>(other.iterator_tuple_);
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    bool operator<=(zip_iterator other) const
+    ROCPRIM_HOST_DEVICE
+    inline bool operator<=(zip_iterator other) const
     {
         return !(other < *this);
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    bool operator>(zip_iterator other) const
+    ROCPRIM_HOST_DEVICE
+    inline bool operator>(zip_iterator other) const
     {
         return other < *this;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-    bool operator>=(zip_iterator other) const
+    ROCPRIM_HOST_DEVICE
+    inline bool operator>=(zip_iterator other) const
     {
         return !(*this < other);
     }
-    #endif // DOXYGEN_SHOULD_SKIP_THIS
+#endif // DOXYGEN_SHOULD_SKIP_THIS
 
 private:
     IteratorTuple iterator_tuple_;
@@ -294,10 +288,10 @@ private:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 template<class IteratorTuple>
-ROCPRIM_HOST_DEVICE inline
-zip_iterator<IteratorTuple>
-operator+(typename zip_iterator<IteratorTuple>::difference_type distance,
-          const zip_iterator<IteratorTuple>& iterator)
+ROCPRIM_HOST_DEVICE
+inline zip_iterator<IteratorTuple>
+    operator+(typename zip_iterator<IteratorTuple>::difference_type distance,
+              const zip_iterator<IteratorTuple>&                    iterator)
 {
     return iterator + distance;
 }
@@ -311,9 +305,8 @@ operator+(typename zip_iterator<IteratorTuple>::difference_type distance,
 /// \param iterator_tuple tuple of iterators to use
 /// \return A new zip_iterator object
 template<class IteratorTuple>
-ROCPRIM_HOST_DEVICE inline
-zip_iterator<IteratorTuple>
-make_zip_iterator(IteratorTuple iterator_tuple)
+ROCPRIM_HOST_DEVICE
+inline zip_iterator<IteratorTuple> make_zip_iterator(IteratorTuple iterator_tuple)
 {
     return zip_iterator<IteratorTuple>(iterator_tuple);
 }

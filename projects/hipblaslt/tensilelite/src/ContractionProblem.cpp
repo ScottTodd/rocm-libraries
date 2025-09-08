@@ -937,11 +937,11 @@ namespace TensileLite
             }
             m_tensors[ContractionProblemGemm::TENSOR::COMPRESSED]
                 = TensorDescriptor("compressed",
-                                    m_sparse != 2 ? aTensor.dataType() : bTensor.dataType(),
-                                    compressed_sizes.begin(),
-                                    compressed_sizes.end(),
-                                    compressed_strides.begin(),
-                                    compressed_strides.end());
+                                   m_sparse != 2 ? aTensor.dataType() : bTensor.dataType(),
+                                   compressed_sizes.begin(),
+                                   compressed_sizes.end(),
+                                   compressed_strides.begin(),
+                                   compressed_strides.end());
 
             m_tensors[ContractionProblemGemm::TENSOR::METADATA]
                 = TensorDescriptor("metadata",
@@ -963,7 +963,8 @@ namespace TensileLite
                 if(!isBatch)
                     m_allocatedElementsNonBatchCompressed
                         += m_tensors[ContractionProblemGemm::TENSOR::COMPRESSED].strides()[idx]
-                           * (m_tensors[ContractionProblemGemm::TENSOR::COMPRESSED].sizes()[idx] - 1);
+                           * (m_tensors[ContractionProblemGemm::TENSOR::COMPRESSED].sizes()[idx]
+                              - 1);
             }
         }
         else

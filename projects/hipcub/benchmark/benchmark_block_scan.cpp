@@ -34,7 +34,8 @@ template<class Runner,
          unsigned int BlockSize,
          unsigned int ItemsPerThread,
          unsigned int Trials>
-__global__ __launch_bounds__(BlockSize) void kernel(const T* input, T* output, const T init)
+__global__ __launch_bounds__(BlockSize)
+void kernel(const T* input, T* output, const T init)
 {
     Runner::template run<T, BlockSize, ItemsPerThread, Trials>(input, output, init);
 }
@@ -43,7 +44,8 @@ template<hipcub::BlockScanAlgorithm Algorithm>
 struct inclusive_scan
 {
     template<class T, unsigned int BlockSize, unsigned int ItemsPerThread, unsigned int Trials>
-    __device__ static void run(const T* input, T* output, const T init)
+    __device__
+    static void run(const T* input, T* output, const T init)
     {
         (void)init;
         const unsigned int i = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
@@ -55,7 +57,8 @@ struct inclusive_scan
         }
 
         using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-        __shared__ typename bscan_t::TempStorage storage;
+        __shared__
+        typename bscan_t::TempStorage storage;
 
 #pragma nounroll
         for(unsigned int trial = 0; trial < Trials; trial++)
@@ -74,7 +77,8 @@ template<hipcub::BlockScanAlgorithm Algorithm>
 struct exclusive_scan
 {
     template<class T, unsigned int BlockSize, unsigned int ItemsPerThread, unsigned int Trials>
-    __device__ static void run(const T* input, T* output, const T init)
+    __device__
+    static void run(const T* input, T* output, const T init)
     {
         const unsigned int i = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
 
@@ -85,7 +89,8 @@ struct exclusive_scan
         }
 
         using bscan_t = hipcub::BlockScan<T, BlockSize, Algorithm>;
-        __shared__ typename bscan_t::TempStorage storage;
+        __shared__
+        typename bscan_t::TempStorage storage;
 
 #pragma nounroll
         for(unsigned int trial = 0; trial < Trials; trial++)

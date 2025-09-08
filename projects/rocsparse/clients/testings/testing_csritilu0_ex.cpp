@@ -241,7 +241,7 @@ struct csritilu0_params_t
         , maxiter(maxiter_)
         , tol(tol_)
         , datatype(rocsparse_datatype_t::get<T>())
-        , nfreeiter(nfreeiter_){};
+        , nfreeiter(nfreeiter_) {};
 };
 
 template <typename T>

@@ -41,39 +41,49 @@ struct custom_float_type
 
     // Constructor for the data generation utilities, simply ignore the second number
     ROCPRIM_HOST_DEVICE
-    custom_float_type(float val, float /*ignored*/) : x{val} {}
+    custom_float_type(float val, float /*ignored*/)
+        : x{val}
+    {}
 
     ROCPRIM_HOST_DEVICE
-    custom_float_type(float val) : x{val} {}
+    custom_float_type(float val)
+        : x{val}
+    {}
 
     custom_float_type() = default;
 
-    ROCPRIM_HOST_DEVICE custom_float_type operator+(const custom_float_type& other) const
+    ROCPRIM_HOST_DEVICE
+    custom_float_type operator+(const custom_float_type& other) const
     {
         return custom_float_type(x + other.x);
     }
 
-    ROCPRIM_HOST_DEVICE custom_float_type operator-(const custom_float_type& other) const
+    ROCPRIM_HOST_DEVICE
+    custom_float_type operator-(const custom_float_type& other) const
     {
         return custom_float_type(x - other.x);
     }
 
-    ROCPRIM_HOST_DEVICE bool operator<(const custom_float_type& other) const
+    ROCPRIM_HOST_DEVICE
+    bool operator<(const custom_float_type& other) const
     {
         return x < other.x;
     }
 
-    ROCPRIM_HOST_DEVICE bool operator>(const custom_float_type& other) const
+    ROCPRIM_HOST_DEVICE
+    bool operator>(const custom_float_type& other) const
     {
         return x > other.x;
     }
 
-    ROCPRIM_HOST_DEVICE bool operator==(const custom_float_type& other) const
+    ROCPRIM_HOST_DEVICE
+    bool operator==(const custom_float_type& other) const
     {
         return x == other.x;
     }
 
-    ROCPRIM_HOST_DEVICE bool operator!=(const custom_float_type& other) const
+    ROCPRIM_HOST_DEVICE
+    bool operator!=(const custom_float_type& other) const
     {
         return !(*this == other);
     }

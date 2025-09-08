@@ -154,10 +154,9 @@ namespace
     };
 
     template <typename T>
-    struct geru_testing<
-        T,
-        std::enable_if_t<(
-            std::is_same_v<T, std::complex<float>> || std::is_same_v<T, std::complex<double>>)>>
+    struct geru_testing<T,
+                        std::enable_if_t<(std::is_same_v<T, std::complex<float>>
+                                          || std::is_same_v<T, std::complex<double>>)>>
         : hipblas_test_valid
     {
         void operator()(const Arguments& arg)
@@ -185,10 +184,9 @@ namespace
     };
 
     template <typename T>
-    struct gerc_testing<
-        T,
-        std::enable_if_t<(
-            std::is_same_v<T, std::complex<float>> || std::is_same_v<T, std::complex<double>>)>>
+    struct gerc_testing<T,
+                        std::enable_if_t<(std::is_same_v<T, std::complex<float>>
+                                          || std::is_same_v<T, std::complex<double>>)>>
         : hipblas_test_valid
     {
         void operator()(const Arguments& arg)

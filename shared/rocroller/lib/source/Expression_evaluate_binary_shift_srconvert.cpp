@@ -51,8 +51,8 @@ namespace rocRoller::Expression::EvaluateDetail
         using ResultType = typename EnumTypeInfo<T_DataType>::Type;
 
         template <CArithmeticType T>
-        requires CCanStaticCastTo<ResultType, T> ResultType evaluate(T const& arg)
-        const
+            requires CCanStaticCastTo<ResultType, T>
+        ResultType evaluate(T const& arg) const
         {
             return static_cast<ResultType>(arg);
         }

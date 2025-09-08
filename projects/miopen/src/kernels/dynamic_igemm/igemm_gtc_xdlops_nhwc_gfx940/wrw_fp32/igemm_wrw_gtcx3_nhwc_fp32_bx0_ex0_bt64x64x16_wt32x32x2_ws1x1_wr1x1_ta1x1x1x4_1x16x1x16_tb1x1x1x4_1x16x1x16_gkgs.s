@@ -50,11 +50,11 @@
 ; nxe                        : 0
 ; gemm_k_global_split        : 1
 ; vector_c                   : 1
-; 
+;
 ; block_size                 : 256
 ; lds_total                  : 8192
 ; lds_buffer_num             : 1
-; 
+;
 .set k_p_in, 0
 .set k_p_wei, 8
 .set k_p_out, 16
@@ -294,8 +294,8 @@ igemm_wrw_gtcx3_nhwc_fp32_bx0_ex0_bt64x64x16_wt32x32x2_ws1x1_wr1x1_ta1x1x1x4_1x1
 
     v_mov_b32 v[v_tmp+5], v0
     ; xdlops mapping, get source matrix gemm index, k_pack:1, v_pack:1, k_pack_per_thread:1
-    v_and_b32 v[v_gemm_in], 31, v[v_tmp+5]           ; block_n index 
-    v_and_b32 v[v_gemm_im], 31, v[v_tmp+5]           ; block_m index 
+    v_and_b32 v[v_gemm_in], 31, v[v_tmp+5]           ; block_n index
+    v_and_b32 v[v_gemm_im], 31, v[v_tmp+5]           ; block_m index
     v_lshrrev_b32 v[v_tmp+5], 5, v[v_tmp+5]
     v_and_b32 v[v_tmp + 0], 1, v[v_tmp+5]          ; block_k_per_wave index
     v_lshl_or_b32 v[v_gemm_in], v[v_tmp + 0], 6, v[v_gemm_in]
@@ -400,10 +400,10 @@ igemm_wrw_gtcx3_nhwc_fp32_bx0_ex0_bt64x64x16_wt32x32x2_ws1x1_wr1x1_ta1x1x1x4_1x1
 
     ; start MFMA loop, 32x32 wave tile with 1x1 repeat, 1x1 step, k_pack:1
     s_waitcnt vmcnt(1)
-    ds_write_b128 v[v_sst_b_os], v[v_gld_b+0:v_gld_b+0+3] 
+    ds_write_b128 v[v_sst_b_os], v[v_gld_b+0:v_gld_b+0+3]
 
     s_waitcnt vmcnt(0)
-    ds_write_b128 v[v_sst_a_os], v[v_gld_a+0:v_gld_a+0+3] 
+    ds_write_b128 v[v_sst_a_os], v[v_gld_a+0:v_gld_a+0+3]
 
     .v_clear_nc a_c, 16
     ; make sure acc WAR harzard, at least 1 nop for src_c
@@ -443,15 +443,15 @@ L_igemm_wrw_gtcx3_nhwc_fp32_bx0_ex0_bt64x64x16_wt32x32x2_ws1x1_wr1x1_ta1x1x1x4_1
     ds_read_b32 v[v_b+1], v[v_sld_b_os] offset:2560
     s_waitcnt lgkmcnt(2)
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_a], v[v_b], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, num_a_c:16
-    
+
     ds_read_b32 v[v_a], v[v_sld_a_os] offset:3072
     ds_read_b32 v[v_b], v[v_sld_b_os] offset:3072
     s_waitcnt lgkmcnt(2)
     v_mfma_f32_32x32x2f32 v[a_c+0:a_c+15], v[v_a+1], v[v_b+1], v[a_c+0:a_c+15]     ; repeat:0x0, step:0x0, num_a_c:16
-    
+
     ds_read_b32 v[v_a+1], v[v_sld_a_os] offset:3584
     ds_read_b32 v[v_b+1], v[v_sld_b_os] offset:3584
-    
+
     s_waitcnt lgkmcnt(0)
     s_barrier
     s_waitcnt vmcnt(1)

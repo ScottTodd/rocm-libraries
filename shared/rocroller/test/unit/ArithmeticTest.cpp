@@ -151,7 +151,7 @@ namespace ArithmeticTest
                 auto boolean = (regType == Register::Type::Vector)
                                    ? Register::Value::WavefrontPlaceholder(m_context)
                                    : Register::Value::Placeholder(
-                                       m_context, Register::Type::Scalar, DataType::Bool, 1);
+                                         m_context, Register::Type::Scalar, DataType::Bool, 1);
 
                 co_yield a->allocate();
                 co_yield b->allocate();

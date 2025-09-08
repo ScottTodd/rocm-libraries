@@ -24,6 +24,7 @@
 
 from typing import Set
 
+
 def splitDelimitedString(input: str, delimiters: Set[str]) -> Set[str]:
     """Given the delimiters, split string into a set.
 
@@ -36,6 +37,6 @@ def splitDelimitedString(input: str, delimiters: Set[str]) -> Set[str]:
     """
 
     for delim in delimiters:
-      if delim in input:
-        return set(input.split(delim))
+        if delim in input:
+            return set(input.split(delim))
     return {input}

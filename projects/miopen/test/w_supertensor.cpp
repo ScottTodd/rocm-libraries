@@ -28,7 +28,7 @@
 #include <iterator>
 #include <limits>
 #include <memory>
-//#include <miopen/convolution.hpp>
+// #include <miopen/convolution.hpp>
 #include <miopen/miopen.h>
 #include <miopen/tensor.hpp>
 #include <miopen/handle.hpp>

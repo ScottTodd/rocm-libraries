@@ -123,7 +123,7 @@ struct device_radix_sort_onesweep_benchmark : public benchmark_utils::autotune_i
         common::device_ptr<key_type> d_keys_output(size);
 
         common::device_ptr<void> d_temporary_storage;
-        size_t temporary_storage_bytes = 0;
+        size_t                   temporary_storage_bytes = 0;
 
         bool                 is_result_in_output = true;
         rocprim::empty_type* d_values_ptr        = nullptr;
@@ -207,7 +207,7 @@ struct device_radix_sort_onesweep_benchmark : public benchmark_utils::autotune_i
         common::device_ptr<value_type> d_values_output(size);
 
         common::device_ptr<void> d_temporary_storage;
-        size_t temporary_storage_bytes = 0;
+        size_t                   temporary_storage_bytes = 0;
 
         bool is_result_in_output = true;
         HIP_CHECK((

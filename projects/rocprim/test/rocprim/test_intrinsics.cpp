@@ -63,21 +63,23 @@ bool is_lane_active(const max_lane_mask_type mask, const unsigned int lane)
 // Custom structure
 struct custom_notaligned
 {
-    short  i;
-    double d;
-    float  f;
+    short        i;
+    double       d;
+    float        f;
     unsigned int u;
 
-    ROCPRIM_HOST_DEVICE constexpr custom_notaligned() : i(123), d(1234), f(12345), u(12345){};
+    ROCPRIM_HOST_DEVICE
+    constexpr custom_notaligned()
+        : i(123), d(1234), f(12345), u(12345) {};
 
-    ROCPRIM_HOST_DEVICE constexpr custom_notaligned(short i, double d, float f, unsigned int u)
+    ROCPRIM_HOST_DEVICE
+    constexpr custom_notaligned(short i, double d, float f, unsigned int u)
         : i(i), d(d), f(f), u(u)
     {}
 };
 
 ROCPRIM_HOST_DEVICE
-inline bool
-    operator==(const custom_notaligned& lhs, const custom_notaligned& rhs)
+inline bool operator==(const custom_notaligned& lhs, const custom_notaligned& rhs)
 {
     return lhs.i == rhs.i && lhs.d == rhs.d && lhs.f == rhs.f && lhs.u == rhs.u;
 }
@@ -89,9 +91,12 @@ struct alignas(16) custom_16aligned
     unsigned int u;
     float        f;
 
-    ROCPRIM_HOST_DEVICE constexpr custom_16aligned() : i(123), u(1234), f(12345){};
+    ROCPRIM_HOST_DEVICE
+    constexpr custom_16aligned()
+        : i(123), u(1234), f(12345) {};
 
-    ROCPRIM_HOST_DEVICE constexpr custom_16aligned(int i, unsigned int u, float f)
+    ROCPRIM_HOST_DEVICE
+    constexpr custom_16aligned(int i, unsigned int u, float f)
         : i(i), u(u), f(f)
     {}
 };

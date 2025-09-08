@@ -447,7 +447,7 @@ lds_buf_size = tiles_per_group * 8 * 8 * lds_elem_size
             v_sub_f32 v[t0], v[d3], v[d1] mul:2
             v_sub_f32 v[t1], v[d4], v[d2]
             v_fma_f32 v[t2], -4.0, v[d2], v[d4]
-                
+
             v_fma_f32 v[d1], -4.0, v[d1], v[d3]
             v_sub_f32 v[d2], v[t2], v[d1]
             v_add_f32 v[d1], v[t2], v[d1]
@@ -508,21 +508,21 @@ lds_buf_size = tiles_per_group * 8 * 8 * lds_elem_size
             v_fma_f32 v[d4], v[t4], v[t0], v[d4] //fmac -2.5
             v_fma_f32 v[d5], 4.0, v[d1], v[d5] //fmac
             v_fma_f32 v[d5], v[t7], v[d3], v[d5] //fmac -5
-            
+
             v_fma_f32 v[d0], 0.5, v[d0], neg(v[d5])
             v_fma_f32 v[d6], -0.5, v[d5], v[d6] //fmac
             v_add_f32 v[d3], v[d1], v[t2]
             v_fma_f32 v[d1], 2.0, v[d1], v[t1]
 
             //     0   1    2      3    4      5  6
-            //	 
+            //
             //0  { 2, -4, -2.5,    5,  0.5,   -1, 0 },
             //5  { 0,  4,    0,   -5,    0,    1, 0 },
             //6  { 0, -2,    4,  2.5,   -5, -0.5, 1 }},
-            //   
+            //
             //1  { 0,  2,   -2, -4.5,  0.5,    1, 0 },
             //2  { 0, -2,    6, -3.5, -1.5,    1, 0 },
-            //   
+            //
             //3  { 0,  1, -1.5,   -2,  1.5,    1, 0 },
             //4  { 0, -1,  2.5,    0, -2.5,    1, 0 },
             //
@@ -589,7 +589,7 @@ lds_buf_size = tiles_per_group * 8 * 8 * lds_elem_size
             v_add_f32 v[d0], v[d5], v[d0]
             v_add_f32 v[d0], v[t0], v[d0]
             v_add_f32 v[d0], v[t1], v[d0]
-            
+
             v_fma_f32 v[d1], 0.5, v[d5], v[t2]
             v_fma_f32 v[d1], 2.0, v[t3], v[d1]
 
@@ -737,7 +737,7 @@ lds_buf_size = tiles_per_group * 8 * 8 * lds_elem_size
             v_add_f32 v[d3], v[t3], v[t5]
             v_mul_f32 v[t4], 8.0, v[t4]
             v_add_f32 v[d3], v[t4], v[d3]
-            
+
             v_mul_f32 v[t2], 0.25, v[t2]
             v_add_f32 v[d4], v[t0], v[t2]
             v_fma_f32 v[d4], 4.0, v[t1], v[d4]
@@ -750,7 +750,7 @@ lds_buf_size = tiles_per_group * 8 * 8 * lds_elem_size
             //    0  1  2   3    4    5      6    7
             //0 { 1, 1, 1,  1,   1,   1,     1,   0 },   0 { 1,  t0,   t1,     t2,   0 }
             //1 { 0, 1,-1,  2,  -2,  1/2,  -1/2,  0 },   1 { 0,  t3,  2*t4,   t5/2,  0 }
-            //2 { 0, 1, 1,  4,   4,  1/4,   1/4,  0 },   2 { 0,  t0,  4*t1,   t2/4,  0 }  
+            //2 { 0, 1, 1,  4,   4,  1/4,   1/4,  0 },   2 { 0,  t0,  4*t1,   t2/4,  0 }
             //3 { 0, 1,-1,  8,  -8,  1/8,  -1/8,  0 },   3 { 0,  t3,  8*t4,   t5/8,  0 }
             //4 { 0, 1, 1, 16,  16,  1/16,  1/16, 0 },   4 { 0,  t0, 16*t1,  t2/16,  0 }
             //5 { 0, 1,-1, 32, -32,  1/32, -1/32, 1 }    5 { 0,  t3, 32*t4,  t5/32,  1 }
@@ -784,14 +784,14 @@ lds_buf_size = tiles_per_group * 8 * 8 * lds_elem_size
 
 kernel_begin  %xformx_o_size, %xformy_o_size, %xformx_f_size, %xformy_f_size
 
-    
+
 
     s_load_dwordx16 s[N:dbg_addr+1], s[kernarg:kernarg+1], 0x0
     s_load_dwordx16 s[R:f_H_stride], s[kernarg:kernarg+1], 0x4 * 16
     s_load_dwordx8 s[f_W_stride:f_G_stride], s[kernarg:kernarg+1], 0x4 * 32
     s_load_dword   s[o_G_stride], s[kernarg:kernarg+1], 0x4 * 40
 
-    
+
     // init sync counters and determine wave type (read/write)
     v_mov_b32 v[invalid], 0x80000000
     s_lshl_b32 s[shift_cnt], 1, rw_pipe_shift
@@ -1180,7 +1180,7 @@ r_loop:
             update_sync_target sync_target
         .endif
         send_token s_token
-        
+
 
         // 3rx. lds write
         i = 0
@@ -1253,7 +1253,7 @@ r_loop:
             update_sync_target sync_target
         .endif
         send_token s_token
-        
+
 
         // 3r. lds write
         i = 0
@@ -1293,7 +1293,7 @@ r_loop:
         .endif
         s_add_u32 s[base_tile], s[tiles_step], s[base_tile]
 
-        
+
         // 6r. compute addr for next 8 phases
         .if \phase == 7
             // preserve index data for the next unroll to check OOB columns
@@ -1335,7 +1335,7 @@ s_branch endpgm
 
 
 lab_write_wave:
-    
+
     .if xform_output
         lds_per_phase    = in_tile_height
         stores_per_phase = out_tile_height
@@ -1379,8 +1379,8 @@ w_loop:
             ds_read_b32 v[lds_gpr + i], v[lds_addr + i] offset:0+lds_off
             i = i + 1
         .endr
-        
-        
+
+
         // 3ws. check prologue finished
         s_lshr_b32 s[shift_cnt], s[shift_cnt], 1
         s_cmp_lg_u32 s[shift_cnt], 0
@@ -1406,7 +1406,7 @@ w_loop:
             v_mad_u32_u24 v[n8_pw], 8 * tile_step_x, s[tiles_step], v[n8_pw]
         .endif
 
-        
+
         // 6ws. store
         addr_lane_off = (32*w_pipe_depth - rw_pipe_shift) % w_pipe_depth
         addr_lane = (addr_lane_off + \phase) % w_pipe_depth
@@ -1466,8 +1466,8 @@ w_loop:
             ds_read_b32 v[lds_gpr + i], v[lds_addr + i] offset:0+lds_off
             i = i + 1
         .endr
-        
-        
+
+
         // 3w. check prologue finished
         s_lshr_b32 s[shift_cnt], s[shift_cnt], 1
         s_cmp_lg_u32 s[shift_cnt], 0
@@ -1639,4 +1639,3 @@ amdhsa.kernels:
 .endm
 
 kernel_end %xformx_o_size, %xformy_o_size, %xformx_f_size, %xformy_f_size
-

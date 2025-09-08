@@ -45,7 +45,7 @@ namespace rocRoller
         public:
             WMMAWrite() {}
             WMMAWrite(ContextPtr context)
-                : WaitStateObserver<WMMAWrite>(context){};
+                : WaitStateObserver<WMMAWrite>(context) {};
 
             constexpr static bool required(const GPUArchitectureTarget& target)
             {

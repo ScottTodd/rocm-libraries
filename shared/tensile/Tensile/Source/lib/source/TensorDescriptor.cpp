@@ -101,8 +101,7 @@ namespace Tensile
     {
         std::ostringstream result;
 
-        result << dimensions() << "-tensor<" << dataType() << ">"
-               << "( sizes(";
+        result << dimensions() << "-tensor<" << dataType() << ">" << "( sizes(";
         streamJoin(result, m_sizes, ", ");
 
         result << "), strides(";

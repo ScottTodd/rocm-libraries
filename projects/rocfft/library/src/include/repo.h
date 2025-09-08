@@ -175,7 +175,7 @@ class Repo
 
 public:
     // repo is a singleton, so no copying or assignment
-    Repo(const Repo&) = delete;
+    Repo(const Repo&)            = delete;
     Repo& operator=(const Repo&) = delete;
 
     static Repo& GetRepo()

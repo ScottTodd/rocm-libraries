@@ -154,7 +154,8 @@ public:
     ROCPRIM_DEVICE ROCPRIM_FORCE_INLINE void
         offset(const size_t& flat_id, T input, T& output, int distance)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         offset(flat_id, input, output, distance, storage);
     }
 
@@ -229,7 +230,8 @@ public:
     ROCPRIM_DEVICE ROCPRIM_FORCE_INLINE void
         rotate(const size_t& flat_id, T input, T& output, int distance)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         rotate(flat_id, input, output, distance, storage);
     }
 
@@ -307,7 +309,8 @@ public:
     ROCPRIM_DEVICE ROCPRIM_FORCE_INLINE void
         up(const size_t& flat_id, T (&input)[ItemsPerThread], T (&prev)[ItemsPerThread])
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->up(flat_id, input, prev, storage);
     }
 
@@ -376,7 +379,8 @@ public:
                                                 T (&prev)[ItemsPerThread],
                                                 T& block_suffix)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->up(flat_id, input, prev, block_suffix, storage);
     }
 
@@ -447,7 +451,8 @@ public:
     ROCPRIM_DEVICE ROCPRIM_FORCE_INLINE void
         down(const size_t& flat_id, T (&input)[ItemsPerThread], T (&next)[ItemsPerThread])
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->down(flat_id, input, next, storage);
     }
 
@@ -514,7 +519,8 @@ public:
                                                   T (&next)[ItemsPerThread],
                                                   T& block_prefix)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->down(flat_id, input, next, block_prefix, storage);
     }
 

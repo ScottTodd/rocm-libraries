@@ -43,21 +43,19 @@
 #include <type_traits>
 #include <vector>
 
-template<
-    unsigned int BlockSize,
-    unsigned int ItemsPerThread,
-    unsigned int BinSize,
-    rocprim::block_histogram_algorithm Algorithm,
-    class T,
-    class BinType
->
-__global__
-__launch_bounds__(BlockSize)
+template<unsigned int                       BlockSize,
+         unsigned int                       ItemsPerThread,
+         unsigned int                       BinSize,
+         rocprim::block_histogram_algorithm Algorithm,
+         class T,
+         class BinType>
+__global__ __launch_bounds__(BlockSize)
 void histogram_kernel(T* device_output, BinType* device_output_bin)
 {
-    const unsigned int index = ((blockIdx.x * BlockSize) + threadIdx.x) * ItemsPerThread;
-    unsigned int global_offset = blockIdx.x * BinSize;
-    __shared__ BinType hist[BinSize];
+    const unsigned int index         = ((blockIdx.x * BlockSize) + threadIdx.x) * ItemsPerThread;
+    unsigned int       global_offset = blockIdx.x * BinSize;
+    __shared__
+    BinType            hist[BinSize];
     // load
     T in_out[ItemsPerThread];
     for(unsigned int j = 0; j < ItemsPerThread; j++)
@@ -70,7 +68,7 @@ void histogram_kernel(T* device_output, BinType* device_output_bin)
     rocprim::syncthreads();
 
     ROCPRIM_UNROLL
-    for (unsigned int offset = 0; offset < BinSize; offset += BlockSize)
+    for(unsigned int offset = 0; offset < BinSize; offset += BlockSize)
     {
         if(offset + threadIdx.x < BinSize)
         {
@@ -98,19 +96,18 @@ auto get_safe_maxval(size_t maxval) -> std::enable_if_t<!rocprim::is_floating_po
 }
 
 // Test for histogram
-template<
-    class T,
-    class BinType,
-    unsigned int BlockSize = 256U,
-    unsigned int ItemsPerThread = 1U,
-    rocprim::block_histogram_algorithm Algorithm = rocprim::block_histogram_algorithm::using_atomic
->
+template<class T,
+         class BinType,
+         unsigned int                       BlockSize      = 256U,
+         unsigned int                       ItemsPerThread = 1U,
+         rocprim::block_histogram_algorithm Algorithm
+         = rocprim::block_histogram_algorithm::using_atomic>
 void test_block_histogram_input_arrays()
 {
-    static constexpr auto algorithm = Algorithm;
-    static constexpr size_t block_size = BlockSize;
+    static constexpr auto   algorithm        = Algorithm;
+    static constexpr size_t block_size       = BlockSize;
     static constexpr size_t items_per_thread = ItemsPerThread;
-    static constexpr size_t bin = BlockSize;
+    static constexpr size_t bin              = BlockSize;
 
     // Given block size not supported
     if(block_size > test_utils::get_max_block_size())
@@ -119,9 +116,9 @@ void test_block_histogram_input_arrays()
     }
 
     const size_t items_per_block = block_size * items_per_thread;
-    const size_t size = items_per_block * 37;
-    const size_t bin_sizes = bin * 37;
-    const size_t grid_size = size / items_per_block;
+    const size_t size            = items_per_block * 37;
+    const size_t bin_sizes       = bin * 37;
+    const size_t grid_size       = size / items_per_block;
 
     SCOPED_TRACE(testing::Message() << "with items_per_block = " << items_per_block);
     SCOPED_TRACE(testing::Message() << "with size = " << size);
@@ -129,13 +126,15 @@ void test_block_histogram_input_arrays()
     SCOPED_TRACE(testing::Message() << "with grid_size = " << grid_size);
 
     // TODO: Use assert near for bin_type.
-    if (std::is_same<BinType, ::rocprim::bfloat16>::value) {
+    if(std::is_same<BinType, ::rocprim::bfloat16>::value)
+    {
         GTEST_SKIP() << "Temporary skipped test";
     }
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
         SCOPED_TRACE(testing::Message() << "with ItemsPerThread = " << items_per_thread);
 
@@ -157,7 +156,7 @@ void test_block_histogram_input_arrays()
             for(size_t j = 0; j < items_per_block; j++)
             {
                 auto bin_idx = i * bin;
-                auto idx = i * items_per_block + j;
+                auto idx     = i * items_per_block + j;
                 expected_bin[bin_idx + static_cast<unsigned int>(output[idx])]++;
             }
         }
@@ -186,14 +185,13 @@ void test_block_histogram_input_arrays()
 }
 
 // Static for-loop
-template <
-    unsigned int First,
-    unsigned int Last,
-    class T,
-    class BinType,
-    unsigned int BlockSize = 256U,
-    rocprim::block_histogram_algorithm Algorithm = rocprim::block_histogram_algorithm::using_atomic
->
+template<unsigned int First,
+         unsigned int Last,
+         class T,
+         class BinType,
+         unsigned int                       BlockSize = 256U,
+         rocprim::block_histogram_algorithm Algorithm
+         = rocprim::block_histogram_algorithm::using_atomic>
 struct static_for_input_array
 {
     static void run()
@@ -210,18 +208,14 @@ struct static_for_input_array
     }
 };
 
-template <
-    unsigned int N,
-    class T,
-    class BinType,
-    unsigned int BlockSize,
-    rocprim::block_histogram_algorithm Algorithm
->
+template<unsigned int N,
+         class T,
+         class BinType,
+         unsigned int                       BlockSize,
+         rocprim::block_histogram_algorithm Algorithm>
 struct static_for_input_array<N, N, T, BinType, BlockSize, Algorithm>
 {
-    static void run()
-    {
-    }
+    static void run() {}
 };
 
 #endif // TEST_BLOCK_HISTOGRAM_KERNELS_HPP_

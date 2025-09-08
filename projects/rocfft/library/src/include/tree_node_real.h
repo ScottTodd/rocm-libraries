@@ -198,7 +198,7 @@ protected:
         }
     }
 
-    void SetupGridParam_internal(GridParam& gp) override{};
+    void SetupGridParam_internal(GridParam& gp) override {};
 
 public:
     bool UseOutputLengthForPadding() override
@@ -251,7 +251,7 @@ protected:
 
     size_t GetTwiddleTableLength() override;
     size_t GetTwiddleTableLengthLimit() override;
-    void   SetupGridParam_internal(GridParam& gp) override{};
+    void   SetupGridParam_internal(GridParam& gp) override {};
 
 public:
     bool UseOutputLengthForPadding() override

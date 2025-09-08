@@ -315,9 +315,8 @@ void testing_symm_hemm(const Arguments& arg)
         {
             if(arg.unit_check)
             {
-                if(std::is_same_v<
-                       T,
-                       rocblas_float_complex> || std::is_same_v<T, rocblas_double_complex>)
+                if(std::is_same_v<T, rocblas_float_complex>
+                   || std::is_same_v<T, rocblas_double_complex>)
                 {
                     const double tol = N * sum_error_tolerance<T>;
                     near_check_general<T>(M, N, ldc, hC_gold, hC, tol);
@@ -337,9 +336,8 @@ void testing_symm_hemm(const Arguments& arg)
             CHECK_HIP_ERROR(hC.transfer_from(dC));
             if(arg.unit_check)
             {
-                if(std::is_same_v<
-                       T,
-                       rocblas_float_complex> || std::is_same_v<T, rocblas_double_complex>)
+                if(std::is_same_v<T, rocblas_float_complex>
+                   || std::is_same_v<T, rocblas_double_complex>)
                 {
                     const double tol = N * sum_error_tolerance<T>;
                     near_check_general<T>(M, N, ldc, hC_gold, hC, tol);

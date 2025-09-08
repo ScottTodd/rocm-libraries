@@ -748,7 +748,7 @@ BenchmarkProblems:
       ActivationType: all
       SetConstStrideBias: [[2, 0]]
       #BiasDataTypeList: ['s']
- 
+
     - # BenchmarkProblemSizeGroup - Standard
       InitialSolutionParameters:
       BenchmarkCommonParameters:
@@ -757,7 +757,7 @@ BenchmarkProblems:
       ForkParameters:
         - MatrixInstruction:
           - [16, 16, 16, 1, 1, 1, 1, 4, 1 ]
- 
+
         - PrefetchGlobalRead: [2]
         - PrefetchLocalRead: [1]
         - ClusterLocalRead: [1]

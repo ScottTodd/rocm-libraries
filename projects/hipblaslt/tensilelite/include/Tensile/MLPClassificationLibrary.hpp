@@ -53,7 +53,7 @@ namespace TensileLite
         using ProblemFeatures  = std::vector<std::shared_ptr<MLFeatures::MLFeature<MyProblem>>>;
 
         std::map<int, std::shared_ptr<MySolution>> solutionmap;
-        std::shared_ptr<MLPNet>                   model;
+        std::shared_ptr<MLPNet>                    model;
         SolutionFeatures                           solFeatures;
         ProblemFeatures                            probFeatures;
 
@@ -134,12 +134,12 @@ namespace TensileLite
             auto logits = model->predict(problemkey);
             assert(logits.size() == solutionmap.size());
 
-            std::vector<std::pair<decltype(logits)::value_type,
-                                  std::shared_ptr<MySolution>*>> solution_ranking;
+            std::vector<std::pair<decltype(logits)::value_type, std::shared_ptr<MySolution>*>>
+                solution_ranking;
             solution_ranking.reserve(solutionmap.size());
             for(auto& s : solutionmap)
                 solution_ranking.emplace_back(logits[s.second->libraryLogicIndex],
-                    (std::shared_ptr<MySolution>*)(&s.second));
+                                              (std::shared_ptr<MySolution>*)(&s.second));
 
             SolutionVector<MySolution> rv;
             int numToSort = std::min(numSolutions, int(solution_ranking.size()));

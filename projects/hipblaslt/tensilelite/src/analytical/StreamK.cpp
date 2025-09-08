@@ -73,17 +73,17 @@ namespace TensileLite
             }
 
             std::tuple<double, size_t, size_t> predicted_runtime(size_t BLK_M,
-                size_t BLK_N,
-                size_t BLK_K,
-                size_t m,
-                size_t n,
-                size_t k,
-                size_t batch,
-                int    g,
-                double a,
-                double b,
-                double c,
-                double d)
+                                                                 size_t BLK_N,
+                                                                 size_t BLK_K,
+                                                                 size_t m,
+                                                                 size_t n,
+                                                                 size_t k,
+                                                                 size_t batch,
+                                                                 int    g,
+                                                                 double a,
+                                                                 double b,
+                                                                 double c,
+                                                                 double d)
             {
                 size_t output_tiles   = number_of_output_tiles(BLK_M, BLK_N, m, n, batch);
                 size_t iters_per_tile = num_iters_per_tile(BLK_K, k);
@@ -92,30 +92,30 @@ namespace TensileLite
                 size_t fixup_peers    = num_fixup_peers(iters_per_tile, iters_per_cta);
 
                 double runtime
-                = a + (b * (fixup_peers > 1)) + (c * iters_per_cta) + (d * (fixup_peers - 1));
+                    = a + (b * (fixup_peers > 1)) + (c * iters_per_cta) + (d * (fixup_peers - 1));
 
                 return std::make_tuple(runtime, iters_per_cta, fixup_peers);
             }
 
             std::tuple<double, size_t, size_t, double> predicted_runtime_v2(size_t BLK_M,
-                        size_t BLK_N,
-                        size_t BLK_K,
-                        size_t m,
-                        size_t n,
-                        size_t k,
-                        size_t batch,
-                        int    g,
-                        double a,
-                        double b,
-                        double c,
-                        double d)
+                                                                            size_t BLK_N,
+                                                                            size_t BLK_K,
+                                                                            size_t m,
+                                                                            size_t n,
+                                                                            size_t k,
+                                                                            size_t batch,
+                                                                            int    g,
+                                                                            double a,
+                                                                            double b,
+                                                                            double c,
+                                                                            double d)
             {
                 size_t output_tiles   = number_of_output_tiles(BLK_M, BLK_N, m, n, batch);
                 size_t iters_per_tile = num_iters_per_tile(BLK_K, k);
                 size_t iters_total    = num_iters_total(output_tiles, iters_per_tile);
                 size_t iters_per_cta  = num_iters_per_cta(iters_total, g);
                 size_t fixup_peers
-                = num_fixup_peers_v2(g, iters_total, iters_per_tile, iters_per_cta);
+                    = num_fixup_peers_v2(g, iters_total, iters_per_tile, iters_per_cta);
 
                 size_t remainder_tiles = output_tiles % g;
                 double k_split_ratio   = remainder_tiles / static_cast<double>(g);
@@ -141,15 +141,15 @@ namespace TensileLite
             }
 
             int best_predicted_grid_size(size_t BLK_M,
-                                        size_t BLK_N,
-                                        size_t BLK_K,
-                                        size_t m,
-                                        size_t n,
-                                        size_t k,
-                                        size_t batch,
-                                        int    grid_start,
-                                        int    grid_end,
-                                        bool   verbose = false)
+                                         size_t BLK_N,
+                                         size_t BLK_K,
+                                         size_t m,
+                                         size_t n,
+                                         size_t k,
+                                         size_t batch,
+                                         int    grid_start,
+                                         int    grid_end,
+                                         bool   verbose = false)
             {
 
                 // Fixed overhead alpha (a), fixed-size cost incurred by
@@ -182,28 +182,27 @@ namespace TensileLite
                 for(; g <= static_cast<size_t>(grid_end); ++g)
                 {
                     auto [runtime, iters_per_cta, fixup_peers]
-                    = predicted_runtime(BLK_M, BLK_N, BLK_K, m, n, k, batch, g, a, b, c, d);
+                        = predicted_runtime(BLK_M, BLK_N, BLK_K, m, n, k, batch, g, a, b, c, d);
 
                     auto [runtime_v2, iters_per_cta_v2, fixup_peers_v2, cache_penalty]
-                    = predicted_runtime_v2(BLK_M, BLK_N, BLK_K, m, n, k, batch, g, a, b, c, d);
+                        = predicted_runtime_v2(BLK_M, BLK_N, BLK_K, m, n, k, batch, g, a, b, c, d);
 
                     if(verbose)
                     {
-                        std::cout << "[original] "
-                        << "grid size: " << g << ", runtime: " << runtime
-                        << ", iters_per_cta: " << iters_per_cta << ", fixup_peers: "
-                        << fixup_peers
-                        // << ", cache_penalty: " << cache_penalty
-                        << ", m: " << m << ", n: " << n << ", k: " << k << ", a: " << a
-                        << ", b: " << b << ", c: " << c << ", d: " << d << std::endl;
+                        std::cout << "[original] " << "grid size: " << g << ", runtime: " << runtime
+                                  << ", iters_per_cta: " << iters_per_cta << ", fixup_peers: "
+                                  << fixup_peers
+                                  // << ", cache_penalty: " << cache_penalty
+                                  << ", m: " << m << ", n: " << n << ", k: " << k << ", a: " << a
+                                  << ", b: " << b << ", c: " << c << ", d: " << d << std::endl;
 
-                        std::cout << "[cache-offset] "
-                        << "grid size: " << g << ", runtime: " << runtime_v2
-                        << ", iters_per_cta: " << iters_per_cta_v2
-                        << ", fixup_peers: " << fixup_peers_v2
-                        << ", cache_penalty: " << cache_penalty << ", m: " << m
-                        << ", n: " << n << ", k: " << k << ", a: " << a << ", b: " << b
-                        << ", c: " << c << ", d: " << d << std::endl;
+                        std::cout << "[cache-offset] " << "grid size: " << g
+                                  << ", runtime: " << runtime_v2
+                                  << ", iters_per_cta: " << iters_per_cta_v2
+                                  << ", fixup_peers: " << fixup_peers_v2
+                                  << ", cache_penalty: " << cache_penalty << ", m: " << m
+                                  << ", n: " << n << ", k: " << k << ", a: " << a << ", b: " << b
+                                  << ", c: " << c << ", d: " << d << std::endl;
                     }
 
                     if(min_grid_runtime.second > runtime)
@@ -222,45 +221,44 @@ namespace TensileLite
                 if(verbose)
                 {
                     std::cout << "[original] Number of Output Tiles: "
-                    << number_of_output_tiles(BLK_M, BLK_N, m, n, batch) << std::endl;
+                              << number_of_output_tiles(BLK_M, BLK_N, m, n, batch) << std::endl;
                     std::cout << "[original] Minimum runtime: " << min_grid_runtime.second
-                    << " @ grid size: " << min_grid_runtime.first << std::endl;
+                              << " @ grid size: " << min_grid_runtime.first << std::endl;
 
                     std::cout << "[cache-offset] Number of Output Tiles: "
-                    << number_of_output_tiles(BLK_M, BLK_N, m, n, batch) << std::endl;
+                              << number_of_output_tiles(BLK_M, BLK_N, m, n, batch) << std::endl;
                     std::cout << "[cache-offset] Minimum runtime: " << min_grid_runtime_v2.second
-                    << " @ grid size: " << min_grid_runtime_v2.first << std::endl;
+                              << " @ grid size: " << min_grid_runtime_v2.first << std::endl;
                 }
 
                 return min_grid_runtime_v2.first;
             }
 
-            size_t select_streamk_grid(
-                size_t x,
-                size_t y,
-                size_t z,
-                size_t batch,
-                bool            trans_a,
-                bool            trans_b,
-                size_t          element_size_A,
-                size_t          element_size_B,
-                size_t          element_size_out,
-                DataType        mi_datatype,
-                size_t          workspace_size,
-                size_t          mt_m,
-                size_t          mt_n,
-                size_t          mt_k,
-                size_t          mi_m,
-                size_t          mi_n,
-                size_t          mi_k,
-                size_t          workgroup_mapping,
-                size_t          workspace_size_per_elem_c,
-                int             occupancy,
-                const Hardware& analytical_hardware,
-                int dynamic_grid_version)
+            size_t select_streamk_grid(size_t          x,
+                                       size_t          y,
+                                       size_t          z,
+                                       size_t          batch,
+                                       bool            trans_a,
+                                       bool            trans_b,
+                                       size_t          element_size_A,
+                                       size_t          element_size_B,
+                                       size_t          element_size_out,
+                                       DataType        mi_datatype,
+                                       size_t          workspace_size,
+                                       size_t          mt_m,
+                                       size_t          mt_n,
+                                       size_t          mt_k,
+                                       size_t          mi_m,
+                                       size_t          mi_n,
+                                       size_t          mi_k,
+                                       size_t          workgroup_mapping,
+                                       size_t          workspace_size_per_elem_c,
+                                       int             occupancy,
+                                       const Hardware& analytical_hardware,
+                                       int             dynamic_grid_version)
             {
                 size_t cu_count = analytical_hardware.N_CU;
-                size_t tiles = number_of_output_tiles(mt_m, mt_n, x, y, batch);
+                size_t tiles    = number_of_output_tiles(mt_m, mt_n, x, y, batch);
 
                 // Dynamically pick the minimum between the cu_count or number of tiles.
                 if(dynamic_grid_version == 1)
@@ -283,7 +281,7 @@ namespace TensileLite
                             if(utilization > 0.75f)
                             {
                                 if(utilization < 1.0f)
-                                sk_grid = reducedGrid;
+                                    sk_grid = reducedGrid;
                                 break;
                             }
                         }
@@ -297,69 +295,63 @@ namespace TensileLite
                 // Architecture dependent.
                 else if(dynamic_grid_version == 3)
                 {
-                    return analytical::streamk::best_predicted_grid_size(mt_m,
-                                            mt_n,
-                                            mt_k,
-                                            x,
-                                            y,
-                                            z,
-                                            batch,
-                                            1,
-                                            cu_count);
+                    return analytical::streamk::best_predicted_grid_size(
+                        mt_m, mt_n, mt_k, x, y, z, batch, 1, cu_count);
                 }
                 // Fix Stream-K algorithm to function like a Data-parallel schedule
                 // where grid size is equal to the number of output tiles.
                 else if(dynamic_grid_version == 4)
                 {
-                    return analytical::streamk::number_of_output_tiles(
-                    mt_m, mt_n, x, y, batch);
+                    return analytical::streamk::number_of_output_tiles(mt_m, mt_n, x, y, batch);
                 }
                 else if(dynamic_grid_version == 5)
                 {
                     return analytical::select_best_grid_size(x,
-                                y,
-                                z,
-                                batch,
-                                trans_a,
-                                trans_b,
-                                analytical_hardware,
-                                mt_m,
-                                mt_n,
-                                mt_k,
-                                mi_m,
-                                mi_n,
-                                mi_k,
-                                element_size_A,
-                                element_size_B,
-                                element_size_out,
-                                mi_datatype,
-                                0,
-                                0.0,
-                                false,
-                                workgroup_mapping,
-                                10);
+                                                             y,
+                                                             z,
+                                                             batch,
+                                                             trans_a,
+                                                             trans_b,
+                                                             analytical_hardware,
+                                                             mt_m,
+                                                             mt_n,
+                                                             mt_k,
+                                                             mi_m,
+                                                             mi_n,
+                                                             mi_k,
+                                                             element_size_A,
+                                                             element_size_B,
+                                                             element_size_out,
+                                                             mi_datatype,
+                                                             0,
+                                                             0.0,
+                                                             false,
+                                                             workgroup_mapping,
+                                                             10);
                 }
                 else if(dynamic_grid_version == 6)
                 {
                     size_t iters_per_tile = std::max(size_t(1), math::safe_ceil_div(z, mt_k));
-                    size_t sk_grid = tiles; // Fallback if no good fractional tile is found
-                    size_t tile_size = mt_m * mt_n * workspace_size_per_elem_c;
+                    size_t sk_grid        = tiles; // Fallback if no good fractional tile is found
+                    size_t tile_size      = mt_m * mt_n * workspace_size_per_elem_c;
                     // More tiles than CUs
                     // Distribute tiles evenly across maximum number of CUs
                     // Split remaining tiles as evenly as possible for better caching
                     if(tiles > cu_count)
                     {
                         size_t virt_cu_count = cu_count;
-                        if (occupancy > 1)
+                        if(occupancy > 1)
                             virt_cu_count *= occupancy;
 
-                        const std::vector<double> tile_fractions = {0.0, 1.0/2.0, 1.0/8.0, 1.0/5.0, 1.0/4.0, 1.0/3.0};
+                        const std::vector<double> tile_fractions
+                            = {0.0, 1.0 / 2.0, 1.0 / 8.0, 1.0 / 5.0, 1.0 / 4.0, 1.0 / 3.0};
                         size_t min_even_tiles = tiles / virt_cu_count;
-                        for(double frac: tile_fractions)
+                        for(double frac : tile_fractions)
                         {
                             size_t frac_grid = (size_t)((tiles / (min_even_tiles + frac)) + 0.5);
                             // Check if higher occupancy would cause excessive workspace requirements (set current limit to 128MB)
-                            if((tiles % frac_grid != 0) && (tile_size * frac_grid > 128*1024*1024))
+                            if((tiles % frac_grid != 0)
+                               && (tile_size * frac_grid > 128 * 1024 * 1024))
                                 continue;
                             if(frac_grid <= virt_cu_count)
                             {
@@ -372,12 +364,12 @@ namespace TensileLite
                     // Split tiles evenly in k-dimension
                     // Attempt to maximize CU utilization, up to a peak number of splits
                     // Max splitting is currently constant, but should be dependant on K dimension
-                    else if (tiles < cu_count)
+                    else if(tiles < cu_count)
                     {
                         const std::vector<size_t> tile_fractions = {16, 12, 8, 6, 4, 3, 2, 1};
-                        for(size_t frac: tile_fractions)
+                        for(size_t frac : tile_fractions)
                         {
-                            size_t splitGrid = tiles * frac;
+                            size_t splitGrid  = tiles * frac;
                             size_t itersPerCU = iters_per_tile / frac;
                             if(splitGrid <= cu_count && itersPerCU >= 8)
                             {
@@ -387,7 +379,7 @@ namespace TensileLite
                         }
                     }
 
-                    if (tiles % sk_grid != 0 && tile_size * sk_grid > workspace_size)
+                    if(tiles % sk_grid != 0 && tile_size * sk_grid > workspace_size)
                         sk_grid = tiles;
                     return sk_grid;
                 }

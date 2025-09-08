@@ -47,7 +47,7 @@ namespace TensileLite
                                        size_t, // MI_M
                                        size_t, // MI_N
                                        size_t, // MI_K
-                                       size_t  // Occupancy
+                                       size_t // Occupancy
                                        >;
 
         using TileTuple = std::tuple<size_t, // MT_M
@@ -56,7 +56,7 @@ namespace TensileLite
                                      size_t, // MI_M
                                      size_t, // MI_N
                                      size_t, // MI_K
-                                     size_t  // Occupancy
+                                     size_t // Occupancy
                                      >;
 
         size_t select_best_grid_size(size_t          M,
@@ -90,15 +90,15 @@ namespace TensileLite
                                                              bool                          transB,
                                                              const Hardware&               hardware,
                                                              const std::vector<TileTuple>& MT_list,
-                                                             size_t element_size_A,
-                                                             size_t element_size_B,
-                                                             size_t element_size_out,
+                                                             size_t   element_size_A,
+                                                             size_t   element_size_B,
+                                                             size_t   element_size_out,
                                                              DataType miDataType,
-                                                             size_t mx_block_size,
-                                                             double H_L2,
-                                                             bool   debug,
-                                                             bool   print,
-                                                             size_t WGM);
+                                                             size_t   mx_block_size,
+                                                             double   H_L2,
+                                                             bool     debug,
+                                                             bool     print,
+                                                             size_t   WGM);
 
         std::vector<ResultTuple> sweep_macro_tile_sizes(size_t    M,
                                                         size_t    N,

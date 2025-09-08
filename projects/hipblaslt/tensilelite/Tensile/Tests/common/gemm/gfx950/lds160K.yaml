@@ -52,7 +52,7 @@ BenchmarkProblems:
       TransposeB: 0
       UseBeta: True
       Batched: True
-    
+
       #UseBias: True
       #Activation: True
       #UseScaleAlphaVec: True

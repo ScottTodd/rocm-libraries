@@ -58,7 +58,7 @@ namespace rocRoller
     class TimerPool
     {
     public:
-        TimerPool(TimerPool const&) = delete;
+        TimerPool(TimerPool const&)      = delete;
         void operator=(TimerPool const&) = delete;
 
         static TimerPool& getInstance();

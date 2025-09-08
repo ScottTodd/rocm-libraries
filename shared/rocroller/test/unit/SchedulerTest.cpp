@@ -361,10 +361,10 @@ namespace rocRollerTest
         std::vector<Generator<Instruction>> sequences;
 
         auto noUnlock = [&]() -> Generator<Instruction> {
-            co_yield(Instruction::Lock(Scheduling::Dependency::SCC));
-            co_yield(Instruction::Unlock());
-            co_yield(Inst("Test"));
-            co_yield(Instruction::Unlock());
+            co_yield (Instruction::Lock(Scheduling::Dependency::SCC));
+            co_yield (Instruction::Unlock());
+            co_yield (Inst("Test"));
+            co_yield (Instruction::Unlock());
         };
 
         sequences.push_back(noUnlock());
@@ -380,8 +380,8 @@ namespace rocRollerTest
         std::vector<Generator<Instruction>> sequences;
 
         auto noUnlock = [&]() -> Generator<Instruction> {
-            co_yield(Instruction::Lock(Scheduling::Dependency::SCC));
-            co_yield(Inst("Test"));
+            co_yield (Instruction::Lock(Scheduling::Dependency::SCC));
+            co_yield (Inst("Test"));
         };
 
         sequences.push_back(noUnlock());
@@ -403,9 +403,9 @@ namespace rocRollerTest
         std::vector<Generator<Instruction>> c_sequences;
 
         auto opB = [&]() -> Generator<Instruction> {
-            co_yield(Inst("(C) Op B Begin"));
-            co_yield(Inst("(C) Op B Instruction"));
-            co_yield(Inst("(C) Op B End"));
+            co_yield (Inst("(C) Op B Begin"));
+            co_yield (Inst("(C) Op B Instruction"));
+            co_yield (Inst("(C) Op B End"));
         };
 
         auto ifBlock = [&]() -> Generator<Instruction> {
@@ -413,32 +413,32 @@ namespace rocRollerTest
             EXPECT_EQ(schedulerB->getLockState().getTopDependency(0), Scheduling::Dependency::VCC);
             EXPECT_EQ(schedulerC->getLockState().getTopDependency(1), Scheduling::Dependency::None);
 
-            co_yield(
+            co_yield (
                 Inst("(C) If Begin").lock(Scheduling::Dependency::SCC, "(C) Scheduler C Lock"));
 
             EXPECT_EQ(schedulerA->getLockState().getTopDependency(1), Scheduling::Dependency::SCC);
             EXPECT_EQ(schedulerB->getLockState().getTopDependency(0), Scheduling::Dependency::SCC);
             EXPECT_EQ(schedulerC->getLockState().getTopDependency(1), Scheduling::Dependency::SCC);
 
-            co_yield(Inst("+++ Scheduler A Stream 1 Lock Depth: "
-                          + std::to_string(schedulerA->getLockState().getLockDepth(1))));
-            co_yield(Inst("+++ Scheduler B Stream 0 Lock Depth: "
-                          + std::to_string(schedulerB->getLockState().getLockDepth(0))));
-            co_yield(Inst("+++ Scheduler C Stream 1 Lock Depth: "
-                          + std::to_string(schedulerC->getLockState().getLockDepth(1))));
-            co_yield(Inst("(C) If Instruction"));
-            co_yield(Inst("(C) If End").unlock("(C) Scheduler C Unlock"));
+            co_yield (Inst("+++ Scheduler A Stream 1 Lock Depth: "
+                           + std::to_string(schedulerA->getLockState().getLockDepth(1))));
+            co_yield (Inst("+++ Scheduler B Stream 0 Lock Depth: "
+                           + std::to_string(schedulerB->getLockState().getLockDepth(0))));
+            co_yield (Inst("+++ Scheduler C Stream 1 Lock Depth: "
+                           + std::to_string(schedulerC->getLockState().getLockDepth(1))));
+            co_yield (Inst("(C) If Instruction"));
+            co_yield (Inst("(C) If End").unlock("(C) Scheduler C Unlock"));
 
             EXPECT_EQ(schedulerA->getLockState().getTopDependency(1), Scheduling::Dependency::VCC);
             EXPECT_EQ(schedulerB->getLockState().getTopDependency(0), Scheduling::Dependency::VCC);
             EXPECT_EQ(schedulerC->getLockState().getTopDependency(1), Scheduling::Dependency::None);
 
-            co_yield(Inst("+++ Scheduler A Stream 1 Lock Depth: "
-                          + std::to_string(schedulerA->getLockState().getLockDepth(1))));
-            co_yield(Inst("+++ Scheduler B Stream 0 Lock Depth: "
-                          + std::to_string(schedulerB->getLockState().getLockDepth(0))));
-            co_yield(Inst("+++ Scheduler C Stream 1 Lock Depth: "
-                          + std::to_string(schedulerC->getLockState().getLockDepth(1))));
+            co_yield (Inst("+++ Scheduler A Stream 1 Lock Depth: "
+                           + std::to_string(schedulerA->getLockState().getLockDepth(1))));
+            co_yield (Inst("+++ Scheduler B Stream 0 Lock Depth: "
+                           + std::to_string(schedulerB->getLockState().getLockDepth(0))));
+            co_yield (Inst("+++ Scheduler C Stream 1 Lock Depth: "
+                           + std::to_string(schedulerC->getLockState().getLockDepth(1))));
         };
 
         c_sequences.push_back(opB());
@@ -449,57 +449,57 @@ namespace rocRollerTest
                       Scheduling::Dependency::Branch);
             EXPECT_EQ(schedulerB->getLockState().getTopDependency(0), Scheduling::Dependency::None);
 
-            co_yield(Inst("(B) Unroll 0 Begin")
-                         .lock(Scheduling::Dependency::VCC, "(B) Scheduler B Lock"));
+            co_yield (Inst("(B) Unroll 0 Begin")
+                          .lock(Scheduling::Dependency::VCC, "(B) Scheduler B Lock"));
 
             EXPECT_EQ(schedulerA->getLockState().getTopDependency(1), Scheduling::Dependency::VCC);
             EXPECT_EQ(schedulerB->getLockState().getTopDependency(0), Scheduling::Dependency::VCC);
 
-            co_yield(Inst("+++ Scheduler A Stream 1 Lock Depth: "
-                          + std::to_string(schedulerA->getLockState().getLockDepth(1))));
-            co_yield(Inst("+++ Scheduler B Stream 0 Lock Depth: "
-                          + std::to_string(schedulerB->getLockState().getLockDepth(0))));
-            co_yield((*schedulerC)(c_sequences));
-            co_yield(Inst("(B) Unroll 0 End")).unlock("(B) Scheduler B Unlock");
+            co_yield (Inst("+++ Scheduler A Stream 1 Lock Depth: "
+                           + std::to_string(schedulerA->getLockState().getLockDepth(1))));
+            co_yield (Inst("+++ Scheduler B Stream 0 Lock Depth: "
+                           + std::to_string(schedulerB->getLockState().getLockDepth(0))));
+            co_yield ((*schedulerC)(c_sequences));
+            co_yield (Inst("(B) Unroll 0 End")).unlock("(B) Scheduler B Unlock");
 
             EXPECT_EQ(schedulerA->getLockState().getTopDependency(1),
                       Scheduling::Dependency::Branch);
             EXPECT_EQ(schedulerB->getLockState().getTopDependency(0), Scheduling::Dependency::None);
 
-            co_yield(Inst("+++ Scheduler A Stream 1 Lock Depth: "
-                          + std::to_string(schedulerA->getLockState().getLockDepth(1))));
-            co_yield(Inst("+++ Scheduler B Stream 0 Lock Depth: "
-                          + std::to_string(schedulerB->getLockState().getLockDepth(0))));
+            co_yield (Inst("+++ Scheduler A Stream 1 Lock Depth: "
+                           + std::to_string(schedulerA->getLockState().getLockDepth(1))));
+            co_yield (Inst("+++ Scheduler B Stream 0 Lock Depth: "
+                           + std::to_string(schedulerB->getLockState().getLockDepth(0))));
         };
 
         auto unroll1 = [&]() -> Generator<Instruction> {
-            co_yield(Inst("(B) Unroll 1 Begin"));
-            co_yield(Inst("(B) Unroll 1 Instruction"));
-            co_yield(Inst("(B) Unroll 1 End"));
+            co_yield (Inst("(B) Unroll 1 Begin"));
+            co_yield (Inst("(B) Unroll 1 Instruction"));
+            co_yield (Inst("(B) Unroll 1 End"));
         };
 
         b_sequences.push_back(unroll0());
         b_sequences.push_back(unroll1());
 
         auto opA = [&]() -> Generator<Instruction> {
-            co_yield(Inst("(A) Op A Begin"));
-            co_yield(Inst("(A) Op A Instruction"));
-            co_yield(Inst("(A) Op A End"));
+            co_yield (Inst("(A) Op A Begin"));
+            co_yield (Inst("(A) Op A Instruction"));
+            co_yield (Inst("(A) Op A End"));
         };
 
         auto forloop = [&]() -> Generator<Instruction> {
-            co_yield(Inst("(A) For Loop Begin")
-                         .lock(Scheduling::Dependency::Branch, "(A) Scheduler A Lock"));
+            co_yield (Inst("(A) For Loop Begin")
+                          .lock(Scheduling::Dependency::Branch, "(A) Scheduler A Lock"));
 
             EXPECT_EQ(schedulerA->getLockState().getTopDependency(1),
                       Scheduling::Dependency::Branch);
 
-            co_yield(Inst("+++ Scheduler A Stream 1 Lock Depth: "
-                          + std::to_string(schedulerA->getLockState().getLockDepth(1))));
-            co_yield((*schedulerB)(b_sequences));
-            co_yield(Inst("(A) For Loop End").unlock("(A) Scheduler A Unlock"));
-            co_yield(Inst("+++ Scheduler A Stream 1 Lock Depth: "
-                          + std::to_string(schedulerA->getLockState().getLockDepth(1))));
+            co_yield (Inst("+++ Scheduler A Stream 1 Lock Depth: "
+                           + std::to_string(schedulerA->getLockState().getLockDepth(1))));
+            co_yield ((*schedulerB)(b_sequences));
+            co_yield (Inst("(A) For Loop End").unlock("(A) Scheduler A Unlock"));
+            co_yield (Inst("+++ Scheduler A Stream 1 Lock Depth: "
+                           + std::to_string(schedulerA->getLockState().getLockDepth(1))));
 
             EXPECT_EQ(schedulerA->getLockState().getTopDependency(1), Scheduling::Dependency::None);
         };

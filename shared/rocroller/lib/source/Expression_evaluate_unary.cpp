@@ -44,16 +44,16 @@ namespace rocRoller::Expression::EvaluateDetail
         using TheEvaluator = OperationEvaluatorVisitor<UnaryExpr, DESTTYPE>;
 
         template <CCommandArgumentValue ARG>
-        requires CCanEvaluateUnary<TheEvaluator, ARG>
-            CommandArgumentValue operator()(ARG const& arg) const
+            requires CCanEvaluateUnary<TheEvaluator, ARG>
+        CommandArgumentValue operator()(ARG const& arg) const
         {
             auto evaluator = static_cast<TheEvaluator const*>(this);
             return evaluator->evaluate(arg);
         }
 
         template <CCommandArgumentValue ARG>
-        requires(!CCanEvaluateUnary<TheEvaluator, ARG>) CommandArgumentValue
-            operator()(ARG const& arg) const
+            requires(!CCanEvaluateUnary<TheEvaluator, ARG>)
+        CommandArgumentValue operator()(ARG const& arg) const
         {
             if constexpr(CHasTypeInfo<ARG>)
             {
@@ -267,8 +267,8 @@ namespace rocRoller::Expression::EvaluateDetail
     struct OperationEvaluatorVisitor<Negate> : public UnaryEvaluatorVisitor<Negate>
     {
         template <typename T>
-        requires(std::floating_point<T> || std::signed_integral<T>) constexpr T
-            evaluate(T const& arg) const
+            requires(std::floating_point<T> || std::signed_integral<T>)
+        constexpr T evaluate(T const& arg) const
         {
             return -arg;
         }
@@ -288,8 +288,8 @@ namespace rocRoller::Expression::EvaluateDetail
     struct OperationEvaluatorVisitor<RandomNumber> : public UnaryEvaluatorVisitor<RandomNumber>
     {
         template <typename T>
-        requires(!std::same_as<bool, T> && std::unsigned_integral<T>) constexpr T
-            evaluate(T const& arg) const
+            requires(!std::same_as<bool, T> && std::unsigned_integral<T>)
+        constexpr T evaluate(T const& arg) const
         {
             return LFSRRandomNumberGenerator(arg);
         }

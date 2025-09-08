@@ -22,10 +22,17 @@
 #
 ################################################################################
 
-from rocisa.instruction import DSStoreB8, DSStoreB8HID16, ReadWriteInstruction, \
-                        DSLoadD16HIU16, DSLoadD16HIU8, \
-                        DSLoadU8, DSLoadU16, DSStoreD16HIB16, \
-                        DSStoreB16
+from rocisa.instruction import (
+    DSStoreB8,
+    DSStoreB8HID16,
+    ReadWriteInstruction,
+    DSLoadD16HIU16,
+    DSLoadD16HIU8,
+    DSLoadU8,
+    DSLoadU16,
+    DSStoreD16HIB16,
+    DSStoreB16,
+)
 from .Common import printExit
 
 from dataclasses import dataclass, field

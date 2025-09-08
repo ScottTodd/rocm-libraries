@@ -32,14 +32,12 @@ template <typename DT>
 std::vector<uint8_t> unpackData(std::vector<uint8_t> const& dataBytes)
 {
     // Only F4 and F6 need to unpack data.
-    static_assert(
-        std::is_same_v<
-            DT,
-            DGen::
-                ocp_e2m1_mxfp4> || std::is_same_v<DT, DGen::ocp_e3m2_mxfp6> || std::is_same_v<DT, DGen::ocp_e2m3_mxfp6>);
+    static_assert(std::is_same_v<DT, DGen::ocp_e2m1_mxfp4>
+                  || std::is_same_v<DT, DGen::ocp_e3m2_mxfp6>
+                  || std::is_same_v<DT, DGen::ocp_e2m3_mxfp6>);
 
-    if constexpr(std::is_same_v<DT,
-                                DGen::ocp_e3m2_mxfp6> || std::is_same_v<DT, DGen::ocp_e2m3_mxfp6>)
+    if constexpr(std::is_same_v<DT, DGen::ocp_e3m2_mxfp6>
+                 || std::is_same_v<DT, DGen::ocp_e2m3_mxfp6>)
     {
         std::vector<uint8_t> unpackedDataBytes(dataBytes.size() * 8 / 6);
 #pragma omp parallel for
@@ -83,14 +81,12 @@ template <typename DT>
 void packData(std::vector<uint8_t> const& dataBytes, uint8_t* packedData)
 {
     // Only F4 and F6 need to unpack data.
-    static_assert(
-        std::is_same_v<
-            DT,
-            DGen::
-                ocp_e2m1_mxfp4> || std::is_same_v<DT, DGen::ocp_e3m2_mxfp6> || std::is_same_v<DT, DGen::ocp_e2m3_mxfp6>);
+    static_assert(std::is_same_v<DT, DGen::ocp_e2m1_mxfp4>
+                  || std::is_same_v<DT, DGen::ocp_e3m2_mxfp6>
+                  || std::is_same_v<DT, DGen::ocp_e2m3_mxfp6>);
 
-    if constexpr(std::is_same_v<DT,
-                                DGen::ocp_e3m2_mxfp6> || std::is_same_v<DT, DGen::ocp_e2m3_mxfp6>)
+    if constexpr(std::is_same_v<DT, DGen::ocp_e3m2_mxfp6>
+                 || std::is_same_v<DT, DGen::ocp_e2m3_mxfp6>)
     {
         auto const total = dataBytes.size() * 6 / 8;
 #pragma omp parallel for
@@ -133,11 +129,11 @@ void packData(std::vector<uint8_t> const& dataBytes, uint8_t* packedData)
  * @return float values of generated MX type data aligned with scale
  */
 template <typename DT>
-std::vector<float> getAlignedFloat(std::vector<uint8_t>&       dataBytes,
-                                   std::vector<uint8_t> const& scaleBytes,
-                                   std::array<DGen::index_t, 2> const    sizes,
-                                   int                         elementsPerMXBlock,
-                                   bool                        isMatrixA)
+std::vector<float> getAlignedFloat(std::vector<uint8_t>&              dataBytes,
+                                   std::vector<uint8_t> const&        scaleBytes,
+                                   std::array<DGen::index_t, 2> const sizes,
+                                   int                                elementsPerMXBlock,
+                                   bool                               isMatrixA)
 {
     std::vector<float>   refFloat(sizes[0] * sizes[1], 0.0);
     std::vector<uint8_t> alignedDataBytes(dataBytes.size());
@@ -241,17 +237,16 @@ std::vector<float> generateData(T                           dgen,
 
     // For types smaller than 8-bit, mxDataGenerator returns packed data (i.e., two FP4 will be
     // stored in a uint8_t), so unpacking the data is required before converting them to float
-    if constexpr(std::is_same_v<DT,
-                                DGen::ocp_e5m2_mxfp8> || std::is_same_v<DT, DGen::ocp_e4m3_mxfp8>)
+    if constexpr(std::is_same_v<DT, DGen::ocp_e5m2_mxfp8>
+                 || std::is_same_v<DT, DGen::ocp_e4m3_mxfp8>)
     {
         auto ret = getAlignedFloat<DT>(
             dataBytes, scaleBytes, {sizes[0], sizes[1]}, elementsPerMXBlock, isMatrixA);
         std::memcpy(data, dataBytes.data(), dataBytes.size() * sizeof(uint8_t));
         return ret;
     }
-    else if constexpr(std::is_same_v<
-                          DT,
-                          DGen::ocp_e3m2_mxfp6> || std::is_same_v<DT, DGen::ocp_e2m3_mxfp6>)
+    else if constexpr(std::is_same_v<DT, DGen::ocp_e3m2_mxfp6>
+                      || std::is_same_v<DT, DGen::ocp_e2m3_mxfp6>)
     {
         auto unpackedDataBytes = unpackData<DT>(dataBytes);
         auto ret               = getAlignedFloat<DT>(

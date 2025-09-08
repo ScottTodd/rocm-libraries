@@ -65,9 +65,9 @@ int main()
     hipsparseIndexBase_t idxBase = HIPSPARSE_INDEX_BASE_ZERO;
 
     // Offload data to device
-    int* dxInd;
-    double*        dxVal;
-    double*        dy;
+    int*    dxInd;
+    double* dxVal;
+    double* dy;
 
     HIP_CHECK(hipMalloc((void**)&dxInd, sizeof(int) * nnz));
     HIP_CHECK(hipMalloc((void**)&dxVal, sizeof(double) * nnz));
@@ -87,7 +87,7 @@ int main()
     // Copy result back to host
     HIP_CHECK(hipMemcpy(hy, dy, sizeof(double) * 9, hipMemcpyDeviceToHost));
 
-    // Clear hipSPARSE 
+    // Clear hipSPARSE
     HIPSPARSE_CHECK(hipsparseDestroy(handle));
 
     // Clear device memory

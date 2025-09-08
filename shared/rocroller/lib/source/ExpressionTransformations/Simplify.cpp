@@ -82,7 +82,8 @@ namespace rocRoller
             ExpressionPtr lhs;
 
             template <typename RHS>
-            requires(CIntegral<RHS>) ExpressionPtr operator()(RHS rhs)
+                requires(CIntegral<RHS>)
+            ExpressionPtr operator()(RHS rhs)
             {
                 if(rhs == 0)
                     return lhs;
@@ -90,7 +91,8 @@ namespace rocRoller
             }
 
             template <typename RHS>
-            requires(!CIntegral<RHS>) ExpressionPtr operator()(RHS rhs)
+                requires(!CIntegral<RHS>)
+            ExpressionPtr operator()(RHS rhs)
             {
                 return nullptr;
             }
@@ -109,7 +111,8 @@ namespace rocRoller
             ExpressionPtr lhs;
 
             template <typename RHS>
-            requires(CIntegral<RHS>) ExpressionPtr operator()(RHS rhs)
+                requires(CIntegral<RHS>)
+            ExpressionPtr operator()(RHS rhs)
             {
                 if(rhs == 0)
                     return lhs;
@@ -124,7 +127,8 @@ namespace rocRoller
             }
 
             template <typename RHS>
-            requires(!CIntegral<RHS>) ExpressionPtr operator()(RHS rhs)
+                requires(!CIntegral<RHS>)
+            ExpressionPtr operator()(RHS rhs)
             {
                 return nullptr;
             }
@@ -143,7 +147,8 @@ namespace rocRoller
             ExpressionPtr lhs;
 
             template <typename RHS>
-            requires(CIntegral<RHS>) ExpressionPtr operator()(RHS rhs)
+                requires(CIntegral<RHS>)
+            ExpressionPtr operator()(RHS rhs)
             {
                 if(rhs == 0)
                     return lhs;
@@ -164,7 +169,8 @@ namespace rocRoller
             }
 
             template <typename RHS>
-            requires(!CIntegral<RHS>) ExpressionPtr operator()(RHS rhs)
+                requires(!CIntegral<RHS>)
+            ExpressionPtr operator()(RHS rhs)
             {
                 return nullptr;
             }
@@ -183,7 +189,8 @@ namespace rocRoller
             ExpressionPtr lhs;
 
             template <typename RHS>
-            requires(CIntegral<RHS>) ExpressionPtr operator()(RHS rhs)
+                requires(CIntegral<RHS>)
+            ExpressionPtr operator()(RHS rhs)
             {
                 if(rhs == 0)
                     return literal(0, resultVarType);
@@ -191,7 +198,8 @@ namespace rocRoller
             }
 
             template <typename RHS>
-            requires(!CIntegral<RHS>) ExpressionPtr operator()(RHS rhs)
+                requires(!CIntegral<RHS>)
+            ExpressionPtr operator()(RHS rhs)
             {
                 return nullptr;
             }
@@ -210,7 +218,8 @@ namespace rocRoller
             ExpressionPtr lhs;
 
             template <typename RHS>
-            requires(CBoolean<RHS>) ExpressionPtr operator()(RHS rhs)
+                requires(CBoolean<RHS>)
+            ExpressionPtr operator()(RHS rhs)
             {
                 if(rhs == false)
                     return literal(false);
@@ -220,7 +229,8 @@ namespace rocRoller
             }
 
             template <typename RHS>
-            requires(!CBoolean<RHS>) ExpressionPtr operator()(RHS rhs)
+                requires(!CBoolean<RHS>)
+            ExpressionPtr operator()(RHS rhs)
             {
                 return nullptr;
             }
@@ -239,7 +249,8 @@ namespace rocRoller
             ExpressionPtr lhs = nullptr;
 
             template <typename RHS>
-            requires(CBoolean<RHS>) ExpressionPtr operator()(RHS rhs)
+                requires(CBoolean<RHS>)
+            ExpressionPtr operator()(RHS rhs)
             {
                 if(rhs == true)
                     return literal(true);
@@ -249,7 +260,8 @@ namespace rocRoller
             }
 
             template <typename RHS>
-            requires(!CBoolean<RHS>) ExpressionPtr operator()(RHS rhs)
+                requires(!CBoolean<RHS>)
+            ExpressionPtr operator()(RHS rhs)
             {
                 return nullptr;
             }
@@ -268,7 +280,8 @@ namespace rocRoller
             ExpressionPtr lhs;
 
             template <typename RHS>
-            requires(CIntegral<RHS>) ExpressionPtr operator()(RHS rhs)
+                requires(CIntegral<RHS>)
+            ExpressionPtr operator()(RHS rhs)
             {
                 if(rhs == 0)
                     return literal(0, resultVarType);
@@ -278,7 +291,8 @@ namespace rocRoller
             }
 
             template <typename RHS>
-            requires(!CIntegral<RHS>) ExpressionPtr operator()(RHS rhs)
+                requires(!CIntegral<RHS>)
+            ExpressionPtr operator()(RHS rhs)
             {
                 return nullptr;
             }
@@ -297,7 +311,8 @@ namespace rocRoller
             ExpressionPtr lhs;
 
             template <typename RHS>
-            requires(CIntegral<RHS>) ExpressionPtr operator()(RHS rhs)
+                requires(CIntegral<RHS>)
+            ExpressionPtr operator()(RHS rhs)
             {
                 if(rhs == 1)
                     return lhs;
@@ -305,7 +320,8 @@ namespace rocRoller
             }
 
             template <typename RHS>
-            requires(!CIntegral<RHS>) ExpressionPtr operator()(RHS rhs)
+                requires(!CIntegral<RHS>)
+            ExpressionPtr operator()(RHS rhs)
             {
                 return nullptr;
             }
@@ -324,7 +340,8 @@ namespace rocRoller
             ExpressionPtr rhs;
 
             template <typename LHS>
-            requires(CIntegral<LHS>) ExpressionPtr operator()(LHS lhs)
+                requires(CIntegral<LHS>)
+            ExpressionPtr operator()(LHS lhs)
             {
                 if(lhs == 0)
                     return literal(0, resultVarType);
@@ -332,7 +349,8 @@ namespace rocRoller
             }
 
             template <typename LHS>
-            requires(!CIntegral<LHS>) ExpressionPtr operator()(LHS lhs)
+                requires(!CIntegral<LHS>)
+            ExpressionPtr operator()(LHS lhs)
             {
                 return nullptr;
             }
@@ -351,7 +369,8 @@ namespace rocRoller
             ExpressionPtr lhs;
 
             template <typename RHS>
-            requires(CIntegral<RHS>) ExpressionPtr operator()(RHS rhs)
+                requires(CIntegral<RHS>)
+            ExpressionPtr operator()(RHS rhs)
             {
                 if(rhs == 1)
                     return literal(0, resultVarType);
@@ -359,7 +378,8 @@ namespace rocRoller
             }
 
             template <typename RHS>
-            requires(!CIntegral<RHS>) ExpressionPtr operator()(RHS rhs)
+                requires(!CIntegral<RHS>)
+            ExpressionPtr operator()(RHS rhs)
             {
                 return nullptr;
             }
@@ -378,7 +398,8 @@ namespace rocRoller
             ExpressionPtr rhs;
 
             template <typename LHS>
-            requires(CIntegral<LHS>) ExpressionPtr operator()(LHS lhs)
+                requires(CIntegral<LHS>)
+            ExpressionPtr operator()(LHS lhs)
             {
                 if(lhs == 0)
                     return literal(0, resultVarType);
@@ -386,7 +407,8 @@ namespace rocRoller
             }
 
             template <typename LHS>
-            requires(!CIntegral<LHS>) ExpressionPtr operator()(LHS lhs)
+                requires(!CIntegral<LHS>)
+            ExpressionPtr operator()(LHS lhs)
             {
                 return nullptr;
             }

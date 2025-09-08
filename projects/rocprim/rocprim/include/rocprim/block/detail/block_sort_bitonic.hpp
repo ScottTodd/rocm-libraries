@@ -66,8 +66,8 @@ public:
     ROCPRIM_DETAIL_SUPPRESS_DEPRECATION_POP
 
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void
-        sort(Key& thread_key, storage_type& storage, BinaryFunction compare_function)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void sort(Key& thread_key, storage_type& storage, BinaryFunction compare_function)
     {
         this->sort_impl<BlockSize, ItemsPerThread>(
             ::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>(),
@@ -77,9 +77,10 @@ public:
     }
 
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void sort(Key (&thread_keys)[ItemsPerThread],
-                                            storage_type&  storage,
-                                            BinaryFunction compare_function)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void sort(Key (&thread_keys)[ItemsPerThread],
+              storage_type&  storage,
+              BinaryFunction compare_function)
     {
         this->sort_impl<BlockSize, ItemsPerThread>(
             ::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>(),
@@ -91,7 +92,8 @@ public:
     template<class BinaryFunction>
     ROCPRIM_DEVICE ROCPRIM_FORCE_INLINE void sort(Key& thread_key, BinaryFunction compare_function)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->sort(thread_key, storage, compare_function);
     }
 
@@ -99,15 +101,17 @@ public:
     ROCPRIM_DEVICE ROCPRIM_FORCE_INLINE void sort(Key (&thread_keys)[ItemsPerThread],
                                                   BinaryFunction compare_function)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->sort(thread_keys, storage, compare_function);
     }
 
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void sort(Key&           thread_key,
-                                            Value&         thread_value,
-                                            storage_type&  storage,
-                                            BinaryFunction compare_function)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void sort(Key&           thread_key,
+              Value&         thread_value,
+              storage_type&  storage,
+              BinaryFunction compare_function)
     {
         this->sort_impl<BlockSize, ItemsPerThread>(
             ::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>(),
@@ -118,10 +122,11 @@ public:
     }
 
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void sort(Key (&thread_keys)[ItemsPerThread],
-                                            Value (&thread_values)[ItemsPerThread],
-                                            storage_type&  storage,
-                                            BinaryFunction compare_function)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void sort(Key (&thread_keys)[ItemsPerThread],
+              Value (&thread_values)[ItemsPerThread],
+              storage_type&  storage,
+              BinaryFunction compare_function)
     {
         this->sort_impl<BlockSize, ItemsPerThread>(
             ::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>(),
@@ -135,7 +140,8 @@ public:
     ROCPRIM_DEVICE ROCPRIM_FORCE_INLINE void
         sort(Key& thread_key, Value& thread_value, BinaryFunction compare_function)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->sort(thread_key, thread_value, storage, compare_function);
     }
 
@@ -144,15 +150,17 @@ public:
                                                   Value (&thread_values)[ItemsPerThread],
                                                   BinaryFunction compare_function)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->sort(thread_keys, thread_values, storage, compare_function);
     }
 
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void sort(Key&               thread_key,
-                                            storage_type&      storage,
-                                            const unsigned int size,
-                                            BinaryFunction     compare_function)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void sort(Key&               thread_key,
+              storage_type&      storage,
+              const unsigned int size,
+              BinaryFunction     compare_function)
     {
         this->sort_impl(::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>(),
                         size,
@@ -162,10 +170,11 @@ public:
     }
 
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void sort(Key (&thread_keys)[ItemsPerThread],
-                                            storage_type&      storage,
-                                            const unsigned int size,
-                                            BinaryFunction     compare_function)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void sort(Key (&thread_keys)[ItemsPerThread],
+              storage_type&      storage,
+              const unsigned int size,
+              BinaryFunction     compare_function)
     {
         this->sort_impl(::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>(),
                         size,
@@ -175,11 +184,12 @@ public:
     }
 
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void sort(Key&               thread_key,
-                                            Value&             thread_value,
-                                            storage_type&      storage,
-                                            const unsigned int size,
-                                            BinaryFunction     compare_function)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void sort(Key&               thread_key,
+              Value&             thread_value,
+              storage_type&      storage,
+              const unsigned int size,
+              BinaryFunction     compare_function)
     {
         this->sort_impl(::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>(),
                         size,
@@ -190,11 +200,12 @@ public:
     }
 
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void sort(Key (&thread_keys)[ItemsPerThread],
-                                            Value (&thread_values)[ItemsPerThread],
-                                            storage_type&      storage,
-                                            const unsigned int size,
-                                            BinaryFunction     compare_function)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void sort(Key (&thread_keys)[ItemsPerThread],
+              Value (&thread_values)[ItemsPerThread],
+              storage_type&      storage,
+              const unsigned int size,
+              BinaryFunction     compare_function)
     {
         this->sort_impl(::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>(),
                         size,
@@ -205,15 +216,16 @@ public:
     }
 
 private:
-    ROCPRIM_DEVICE ROCPRIM_INLINE void
-        copy_to_shared(Key& k, const unsigned int flat_tid, storage_type& storage)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void copy_to_shared(Key& k, const unsigned int flat_tid, storage_type& storage)
     {
         storage_type_<Key, Value>& storage_ = storage.get();
         storage_.key[flat_tid]              = k;
         ::rocprim::syncthreads();
     }
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE void
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void
         copy_to_shared(Key (&k)[ItemsPerThread], const unsigned int flat_tid, storage_type& storage)
     {
         storage_type_<Key, Value>& storage_ = storage.get();
@@ -225,8 +237,8 @@ private:
         ::rocprim::syncthreads();
     }
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE void
-        copy_to_shared(Key& k, Value& v, const unsigned int flat_tid, storage_type& storage)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void copy_to_shared(Key& k, Value& v, const unsigned int flat_tid, storage_type& storage)
     {
         storage_type_<Key, Value>& storage_ = storage.get();
         storage_.key[flat_tid]              = k;
@@ -234,10 +246,11 @@ private:
         ::rocprim::syncthreads();
     }
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE void copy_to_shared(Key (&k)[ItemsPerThread],
-                                                      Value (&v)[ItemsPerThread],
-                                                      const unsigned int flat_tid,
-                                                      storage_type&      storage)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void copy_to_shared(Key (&k)[ItemsPerThread],
+                        Value (&v)[ItemsPerThread],
+                        const unsigned int flat_tid,
+                        storage_type&      storage)
     {
         storage_type_<Key, Value>& storage_ = storage.get();
         ROCPRIM_UNROLL
@@ -250,12 +263,13 @@ private:
     }
 
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void swap(Key&               key,
-                                            const unsigned int flat_tid,
-                                            const unsigned int next_id,
-                                            const bool         dir,
-                                            storage_type&      storage,
-                                            BinaryFunction     compare_function)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void swap(Key&               key,
+              const unsigned int flat_tid,
+              const unsigned int next_id,
+              const bool         dir,
+              storage_type&      storage,
+              BinaryFunction     compare_function)
     {
         storage_type_<Key, Value>& storage_ = storage.get();
         Key                        next_key = storage_.key[next_id];
@@ -269,12 +283,13 @@ private:
     }
 
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void swap(Key (&key)[ItemsPerThread],
-                                            const unsigned int flat_tid,
-                                            const unsigned int next_id,
-                                            const bool         dir,
-                                            storage_type&      storage,
-                                            BinaryFunction     compare_function)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void swap(Key (&key)[ItemsPerThread],
+              const unsigned int flat_tid,
+              const unsigned int next_id,
+              const bool         dir,
+              storage_type&      storage,
+              BinaryFunction     compare_function)
     {
         storage_type_<Key, Value>& storage_ = storage.get();
         ROCPRIM_UNROLL
@@ -292,19 +307,20 @@ private:
     }
 
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void swap(Key&               key,
-                                            Value&             value,
-                                            const unsigned int flat_tid,
-                                            const unsigned int next_id,
-                                            const bool         dir,
-                                            storage_type&      storage,
-                                            BinaryFunction     compare_function)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void swap(Key&               key,
+              Value&             value,
+              const unsigned int flat_tid,
+              const unsigned int next_id,
+              const bool         dir,
+              storage_type&      storage,
+              BinaryFunction     compare_function)
     {
         storage_type_<Key, Value>& storage_ = storage.get();
         Key                        next_key = storage_.key[next_id];
         bool                       b        = next_id < flat_tid;
         bool compare = compare_function(b ? key : next_key, b ? next_key : key);
-        bool                       swap     = compare ^ dir;
+        bool swap    = compare ^ dir;
         if(swap)
         {
             key   = next_key;
@@ -313,13 +329,14 @@ private:
     }
 
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void swap(Key (&key)[ItemsPerThread],
-                                            Value (&value)[ItemsPerThread],
-                                            const unsigned int flat_tid,
-                                            const unsigned int next_id,
-                                            const bool         dir,
-                                            storage_type&      storage,
-                                            BinaryFunction     compare_function)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void swap(Key (&key)[ItemsPerThread],
+              Value (&value)[ItemsPerThread],
+              const unsigned int flat_tid,
+              const unsigned int next_id,
+              const bool         dir,
+              storage_type&      storage,
+              BinaryFunction     compare_function)
     {
         storage_type_<Key, Value>& storage_ = storage.get();
         ROCPRIM_UNROLL
@@ -338,13 +355,14 @@ private:
     }
 
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void swap_oddeven(Key&               key,
-                                                    const unsigned int next_id,
-                                                    const unsigned int /* item */,
-                                                    const unsigned int next_item_id,
-                                                    bool               dir,
-                                                    storage_type&      storage,
-                                                    BinaryFunction     compare_function)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void swap_oddeven(Key&               key,
+                      const unsigned int next_id,
+                      const unsigned int /* item */,
+                      const unsigned int next_item_id,
+                      bool               dir,
+                      storage_type&      storage,
+                      BinaryFunction     compare_function)
     {
         storage_type_<Key, Value>& storage_ = storage.get();
         Key                        next_key = storage_.key[next_item_id * BlockSize + next_id];
@@ -365,13 +383,14 @@ private:
     }
 
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void swap_oddeven(Key (&keys)[ItemsPerThread],
-                                                    const unsigned int next_id,
-                                                    const unsigned int item,
-                                                    const unsigned int next_item_id,
-                                                    bool               dir,
-                                                    storage_type&      storage,
-                                                    BinaryFunction     compare_function)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void swap_oddeven(Key (&keys)[ItemsPerThread],
+                      const unsigned int next_id,
+                      const unsigned int item,
+                      const unsigned int next_item_id,
+                      bool               dir,
+                      storage_type&      storage,
+                      BinaryFunction     compare_function)
     {
         storage_type_<Key, Value>& storage_ = storage.get();
         Key                        next_key = storage_.key[next_item_id * BlockSize + next_id];
@@ -392,14 +411,15 @@ private:
     }
 
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void swap_oddeven(Key&               key,
-                                                    Value&             value,
-                                                    const unsigned int next_id,
-                                                    const unsigned int /* item */,
-                                                    const unsigned int next_item_id,
-                                                    bool               dir,
-                                                    storage_type&      storage,
-                                                    BinaryFunction     compare_function)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void swap_oddeven(Key&               key,
+                      Value&             value,
+                      const unsigned int next_id,
+                      const unsigned int /* item */,
+                      const unsigned int next_item_id,
+                      bool               dir,
+                      storage_type&      storage,
+                      BinaryFunction     compare_function)
     {
         storage_type_<Key, Value>& storage_ = storage.get();
         Key                        next_key = storage_.key[next_item_id * BlockSize + next_id];
@@ -421,14 +441,15 @@ private:
     }
 
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void swap_oddeven(Key (&keys)[ItemsPerThread],
-                                                    Value (&values)[ItemsPerThread],
-                                                    const unsigned int next_id,
-                                                    const unsigned int item,
-                                                    const unsigned int next_item_id,
-                                                    bool               dir,
-                                                    storage_type&      storage,
-                                                    BinaryFunction     compare_function)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void swap_oddeven(Key (&keys)[ItemsPerThread],
+                      Value (&values)[ItemsPerThread],
+                      const unsigned int next_id,
+                      const unsigned int item,
+                      const unsigned int next_item_id,
+                      bool               dir,
+                      storage_type&      storage,
+                      BinaryFunction     compare_function)
     {
         storage_type_<Key, Value>& storage_ = storage.get();
         Key                        next_key = storage_.key[next_item_id * BlockSize + next_id];
@@ -465,8 +486,8 @@ private:
     }
 
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void
-        warp_swap(Key& k, Value& v, int mask, bool dir, BinaryFunction compare_function)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void warp_swap(Key& k, Value& v, int mask, bool dir, BinaryFunction compare_function)
     {
         Key  k1   = warp_swizzle_shuffle(k, mask);
         bool swap = compare_function(dir ? k : k1, dir ? k1 : k);
@@ -478,11 +499,12 @@ private:
     }
 
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void warp_swap(Key (&k)[ItemsPerThread],
-                                                 Value (&v)[ItemsPerThread],
-                                                 int            mask,
-                                                 bool           dir,
-                                                 BinaryFunction compare_function)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void warp_swap(Key (&k)[ItemsPerThread],
+                   Value (&v)[ItemsPerThread],
+                   int            mask,
+                   bool           dir,
+                   BinaryFunction compare_function)
     {
         ROCPRIM_UNROLL
         for(unsigned int item = 0; item < ItemsPerThread; ++item)
@@ -498,8 +520,8 @@ private:
     }
 
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void
-        warp_swap(Key& k, int mask, bool dir, BinaryFunction compare_function)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void warp_swap(Key& k, int mask, bool dir, BinaryFunction compare_function)
     {
         Key  k1   = warp_swizzle_shuffle(k, mask);
         bool swap = compare_function(dir ? k : k1, dir ? k1 : k);
@@ -510,8 +532,8 @@ private:
     }
 
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void
-        warp_swap(Key (&k)[ItemsPerThread], int mask, bool dir, BinaryFunction compare_function)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void warp_swap(Key (&k)[ItemsPerThread], int mask, bool dir, BinaryFunction compare_function)
     {
         ROCPRIM_UNROLL
         for(unsigned int item = 0; item < ItemsPerThread; ++item)
@@ -526,17 +548,19 @@ private:
     }
 
     template<class BinaryFunction, unsigned int Items = ItemsPerThread, class... KeyValue>
-    ROCPRIM_DEVICE ROCPRIM_INLINE typename std::enable_if<(Items < 2)>::type
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    typename std::enable_if<(Items < 2)>::type
         thread_merge(bool /*dir*/, BinaryFunction /*compare_function*/, KeyValue&... /*kv*/)
     {}
 
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void thread_swap(Key (&k)[ItemsPerThread],
-                                                   Value (&v)[ItemsPerThread],
-                                                   bool           dir,
-                                                   unsigned int   i,
-                                                   unsigned int   j,
-                                                   BinaryFunction compare_function)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void thread_swap(Key (&k)[ItemsPerThread],
+                     Value (&v)[ItemsPerThread],
+                     bool           dir,
+                     unsigned int   i,
+                     unsigned int   j,
+                     BinaryFunction compare_function)
     {
         if(compare_function(k[i], k[j]) == dir)
         {
@@ -549,11 +573,12 @@ private:
         }
     }
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void thread_swap(Key (&k)[ItemsPerThread],
-                                                   bool           dir,
-                                                   unsigned int   i,
-                                                   unsigned int   j,
-                                                   BinaryFunction compare_function)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void thread_swap(Key (&k)[ItemsPerThread],
+                     bool           dir,
+                     unsigned int   i,
+                     unsigned int   j,
+                     BinaryFunction compare_function)
     {
         if(compare_function(k[i], k[j]) == dir)
         {
@@ -564,10 +589,11 @@ private:
     }
 
     template<class BinaryFunction, class... KeyValue>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void thread_shuffle(unsigned int   offset,
-                                                      bool           dir,
-                                                      BinaryFunction compare_function,
-                                                      KeyValue&... kv)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void thread_shuffle(unsigned int   offset,
+                        bool           dir,
+                        BinaryFunction compare_function,
+                        KeyValue&... kv)
     {
         ROCPRIM_UNROLL
         for(unsigned base = 0; base < ItemsPerThread; base += 2 * offset)
@@ -580,7 +606,8 @@ private:
     }
 
     template<class BinaryFunction, unsigned int Items = ItemsPerThread, class... KeyValue>
-    ROCPRIM_DEVICE ROCPRIM_INLINE typename std::enable_if<!(Items < 2)>::type
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    typename std::enable_if<!(Items < 2)>::type
         thread_merge(bool dir, BinaryFunction compare_function, KeyValue&... kv)
     {
         ROCPRIM_UNROLL
@@ -602,7 +629,7 @@ private:
     {
         const auto warp_id_is_even = ((flat_tid / ::rocprim::arch::wavefront::min_size()) % 2) == 0;
         ::rocprim::warp_sort<Key, ::rocprim::arch::wavefront::min_size(), Value> wsort;
-        auto                                                            compare_function2
+        auto                                                                     compare_function2
             = [compare_function, warp_id_is_even](const Key& a, const Key& b) mutable -> bool
         {
             auto r = compare_function(a, b);
@@ -641,7 +668,7 @@ private:
 
     template<unsigned int BS, unsigned int IPT, class BinaryFunction, class... KeyValue>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-        typename std::enable_if<is_power_of_two(BS) && is_power_of_two(IPT)>::type
+    typename std::enable_if<is_power_of_two(BS) && is_power_of_two(IPT)>::type
         sort_impl(const unsigned int flat_tid,
                   storage_type&      storage,
                   BinaryFunction     compare_function,
@@ -657,11 +684,12 @@ private:
     /// Odd-even sort.
     /// No restrictions on block size or items per thread, but slower than bitonic sort.
     template<bool SizeCheck, class BinaryFunction, class... KeyValue>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void odd_even_sort(const unsigned int flat_tid,
-                                                     const unsigned int size,
-                                                     storage_type&      storage,
-                                                     BinaryFunction     compare_function,
-                                                     KeyValue&... kv)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void odd_even_sort(const unsigned int flat_tid,
+                       const unsigned int size,
+                       storage_type&      storage,
+                       BinaryFunction     compare_function,
+                       KeyValue&... kv)
     {
         static constexpr unsigned int PairSize = sizeof...(KeyValue);
         static_assert(PairSize < 3,
@@ -715,7 +743,7 @@ private:
 
     template<unsigned int BS, unsigned int IPT, class BinaryFunction, class... KeyValue>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-        typename std::enable_if<!is_power_of_two(BS) || !is_power_of_two(IPT)>::type
+    typename std::enable_if<!is_power_of_two(BS) || !is_power_of_two(IPT)>::type
         sort_impl(const unsigned int flat_tid,
                   storage_type&      storage,
                   BinaryFunction     compare_function,
@@ -725,11 +753,12 @@ private:
     }
 
     template<class BinaryFunction, class... KeyValue>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void sort_impl(const unsigned int flat_tid,
-                                                 const unsigned int size,
-                                                 storage_type&      storage,
-                                                 BinaryFunction     compare_function,
-                                                 KeyValue&... kv)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void sort_impl(const unsigned int flat_tid,
+                   const unsigned int size,
+                   storage_type&      storage,
+                   BinaryFunction     compare_function,
+                   KeyValue&... kv)
     {
         odd_even_sort<true>(flat_tid, size, storage, compare_function, kv...);
     }

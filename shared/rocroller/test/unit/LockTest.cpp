@@ -183,7 +183,8 @@ namespace rocRollerTest
             EXPECT_EQ(vcc_lock.isNonPreemptibleStream(0), false);
         }
 
-        EXPECT_THROW({ auto l = Scheduling::LockState(m_context, Scheduling::Dependency::Count); },
-                     FatalError);
+        EXPECT_THROW(
+            { auto l = Scheduling::LockState(m_context, Scheduling::Dependency::Count); },
+            FatalError);
     }
 }

@@ -82,8 +82,8 @@ namespace rocRoller
         Expression::ExpressionPtr expression();
 
         template <typename T>
-        requires(!std::is_pointer_v<T>) CommandArgumentValue getValue(RuntimeArguments const& args)
-        const;
+            requires(!std::is_pointer_v<T>)
+        CommandArgumentValue getValue(RuntimeArguments const& args) const;
 
         bool operator==(CommandArgument const& rhs) const;
 

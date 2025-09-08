@@ -165,12 +165,13 @@ namespace rocRoller
         co_yield get2DwordsScalar(l0, l1, lhs);
         co_yield get2DwordsScalar(r0, r1, rhs);
 
-        co_yield(Instruction::Lock(Scheduling::Dependency::SCC, "Start of Int64 add, locking SCC"));
+        co_yield (
+            Instruction::Lock(Scheduling::Dependency::SCC, "Start of Int64 add, locking SCC"));
 
         co_yield ScalarAddUInt32(m_context, dest->subset({0}), l0, r0);
         co_yield ScalarAddUInt32CarryInOut(m_context, dest->subset({1}), l1, r1);
 
-        co_yield(Instruction::Unlock("End of Int64 add, unlocking SCC"));
+        co_yield (Instruction::Unlock("End of Int64 add, unlocking SCC"));
     }
 
     template <>
@@ -225,7 +226,7 @@ namespace rocRoller
                           && !m_context->targetArchitecture().isSupportedConstantValue(l1));
 
         if(useVCC)
-            co_yield(
+            co_yield (
                 Instruction::Lock(Scheduling::Dependency::VCC, "Start of Int64 add, locking VCC"));
 
         auto carry
@@ -237,7 +238,7 @@ namespace rocRoller
             m_context, dest->subset({1}), carry, carry, l1, r1, "most significant half");
 
         if(useVCC)
-            co_yield(Instruction::Unlock("End of Int64 add, Unlocking VCC."));
+            co_yield (Instruction::Unlock("End of Int64 add, Unlocking VCC."));
     }
 
     template <>

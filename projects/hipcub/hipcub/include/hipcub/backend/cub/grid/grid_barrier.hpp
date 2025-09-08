@@ -43,16 +43,12 @@ class HIPCUB_DEPRECATED_BECAUSE("Use the APIs from cooperative groups instead") 
 public:
     hipError_t HostReset()
     {
-        return hipCUDAErrorTohipError(
-            ::cub::GridBarrierLifetime::HostReset()
-        );
+        return hipCUDAErrorTohipError(::cub::GridBarrierLifetime::HostReset());
     }
 
     hipError_t Setup(int sweep_grid_size)
     {
-        return hipCUDAErrorTohipError(
-            ::cub::GridBarrierLifetime::Setup(sweep_grid_size)
-        );
+        return hipCUDAErrorTohipError(::cub::GridBarrierLifetime::Setup(sweep_grid_size));
     }
 };
 _CCCL_SUPPRESS_DEPRECATED_POP

@@ -179,42 +179,42 @@ namespace TensileLite
 
         inline DataType stringToDatatype(std::string s)
         {
-            if (s == "f32")
+            if(s == "f32")
                 return DataType::Float;
-            if (s == "c32")
+            if(s == "c32")
                 return DataType::ComplexFloat;
-            if (s == "c64")
+            if(s == "c64")
                 return DataType::ComplexDouble;
-            if (s == "f64")
+            if(s == "f64")
                 return DataType::Double;
-            if (s == "f16")
+            if(s == "f16")
                 return DataType::Half;
-            if (s == "i32")
+            if(s == "i32")
                 return DataType::Int32;
-            if (s == "bf16")
+            if(s == "bf16")
                 return DataType::BFloat16;
-            if (s == "i8")
+            if(s == "i8")
                 return DataType::Int8;
-            if (s == "xf32")
+            if(s == "xf32")
                 return DataType::XFloat32;
-            if (s == "f8")
+            if(s == "f8")
                 return DataType::Float8;
-            if (s == "bf8")
+            if(s == "bf8")
                 return DataType::BFloat8;
-            if (s == "f6")
+            if(s == "f6")
                 return DataType::Float6;
-            if (s == "bf6")
+            if(s == "bf6")
                 return DataType::BFloat6;
-            if (s == "f4")
+            if(s == "f4")
                 return DataType::Float4;
             return DataType::None;
         }
 
         struct MatrixInstruction
         {
-            size_t MI_M;
-            size_t MI_N;
-            size_t MI_K;
+            size_t   MI_M;
+            size_t   MI_N;
+            size_t   MI_K;
             DataType miInputType;
 
             MatrixInstruction()
@@ -474,8 +474,8 @@ namespace TensileLite
                     const auto& L_MI = kv.second;
 
                     std::cout << "Instruction: MI_M=" << key.MI_M << ", MI_N=" << key.MI_N
-                              << ", MI_K=" << key.MI_K << ", miInputType=" << toString(key.miInputType)
-                              << " bytes\n"
+                              << ", MI_K=" << key.MI_K
+                              << ", miInputType=" << toString(key.miInputType) << " bytes\n"
                               << "  -> Latency (L_MI): " << L_MI << "\n";
                 }
                 std::cout << "===========================================================\n";

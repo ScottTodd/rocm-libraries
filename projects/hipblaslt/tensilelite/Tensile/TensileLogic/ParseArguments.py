@@ -66,7 +66,10 @@ def parseArguments():
 
     group = argParser.add_mutually_exclusive_group()
     group.add_argument(
-        "--check-all", dest="CheckAll", action="store_true", help="run all logic file checks"
+        "--check-all",
+        dest="CheckAll",
+        action="store_true",
+        help="run all logic file checks",
     )
     group.add_argument(
         "--check-only-custom-kernels",

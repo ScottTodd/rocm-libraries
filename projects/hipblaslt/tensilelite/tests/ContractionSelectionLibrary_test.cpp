@@ -140,7 +140,8 @@ TEST(ContractionSelectionLibraryTest, RegionSelection)
     auto isRegion2 = std::make_shared<And>(preds2);
 
     // Create fallthrough predicate (i.e. default)
-    ContractionProblemPredicate allProbs(std::make_shared<Predicates::True<ContractionProblemGemm>>());
+    ContractionProblemPredicate allProbs(
+        std::make_shared<Predicates::True<ContractionProblemGemm>>());
 
     // Create hierarchy for region selection
     ContractionProblemSelectionLibrary::Row Region1Row(isRegion1, region1Lib);
@@ -148,12 +149,12 @@ TEST(ContractionSelectionLibraryTest, RegionSelection)
     ContractionProblemSelectionLibrary::Row GenericRow(allProbs, genericLib);
     ContractionProblemSelectionLibrary      lib({Region1Row, Region2Row, GenericRow});
 
-    auto Region1Problem
-        = ContractionProblemGemm::GEMM(false, false, 7000, 6500, 1000, 7000, 1000, 7000, 1.0, false, 1);
-    auto Region2Problem
-        = ContractionProblemGemm::GEMM(false, false, 7000, 7500, 1000, 7000, 1000, 7000, 1.0, false, 1);
-    auto OutRegionProblem
-        = ContractionProblemGemm::GEMM(false, false, 5000, 2000, 1000, 5000, 1000, 5000, 1.0, false, 1);
+    auto Region1Problem = ContractionProblemGemm::GEMM(
+        false, false, 7000, 6500, 1000, 7000, 1000, 7000, 1.0, false, 1);
+    auto Region2Problem = ContractionProblemGemm::GEMM(
+        false, false, 7000, 7500, 1000, 7000, 1000, 7000, 1.0, false, 1);
+    auto OutRegionProblem = ContractionProblemGemm::GEMM(
+        false, false, 5000, 2000, 1000, 5000, 1000, 5000, 1.0, false, 1);
 
     AMDGPU gpu;
     EXPECT_EQ(lib.findBestSolution(Region1Problem, gpu), region1Solution);

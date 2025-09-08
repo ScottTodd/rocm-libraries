@@ -83,8 +83,8 @@ TYPED_TEST_SUITE_P(HipcubDeviceRadixSort);
 
 template<class T>
 auto generate_key_input(size_t size, unsigned int seed_value) HIPCUB_CLANG_SUPPRESS_DEPRECATED_PUSH
-    ->std::enable_if_t<hipcub::NumericTraits<T>::CATEGORY == hipcub::FLOATING_POINT,
-                       std::vector<T>> HIPCUB_CLANG_SUPPRESS_DEPRECATED_POP
+    -> std::enable_if_t<hipcub::NumericTraits<T>::CATEGORY == hipcub::FLOATING_POINT,
+                        std::vector<T>> HIPCUB_CLANG_SUPPRESS_DEPRECATED_POP
 {
     auto result = test_utils::get_random_data<T>(size,
                                                  test_utils::numeric_limits<T>::min(),
@@ -96,8 +96,8 @@ auto generate_key_input(size_t size, unsigned int seed_value) HIPCUB_CLANG_SUPPR
 
 template<class T>
 auto generate_key_input(size_t size, unsigned int seed_value) HIPCUB_CLANG_SUPPRESS_DEPRECATED_PUSH
-    ->std::enable_if_t<hipcub::NumericTraits<T>::CATEGORY != hipcub::FLOATING_POINT,
-                       std::vector<T>> HIPCUB_CLANG_SUPPRESS_DEPRECATED_POP
+    -> std::enable_if_t<hipcub::NumericTraits<T>::CATEGORY != hipcub::FLOATING_POINT,
+                        std::vector<T>> HIPCUB_CLANG_SUPPRESS_DEPRECATED_POP
 {
     using inner_t = typename test_utils::inner_type<T>::type;
     return test_utils::get_random_data<T>(size,
@@ -289,7 +289,7 @@ void sort_keys()
                 test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             HIP_CHECK(invoke_sort_keys<descending>(d_temporary_storage,
@@ -301,7 +301,7 @@ void sort_keys()
                                                    end_bit,
                                                    stream));
 
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipFree(d_temporary_storage));
@@ -552,7 +552,7 @@ void sort_pairs()
                 test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             HIP_CHECK(invoke_sort_pairs<descending>(d_temporary_storage,
@@ -566,7 +566,7 @@ void sort_pairs()
                                                     end_bit,
                                                     stream));
 
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipFree(d_temporary_storage));
@@ -781,7 +781,7 @@ void sort_keys_double_buffer()
                 test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             HIP_CHECK(invoke_sort_keys<descending>(d_temporary_storage,
@@ -792,7 +792,7 @@ void sort_keys_double_buffer()
                                                    end_bit,
                                                    stream));
 
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipFree(d_temporary_storage));
@@ -1024,7 +1024,7 @@ void sort_pairs_double_buffer()
                 test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             HIP_CHECK(invoke_sort_pairs<descending>(d_temporary_storage,
@@ -1036,7 +1036,7 @@ void sort_pairs_double_buffer()
                                                     end_bit,
                                                     stream));
 
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipFree(d_temporary_storage));

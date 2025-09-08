@@ -59,7 +59,8 @@ namespace rocRoller
 
         public:
             template <typename T>
-            requires(CBinary<T>&& CArithmetic<T>) ResultType operator()(T const& expr)
+                requires(CBinary<T> && CArithmetic<T>)
+            ResultType operator()(T const& expr)
             {
                 auto lhsVal = call(expr.lhs);
                 auto rhsVal = call(expr.rhs);
@@ -87,7 +88,8 @@ namespace rocRoller
             }
 
             template <typename T>
-            requires(CTernary<T>&& CArithmetic<T>) ResultType operator()(T const& expr)
+                requires(CTernary<T> && CArithmetic<T>)
+            ResultType operator()(T const& expr)
             {
                 auto lhsVal  = call(expr.lhs);
                 auto r1hsVal = call(expr.r1hs);
@@ -140,7 +142,8 @@ namespace rocRoller
             }
 
             template <typename T>
-            requires(CUnary<T>&& CArithmetic<T>) ResultType operator()(T const& expr)
+                requires(CUnary<T> && CArithmetic<T>)
+            ResultType operator()(T const& expr)
             {
                 auto argVal = call(expr.arg);
 
@@ -177,7 +180,8 @@ namespace rocRoller
             }
 
             template <typename T>
-            requires(CBinary<T>&& CComparison<T>) ResultType operator()(T const& expr)
+                requires(CBinary<T> && CComparison<T>)
+            ResultType operator()(T const& expr)
             {
                 auto lhsVal = call(expr.lhs);
                 auto rhsVal = call(expr.rhs);
@@ -229,7 +233,8 @@ namespace rocRoller
             }
 
             template <typename T>
-            requires(CBinary<T>&& CLogical<T>) ResultType operator()(T const& expr)
+                requires(CBinary<T> && CLogical<T>)
+            ResultType operator()(T const& expr)
             {
                 auto lhsVal = call(expr.lhs);
                 auto rhsVal = call(expr.rhs);
@@ -282,7 +287,8 @@ namespace rocRoller
             }
 
             template <typename T>
-            requires(CUnary<T>&& CLogical<T>) ResultType operator()(T const& expr)
+                requires(CUnary<T> && CLogical<T>)
+            ResultType operator()(T const& expr)
             {
                 auto val = call(expr.arg);
                 switch(val.regType)

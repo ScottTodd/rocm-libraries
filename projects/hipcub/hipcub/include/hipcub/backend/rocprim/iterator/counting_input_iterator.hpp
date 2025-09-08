@@ -59,13 +59,14 @@ public:
                                                                 typename Iterator::reference>::type;
     using self_type         = typename Iterator::self_type;
 
-    __host__ __device__ __forceinline__ CountingInputIterator(
-        const typename Iterator::value_type value)
+    __host__ __device__ __forceinline__
+    CountingInputIterator(const typename Iterator::value_type value)
         : Base(Iterator(value))
     {}
 
     // Cast from wrapped iterator to class itself
-    __host__ __device__ __forceinline__ explicit CountingInputIterator(Iterator iterator)
+    __host__ __device__ __forceinline__
+    explicit CountingInputIterator(Iterator iterator)
         : Base(iterator)
     {}
 };

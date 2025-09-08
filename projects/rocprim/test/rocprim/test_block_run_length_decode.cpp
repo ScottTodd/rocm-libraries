@@ -106,18 +106,19 @@ template<class ItemT,
          unsigned BlockSize,
          unsigned RunsPerThread,
          unsigned DecodedItemsPerThread>
-__global__
-    __launch_bounds__(BlockSize) void block_run_length_decode_kernel(const ItemT*   d_run_items,
-                                                                     const LengthT* d_run_lengths,
-                                                                     ItemT*         d_decoded_items,
-                                                                     LengthT* d_decoded_offsets)
+__global__ __launch_bounds__(BlockSize)
+void block_run_length_decode_kernel(const ItemT*   d_run_items,
+                                    const LengthT* d_run_lengths,
+                                    ItemT*         d_decoded_items,
+                                    LengthT*       d_decoded_offsets)
 {
     using BlockRunLengthDecodeT
         = rocprim::block_run_length_decode<ItemT, BlockSize, RunsPerThread, DecodedItemsPerThread>;
 
     static constexpr unsigned int decoded_items_per_block = BlockSize * DecodedItemsPerThread;
 
-    ROCPRIM_SHARED_MEMORY typename BlockRunLengthDecodeT::storage_type temp_storage;
+    ROCPRIM_SHARED_MEMORY
+    typename BlockRunLengthDecodeT::storage_type temp_storage;
 
     ItemT   run_items[RunsPerThread];
     LengthT run_lengths[RunsPerThread];

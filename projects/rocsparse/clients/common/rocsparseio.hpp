@@ -187,7 +187,7 @@ namespace rocsparseio
         {
             return this->value;
         }
-        inline constexpr format_t(){};
+        inline constexpr format_t() {};
         inline constexpr format_t(rocsparseio_format_t ival_)
             : value((value_type)ival_)
         {
@@ -325,7 +325,7 @@ namespace rocsparseio
         {
             return (rocsparseio_direction)this->value;
         }
-        inline constexpr direction_t(){};
+        inline constexpr direction_t() {};
         inline constexpr direction_t(rocsparseio_direction_t ival_)
             : value((value_type)ival_)
         {
@@ -385,9 +385,9 @@ namespace rocsparseio
         {
             return (rocsparseio_type)this->value;
         };
-        constexpr type_t(){};
+        constexpr type_t() {};
         constexpr type_t(rocsparseio_type_t ival_)
-            : value((value_type)ival_){};
+            : value((value_type)ival_) {};
 
         template <typename T>
         static constexpr type_t convert();
@@ -479,9 +479,9 @@ namespace rocsparseio
         {
             return (rocsparseio_index_base)this->value;
         };
-        constexpr index_base_t(){};
+        constexpr index_base_t() {};
         constexpr index_base_t(rocsparseio_index_base_t ival_)
-            : value((value_index_base)ival_){};
+            : value((value_index_base)ival_) {};
 
         template <typename T>
         static constexpr index_base_t convert();

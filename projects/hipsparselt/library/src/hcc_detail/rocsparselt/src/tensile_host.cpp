@@ -67,7 +67,7 @@
 
 namespace
 {
- #ifndef WIN32
+#ifndef WIN32
     int rocsparselt_dl_iterate_phdr_callback(struct dl_phdr_info* hdr_info, size_t size, void* data)
     {
         std::pair<std::string, std::string>* typedData
@@ -191,8 +191,8 @@ namespace
      ****************************************************************/
     template <typename Ti, typename To, typename Tc>
     auto ConstructTensileProblem(const RocsparseltContractionProblem<Ti, To, Tc>& prob,
-                                 int                                              useBias          = 0,
-                                 int                                              useScaleAlphaVec = 0)
+                                 int                                              useBias = 0,
+                                 int useScaleAlphaVec                                     = 0)
     {
         // Tensile DataTypes corresponding to rocsparselt data types
         static constexpr rocisa::DataType Tensile_Ti = tensile_datatype<Ti>;
@@ -271,16 +271,18 @@ namespace
         // clang-format on
 
         // Descriptor for input matrix C
-        TensileLite::TensorDescriptor c{"c",
-                                    Tensile_To,
-                                    {prob.m, prob.n, prob.batch_count},
-                                    {prob.row_stride_c, prob.col_stride_c, prob.batch_stride_c}};
+        TensileLite::TensorDescriptor c{
+            "c",
+            Tensile_To,
+            {prob.m, prob.n, prob.batch_count},
+            {prob.row_stride_c, prob.col_stride_c, prob.batch_stride_c}};
 
         // Descriptor for output matrix D
-        TensileLite::TensorDescriptor d{"d",
-                                    Tensile_To,
-                                    {prob.m, prob.n, prob.batch_count},
-                                    {prob.row_stride_d, prob.col_stride_d, prob.batch_stride_d}};
+        TensileLite::TensorDescriptor d{
+            "d",
+            Tensile_To,
+            {prob.m, prob.n, prob.batch_count},
+            {prob.row_stride_d, prob.col_stride_d, prob.batch_stride_d}};
 
         TensileLite::TensorDescriptor e{"e"};
         TensileLite::TensorDescriptor bias{"bias"};
@@ -292,21 +294,21 @@ namespace
 
         // The ContractionProblemGemm
         TensileLite::ContractionProblemGemm tensileProblem{a,
-                                                       b,
-                                                       c,
-                                                       d,
-                                                       e,
-                                                       bias,
-                                                       scaleA,
-                                                       scaleB,
-                                                       scaleC,
-                                                       scaleD,
-                                                       scaleAlphaVec,
-                                                       freeIndex,
-                                                       batchIndex,
-                                                       boundIndex,
-                                                       *prob.beta,
-                                                       prob.workspaceSize};
+                                                           b,
+                                                           c,
+                                                           d,
+                                                           e,
+                                                           bias,
+                                                           scaleA,
+                                                           scaleB,
+                                                           scaleC,
+                                                           scaleD,
+                                                           scaleAlphaVec,
+                                                           freeIndex,
+                                                           batchIndex,
+                                                           boundIndex,
+                                                           *prob.beta,
+                                                           prob.workspaceSize};
         tensileProblem.setComputeInputType(Tensile_Ti);
         tensileProblem.setAlphaType(Tensile_Tc);
         tensileProblem.setBetaType(Tensile_Tc);
@@ -441,7 +443,7 @@ namespace
         inputs.batchD = reinterpret_cast<void* const*>(prob.batch_D);
 
         // Set the GSU workspace
-        inputs.ws = prob.workspace;
+        inputs.ws           = prob.workspace;
         inputs.Synchronizer = prob.workspace;
 
         // set bias vector
@@ -497,7 +499,8 @@ namespace
     class TensileHost
     {
         // The library object
-        std::shared_ptr<TensileLite::MasterSolutionLibrary<TensileLite::ContractionProblemGemm>> m_library;
+        std::shared_ptr<TensileLite::MasterSolutionLibrary<TensileLite::ContractionProblemGemm>>
+                                                                          m_library;
         std::unordered_set<TensileLite::LazyLoadingInit>                  m_deviceSet;
         std::unordered_map<std::string, std::shared_ptr<hipDeviceProp_t>> m_devicePropMap;
 
@@ -506,7 +509,7 @@ namespace
         struct adapter_s
         {
             mutable std::atomic<TensileLite::hip::SolutionAdapter*> adapter{nullptr};
-            mutable std::mutex                                  mutex;
+            mutable std::mutex                                      mutex;
         };
 
         // Each device contains an adapter
@@ -672,11 +675,11 @@ namespace
                       << std::endl;
                 (void)once;
             }
-#endif // ROCSPARSELT_TENSILE_LAZY_LOAD == 0
-            // We initialize a local static variable with a lambda function call to avoid
-            // race conditions when multiple threads with different device IDs try to
-            // initialize library. This ensures that only one thread initializes library,
-            // and other threads trying to initialize library wait for it to complete.
+#endif // ROCSPARSELT_TENSILE_LAZY_LOAD == 0                                      \
+    // We initialize a local static variable with a lambda function call to avoid \
+    // race conditions when multiple threads with different device IDs try to     \
+    // initialize library. This ensures that only one thread initializes library, \
+    // and other threads trying to initialize library wait for it to complete.
             static int once = [&] {
                 // Determine library path
                 std::string tensileLibPath;
@@ -695,8 +698,8 @@ namespace
 #endif
                 if(!TestPath(tensileLibPath))
                 {
-                    hipsparselt_cerr << "\nhipsparselt_error: Cannot read " << tensileLibPath << ": "
-                                     << strerror(errno) << std::endl;
+                    hipsparselt_cerr << "\nhipsparselt_error: Cannot read " << tensileLibPath
+                                     << ": " << strerror(errno) << std::endl;
                     //rocsparselt_abort();
                 }
 
@@ -721,15 +724,18 @@ namespace
                     }
                 }
 
-                auto lib = TensileLite::LoadLibraryFile<TensileLite::ContractionProblemGemm>(tensileLibPath);
+                auto lib = TensileLite::LoadLibraryFile<TensileLite::ContractionProblemGemm>(
+                    tensileLibPath);
                 if(!lib)
                 {
-                    hipsparselt_cerr << "\nhipsparselt_error: Could not load " << tensileLibPath << std::endl;
+                    hipsparselt_cerr << "\nhipsparselt_error: Could not load " << tensileLibPath
+                                     << std::endl;
                     return -1;
                 }
                 else
                 {
-                    using MSL = TensileLite::MasterSolutionLibrary<TensileLite::ContractionProblemGemm>;
+                    using MSL
+                        = TensileLite::MasterSolutionLibrary<TensileLite::ContractionProblemGemm>;
                     m_library = std::dynamic_pointer_cast<MSL>(lib);
                     if(!m_library->initLibraryMapping(tensileLibPath))
                     {
@@ -743,7 +749,6 @@ namespace
 
             static_cast<void>(adapter.initializeLazyLoading(processor, path));
 
-
             if(!m_library && once != 0)
             {
                 hipsparselt_cerr << "\nhipsparselt_error: Could not initialize Tensile library"
@@ -755,7 +760,8 @@ namespace
 
     // Return the library and adapter for the current HIP device
     auto& get_library_and_adapter(
-        std::shared_ptr<TensileLite::MasterSolutionLibrary<TensileLite::ContractionProblemGemm>>* library
+        std::shared_ptr<TensileLite::MasterSolutionLibrary<TensileLite::ContractionProblemGemm>>*
+            library
         = nullptr,
         std::shared_ptr<hipDeviceProp_t>* deviceProp = nullptr,
         int                               device     = -1)
@@ -848,14 +854,15 @@ rocsparselt_status runContractionProblem(const RocsparseltContractionProblem<Ti,
                                          const int config_max_id,
                                          const int search_iterations)
 {
-    rocsparselt_status                            status = rocsparselt_status_internal_error;
+    rocsparselt_status                                status = rocsparselt_status_internal_error;
     std::shared_ptr<TensileLite::ContractionSolution> solution;
 
     try
     {
-        std::shared_ptr<TensileLite::MasterSolutionLibrary<TensileLite::ContractionProblemGemm>> library;
-        std::shared_ptr<hipDeviceProp_t>                                                 deviceProp;
-        std::shared_ptr<TensileLite::Hardware>                                               hardware;
+        std::shared_ptr<TensileLite::MasterSolutionLibrary<TensileLite::ContractionProblemGemm>>
+                                               library;
+        std::shared_ptr<hipDeviceProp_t>       deviceProp;
+        std::shared_ptr<TensileLite::Hardware> hardware;
 
         auto& adapter = get_library_and_adapter(&library, &deviceProp, prob.handle->device);
 
@@ -876,8 +883,12 @@ rocsparselt_status runContractionProblem(const RocsparseltContractionProblem<Ti,
 
             if(!search_iterations)
             {
-                if(configs[*config_id].max_workspace_bytes + configs[*config_id].synchronizer_bytes > prob.workspaceSize
-                   || (configs[*config_id].max_workspace_bytes + configs[*config_id].synchronizer_bytes > 0 && prob.workspace == nullptr))
+                if(configs[*config_id].max_workspace_bytes + configs[*config_id].synchronizer_bytes
+                       > prob.workspaceSize
+                   || (configs[*config_id].max_workspace_bytes
+                               + configs[*config_id].synchronizer_bytes
+                           > 0
+                       && prob.workspace == nullptr))
                 {
                     hipsparselt_cerr << "config " << *config_id << " need extra workspace "
                                      << configs[*config_id].max_workspace_bytes << " bytes."
@@ -893,7 +904,8 @@ rocsparselt_status runContractionProblem(const RocsparseltContractionProblem<Ti,
                                      << " does not exists - skip" << std::endl;
                     return rocsparselt_status_not_implemented;
                 }
-                tensile_inputs.ws = (uint8_t*) tensile_inputs.Synchronizer + configs[*config_id].synchronizer_bytes;
+                tensile_inputs.ws = (uint8_t*)tensile_inputs.Synchronizer
+                                    + configs[*config_id].synchronizer_bytes;
                 RETURN_IF_HIP_ERROR(
                     adapter.launchKernels(solution->solve(tensile_prob, tensile_inputs, *hardware),
                                           prob.streams[0],
@@ -909,8 +921,10 @@ rocsparselt_status runContractionProblem(const RocsparseltContractionProblem<Ti,
                 RETURN_IF_HIP_ERROR(hipEventCreate(&stopEvent));
                 for(int id = 0; id < config_max_id; id++)
                 {
-                    if(configs[id].max_workspace_bytes + configs[id].synchronizer_bytes > prob.workspaceSize
-                       || (configs[id].max_workspace_bytes + configs[id].synchronizer_bytes> 0 && prob.workspace == nullptr))
+                    if(configs[id].max_workspace_bytes + configs[id].synchronizer_bytes
+                           > prob.workspaceSize
+                       || (configs[id].max_workspace_bytes + configs[id].synchronizer_bytes > 0
+                           && prob.workspace == nullptr))
                     {
                         hipsparselt_cerr << "config " << id << " need extra workspace "
                                          << configs[id].max_workspace_bytes << " bytes - skip."
@@ -926,7 +940,8 @@ rocsparselt_status runContractionProblem(const RocsparseltContractionProblem<Ti,
                                          << std::endl;
                         continue;
                     }
-                    tensile_inputs.ws = (uint8_t*) tensile_inputs.Synchronizer + configs[id].synchronizer_bytes;
+                    tensile_inputs.ws
+                        = (uint8_t*)tensile_inputs.Synchronizer + configs[id].synchronizer_bytes;
                     //warm up
                     RETURN_IF_HIP_ERROR(adapter.launchKernels(
                         solution->solve(tensile_prob, tensile_inputs, *hardware),
@@ -989,9 +1004,10 @@ rocsparselt_status getBestSolutions(const RocsparseltContractionProblem<Ti, To, 
                                     _rocsparselt_matmul_config*                      configs,
                                     int*                                             foundConfigs)
 {
-    std::shared_ptr<TensileLite::MasterSolutionLibrary<TensileLite::ContractionProblemGemm>> library;
-    std::shared_ptr<hipDeviceProp_t>                                                 deviceProp;
-    std::shared_ptr<TensileLite::Hardware>                                               hardware;
+    std::shared_ptr<TensileLite::MasterSolutionLibrary<TensileLite::ContractionProblemGemm>>
+                                           library;
+    std::shared_ptr<hipDeviceProp_t>       deviceProp;
+    std::shared_ptr<TensileLite::Hardware> hardware;
 
     // auto &adapter =
     get_library_and_adapter(&library, &deviceProp, prob.handle->device);
@@ -1052,7 +1068,9 @@ rocsparselt_status getBestSolutions(const RocsparseltContractionProblem<Ti, To, 
         configs[i].max_workspace_bytes = solution->requiredWorkspaceSize(tensile_prob, *hardware);
         configs[i].use_bias            = tensile_prob.useBias();
         configs[i].use_scale_alpha_vec = tensile_prob.useScaleAlphaVec();
-        configs[i].synchronizer_bytes  = std::ceil(solution->requiredSynchronizerSize(tensile_prob, *hardware) / 16) * 16; // align 16 
+        configs[i].synchronizer_bytes
+            = std::ceil(solution->requiredSynchronizerSize(tensile_prob, *hardware) / 16)
+              * 16; // align 16
     }
     return rocsparselt_status_success;
 }

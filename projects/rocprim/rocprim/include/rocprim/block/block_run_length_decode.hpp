@@ -160,9 +160,11 @@ private:
         } runs;
     };
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE storage_type_& private_storage()
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    storage_type_& private_storage()
     {
-        ROCPRIM_SHARED_MEMORY storage_type private_storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type private_storage;
         return private_storage.get();
     }
 
@@ -190,10 +192,10 @@ public:
    */
     template<typename RunLengthT, typename TotalDecodedSizeT>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-        block_run_length_decode(storage_type& temp_storage,
-                                ItemT (&run_values)[RUNS_PER_THREAD],
-                                RunLengthT (&run_lengths)[RUNS_PER_THREAD],
-                                TotalDecodedSizeT& total_decoded_size)
+    block_run_length_decode(storage_type& temp_storage,
+                            ItemT (&run_values)[RUNS_PER_THREAD],
+                            RunLengthT (&run_lengths)[RUNS_PER_THREAD],
+                            TotalDecodedSizeT& total_decoded_size)
         : temp_storage(temp_storage.get())
         , linear_tid(::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>())
     {
@@ -207,9 +209,9 @@ public:
      */
     template<typename UserRunOffsetT>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-        block_run_length_decode(storage_type& temp_storage,
-                                ItemT (&run_values)[RUNS_PER_THREAD],
-                                UserRunOffsetT (&run_offsets)[RUNS_PER_THREAD])
+    block_run_length_decode(storage_type& temp_storage,
+                            ItemT (&run_values)[RUNS_PER_THREAD],
+                            UserRunOffsetT (&run_offsets)[RUNS_PER_THREAD])
         : temp_storage(temp_storage.get())
         , linear_tid(::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>())
     {
@@ -221,9 +223,9 @@ public:
      */
     template<typename RunLengthT, typename TotalDecodedSizeT>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-        block_run_length_decode(ItemT (&run_values)[RUNS_PER_THREAD],
-                                RunLengthT (&run_lengths)[RUNS_PER_THREAD],
-                                TotalDecodedSizeT& total_decoded_size)
+    block_run_length_decode(ItemT (&run_values)[RUNS_PER_THREAD],
+                            RunLengthT (&run_lengths)[RUNS_PER_THREAD],
+                            TotalDecodedSizeT& total_decoded_size)
         : temp_storage(private_storage())
         , linear_tid(::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>())
     {
@@ -234,9 +236,8 @@ public:
      * \brief Constructor specialised for static temporary storage, initializing using the runs' offsets.
      */
     template<typename UserRunOffsetT>
-    ROCPRIM_DEVICE ROCPRIM_INLINE
-        block_run_length_decode(ItemT (&run_values)[RUNS_PER_THREAD],
-                                UserRunOffsetT (&run_offsets)[RUNS_PER_THREAD])
+    ROCPRIM_DEVICE ROCPRIM_INLINE block_run_length_decode(
+        ItemT (&run_values)[RUNS_PER_THREAD], UserRunOffsetT (&run_offsets)[RUNS_PER_THREAD])
         : temp_storage(private_storage())
         , linear_tid(::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>())
     {
@@ -245,9 +246,9 @@ public:
 
 private:
     template<typename RunOffsetT>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void
-        init_with_run_offsets(ItemT (&run_values)[RUNS_PER_THREAD],
-                              RunOffsetT (&run_offsets)[RUNS_PER_THREAD])
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void init_with_run_offsets(ItemT (&run_values)[RUNS_PER_THREAD],
+                               RunOffsetT (&run_offsets)[RUNS_PER_THREAD])
     {
         // Keep the runs' items and the offsets of each run's beginning in the temporary storage
         RunOffsetT thread_dst_offset
@@ -265,10 +266,10 @@ private:
     }
 
     template<typename RunLengthT, typename TotalDecodedSizeT>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void
-        init_with_run_lengths(ItemT (&run_values)[RUNS_PER_THREAD],
-                              RunLengthT (&run_lengths)[RUNS_PER_THREAD],
-                              TotalDecodedSizeT& total_decoded_size)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void init_with_run_lengths(ItemT (&run_values)[RUNS_PER_THREAD],
+                               RunLengthT (&run_lengths)[RUNS_PER_THREAD],
+                               TotalDecodedSizeT& total_decoded_size)
     {
         // Compute the offset for the beginning of each run
         DecodedOffsetT run_offsets[RUNS_PER_THREAD];
@@ -311,10 +312,10 @@ public:
      * in undefined behavior.
      */
     template<typename RelativeOffsetT>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void
-        run_length_decode(ItemT (&decoded_items)[DECODED_ITEMS_PER_THREAD],
-                          RelativeOffsetT (&item_offsets)[DECODED_ITEMS_PER_THREAD],
-                          DecodedOffsetT from_decoded_offset = 0)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void run_length_decode(ItemT (&decoded_items)[DECODED_ITEMS_PER_THREAD],
+                           RelativeOffsetT (&item_offsets)[DECODED_ITEMS_PER_THREAD],
+                           DecodedOffsetT from_decoded_offset = 0)
     {
         // The (global) offset of the first item decoded by this thread
         DecodedOffsetT thread_decoded_offset
@@ -366,9 +367,9 @@ public:
      * \param[in] from_decoded_offset If invoked with from_decoded_offset that is larger than total_decoded_size results
      * in undefined behavior.
      */
-    ROCPRIM_DEVICE ROCPRIM_INLINE void
-        run_length_decode(ItemT (&decoded_items)[DECODED_ITEMS_PER_THREAD],
-                          DecodedOffsetT from_decoded_offset = 0)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void run_length_decode(ItemT (&decoded_items)[DECODED_ITEMS_PER_THREAD],
+                           DecodedOffsetT from_decoded_offset = 0)
     {
         DecodedOffsetT item_offsets[DECODED_ITEMS_PER_THREAD];
         run_length_decode(decoded_items, item_offsets, from_decoded_offset);

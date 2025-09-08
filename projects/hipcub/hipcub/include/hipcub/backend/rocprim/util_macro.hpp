@@ -2,7 +2,7 @@
  * Copyright (c) 2011, Duane Merrill.  All rights reserved.
  * Copyright (c) 2011-2018, NVIDIA CORPORATION.  All rights reserved.
  * Modifications Copyright (c) 2024, Advanced Micro Devices, Inc.  All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -13,7 +13,7 @@
  *     * Neither the name of the NVIDIA CORPORATION nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -45,16 +45,16 @@ BEGIN_HIPCUB_NAMESPACE
     #define HIPCUB_PREVENT_MACRO_SUBSTITUTION
 template<typename T, typename U>
 constexpr __host__ __device__
-auto min HIPCUB_PREVENT_MACRO_SUBSTITUTION(T&& t, U&& u)
-    -> decltype(t < u ? std::forward<T>(t) : std::forward<U>(u))
+auto min HIPCUB_PREVENT_MACRO_SUBSTITUTION(T&& t, U&& u) -> decltype(t < u ? std::forward<T>(t)
+                                                                           : std::forward<U>(u))
 {
     return t < u ? std::forward<T>(t) : std::forward<U>(u);
 }
 
 template<typename T, typename U>
 constexpr __host__ __device__
-auto max HIPCUB_PREVENT_MACRO_SUBSTITUTION(T&& t, U&& u)
-    -> decltype(t < u ? std::forward<U>(u) : std::forward<T>(t))
+auto max HIPCUB_PREVENT_MACRO_SUBSTITUTION(T&& t, U&& u) -> decltype(t < u ? std::forward<U>(u)
+                                                                           : std::forward<T>(t))
 {
     return t < u ? std::forward<U>(u) : std::forward<T>(t);
 }
@@ -82,7 +82,7 @@ auto max HIPCUB_PREVENT_MACRO_SUBSTITUTION(T&& t, U&& u)
 /// Deprecated since rocm [7.1]
 #ifndef HIPCUB_QUOTIENT_CEILING
     /// Quotient of x/y rounded up to nearest integer
-    #define HIPCUB_QUOTIENT_CEILING(x, y) (((x) + (y)-1) / (y))
+    #define HIPCUB_QUOTIENT_CEILING(x, y) (((x) + (y) - 1) / (y))
 #endif
 
 /// Deprecated since rocm [7.1]

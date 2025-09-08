@@ -44,12 +44,14 @@ template<class T, int n, typename = void>
 class fast_array
 {
 public:
-    ROCPRIM_HOST_DEVICE T get(int index) const
+    ROCPRIM_HOST_DEVICE
+    T get(int index) const
     {
         return data[index];
     }
 
-    ROCPRIM_HOST_DEVICE void set(int index, T value)
+    ROCPRIM_HOST_DEVICE
+    void set(int index, T value)
     {
         data[index] = value;
     }
@@ -66,7 +68,8 @@ template<class T, int n>
 class fast_array<T, n, std::enable_if_t<(sizeof(T) > sizeof(int32_t))>>
 {
 public:
-    ROCPRIM_HOST_DEVICE T get(int index) const
+    ROCPRIM_HOST_DEVICE
+    T get(int index) const
     {
         T result;
         ROCPRIM_UNROLL
@@ -80,7 +83,8 @@ public:
         return result;
     }
 
-    ROCPRIM_HOST_DEVICE void set(int index, T value)
+    ROCPRIM_HOST_DEVICE
+    void set(int index, T value)
     {
         ROCPRIM_UNROLL
         for(int i = 0; i < words_no; i++)
@@ -136,8 +140,8 @@ public:
     /// \param storage   [in]  Temporary Storage used for the Reduction
     /// \param reduce_op [in]  Binary reduction operator
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void
-        reduce(T input, T& output, storage_type& storage, BinaryFunction reduce_op)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void reduce(T input, T& output, storage_type& storage, BinaryFunction reduce_op)
     {
         this->reduce_impl(::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>(),
                           input,
@@ -153,7 +157,8 @@ public:
     template<class BinaryFunction>
     ROCPRIM_DEVICE ROCPRIM_FORCE_INLINE void reduce(T input, T& output, BinaryFunction reduce_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->reduce(input, output, storage, reduce_op);
     }
 
@@ -163,10 +168,11 @@ public:
     /// \param storage   [in]  Temporary Storage used for the Reduction
     /// \param reduce_op [in]  Binary reduction operator
     template<unsigned int ItemsPerThread, class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void reduce(T (&input)[ItemsPerThread],
-                                              T&             output,
-                                              storage_type&  storage,
-                                              BinaryFunction reduce_op)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void reduce(T (&input)[ItemsPerThread],
+                T&             output,
+                storage_type&  storage,
+                BinaryFunction reduce_op)
     {
         // Reduce thread items
         T thread_input = input[0];
@@ -189,7 +195,8 @@ public:
     ROCPRIM_DEVICE ROCPRIM_FORCE_INLINE void
         reduce(T (&input)[ItemsPerThread], T& output, BinaryFunction reduce_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->reduce(input, output, storage, reduce_op);
     }
 
@@ -200,11 +207,12 @@ public:
     /// \param storage     [in]  Temporary Storage used for reduction
     /// \param reduce_op   [in]  Binary reduction operator
     template<class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void reduce(T              input,
-                                              T&             output,
-                                              unsigned int   valid_items,
-                                              storage_type&  storage,
-                                              BinaryFunction reduce_op)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void reduce(T              input,
+                T&             output,
+                unsigned int   valid_items,
+                storage_type&  storage,
+                BinaryFunction reduce_op)
     {
         this->reduce_impl(::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>(),
                           input,
@@ -223,17 +231,19 @@ public:
     ROCPRIM_DEVICE ROCPRIM_FORCE_INLINE void
         reduce(T input, T& output, unsigned int valid_items, BinaryFunction reduce_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->reduce(input, output, valid_items, storage, reduce_op);
     }
 
 private:
     template<class BinaryFunction, bool FunctionCommutativeOnly = CommutativeOnly>
-    ROCPRIM_DEVICE ROCPRIM_INLINE auto reduce_impl(const unsigned int flat_tid,
-                                                   T                  input,
-                                                   T&                 output,
-                                                   storage_type&      storage,
-                                                   BinaryFunction     reduce_op) ->
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    auto reduce_impl(const unsigned int flat_tid,
+                     T                  input,
+                     T&                 output,
+                     storage_type&      storage,
+                     BinaryFunction     reduce_op) ->
         typename std::enable_if<(FunctionCommutativeOnly), void>::type
     {
         storage_type_& storage_ = storage.get();
@@ -265,11 +275,12 @@ private:
     }
 
     template<class BinaryFunction, bool FunctionCommutativeOnly = CommutativeOnly>
-    ROCPRIM_DEVICE ROCPRIM_INLINE auto reduce_impl(const unsigned int flat_tid,
-                                                   T                  input,
-                                                   T&                 output,
-                                                   storage_type&      storage,
-                                                   BinaryFunction     reduce_op) ->
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    auto reduce_impl(const unsigned int flat_tid,
+                     T                  input,
+                     T&                 output,
+                     storage_type&      storage,
+                     BinaryFunction     reduce_op) ->
         typename std::enable_if<(!FunctionCommutativeOnly), void>::type
     {
         storage_type_& storage_ = storage.get();
@@ -300,7 +311,8 @@ private:
     }
 
     template<bool UseValid, class WarpReduce, class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE auto
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    auto
         warp_reduce(T input, T& output, const unsigned int valid_items, BinaryFunction reduce_op) ->
         typename std::enable_if<UseValid>::type
     {
@@ -308,7 +320,8 @@ private:
     }
 
     template<bool UseValid, class WarpReduce, class BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE auto
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    auto
         warp_reduce(T input, T& output, const unsigned int valid_items, BinaryFunction reduce_op) ->
         typename std::enable_if<!UseValid>::type
     {
@@ -317,12 +330,13 @@ private:
     }
 
     template<class BinaryFunction, bool FunctionCommutativeOnly = CommutativeOnly>
-    ROCPRIM_DEVICE ROCPRIM_INLINE auto reduce_impl(const unsigned int flat_tid,
-                                                   T                  input,
-                                                   T&                 output,
-                                                   const unsigned int valid_items,
-                                                   storage_type&      storage,
-                                                   BinaryFunction     reduce_op) ->
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    auto reduce_impl(const unsigned int flat_tid,
+                     T                  input,
+                     T&                 output,
+                     const unsigned int valid_items,
+                     storage_type&      storage,
+                     BinaryFunction     reduce_op) ->
         typename std::enable_if<(FunctionCommutativeOnly), void>::type
     {
         storage_type_& storage_ = storage.get();
@@ -344,12 +358,13 @@ private:
     }
 
     template<class BinaryFunction, bool FunctionCommutativeOnly = CommutativeOnly>
-    ROCPRIM_DEVICE ROCPRIM_INLINE auto reduce_impl(const unsigned int flat_tid,
-                                                   T                  input,
-                                                   T&                 output,
-                                                   const unsigned int valid_items,
-                                                   storage_type&      storage,
-                                                   BinaryFunction     reduce_op) ->
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    auto reduce_impl(const unsigned int flat_tid,
+                     T                  input,
+                     T&                 output,
+                     const unsigned int valid_items,
+                     storage_type&      storage,
+                     BinaryFunction     reduce_op) ->
         typename std::enable_if<(!FunctionCommutativeOnly), void>::type
     {
         storage_type_& storage_ = storage.get();

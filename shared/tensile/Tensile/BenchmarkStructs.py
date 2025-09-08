@@ -24,9 +24,15 @@
 
 from copy import deepcopy
 import itertools
-from .Common import tPrint, printExit, \
-        defaultBenchmarkCommonParameters, validParameters, globalParameters, \
-        defaultBatchedBenchmarkFinalProblemSizes, defaultBenchmarkFinalProblemSizes
+from .Common import (
+    tPrint,
+    printExit,
+    defaultBenchmarkCommonParameters,
+    validParameters,
+    globalParameters,
+    defaultBatchedBenchmarkFinalProblemSizes,
+    defaultBenchmarkFinalProblemSizes,
+)
 from .CustomKernels import getAllCustomKernelNames
 from .SolutionStructs import ProblemType, ProblemSizes
 
@@ -38,14 +44,20 @@ def checkParametersAreValid(param, validParams):
         return
 
     if name not in validParams:
-        printExit("Invalid parameter name: {}\nValid parameters are {}." \
-                .format(name, sorted(validParameters.keys())))
+        printExit(
+            "Invalid parameter name: {}\nValid parameters are {}.".format(
+                name, sorted(validParameters.keys())
+            )
+        )
 
     for value in values:
         if validParams[name] != -1 and value not in validParams[name]:
             msgBase = "Invalid parameter value: {} = {}\nValid values for {} are {}{}."
-            msgExt = " (only first 32 combos printed)\nRefer to Common.py for more info" \
-                    if len(validParams[name])>32 else ""
+            msgExt = (
+                " (only first 32 combos printed)\nRefer to Common.py for more info"
+                if len(validParams[name]) > 32
+                else ""
+            )
             printExit(msgBase.format(name, value, name, validParams[name][:32], msgExt))
 
 
@@ -55,7 +67,7 @@ def separateParameters(paramSetList):
     multiValues = {}
     for name, values in paramSetList.items():
         if values == None:
-            printExit("You must specify value(s) for parameter \"{}\"".format(name))
+            printExit('You must specify value(s) for parameter "{}"'.format(name))
         if len(values) == 1 and name != "ProblemSizes":
             singleVaules[name] = values[0]
         elif len(values) > 1 and name != "ProblemSizes":
@@ -71,8 +83,11 @@ def checkCDBufferAndStrides(problemType, problemSizes, isCEqualD):
             ldd = problem.sizes[problemType["IndexAssignmentsLD"][0]]
             ldc = problem.sizes[problemType["IndexAssignmentsLD"][1]]
             if ldd != ldc:
-                printExit("LDD({}) != LDC({}) causes unpredictable result when CEqualD(True)" \
-                        .format(ldd, ldc))
+                printExit(
+                    "LDD({}) != LDC({}) causes unpredictable result when CEqualD(True)".format(
+                        ldd, ldc
+                    )
+                )
 
 
 class BenchmarkProcess:
@@ -101,14 +116,22 @@ class BenchmarkProcess:
     def getConfigParameters(self, isbatched, config):
         """Parse and validate benchmarking parameters in config"""
         tPrint(3, "")
-        tPrint(3, "####################################################################")
+        tPrint(
+            3, "####################################################################"
+        )
         tPrint(1, "# Filling in Parameters With Defaults")
-        tPrint(3, "####################################################################")
+        tPrint(
+            3, "####################################################################"
+        )
         tPrint(3, "")
 
         # check for no longer supported legacy benchmark steps
-        badParams = ["InitialSolutionParameters", "BenchmarkForkParameters", \
-                     "JoinParameters", "BenchmarkJoinParameters"]
+        badParams = [
+            "InitialSolutionParameters",
+            "BenchmarkForkParameters",
+            "JoinParameters",
+            "BenchmarkJoinParameters",
+        ]
         badsInConfig = []
 
         for p in badParams:
@@ -116,8 +139,11 @@ class BenchmarkProcess:
                 badsInConfig.append(p)
 
         if len(badsInConfig) == 1:
-            printExit("Benchmark step {} is no longer supported".format("'" + badsInConfig[0] +
-                                                                        "'"))
+            printExit(
+                "Benchmark step {} is no longer supported".format(
+                    "'" + badsInConfig[0] + "'"
+                )
+            )
         elif len(badsInConfig) > 1:
             printExit("Benchmark steps {} are no longer supported".format(badsInConfig))
 
@@ -130,21 +156,35 @@ class BenchmarkProcess:
                 return default
 
         # converts list of dicts into a flat dict
-        benchmarkCommonParams = dict(itertools.chain(*[x.items() \
-                for x in getNonNoneFromConfig("BenchmarkCommonParameters", [])]))
-        forkParams = dict(itertools.chain(*[x.items() \
-                for x in getNonNoneFromConfig("ForkParameters", [])]))
+        benchmarkCommonParams = dict(
+            itertools.chain(
+                *[
+                    x.items()
+                    for x in getNonNoneFromConfig("BenchmarkCommonParameters", [])
+                ]
+            )
+        )
+        forkParams = dict(
+            itertools.chain(
+                *[x.items() for x in getNonNoneFromConfig("ForkParameters", [])]
+            )
+        )
         self.paramGroups = forkParams.pop("Groups") if "Groups" in forkParams else []
         self.customKernels = getNonNoneFromConfig("CustomKernels", [])
 
         if "BenchmarkFinalParameters" in config:
             sizes = config["BenchmarkFinalParameters"][0]["ProblemSizes"]
         else:
-            sizes = defaultBatchedBenchmarkFinalProblemSizes if isbatched \
+            sizes = (
+                defaultBatchedBenchmarkFinalProblemSizes
+                if isbatched
                 else defaultBenchmarkFinalProblemSizes
+            )
 
         self.problemSizes = ProblemSizes(self.problemType, sizes)
-        checkCDBufferAndStrides(self.problemType, self.problemSizes, globalParameters["CEqualD"])
+        checkCDBufferAndStrides(
+            self.problemType, self.problemSizes, globalParameters["CEqualD"]
+        )
 
         # validate parameter values
         configParams = {**benchmarkCommonParams, **forkParams}
@@ -157,7 +197,9 @@ class BenchmarkProcess:
                 for k, v in group.items():
                     checkParametersAreValid((k, [v]), validParameters)
 
-        params = dict(itertools.chain(*[x.items() for x in defaultBenchmarkCommonParameters]))
+        params = dict(
+            itertools.chain(*[x.items() for x in defaultBenchmarkCommonParameters])
+        )
         params.update(configParams)
         self.singleValueParams, self.multiValueParams = separateParameters(params)
 
@@ -178,22 +220,29 @@ class BenchmarkProcess:
     def convertParametersToSteps(self):
         """Create benchmark steps based on parsed parameters"""
         tPrint(3, "")
-        tPrint(3, "####################################################################")
+        tPrint(
+            3, "####################################################################"
+        )
         tPrint(1, "# Convert Parameters to Benchmark Step(s)")
-        tPrint(3, "####################################################################")
+        tPrint(
+            3, "####################################################################"
+        )
         tPrint(3, "")
 
         # currently only a single step is supported
         tPrint(3, "")
-        tPrint(3, "####################################################################")
+        tPrint(
+            3, "####################################################################"
+        )
         tPrint(1, "# Benchmark Final")
-        benchmarkStep = BenchmarkStep( \
-                self.multiValueParams, \
-                self.singleValueParams, \
-                self.paramGroups, \
-                self.customKernels, \
-                self.problemSizes, \
-                self.benchmarkStepIdx)
+        benchmarkStep = BenchmarkStep(
+            self.multiValueParams,
+            self.singleValueParams,
+            self.paramGroups,
+            self.customKernels,
+            self.problemSizes,
+            self.benchmarkStepIdx,
+        )
         self.benchmarkSteps.append(benchmarkStep)
         self.benchmarkStepIdx += 1
 
@@ -253,7 +302,9 @@ def constructForkPermutations(forkParams, paramGroups):
 class BenchmarkStep:
     """A single benchmark step which consists of constant and fork parameters and a set of sizes"""
 
-    def __init__(self, forkParams, constantParams, paramGroups, customKernels, problemSizes, idx):
+    def __init__(
+        self, forkParams, constantParams, paramGroups, customKernels, problemSizes, idx
+    ):
         """Basic constructor storing each argument"""
         self.forkParams = forkParams
         self.constantParams = constantParams
@@ -267,8 +318,12 @@ class BenchmarkStep:
             self.customKernels = getAllCustomKernelNames()
             self.customKernelWildcard = True
 
-        tPrint(3, "# Creating BenchmarkStep: {} fork params and {} sizes" \
-                .format( len(forkParams), problemSizes.totalProblemSizes))
+        tPrint(
+            3,
+            "# Creating BenchmarkStep: {} fork params and {} sizes".format(
+                len(forkParams), problemSizes.totalProblemSizes
+            ),
+        )
 
     def isFinal(self):
         """Legacy. Currently always returns true since only one benchmark step is possible"""

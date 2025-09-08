@@ -24,7 +24,6 @@
  *
  *******************************************************************************/
 
-
 #include <dataTypeInfo.hpp>
 
 #include <gtest/gtest.h>
@@ -510,7 +509,7 @@ TEST_F(f32_test, toFloat)
     for(uint i = 0; i < 100000; i++)
     {
         std::uniform_real_distribution<float> unif(lb, ub);
-        cvt t;
+        cvt                                   t;
 
         t.num = unif(re);
 
@@ -550,7 +549,7 @@ TEST_F(f32_test, toFloatPacked)
     for(uint i = 0; i < 100000; i++)
     {
         std::uniform_real_distribution<float> unif(lb, ub);
-        cvt t;
+        cvt                                   t;
 
         t.num = unif(re);
 
@@ -590,7 +589,7 @@ TEST_F(f32_test, toDouble)
     for(uint i = 0; i < 100000; i++)
     {
         std::uniform_real_distribution<float> unif(lb, ub);
-        cvt t;
+        cvt                                   t;
 
         t.num = unif(re);
 
@@ -632,7 +631,7 @@ TEST_F(f32_test, toDoublePacked)
     for(uint i = 0; i < 100000; i++)
     {
         std::uniform_real_distribution<float> unif(lb, ub);
-        cvt t;
+        cvt                                   t;
 
         t.num = unif(re);
 

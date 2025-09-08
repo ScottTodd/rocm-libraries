@@ -1780,8 +1780,8 @@ void Real3DEvenNode::AssignParams_internal_TR_pairs()
         {
             auto& ccplan      = childNodes[1];
             ccplan->inStride  = {childNodes[0]->outStride[1],
-                                childNodes[0]->outStride[0],
-                                childNodes[0]->outStride[2]};
+                                 childNodes[0]->outStride[0],
+                                 childNodes[0]->outStride[2]};
             ccplan->iDist     = childNodes[0]->oDist;
             ccplan->outStride = ccplan->inStride;
             ccplan->oDist     = ccplan->iDist;
@@ -1803,8 +1803,8 @@ void Real3DEvenNode::AssignParams_internal_TR_pairs()
         {
             auto& ccplan      = childNodes[3];
             ccplan->inStride  = {childNodes[2]->outStride[1],
-                                childNodes[2]->outStride[0],
-                                childNodes[2]->outStride[2]};
+                                 childNodes[2]->outStride[0],
+                                 childNodes[2]->outStride[2]};
             ccplan->iDist     = childNodes[2]->oDist;
             ccplan->outStride = ccplan->inStride;
             ccplan->oDist     = ccplan->iDist;

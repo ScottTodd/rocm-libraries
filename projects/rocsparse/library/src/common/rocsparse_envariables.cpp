@@ -94,14 +94,13 @@ rocsparse::envariables::envariables()
         {
             switch(tag)
             {
-#define ENVARIABLE(x_)                                                                        \
-    case rocsparse::envariables::x_:                                                          \
-    {                                                                                         \
-        const bool v = this->m_bool_var[rocsparse::envariables::x_];                          \
-        std::cout << ""                                                                       \
-                  << "env variable ROCSPARSE_" #x_ << " : " << ((v) ? "enabled" : "disabled") \
-                  << std::endl;                                                               \
-        break;                                                                                \
+#define ENVARIABLE(x_)                                               \
+    case rocsparse::envariables::x_:                                 \
+    {                                                                \
+        const bool v = this->m_bool_var[rocsparse::envariables::x_]; \
+        std::cout << "" << "env variable ROCSPARSE_" #x_ << " : "    \
+                  << ((v) ? "enabled" : "disabled") << std::endl;    \
+        break;                                                       \
     }
 
                 ROCSPARSE_FOREACH_ENVARIABLES;

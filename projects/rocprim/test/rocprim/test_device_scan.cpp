@@ -1093,13 +1093,13 @@ public:
     class conditional_discard_value
     {
     public:
-        __host__ __device__ explicit conditional_discard_value(T* const value, bool keep)
+        __host__ __device__
+        explicit conditional_discard_value(T* const value, bool keep)
             : value_{value}, keep_{keep}
         {}
 
         __host__ __device__
-        conditional_discard_value&
-            operator=(T value)
+        conditional_discard_value& operator=(T value)
         {
             if(keep_)
             {
@@ -1122,16 +1122,18 @@ public:
     using reference         = conditional_discard_value;
     using pointer           = conditional_discard_value*;
     using iterator_category = std::random_access_iterator_tag;
-    using difference_type = std::ptrdiff_t;
+    using difference_type   = std::ptrdiff_t;
 
-    __host__ __device__ single_index_iterator(T* value, size_t expected_index, size_t index = 0)
+    __host__ __device__
+    single_index_iterator(T* value, size_t expected_index, size_t index = 0)
         : value_{value}, expected_index_{expected_index}, index_{index}
     {}
 
-    __host__ __device__ single_index_iterator(const single_index_iterator&) = default;
     __host__ __device__
-    single_index_iterator&
-        operator=(const single_index_iterator&)
+    single_index_iterator(const single_index_iterator&)
+        = default;
+    __host__ __device__
+    single_index_iterator& operator=(const single_index_iterator&)
         = default;
 
     // clang-format off
@@ -1378,9 +1380,12 @@ public:
     using reference         = CheckValue;
     using pointer           = CheckValue*;
     using iterator_category = std::random_access_iterator_tag;
-    using difference_type = std::ptrdiff_t;
+    using difference_type   = std::ptrdiff_t;
 
-    ROCPRIM_HOST_DEVICE check_run_iterator(const args_t args) : current_index_(0), args_(args) {}
+    ROCPRIM_HOST_DEVICE
+    check_run_iterator(const args_t args)
+        : current_index_(0), args_(args)
+    {}
 
     ROCPRIM_HOST_DEVICE
     bool operator==(const check_run_iterator& rhs) const
@@ -1393,72 +1398,61 @@ public:
         return !(*this == rhs);
     }
     ROCPRIM_HOST_DEVICE
-    reference
-        operator*()
+    reference operator*()
     {
         return value_type{current_index_, args_};
     }
     ROCPRIM_HOST_DEVICE
-    reference
-        operator[](const difference_type distance) const
+    reference operator[](const difference_type distance) const
     {
         return *(*this + distance);
     }
     ROCPRIM_HOST_DEVICE
-    check_run_iterator&
-        operator+=(const difference_type rhs)
+    check_run_iterator& operator+=(const difference_type rhs)
     {
         current_index_ += rhs;
         return *this;
     }
     ROCPRIM_HOST_DEVICE
-    check_run_iterator&
-        operator-=(const difference_type rhs)
+    check_run_iterator& operator-=(const difference_type rhs)
     {
         current_index_ -= rhs;
         return *this;
     }
     ROCPRIM_HOST_DEVICE
-    difference_type
-        operator-(const check_run_iterator& rhs) const
+    difference_type operator-(const check_run_iterator& rhs) const
     {
         return current_index_ - rhs.current_index_;
     }
     ROCPRIM_HOST_DEVICE
-    check_run_iterator
-        operator+(const difference_type rhs) const
+    check_run_iterator operator+(const difference_type rhs) const
     {
         return check_run_iterator(*this) += rhs;
     }
     ROCPRIM_HOST_DEVICE
-    check_run_iterator
-        operator-(const difference_type rhs) const
+    check_run_iterator operator-(const difference_type rhs) const
     {
         return check_run_iterator(*this) -= rhs;
     }
     ROCPRIM_HOST_DEVICE
-    check_run_iterator&
-        operator++()
+    check_run_iterator& operator++()
     {
         ++current_index_;
         return *this;
     }
     ROCPRIM_HOST_DEVICE
-    check_run_iterator&
-        operator--()
+    check_run_iterator& operator--()
     {
         --current_index_;
         return *this;
     }
     ROCPRIM_HOST_DEVICE
-    check_run_iterator
-        operator++(int)
+    check_run_iterator operator++(int)
     {
         return ++check_run_iterator{*this};
     }
     ROCPRIM_HOST_DEVICE
-    check_run_iterator
-        operator--(int)
+    check_run_iterator operator--(int)
     {
         return --check_run_iterator{*this};
     }
@@ -1478,8 +1472,7 @@ struct check_value_inclusive
     rocprim::tuple<size_t, unsigned int*> args_; // run_length, incorrect flag
 
     ROCPRIM_HOST_DEVICE
-    size_t
-        operator=(const size_t value)
+    size_t                                operator=(const size_t value)
     {
         const size_t run_start    = current_index_ - (current_index_ % rocprim::get<0>(args_));
         const size_t index_in_run = current_index_ - run_start + 1;
@@ -1500,11 +1493,10 @@ struct check_value_exclusive
 {
     size_t current_index_{};
     rocprim::tuple<size_t, size_t, unsigned int*>
-        args_; // run_length, initial_value, incorrect flag
+           args_; // run_length, initial_value, incorrect flag
 
     ROCPRIM_HOST_DEVICE
-    size_t
-        operator=(const size_t value)
+    size_t operator=(const size_t value)
     {
         const size_t run_start    = current_index_ - (current_index_ % rocprim::get<0>(args_));
         const size_t index_in_run = current_index_ - run_start;

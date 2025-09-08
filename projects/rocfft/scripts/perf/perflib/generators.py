@@ -42,16 +42,11 @@ top = path(__file__).resolve().parent.parent
 def mktag(tag, dimension, precision, direction, inplace, real):
     t = [
         tag,
-        str(dimension) + 'D', precision, {
-            -1: 'forward',
-            1: 'backward'
-        }[direction], {
-            True: 'real',
-            False: 'complex'
-        }[real], {
-            True: 'in-place',
-            False: 'out-of-place'
-        }[inplace]
+        str(dimension) + "D",
+        precision,
+        {-1: "forward", 1: "backward"}[direction],
+        {True: "real", False: "complex"}[real],
+        {True: "in-place", False: "out-of-place"}[inplace],
     ]
     return "_".join(t)
 
@@ -81,8 +76,8 @@ class Problem:
 
     def toJSON(self):
         tuning_dict = self.__dict__
-        del tuning_dict['tag']
-        del tuning_dict['meta']
+        del tuning_dict["tag"]
+        del tuning_dict["meta"]
         return tuning_dict
 
 
@@ -109,11 +104,13 @@ class FilteredProblemGenerator:
 
     def generate_problems(self):
         for problem in self.generator.generate_problems():
-            if len(problem.length) in self.dimension \
-               and problem.direction in self.direction \
-               and problem.inplace in self.inplace \
-               and problem.real in self.real \
-               and problem.precision in self.precision:
+            if (
+                len(problem.length) in self.dimension
+                and problem.direction in self.direction
+                and problem.inplace in self.inplace
+                and problem.real in self.real
+                and problem.precision in self.precision
+            ):
                 yield problem
 
 
@@ -135,7 +132,8 @@ class RadixProblemGenerator:
 
     def generate_problems(self):
         for direction, precision, real, inplace in itertools.product(
-                self.direction, self.precision, self.real, self.inplace):
+            self.direction, self.precision, self.real, self.inplace
+        ):
             xval, yval, zval = self.xmin, self.ymin, self.zmin
             while xval <= self.xmax and yval <= self.ymax and zval <= self.zmax:
                 length = [xval]
@@ -144,15 +142,22 @@ class RadixProblemGenerator:
                 if self.dimension > 2:
                     length.append(zval)
 
-                yield Problem(length,
-                              nbatch=self.nbatch,
-                              direction=direction,
-                              inplace=inplace,
-                              real=real,
-                              precision=precision,
-                              tag=mktag('radix' + str(self.radix),
-                                        self.dimension, precision, direction,
-                                        inplace, real))
+                yield Problem(
+                    length,
+                    nbatch=self.nbatch,
+                    direction=direction,
+                    inplace=inplace,
+                    real=real,
+                    precision=precision,
+                    tag=mktag(
+                        "radix" + str(self.radix),
+                        self.dimension,
+                        precision,
+                        direction,
+                        inplace,
+                        real,
+                    ),
+                )
 
                 xval *= self.radix
                 if self.dimension > 1:
@@ -171,29 +176,32 @@ class FileProblemGenerator:
 
     def __post_init__(self):
         self.table = []
-        with open(self.problem_file, 'r') as f:
+        with open(self.problem_file, "r") as f:
             for line in f:
-                if line.startswith('#') or line.isspace():
+                if line.startswith("#") or line.isspace():
                     continue
                 nbatch = 1
-                lengthBatch = line.replace(' ', '').split(',nbatch=')
+                lengthBatch = line.replace(" ", "").split(",nbatch=")
                 if len(lengthBatch) > 1:
                     nbatch = int(lengthBatch[1])
                 line = lengthBatch[0]
-                length = [int(x) for x in line.split(',')]
+                length = [int(x) for x in line.split(",")]
                 self.table.append([length, nbatch])
         print(self.table)
 
     def generate_problems(self):
         for length, nbatch in self.table:
             for precision, real, inplace in itertools.product(
-                    self.precision, self.real, self.inplace):
-                yield Problem(length,
-                              nbatch=nbatch,
-                              direction=-1,
-                              inplace=inplace,
-                              real=real,
-                              precision=precision)
+                self.precision, self.real, self.inplace
+            ):
+                yield Problem(
+                    length,
+                    nbatch=nbatch,
+                    direction=-1,
+                    inplace=inplace,
+                    real=real,
+                    precision=precision,
+                )
 
 
 @dataclass
@@ -206,13 +214,16 @@ class TableProblemGenerator:
     def generate_problems(self):
         for length, nbatch in self.table:
             for precision, real, inplace in itertools.product(
-                    self.precision, self.real, self.inplace):
-                yield Problem(length,
-                              nbatch=nbatch,
-                              direction=-1,
-                              inplace=inplace,
-                              real=real,
-                              precision=precision)
+                self.precision, self.real, self.inplace
+            ):
+                yield Problem(
+                    length,
+                    nbatch=nbatch,
+                    direction=-1,
+                    inplace=inplace,
+                    real=real,
+                    precision=precision,
+                )
 
 
 def suite_file(base):
@@ -220,7 +231,7 @@ def suite_file(base):
     p = path(base)
     if p.exists():
         return p
-    p = p.with_suffix('.py')
+    p = p.with_suffix(".py")
     if p.exists():
         return p
     p = top / p.name
@@ -232,11 +243,11 @@ def suite_file(base):
 def load_suite(suite, fname=None):
     """Load performance suite from suites.py."""
 
-    tdef = top / 'suites.py'
+    tdef = top / "suites.py"
     if fname is not None:
         tdef = suite_file(fname)
-    logging.info(f'loading suites from {tdef}')
-    code = compile(tdef.read_text(), str(tdef), 'exec')
+    logging.info(f"loading suites from {tdef}")
+    code = compile(tdef.read_text(), str(tdef), "exec")
     ns = {}
     exec(code, ns)
     return ns[suite]
@@ -245,14 +256,13 @@ def load_suite(suite, fname=None):
 @dataclass
 class SuiteProblemGenerator:
     suite_names: List[str]
-    suites: Mapping[str, Generator[Problem, None,
-                                   None]] = field(default_factory=dict)
+    suites: Mapping[str, Generator[Problem, None, None]] = field(default_factory=dict)
 
     def __post_init__(self):
         for name in self.suite_names:
             fname = None
-            if ':' in name:
-                fname, name = name.split(':')
+            if ":" in name:
+                fname, name = name.split(":")
             self.suites[name] = load_suite(name, fname)
 
     def generate_problems(self):

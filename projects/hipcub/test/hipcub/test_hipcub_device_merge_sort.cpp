@@ -129,7 +129,7 @@ TYPED_TEST(HipcubDeviceMergeSort, SortKeys)
                 test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             HIP_CHECK(hipcub::DeviceMergeSort::SortKeys(d_temporary_storage,
@@ -139,7 +139,7 @@ TYPED_TEST(HipcubDeviceMergeSort, SortKeys)
                                                         compare_function(),
                                                         stream));
 
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipFree(d_temporary_storage));
@@ -228,7 +228,7 @@ TYPED_TEST(HipcubDeviceMergeSort, SortKeysCopy)
                 test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             HIP_CHECK(hipcub::DeviceMergeSort::SortKeysCopy(d_temporary_storage,
@@ -239,7 +239,7 @@ TYPED_TEST(HipcubDeviceMergeSort, SortKeysCopy)
                                                             compare_function(),
                                                             stream));
 
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipFree(d_temporary_storage));
@@ -325,7 +325,7 @@ TYPED_TEST(HipcubDeviceMergeSort, StableSortKeys)
                 test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             HIP_CHECK(hipcub::DeviceMergeSort::SortKeys(d_temporary_storage,
@@ -335,7 +335,7 @@ TYPED_TEST(HipcubDeviceMergeSort, StableSortKeys)
                                                         compare_function(),
                                                         stream));
 
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipFree(d_temporary_storage));
@@ -423,7 +423,7 @@ TYPED_TEST(HipcubDeviceMergeSort, StableSortKeysCopy)
                 test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             HIP_CHECK(hipcub::DeviceMergeSort::StableSortKeysCopy(d_temporary_storage,
@@ -434,7 +434,7 @@ TYPED_TEST(HipcubDeviceMergeSort, StableSortKeysCopy)
                                                                   compare_function(),
                                                                   stream));
 
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipFree(d_temporary_storage));
@@ -552,7 +552,7 @@ TYPED_TEST(HipcubDeviceMergeSort, SortPairs)
                 test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             HIP_CHECK(hipcub::DeviceMergeSort::SortPairs(d_temporary_storage,
@@ -563,7 +563,7 @@ TYPED_TEST(HipcubDeviceMergeSort, SortPairs)
                                                          compare_op,
                                                          stream));
 
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipFree(d_temporary_storage));
@@ -708,7 +708,7 @@ TYPED_TEST(HipcubDeviceMergeSort, SortPairsCopy)
                 test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             HIP_CHECK(hipcub::DeviceMergeSort::SortPairsCopy(d_temporary_storage,
@@ -721,7 +721,7 @@ TYPED_TEST(HipcubDeviceMergeSort, SortPairsCopy)
                                                              compare_op,
                                                              stream));
 
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipFree(d_temporary_storage));
@@ -843,7 +843,7 @@ TYPED_TEST(HipcubDeviceMergeSort, StableSortPairs)
                 test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             HIP_CHECK(hipcub::DeviceMergeSort::StableSortPairs(d_temporary_storage,
@@ -854,7 +854,7 @@ TYPED_TEST(HipcubDeviceMergeSort, StableSortPairs)
                                                                compare_op,
                                                                stream));
 
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipFree(d_temporary_storage));

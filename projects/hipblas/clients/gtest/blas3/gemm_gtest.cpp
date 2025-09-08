@@ -104,11 +104,9 @@ namespace
     template <typename T>
     struct gemm_testing<
         T,
-        std::enable_if_t<
-            std::is_same_v<
-                T,
-                float> || std::is_same_v<T, double> || std::is_same_v<T, hipblasHalf> || std::is_same_v<T, std::complex<float>> || std::is_same_v<T, std::complex<double>>>>
-        : hipblas_test_valid
+        std::enable_if_t<std::is_same_v<T, float> || std::is_same_v<T, double>
+                         || std::is_same_v<T, hipblasHalf> || std::is_same_v<T, std::complex<float>>
+                         || std::is_same_v<T, std::complex<double>>>> : hipblas_test_valid
     {
         void operator()(const Arguments& arg)
         {

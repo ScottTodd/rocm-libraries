@@ -21,34 +21,33 @@
 from copy import deepcopy
 from generator import Problem, ProblemSet
 
-amax_def_args = {'--type'  : 'H',
-                 '--dtype' : 'S',
-                 '--init'  : 'hpl',
-                 }
+amax_def_args = {
+    "--type": "H",
+    "--dtype": "S",
+    "--init": "hpl",
+}
 
 lengths = {
-
-    'amax_example': [
+    "amax_example": [
         (64, 64),
         (128, 128),
     ],
-
-    'amax_set_1': [
-        (16,    1024  ),
-        (16,    8192  ),
-        (16,    65536 ),
-        (2048,  1024  ),
-        (2048,  8192  ),
-        (2048,  65536 ),
-        (8192,  1024  ),
-        (8192,  8192  ),
-        (8192,  65536 ),
-        (16,    16384 ),
-        (32,    16384 ),
-        (16,    2048  ),
-        (32,    2048  ),
-        (16,    4096  ),
-        (32,    4096  ),
+    "amax_set_1": [
+        (16, 1024),
+        (16, 8192),
+        (16, 65536),
+        (2048, 1024),
+        (2048, 8192),
+        (2048, 65536),
+        (8192, 1024),
+        (8192, 8192),
+        (8192, 65536),
+        (16, 16384),
+        (32, 16384),
+        (16, 2048),
+        (32, 2048),
+        (16, 4096),
+        (32, 4096),
     ],
 }
 
@@ -57,46 +56,57 @@ def api_overhead():
     """API overhead"""
 
     # iteraion 10000 takes too long time for "getAll", 1000 is enough
-    problemlist = [Problem(args={"--cold_iters" : "10" , "--iters" : "1000"})]
+    problemlist = [Problem(args={"--cold_iters": "10", "--iters": "1000"})]
     yield ProblemSet(benchType="api_overhead", name="benchset_1", problems=problemlist)
+
 
 def amax_example():
     """AMAX example."""
 
     problemlist = []
 
-    for length in lengths['amax_example']:
+    for length in lengths["amax_example"]:
         args = deepcopy(amax_def_args)
-        args.update({'--m': str(length[0]),
-                     '--n': str(length[1])})
+        args.update({"--m": str(length[0]), "--n": str(length[1])})
         problemlist.append(Problem(args=args))
 
     yield ProblemSet(benchType="amax", name="example", problems=problemlist)
+
 
 def amax_set_1():
     """AMAX benchset 1."""
 
     problemlist = []
 
-    for length in lengths['amax_set_1']:
+    for length in lengths["amax_set_1"]:
         args = deepcopy(amax_def_args)
-        args.update({'--m': str(length[0]),
-                     '--n': str(length[1])})
+        args.update({"--m": str(length[0]), "--n": str(length[1])})
         problemlist.append(Problem(args=args))
 
     yield ProblemSet(benchType="amax", name="benchset_1", problems=problemlist)
 
+
 def matmul_set_1():
     """gemm benchset 1"""
 
-    problemlist = [Problem(args={"--log_function_name" : "" , "--yaml" : "matmul_probset1_bench.yaml"})]
+    problemlist = [
+        Problem(
+            args={"--log_function_name": "", "--yaml": "matmul_probset1_bench.yaml"}
+        )
+    ]
     yield ProblemSet(benchType="matmul", name="benchset_1", problems=problemlist)
+
 
 def matmul_set_2():
     """gemm benchset 2"""
 
-    problemlist = [Problem(args={"--log_function_name" : "" , "--yaml" : "matmul_probset2_bench.yaml"})]
+    problemlist = [
+        Problem(
+            args={"--log_function_name": "", "--yaml": "matmul_probset2_bench.yaml"}
+        )
+    ]
     yield ProblemSet(benchType="matmul", name="benchset_2", problems=problemlist)
+
 
 def all():
     """all routine benchmarks"""

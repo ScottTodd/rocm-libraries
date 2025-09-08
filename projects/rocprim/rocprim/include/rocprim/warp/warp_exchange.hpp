@@ -89,7 +89,8 @@ class warp_exchange
                   "Logical warp size must be a power of two.");
 
 public:
-    ROCPRIM_INLINE ROCPRIM_HOST_DEVICE warp_exchange()
+    ROCPRIM_INLINE ROCPRIM_HOST_DEVICE
+    warp_exchange()
     {
         detail::check_virtual_wave_size<VirtualWaveSize>();
     }
@@ -278,8 +279,8 @@ private:
         blocked_to_striped_shuffle_impl(const T (&input)[ItemsPerThread],
                                         U (&output)[ItemsPerThread])
     {
-        const unsigned int    lane_id = ::rocprim::detail::logical_lane_id<VirtualWaveSize>();
-        T                     temp[ItemsPerThread];
+        const unsigned int lane_id = ::rocprim::detail::logical_lane_id<VirtualWaveSize>();
+        T                  temp[ItemsPerThread];
         ROCPRIM_UNROLL
         for(unsigned int i = 0; i < ItemsPerThread; i++)
         {

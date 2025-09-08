@@ -105,8 +105,7 @@ namespace TensileLite
             result << "[" << getName() << "]";
         }
 
-        result << dimensions() << "-tensor<" << dataType() << ">"
-               << "( sizes(";
+        result << dimensions() << "-tensor<" << dataType() << ">" << "( sizes(";
         streamJoin(result, m_sizes, ", ");
 
         result << "), strides(";

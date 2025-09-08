@@ -601,7 +601,8 @@ ROCPRIM_DEVICE ROCPRIM_FORCE_INLINE void sort_single(KeysInputIterator    keys_i
     using sort_single_helper
         = radix_sort_single_helper<BlockSize, ItemsPerThread, Descending, key_type, value_type>;
 
-    ROCPRIM_SHARED_MEMORY typename sort_single_helper::storage_type storage;
+    ROCPRIM_SHARED_MEMORY
+    typename sort_single_helper::storage_type storage;
 
     sort_single_helper().template sort_single<>(keys_input,
                                                 keys_output,
@@ -676,9 +677,10 @@ struct radix_merge_compare<Descending, true, T, identity_decomposer>
 {
     T radix_mask;
 
-    ROCPRIM_HOST_DEVICE radix_merge_compare(const unsigned int start_bit,
-                                            const unsigned int current_radix_bits,
-                                            identity_decomposer = {})
+    ROCPRIM_HOST_DEVICE
+    radix_merge_compare(const unsigned int start_bit,
+                        const unsigned int current_radix_bits,
+                        identity_decomposer = {})
     {
         T radix_mask_upper  = (T(1) << (current_radix_bits + start_bit)) - 1;
         T radix_mask_bottom = (T(1) << start_bit) - 1;
@@ -701,9 +703,10 @@ struct radix_merge_compare<Descending, true, T, Decomposer>
     unsigned int start_bit_;
     unsigned int radix_bits_;
 
-    ROCPRIM_HOST_DEVICE radix_merge_compare(const unsigned int start_bit,
-                                            const unsigned int current_radix_bits,
-                                            Decomposer         decomposer)
+    ROCPRIM_HOST_DEVICE
+    radix_merge_compare(const unsigned int start_bit,
+                        const unsigned int current_radix_bits,
+                        Decomposer         decomposer)
         : decomposer_(decomposer), start_bit_(start_bit), radix_bits_(current_radix_bits)
     {}
 
@@ -930,10 +933,11 @@ ROCPRIM_DEVICE ROCPRIM_FORCE_INLINE void onesweep_histograms(KeysInputIterator  
 
     constexpr unsigned int items_per_block = BlockSize * ItemsPerThread;
 
-    const Offset block_id = ::rocprim::detail::block_id<0>();
-    const Offset block_offset = block_id * ItemsPerThread * BlockSize;
+    const Offset                             block_id     = ::rocprim::detail::block_id<0>();
+    const Offset                             block_offset = block_id * ItemsPerThread * BlockSize;
 
-    ROCPRIM_SHARED_MEMORY typename count_helper_type::storage_type storage;
+    ROCPRIM_SHARED_MEMORY
+    typename count_helper_type::storage_type storage;
 
     if(block_id < full_blocks)
     {
@@ -1010,11 +1014,13 @@ struct onesweep_lookback_state
 
     underlying_type state;
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE explicit onesweep_lookback_state(underlying_type state)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    explicit onesweep_lookback_state(underlying_type state)
         : state(state)
     {}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE onesweep_lookback_state(prefix_flag status, underlying_type value)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    onesweep_lookback_state(prefix_flag status, underlying_type value)
         : state(static_cast<underlying_type>(status) | value)
     {}
 
@@ -1377,9 +1383,10 @@ ROCPRIM_DEVICE ROCPRIM_FORCE_INLINE void
                                                                      Decomposer>;
 
     constexpr unsigned int items_per_block = BlockSize * ItemsPerThread;
-    const unsigned int block_id = ::rocprim::detail::block_id<0>();
+    const unsigned int     block_id        = ::rocprim::detail::block_id<0>();
 
-    ROCPRIM_SHARED_MEMORY typename onesweep_iteration_helper_type::storage_type storage;
+    ROCPRIM_SHARED_MEMORY
+    typename onesweep_iteration_helper_type::storage_type storage;
 
     if(block_id < full_blocks)
     {

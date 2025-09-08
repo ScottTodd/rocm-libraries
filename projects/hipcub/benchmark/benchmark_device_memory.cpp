@@ -61,8 +61,7 @@ struct operation<no_operation, T, ItemsPerThread, BlockSize>
     using storage_type = empty_storage_type;
 
     HIPCUB_DEVICE
-    inline void
-        operator()(storage_type& /*storage*/, T (&)[ItemsPerThread], T* = nullptr) const
+    inline void operator()(storage_type& /*storage*/, T (&)[ItemsPerThread], T* = nullptr) const
     {}
 };
 
@@ -73,10 +72,9 @@ struct operation<custom_operation, T, ItemsPerThread, BlockSize>
     using storage_type = empty_storage_type;
 
     HIPCUB_DEVICE
-    inline void
-        operator()(storage_type& storage,
-                   T (&input)[ItemsPerThread],
-                   T* global_mem_output = nullptr) const
+    inline void operator()(storage_type& storage,
+                           T (&input)[ItemsPerThread],
+                           T* global_mem_output = nullptr) const
     {
         (void)storage;
         (void)global_mem_output;
@@ -104,10 +102,9 @@ struct operation<block_scan, T, ItemsPerThread, BlockSize>
     using storage_type = typename block_scan_type::TempStorage;
 
     HIPCUB_DEVICE
-    inline void
-        operator()(storage_type& storage,
-                   T (&input)[ItemsPerThread],
-                   T* global_mem_output = nullptr)
+    inline void operator()(storage_type& storage,
+                           T (&input)[ItemsPerThread],
+                           T* global_mem_output = nullptr)
     {
         (void)global_mem_output;
 
@@ -124,10 +121,9 @@ struct operation<atomics_no_collision, T, ItemsPerThread, BlockSize>
     using storage_type = empty_storage_type;
 
     HIPCUB_DEVICE
-    inline void
-        operator()(storage_type& storage,
-                   T (&input)[ItemsPerThread],
-                   T* global_mem_output = nullptr)
+    inline void operator()(storage_type& storage,
+                           T (&input)[ItemsPerThread],
+                           T* global_mem_output = nullptr)
     {
         (void)storage;
         (void)input;
@@ -149,10 +145,9 @@ struct operation<atomics_inter_warp_collision, T, ItemsPerThread, BlockSize>
     using storage_type = empty_storage_type;
 
     HIPCUB_DEVICE
-    inline void
-        operator()(storage_type& storage,
-                   T (&input)[ItemsPerThread],
-                   T* global_mem_output = nullptr)
+    inline void operator()(storage_type& storage,
+                           T (&input)[ItemsPerThread],
+                           T* global_mem_output = nullptr)
     {
         (void)storage;
         (void)input;
@@ -174,10 +169,9 @@ struct operation<atomics_inter_block_collision, T, ItemsPerThread, BlockSize>
     using storage_type = empty_storage_type;
 
     HIPCUB_DEVICE
-    inline void
-        operator()(storage_type& storage,
-                   T (&input)[ItemsPerThread],
-                   T* global_mem_output = nullptr)
+    inline void operator()(storage_type& storage,
+                           T (&input)[ItemsPerThread],
+                           T* global_mem_output = nullptr)
     {
         (void)storage;
         (void)input;
@@ -245,7 +239,8 @@ template<typename T,
          unsigned int            ItemsPerThread,
          memory_operation_method MemOp,
          typename CustomOp>
-__global__ __launch_bounds__(BlockSize) void operation_kernel(T* input, T* output, CustomOp op)
+__global__ __launch_bounds__(BlockSize)
+void operation_kernel(T* input, T* output, CustomOp op)
 {
     using mem_op     = memory_operation<MemOp>;
     using load_type  = hipcub::BlockLoad<T, BlockSize, ItemsPerThread, mem_op::load_type>;

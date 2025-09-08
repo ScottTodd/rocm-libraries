@@ -121,7 +121,7 @@ struct Benchmark<T, hipcub::ArgMin>
     {
         HIPCUB_CLANG_SUPPRESS_DEPRECATED_PUSH
         hipError_t (*ptr_to_argmin)(void*, size_t&, T*, KeyValue*, int, hipStream_t)
-        = &hipcub::DeviceReduce::ArgMin;
+            = &hipcub::DeviceReduce::ArgMin;
         HIPCUB_CLANG_SUPPRESS_DEPRECATED_POP
         run_benchmark<T, KeyValue>(state, size, stream, ptr_to_argmin);
     }

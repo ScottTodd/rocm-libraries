@@ -119,8 +119,8 @@ namespace Tensile
     std::string ConvolutionProblem::ActivationFormat::description() const
     {
         std::ostringstream rv;
-        rv << m_formatIdentifier << "_"
-           << " batchPosition=" << m_batchPosition << " channelPosition=" << m_channelPosition;
+        rv << m_formatIdentifier << "_" << " batchPosition=" << m_batchPosition
+           << " channelPosition=" << m_channelPosition;
         rv << " spatialPositions[]=";
         for(auto i = 0; i < m_spatialPositions.size(); i++)
         {
@@ -200,9 +200,8 @@ namespace Tensile
     std::string ConvolutionProblem::WeightFormat::description() const
     {
         std::ostringstream rv;
-        rv << m_formatIdentifier << "_"
-           << " coutPosition=" << m_coutPosition << " cinPosition=" << m_cinPosition
-           << " filterPositions[]=";
+        rv << m_formatIdentifier << "_" << " coutPosition=" << m_coutPosition
+           << " cinPosition=" << m_cinPosition << " filterPositions[]=";
         for(auto i = 0; i < m_filterPositions.size(); i++)
         {
             if(i != 0)

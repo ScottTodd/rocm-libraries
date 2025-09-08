@@ -60,7 +60,7 @@ struct custom_flag_op2
 };
 
 // Host (CPU) implementaions of the wrapping function that allows to pass 3 args
-template <class T, class FlagOp>
+template<class T, class FlagOp>
 auto apply(FlagOp flag_op, const T& a, const T& b, unsigned int b_index)
     -> decltype(flag_op(a, b, b_index))
 {
@@ -81,15 +81,16 @@ template<class Type,
 __global__ __launch_bounds__(BlockSize)
 void flag_heads_kernel(Type* device_input, FlagType* device_heads)
 {
-    const unsigned int lid = threadIdx.x;
+    const unsigned int lid             = threadIdx.x;
     const unsigned int items_per_block = BlockSize * ItemsPerThread;
-    const unsigned int block_offset = blockIdx.x * items_per_block;
+    const unsigned int block_offset    = blockIdx.x * items_per_block;
 
     Type input[ItemsPerThread];
     rocprim::block_load_direct_blocked(lid, device_input + block_offset, input);
 
-    rocprim::block_discontinuity<Type, BlockSize>              bdiscontinuity;
-    __shared__ typename decltype(bdiscontinuity)::storage_type storage;
+    rocprim::block_discontinuity<Type, BlockSize>   bdiscontinuity;
+    __shared__
+    typename decltype(bdiscontinuity)::storage_type storage;
 
     FlagType head_flags[ItemsPerThread];
     if(blockIdx.x % 2 == 1)
@@ -113,15 +114,16 @@ template<class Type,
 __global__ __launch_bounds__(BlockSize)
 void flag_tails_kernel(Type* device_input, FlagType* device_tails)
 {
-    const unsigned int lid = threadIdx.x;
+    const unsigned int lid             = threadIdx.x;
     const unsigned int items_per_block = BlockSize * ItemsPerThread;
-    const unsigned int block_offset = blockIdx.x * items_per_block;
+    const unsigned int block_offset    = blockIdx.x * items_per_block;
 
     Type input[ItemsPerThread];
     rocprim::block_load_direct_blocked(lid, device_input + block_offset, input);
 
-    rocprim::block_discontinuity<Type, BlockSize>              bdiscontinuity;
-    __shared__ typename decltype(bdiscontinuity)::storage_type storage;
+    rocprim::block_discontinuity<Type, BlockSize>   bdiscontinuity;
+    __shared__
+    typename decltype(bdiscontinuity)::storage_type storage;
 
     FlagType tail_flags[ItemsPerThread];
     if(blockIdx.x % 2 == 0)
@@ -145,15 +147,16 @@ template<class Type,
 __global__ __launch_bounds__(BlockSize)
 void flag_heads_and_tails_kernel(Type* device_input, FlagType* device_heads, FlagType* device_tails)
 {
-    const unsigned int lid = threadIdx.x;
+    const unsigned int lid             = threadIdx.x;
     const unsigned int items_per_block = BlockSize * ItemsPerThread;
-    const unsigned int block_offset = blockIdx.x * items_per_block;
+    const unsigned int block_offset    = blockIdx.x * items_per_block;
 
     Type input[ItemsPerThread];
     rocprim::block_load_direct_blocked(lid, device_input + block_offset, input);
 
-    rocprim::block_discontinuity<Type, BlockSize>              bdiscontinuity;
-    __shared__ typename decltype(bdiscontinuity)::storage_type storage;
+    rocprim::block_discontinuity<Type, BlockSize>   bdiscontinuity;
+    __shared__
+    typename decltype(bdiscontinuity)::storage_type storage;
 
     FlagType head_flags[ItemsPerThread];
     FlagType tail_flags[ItemsPerThread];
@@ -198,25 +201,22 @@ void flag_heads_and_tails_kernel(Type* device_input, FlagType* device_heads, Fla
     rocprim::block_store_direct_blocked(lid, device_tails + block_offset, tail_flags);
 }
 
-template<
-    class Type,
-    class FlagType,
-    class FlagOpType,
-    unsigned int Method,
-    unsigned int BlockSize,
-    unsigned int ItemsPerThread
->
-auto test_block_discontinuity()
--> typename std::enable_if<Method == 0>::type
+template<class Type,
+         class FlagType,
+         class FlagOpType,
+         unsigned int Method,
+         unsigned int BlockSize,
+         unsigned int ItemsPerThread>
+auto test_block_discontinuity() -> typename std::enable_if<Method == 0>::type
 {
     using type                               = Type;
-    using flag_type = FlagType;
-    using flag_op_type = FlagOpType;
-    static constexpr size_t block_size = BlockSize;
+    using flag_type                          = FlagType;
+    using flag_op_type                       = FlagOpType;
+    static constexpr size_t block_size       = BlockSize;
     static constexpr size_t items_per_thread = ItemsPerThread;
-    static constexpr size_t items_per_block = block_size * items_per_thread;
-    const size_t size = items_per_block * 20;
-    static constexpr size_t grid_size = size / items_per_block;
+    static constexpr size_t items_per_block  = block_size * items_per_thread;
+    const size_t            size             = items_per_block * 20;
+    static constexpr size_t grid_size        = size / items_per_block;
 
     SCOPED_TRACE(testing::Message() << "items_per_block = " << items_per_block);
     SCOPED_TRACE(testing::Message() << "size = " << size);
@@ -230,7 +230,8 @@ auto test_block_discontinuity()
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
@@ -239,7 +240,7 @@ auto test_block_discontinuity()
 
         // Calculate expected results on host
         std::vector<flag_type> expected_heads(size);
-        flag_op_type flag_op;
+        flag_op_type           flag_op;
         for(size_t bi = 0; bi < size / items_per_block; bi++)
         {
             for(size_t ii = 0; ii < items_per_block; ii++)
@@ -284,25 +285,22 @@ auto test_block_discontinuity()
     }
 }
 
-template<
-    class Type,
-    class FlagType,
-    class FlagOpType,
-    unsigned int Method,
-    unsigned int BlockSize,
-    unsigned int ItemsPerThread
->
-auto test_block_discontinuity()
--> typename std::enable_if<Method == 1>::type
+template<class Type,
+         class FlagType,
+         class FlagOpType,
+         unsigned int Method,
+         unsigned int BlockSize,
+         unsigned int ItemsPerThread>
+auto test_block_discontinuity() -> typename std::enable_if<Method == 1>::type
 {
     using type                               = Type;
-    using flag_type = FlagType;
-    using flag_op_type = FlagOpType;
-    static constexpr size_t block_size = BlockSize;
+    using flag_type                          = FlagType;
+    using flag_op_type                       = FlagOpType;
+    static constexpr size_t block_size       = BlockSize;
     static constexpr size_t items_per_thread = ItemsPerThread;
-    static constexpr size_t items_per_block = block_size * items_per_thread;
-    const size_t size = items_per_block * 20;
-    static constexpr size_t grid_size = size / items_per_block;
+    static constexpr size_t items_per_block  = block_size * items_per_thread;
+    const size_t            size             = items_per_block * 20;
+    static constexpr size_t grid_size        = size / items_per_block;
 
     SCOPED_TRACE(testing::Message() << "items_per_block = " << items_per_block);
     SCOPED_TRACE(testing::Message() << "size = " << size);
@@ -316,7 +314,8 @@ auto test_block_discontinuity()
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
@@ -325,7 +324,7 @@ auto test_block_discontinuity()
 
         // Calculate expected results on host
         std::vector<flag_type> expected_tails(size);
-        flag_op_type flag_op;
+        flag_op_type           flag_op;
         for(size_t bi = 0; bi < size / items_per_block; bi++)
         {
             for(size_t ii = 0; ii < items_per_block; ii++)
@@ -369,25 +368,22 @@ auto test_block_discontinuity()
     }
 }
 
-template<
-    class Type,
-    class FlagType,
-    class FlagOpType,
-    unsigned int Method,
-    unsigned int BlockSize,
-    unsigned int ItemsPerThread
->
-auto test_block_discontinuity()
--> typename std::enable_if<Method == 2>::type
+template<class Type,
+         class FlagType,
+         class FlagOpType,
+         unsigned int Method,
+         unsigned int BlockSize,
+         unsigned int ItemsPerThread>
+auto test_block_discontinuity() -> typename std::enable_if<Method == 2>::type
 {
     using type                               = Type;
-    using flag_type = FlagType;
-    using flag_op_type = FlagOpType;
-    static constexpr size_t block_size = BlockSize;
+    using flag_type                          = FlagType;
+    using flag_op_type                       = FlagOpType;
+    static constexpr size_t block_size       = BlockSize;
     static constexpr size_t items_per_thread = ItemsPerThread;
-    static constexpr size_t items_per_block = block_size * items_per_thread;
-    const size_t size = items_per_block * 20;
-    static constexpr size_t grid_size = size / items_per_block;
+    static constexpr size_t items_per_block  = block_size * items_per_thread;
+    const size_t            size             = items_per_block * 20;
+    static constexpr size_t grid_size        = size / items_per_block;
 
     SCOPED_TRACE(testing::Message() << "items_per_block = " << items_per_block);
     SCOPED_TRACE(testing::Message() << "size = " << size);
@@ -401,7 +397,8 @@ auto test_block_discontinuity()
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
@@ -411,7 +408,7 @@ auto test_block_discontinuity()
         // Calculate expected results on host
         std::vector<flag_type> expected_heads(size);
         std::vector<flag_type> expected_tails(size);
-        flag_op_type flag_op;
+        flag_op_type           flag_op;
         for(size_t bi = 0; bi < size / items_per_block; bi++)
         {
             for(size_t ii = 0; ii < items_per_block; ii++)
@@ -477,15 +474,13 @@ auto test_block_discontinuity()
 }
 
 // Static for-loop
-template <
-    unsigned int First,
-    unsigned int Last,
-    class Type,
-    class FlagType,
-    class FlagOpType,
-    unsigned int Method,
-    unsigned int BlockSize = 256U
->
+template<unsigned int First,
+         unsigned int Last,
+         class Type,
+         class FlagType,
+         class FlagOpType,
+         unsigned int Method,
+         unsigned int BlockSize = 256U>
 struct static_for
 {
     static void run()
@@ -502,19 +497,15 @@ struct static_for
     }
 };
 
-template <
-    unsigned int N,
-    class Type,
-    class FlagType,
-    class FlagOpType,
-    unsigned int Method,
-    unsigned int BlockSize
->
+template<unsigned int N,
+         class Type,
+         class FlagType,
+         class FlagOpType,
+         unsigned int Method,
+         unsigned int BlockSize>
 struct static_for<N, N, Type, FlagType, FlagOpType, Method, BlockSize>
 {
-    static void run()
-    {
-    }
+    static void run() {}
 };
 
 #endif // TEST_BLOCK_DISCONTINUITY_KERNELS_HPP_

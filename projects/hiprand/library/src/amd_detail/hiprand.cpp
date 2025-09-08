@@ -137,48 +137,47 @@ hiprandStatus_t HIPRANDAPI hiprandDestroyGenerator(hiprandGenerator_t generator)
 }
 
 hiprandStatus_t HIPRANDAPI
-    hiprandGenerate(hiprandGenerator_t generator, unsigned int* output_data, size_t n)
+hiprandGenerate(hiprandGenerator_t generator, unsigned int* output_data, size_t n)
 {
     return to_hiprand_status(rocrand_generate((rocrand_generator)(generator), output_data, n));
 }
 
 hiprandStatus_t HIPRANDAPI
-    hiprandGenerateChar(hiprandGenerator_t generator, unsigned char* output_data, size_t n)
+hiprandGenerateChar(hiprandGenerator_t generator, unsigned char* output_data, size_t n)
 {
     return to_hiprand_status(rocrand_generate_char((rocrand_generator)(generator), output_data, n));
 }
 
 hiprandStatus_t HIPRANDAPI
-    hiprandGenerateShort(hiprandGenerator_t generator, unsigned short* output_data, size_t n)
+hiprandGenerateShort(hiprandGenerator_t generator, unsigned short* output_data, size_t n)
 {
     return to_hiprand_status(
         rocrand_generate_short((rocrand_generator)(generator), output_data, n));
 }
 
-hiprandStatus_t HIPRANDAPI hiprandGenerateLongLong(hiprandGenerator_t      generator,
-                                                   unsigned long long int* output_data,
-                                                   size_t                  n)
+hiprandStatus_t HIPRANDAPI
+hiprandGenerateLongLong(hiprandGenerator_t generator, unsigned long long int* output_data, size_t n)
 {
     return to_hiprand_status(
         rocrand_generate_long_long(reinterpret_cast<rocrand_generator>(generator), output_data, n));
 }
 
 hiprandStatus_t HIPRANDAPI
-    hiprandGenerateUniform(hiprandGenerator_t generator, float* output_data, size_t n)
+hiprandGenerateUniform(hiprandGenerator_t generator, float* output_data, size_t n)
 {
     return to_hiprand_status(
         rocrand_generate_uniform((rocrand_generator)(generator), output_data, n));
 }
 
 hiprandStatus_t HIPRANDAPI
-    hiprandGenerateUniformDouble(hiprandGenerator_t generator, double* output_data, size_t n)
+hiprandGenerateUniformDouble(hiprandGenerator_t generator, double* output_data, size_t n)
 {
     return to_hiprand_status(
         rocrand_generate_uniform_double((rocrand_generator)(generator), output_data, n));
 }
 
 hiprandStatus_t HIPRANDAPI
-    hiprandGenerateUniformHalf(hiprandGenerator_t generator, half* output_data, size_t n)
+hiprandGenerateUniformHalf(hiprandGenerator_t generator, half* output_data, size_t n)
 {
     return to_hiprand_status(
         rocrand_generate_uniform_half((rocrand_generator)(generator), output_data, n));
@@ -293,14 +292,14 @@ hiprandStatus_t HIPRANDAPI hiprandGetVersion(int* version)
 }
 
 hiprandStatus_t HIPRANDAPI
-    hiprandCreatePoissonDistribution(double                         lambda,
-                                     hiprandDiscreteDistribution_t* discrete_distribution)
+hiprandCreatePoissonDistribution(double                         lambda,
+                                 hiprandDiscreteDistribution_t* discrete_distribution)
 {
     return to_hiprand_status(rocrand_create_poisson_distribution(lambda, discrete_distribution));
 }
 
 hiprandStatus_t HIPRANDAPI
-    hiprandDestroyDistribution(hiprandDiscreteDistribution_t discrete_distribution)
+hiprandDestroyDistribution(hiprandDiscreteDistribution_t discrete_distribution)
 {
     return to_hiprand_status(rocrand_destroy_discrete_distribution(discrete_distribution));
 }

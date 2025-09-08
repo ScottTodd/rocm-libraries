@@ -328,12 +328,12 @@ namespace rocRoller
              * 2. vector <=> vector
              */
             template <typename T>
-            requires(CKernelExecuteTime<T>&& CBinary<T> && (CLogical<T> || CComparison<T>))
-                Generator<Instruction> generateComparisonOrLogicalBinary(Register::ValuePtr& dest,
-                                                                         T const&            expr,
-                                                                         Register::ValuePtr& lhs,
-                                                                         Register::ValuePtr& rhs,
-                                                                         ResultType& resType)
+                requires(CKernelExecuteTime<T> && CBinary<T> && (CLogical<T> || CComparison<T>))
+            Generator<Instruction> generateComparisonOrLogicalBinary(Register::ValuePtr& dest,
+                                                                     T const&            expr,
+                                                                     Register::ValuePtr& lhs,
+                                                                     Register::ValuePtr& rhs,
+                                                                     ResultType&         resType)
             {
                 auto const lhsInfo = DataTypeInfo::Get(lhs->variableType());
                 auto const rhsInfo = DataTypeInfo::Get(rhs->variableType());
@@ -372,12 +372,12 @@ namespace rocRoller
              * 3. vector * vector (element-wise product)
              */
             template <typename T>
-            requires(CBinary<T>&& CArithmetic<T>) Generator<Instruction> generateArithmeticBinary(
-                Register::ValuePtr& dest,
-                T const&            expr,
-                Register::ValuePtr& lhs,
-                Register::ValuePtr& rhs,
-                ResultType&         resType)
+                requires(CBinary<T> && CArithmetic<T>)
+            Generator<Instruction> generateArithmeticBinary(Register::ValuePtr& dest,
+                                                            T const&            expr,
+                                                            Register::ValuePtr& lhs,
+                                                            Register::ValuePtr& rhs,
+                                                            ResultType&         resType)
             {
 
                 auto const lhsInfo  = DataTypeInfo::Get(lhs->variableType());
@@ -518,8 +518,8 @@ namespace rocRoller
             }
 
             template <typename T>
-            requires(CKernelExecuteTime<T>&& CBinary<T>&& CArithmetic<T>) Generator<Instruction>
-            operator()(Register::ValuePtr& dest, T const& expr)
+                requires(CKernelExecuteTime<T> && CBinary<T> && CArithmetic<T>)
+            Generator<Instruction> operator()(Register::ValuePtr& dest, T const& expr)
             {
                 co_yield Instruction::Comment(toString(expr));
                 int                             schedulerLockCount = 0;
@@ -553,14 +553,12 @@ namespace rocRoller
              *
              */
             template <typename T>
-            requires(CKernelExecuteTime<T>&& CBinary<T>&& CConversion<T>) Generator<Instruction>
-            operator()(Register::ValuePtr& dest, T const& expr)
+                requires(CKernelExecuteTime<T> && CBinary<T> && CConversion<T>)
+            Generator<Instruction> operator()(Register::ValuePtr& dest, T const& expr)
             {
                 // Currently GPU only supports SR conversion of F32 to FP8/BF8
-                static_assert(
-                    std::is_same_v<
-                        T,
-                        SRConvert<DataType::FP8>> || std::is_same_v<T, SRConvert<DataType::BF8>>);
+                static_assert(std::is_same_v<T, SRConvert<DataType::FP8>>
+                              || std::is_same_v<T, SRConvert<DataType::BF8>>);
 
                 int                             schedulerLockCount = 0;
                 std::vector<Register::ValuePtr> results;
@@ -590,9 +588,8 @@ namespace rocRoller
             }
 
             template <typename T>
-            requires(CKernelExecuteTime<T>&& CBinary<T> && (CLogical<T> || CComparison<T>))
-                Generator<Instruction>
-            operator()(Register::ValuePtr& dest, T const& expr)
+                requires(CKernelExecuteTime<T> && CBinary<T> && (CLogical<T> || CComparison<T>))
+            Generator<Instruction> operator()(Register::ValuePtr& dest, T const& expr)
             {
                 co_yield Instruction::Comment(toString(expr));
                 int                             schedulerLockCount = 0;
@@ -620,9 +617,8 @@ namespace rocRoller
             }
 
             template <CTernary Operation>
-            requires(
-                !CTernaryMixed<Operation> && CKernelExecuteTime<Operation>) Generator<Instruction>
-            operator()(Register::ValuePtr& dest, Operation const& expr)
+                requires(!CTernaryMixed<Operation> && CKernelExecuteTime<Operation>)
+            Generator<Instruction> operator()(Register::ValuePtr& dest, Operation const& expr)
             {
                 int                             schedulerLockCount = 0;
                 std::vector<Register::ValuePtr> results;
@@ -678,8 +674,8 @@ namespace rocRoller
             }
 
             template <CTernaryMixed Operation>
-            requires CKernelExecuteTime<Operation> Generator<Instruction>
-            operator()(Register::ValuePtr& dest, Operation const& expr)
+                requires CKernelExecuteTime<Operation>
+            Generator<Instruction> operator()(Register::ValuePtr& dest, Operation const& expr)
             {
                 int                             schedulerLockCount = 0;
                 std::vector<Register::ValuePtr> results;
@@ -762,8 +758,8 @@ namespace rocRoller
             }
 
             template <CUnary Operation>
-            requires CKernelExecuteTime<Operation> Generator<Instruction>
-            operator()(Register::ValuePtr& dest, Operation const& expr)
+                requires CKernelExecuteTime<Operation>
+            Generator<Instruction> operator()(Register::ValuePtr& dest, Operation const& expr)
             {
                 int                             schedulerLockCount = 0;
                 std::vector<Register::ValuePtr> results;
@@ -1034,8 +1030,8 @@ namespace rocRoller
             }
 
             template <CExpression Operation>
-            requires(!CKernelExecuteTime<Operation>) Generator<Instruction>
-            operator()(Register::ValuePtr& dest, Operation const& expr)
+                requires(!CKernelExecuteTime<Operation>)
+            Generator<Instruction> operator()(Register::ValuePtr& dest, Operation const& expr)
             {
                 Throw<FatalError>("Operation ",
                                   ShowValue(expr),

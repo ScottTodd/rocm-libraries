@@ -108,7 +108,7 @@ struct Arguments
 
     int8_t norm_check;
     int8_t unit_check;
-    bool norm_check_assert;
+    bool   norm_check_assert;
 
     int8_t timing;
 
@@ -140,7 +140,7 @@ struct Arguments
     char orderD;
 
     bool inEqualOut;
-    int logging;
+    int  logging;
     /*************************************************************************
      *                     End Of Arguments                                  *
      *************************************************************************/

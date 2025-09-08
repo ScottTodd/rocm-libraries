@@ -36,17 +36,19 @@ template<unsigned                    BlockSize,
          unsigned                    LogicalWarpSize,
          ::hipcub::WarpLoadAlgorithm Algorithm,
          class T>
-__device__ auto warp_load_benchmark(T* d_input, T* d_output)
+__device__
+auto warp_load_benchmark(T* d_input, T* d_output)
     -> std::enable_if_t<benchmark_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {
     using WarpLoadT = ::hipcub::WarpLoad<T, ItemsPerThread, Algorithm, LogicalWarpSize>;
     constexpr unsigned warps_in_block = BlockSize / LogicalWarpSize;
     constexpr int      tile_size      = ItemsPerThread * LogicalWarpSize;
 
-    const unsigned warp_id        = threadIdx.x / LogicalWarpSize;
-    const unsigned global_warp_id = blockIdx.x * warps_in_block + warp_id;
-    __shared__ typename WarpLoadT::TempStorage temp_storage[warps_in_block];
-    T                                          thread_data[ItemsPerThread];
+    const unsigned                  warp_id        = threadIdx.x / LogicalWarpSize;
+    const unsigned                  global_warp_id = blockIdx.x * warps_in_block + warp_id;
+    __shared__
+    typename WarpLoadT::TempStorage temp_storage[warps_in_block];
+    T                               thread_data[ItemsPerThread];
 
     WarpLoadT(temp_storage[warp_id]).Load(d_input + global_warp_id * tile_size, thread_data);
 
@@ -64,7 +66,8 @@ template<unsigned                    BlockSize,
          unsigned                    LogicalWarpSize,
          ::hipcub::WarpLoadAlgorithm Algorithm,
          class T>
-__device__ auto warp_load_benchmark(T* /*d_input*/, T* /*d_output*/)
+__device__
+auto warp_load_benchmark(T* /*d_input*/, T* /*d_output*/)
     -> std::enable_if_t<!benchmark_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {}
 
@@ -73,7 +76,8 @@ template<unsigned                    BlockSize,
          unsigned                    LogicalWarpSize,
          ::hipcub::WarpLoadAlgorithm Algorithm,
          class T>
-__global__ __launch_bounds__(BlockSize) void warp_load_kernel(T* d_input, T* d_output)
+__global__ __launch_bounds__(BlockSize)
+void warp_load_kernel(T* d_input, T* d_output)
 {
     warp_load_benchmark<BlockSize, ItemsPerThread, LogicalWarpSize, Algorithm>(d_input, d_output);
 }

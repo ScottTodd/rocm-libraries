@@ -36,18 +36,17 @@ BEGIN_ROCPRIM_NAMESPACE
 template<class T>
 class double_buffer
 {
-    T * buffers[2];
+    T* buffers[2];
 
     unsigned int selector;
 
 public:
-
-    /// \brief Constructs an empty double buffer object, initializing the 
+    /// \brief Constructs an empty double buffer object, initializing the
     /// buffer pointers to nullptr.
-    ROCPRIM_HOST_DEVICE inline
-    double_buffer()
+    ROCPRIM_HOST_DEVICE
+    inline double_buffer()
     {
-        selector = 0;
+        selector   = 0;
         buffers[0] = nullptr;
         buffers[1] = nullptr;
     }
@@ -56,31 +55,31 @@ public:
     ///
     /// \param current Pointer to the buffer to designate as "current" (in use).
     /// \param alternate Pointer to the buffer to designate as "alternate" (not in use)
-    ROCPRIM_HOST_DEVICE inline
-    double_buffer(T * current, T * alternate)
+    ROCPRIM_HOST_DEVICE
+    inline double_buffer(T* current, T* alternate)
     {
-        selector = 0;
+        selector   = 0;
         buffers[0] = current;
         buffers[1] = alternate;
     }
 
     /// \brief Returns a pointer to the current buffer.
-    ROCPRIM_HOST_DEVICE inline
-    T * current() const
+    ROCPRIM_HOST_DEVICE
+    inline T* current() const
     {
         return buffers[selector];
     }
 
     /// \brief Returns a pointer to the alternate buffer.
-    ROCPRIM_HOST_DEVICE inline
-    T * alternate() const
+    ROCPRIM_HOST_DEVICE
+    inline T* alternate() const
     {
         return buffers[selector ^ 1];
     }
 
     /// \brief Swaps the current and alternate buffers.
-    ROCPRIM_HOST_DEVICE inline
-    void swap()
+    ROCPRIM_HOST_DEVICE
+    inline void swap()
     {
         selector ^= 1;
     }

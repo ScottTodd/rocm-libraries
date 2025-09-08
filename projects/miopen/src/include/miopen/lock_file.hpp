@@ -60,7 +60,7 @@ private:
 
 public:
     LockFile(const fs::path&, PassKey);
-    LockFile(const LockFile&) = delete;
+    LockFile(const LockFile&)           = delete;
     LockFile operator=(const LockFile&) = delete;
 
     bool timed_lock(const boost::posix_time::ptime& abs_time)

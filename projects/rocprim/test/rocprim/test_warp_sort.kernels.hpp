@@ -28,8 +28,8 @@ __global__
 __launch_bounds__(BlockSize)
 auto test_hip_warp_sort(T* d_output) -> typename std::enable_if<ItemsPerThread == 1, void>::type
 {
-    unsigned int i = threadIdx.x + (blockIdx.x * blockDim.x);
-    T value = d_output[i];
+    unsigned int                           i     = threadIdx.x + (blockIdx.x * blockDim.x);
+    T                                      value = d_output[i];
     rocprim::warp_sort<T, LogicalWarpSize> wsort;
     wsort.sort(value);
     d_output[i] = value;

@@ -81,25 +81,22 @@ namespace
         // T1 is alpha_type T2 is x_type T3 is execution_type
         ((BLAS1_EX == blas1_ex::scal_ex || BLAS1_EX == blas1_ex::scal_batched_ex
           || BLAS1_EX == blas1_ex::scal_strided_batched_ex)
-         && ((std::is_same_v<
-                  T1,
-                  T2> && std::is_same_v<T2, T3> && (std::is_same_v<T1, float> || std::is_same_v<T1, double> || std::is_same_v<T1, hipblasHalf> || std::is_same_v<T1, std::complex<float>> || std::is_same_v<T1, std::complex<double>>))
-             || (std::is_same_v<
-                     T2,
-                     T3> && std::is_same_v<T1, float> && std::is_same_v<T2, std::complex<float>>)
-             || (std::is_same_v<
-                     T2,
-                     T3> && std::is_same_v<T1, double> && std::is_same_v<T2, std::complex<double>>)
-             || (std::is_same_v<T1,
-                                T2> && std::is_same_v<T1, hipblasHalf> && std::is_same_v<T3, float>)
-             || (std::is_same_v<T1,
-                                T3> && std::is_same_v<T1, float> && std::is_same_v<T2, hipblasHalf>)
-             || (std::is_same_v<
-                     T1,
-                     hipblasBfloat16> && std::is_same_v<T1, T2> && std::is_same_v<T3, float>)
-             || (std::is_same_v<
-                     T1,
-                     float> && std::is_same_v<T2, hipblasBfloat16> && std::is_same_v<T1, T3>)))>;
+         && ((std::is_same_v<T1, T2> && std::is_same_v<T2, T3>
+              && (std::is_same_v<T1, float> || std::is_same_v<T1, double>
+                  || std::is_same_v<T1, hipblasHalf> || std::is_same_v<T1, std::complex<float>>
+                  || std::is_same_v<T1, std::complex<double>>))
+             || (std::is_same_v<T2, T3> && std::is_same_v<T1, float>
+                 && std::is_same_v<T2, std::complex<float>>)
+             || (std::is_same_v<T2, T3> && std::is_same_v<T1, double>
+                 && std::is_same_v<T2, std::complex<double>>)
+             || (std::is_same_v<T1, T2> && std::is_same_v<T1, hipblasHalf>
+                 && std::is_same_v<T3, float>)
+             || (std::is_same_v<T1, T3> && std::is_same_v<T1, float>
+                 && std::is_same_v<T2, hipblasHalf>)
+             || (std::is_same_v<T1, hipblasBfloat16> && std::is_same_v<T1, T2>
+                 && std::is_same_v<T3, float>)
+             || (std::is_same_v<T1, float> && std::is_same_v<T2, hipblasBfloat16>
+                 && std::is_same_v<T1, T3>)))>;
 
 // Creates tests for one of the BLAS 1 functions
 // ARG passes 1-3 template arguments to the testing_* function

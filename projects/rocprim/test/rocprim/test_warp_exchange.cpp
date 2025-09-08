@@ -48,10 +48,10 @@ template<class T,
          class ExchangeOp = void>
 struct Params
 {
-    using type = T;
+    using type                                     = T;
     static constexpr unsigned int items_per_thread = ItemsPerThread;
     static constexpr unsigned int warp_size        = VirtualWaveSize;
-    using exchange_op = ExchangeOp;
+    using exchange_op                              = ExchangeOp;
 };
 
 template<class Params>
@@ -141,7 +141,8 @@ auto warp_exchange_test(T* d_input, T* d_output)
 {
     using warp_exchange_type         = ::rocprim::warp_exchange<T, ItemsPerThread, LogicalWarpSize>;
     constexpr unsigned int num_warps = ::rocprim::arch::wavefront::max_size() / LogicalWarpSize;
-    ROCPRIM_SHARED_MEMORY typename warp_exchange_type::storage_type storage[num_warps];
+    ROCPRIM_SHARED_MEMORY
+    typename warp_exchange_type::storage_type storage[num_warps];
 
     T thread_data[ItemsPerThread];
     for(unsigned int i = 0; i < ItemsPerThread; i++)
@@ -171,7 +172,8 @@ auto warp_exchange_test_not_inplace(T* d_input, T* d_output)
 {
     using warp_exchange_type         = ::rocprim::warp_exchange<T, ItemsPerThread, LogicalWarpSize>;
     constexpr unsigned int num_warps = ::rocprim::arch::wavefront::max_size() / LogicalWarpSize;
-    ROCPRIM_SHARED_MEMORY typename warp_exchange_type::storage_type storage[num_warps];
+    ROCPRIM_SHARED_MEMORY
+    typename warp_exchange_type::storage_type storage[num_warps];
 
     T thread_data[ItemsPerThread];
     for(unsigned int i = 0; i < ItemsPerThread; i++)
@@ -197,7 +199,8 @@ auto warp_exchange_test_not_inplace(T* /*d_input*/, T* /*d_output*/)
 {}
 
 template<unsigned int ItemsPerThread, unsigned int LogicalWarpSize, class Op, class T>
-__global__ void warp_exchange_kernel(T* d_input, T* d_output, bool inplace = true)
+__global__
+void warp_exchange_kernel(T* d_input, T* d_output, bool inplace = true)
 {
     if(inplace)
     {
@@ -210,19 +213,18 @@ __global__ void warp_exchange_kernel(T* d_input, T* d_output, bool inplace = tru
 }
 
 template<class T>
-std::vector<T> stripe_vector(const std::vector<T>& v,
-                             const size_t warp_size,
-                             const size_t items_per_thread)
+std::vector<T>
+    stripe_vector(const std::vector<T>& v, const size_t warp_size, const size_t items_per_thread)
 {
-    const size_t warp_items = warp_size * items_per_thread;
+    const size_t   warp_items = warp_size * items_per_thread;
     std::vector<T> striped(v.size());
     for(size_t i = 0; i < v.size(); i++)
     {
         const size_t warp_idx = i % warp_items;
-        const size_t other_warp_idx = (warp_idx % items_per_thread) * warp_size
-            + (warp_idx / items_per_thread);
+        const size_t other_warp_idx
+            = (warp_idx % items_per_thread) * warp_size + (warp_idx / items_per_thread);
         const size_t other_idx = other_warp_idx + warp_items * (i / warp_items);
-        striped[i] = v[other_idx];
+        striped[i]             = v[other_idx];
     }
     return striped;
 }
@@ -231,8 +233,8 @@ TYPED_TEST_SUITE(WarpExchangeTest, WarpExchangeTestParams);
 
 TYPED_TEST(WarpExchangeTest, WarpExchange)
 {
-    using T = typename TestFixture::params::type;
-    constexpr unsigned int warp_size = TestFixture::params::warp_size;
+    using T                                 = typename TestFixture::params::type;
+    constexpr unsigned int warp_size        = TestFixture::params::warp_size;
     constexpr unsigned int items_per_thread = TestFixture::params::items_per_thread;
     using exchange_op                       = typename TestFixture::params::exchange_op;
 
@@ -341,9 +343,10 @@ auto warp_exchange_scatter_test(T* d_input, T* d_output, OffsetT* d_ranks)
     using warp_exchange_type = ::rocprim::warp_exchange<T, ItemsPerThread, LogicalWarpSize>;
 
     constexpr unsigned int num_warps = ::rocprim::arch::wavefront::max_size() / LogicalWarpSize;
-    ROCPRIM_SHARED_MEMORY typename warp_exchange_type::storage_type storage[num_warps];
+    ROCPRIM_SHARED_MEMORY
+    typename warp_exchange_type::storage_type storage[num_warps];
 
-    T thread_data[ItemsPerThread];
+    T       thread_data[ItemsPerThread];
     OffsetT thread_ranks[ItemsPerThread];
     for(unsigned int i = 0; i < ItemsPerThread; i++)
     {
@@ -370,7 +373,8 @@ auto warp_exchange_scatter_test(T* /*d_input*/, T* /*d_output*/, OffsetT* /*d_ra
 {}
 
 template<unsigned int ItemsPerThread, unsigned int LogicalWarpSize, class T, class OffsetT>
-__global__ void warp_exchange_scatter_kernel(T* d_input, T* d_output, OffsetT* d_ranks)
+__global__
+void warp_exchange_scatter_kernel(T* d_input, T* d_output, OffsetT* d_ranks)
 {
     warp_exchange_scatter_test<ItemsPerThread, LogicalWarpSize>(d_input, d_output, d_ranks);
 }
@@ -379,10 +383,10 @@ TYPED_TEST_SUITE(WarpExchangeScatterTest, WarpExchangeScatterTestParams);
 
 TYPED_TEST(WarpExchangeScatterTest, WarpExchangeScatter)
 {
-    using T = typename TestFixture::params::type;
-    constexpr unsigned int warp_size = TestFixture::params::warp_size;
+    using T                                 = typename TestFixture::params::type;
+    constexpr unsigned int warp_size        = TestFixture::params::warp_size;
     constexpr unsigned int items_per_thread = TestFixture::params::items_per_thread;
-    using OffsetT = unsigned short;
+    using OffsetT                           = unsigned short;
 
     const int device_id = test_common_utils::obtain_device_from_ctest();
     SKIP_IF_UNSUPPORTED_WARP_SIZE(warp_size, device_id);

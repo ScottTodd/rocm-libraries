@@ -520,10 +520,8 @@ namespace MixedArithmeticTest
             {
                 for(auto rhsVal : param.rhsValues)
                 {
-                    if constexpr(std::is_same_v<
-                                     Operation,
-                                     Expression::
-                                         Divide> || std::is_same_v<Operation, Expression::Modulo>)
+                    if constexpr(std::is_same_v<Operation, Expression::Divide>
+                                 || std::is_same_v<Operation, Expression::Modulo>)
                     {
                         if(std::get<int64_t>(Expression::evaluate(rhsVal)) == 0)
                         {
@@ -562,8 +560,8 @@ namespace MixedArithmeticTest
          */
 
         template <typename Operation>
-        requires(
-            Expression::CTernary<Operation> || Expression::CTernaryMixed<Operation>) void testBody()
+            requires(Expression::CTernary<Operation> || Expression::CTernaryMixed<Operation>)
+        void testBody()
         {
             auto        param = GetParam();
             std::string paramStr;

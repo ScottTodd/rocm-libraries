@@ -33,12 +33,15 @@ import numpy as np
 
 import pandas as pd
 
+
 def RunPlot():
 
     userArgs = sys.argv[1:]
 
     argParser = argparse.ArgumentParser()
-    argParser.add_argument("current_file", help="path where the current results are located")
+    argParser.add_argument(
+        "current_file", help="path where the current results are located"
+    )
     argParser.add_argument("plot_file", help="path of plot")
 
     args = argParser.parse_args(userArgs)
@@ -46,27 +49,25 @@ def RunPlot():
     currentFileName = args.current_file
     plotFileName = args.plot_file
 
-
     current_data = pd.read_csv(currentFileName)
 
-    n_series = current_data['N']
-    m_series = current_data['M']
-    p_series = current_data['eff']
+    n_series = current_data["N"]
+    m_series = current_data["M"]
+    p_series = current_data["eff"]
 
     fig1, ax1 = plt.subplots()
-    ax1.plot(n_series,p_series,'+')
+    ax1.plot(n_series, p_series, "+")
     ax1.set_xlabel("n")
     ax1.set_ylabel("eff")
     plot1Name = plotFileName + "_effn.pdf"
     fig1.savefig(plot1Name, dpi=300, facecolor="#f1f1f1")
 
     fig2, ax2 = plt.subplots()
-    ax2.plot(m_series,p_series,'+')
+    ax2.plot(m_series, p_series, "+")
     ax2.set_xlabel("m")
     ax2.set_ylabel("eff")
     plot2Name = plotFileName + "_effm.pdf"
     fig2.savefig(plot2Name, dpi=300, facecolor="#f1f1f1")
-
 
 
 if __name__ == "__main__":

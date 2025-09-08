@@ -50,11 +50,11 @@
 ; nxe                        : 1
 ; gemm_k_global_split        : 1
 ; vector_c                   : 1
-; 
+;
 ; block_size                 : 256
 ; lds_total                  : 16384
 ; lds_buffer_num             : 1
-; 
+;
 .set k_p_in, 0
 .set k_p_wei, 8
 .set k_p_out, 16
@@ -293,7 +293,7 @@ igemm_fwd_gtcx35_nhwc_bf16_bx0_ex1_bt64x128x32_wt32x32x16_ws1x1_wr2x1_ta1x8x1x1_
 
     s_lshl_b32 s[s_wei_stride_k0], s[s_wei_stride_k0], 1
 
-    
+
     .v_clear_nc v_gld_b, 8
     s_mov_b32 s[s_p_wei+2], 0xffffffff
     s_mov_b32 s[s_p_wei+3], 0x27000
@@ -336,8 +336,8 @@ igemm_fwd_gtcx35_nhwc_bf16_bx0_ex1_bt64x128x32_wt32x32x16_ws1x1_wr2x1_ta1x8x1x1_
 
     v_mov_b32 v[v_tmp+5], v0
     ; xdlops mapping, get source matrix gemm index, k_pack:8, v_pack:1, k_pack_per_thread:1
-    v_and_b32 v[v_gemm_in], 31, v[v_tmp+5]           ; block_n index 
-    v_and_b32 v[v_gemm_im], 31, v[v_tmp+5]           ; block_m index 
+    v_and_b32 v[v_gemm_in], 31, v[v_tmp+5]           ; block_n index
+    v_and_b32 v[v_gemm_im], 31, v[v_tmp+5]           ; block_m index
     v_lshlrev_b32 v[v_gemm_in], 3, v[v_gemm_in]   ; shift left k_pack:8
     v_lshlrev_b32 v[v_gemm_im], 3, v[v_gemm_im]   ; shift left k_pack:8
     v_lshrrev_b32 v[v_tmp+5], 5, v[v_tmp+5]
@@ -441,11 +441,11 @@ igemm_fwd_gtcx35_nhwc_bf16_bx0_ex1_bt64x128x32_wt32x32x16_ws1x1_wr2x1_ta1x8x1x1_
     s_mov_b32 s[s_p_out+3], 0x27000
     ; start MFMA loop, 32x32 wave tile with 2x1 repeat, 1x1 step, k_pack:8
     s_waitcnt vmcnt(1)
-    ds_write_b128 v[v_sst_b_os], v[v_gld_b+0:v_gld_b+0+3] 
+    ds_write_b128 v[v_sst_b_os], v[v_gld_b+0:v_gld_b+0+3]
     ds_write_b128 v[v_sst_b_os], v[v_gld_b+4:v_gld_b+4+3] offset:1024
 
     s_waitcnt vmcnt(0)
-    ds_write_b128 v[v_sst_a_os], v[v_gld_a+0:v_gld_a+0+3] 
+    ds_write_b128 v[v_sst_a_os], v[v_gld_a+0:v_gld_a+0+3]
 
     .v_clear_nc a_c, 32
     ; make sure acc WAR harzard, at least 1 nop for src_c
@@ -458,7 +458,7 @@ igemm_fwd_gtcx35_nhwc_bf16_bx0_ex1_bt64x128x32_wt32x32x16_ws1x1_wr2x1_ta1x8x1x1_
     s_cmp_le_u32 s[s_gemm_k_num_c], s[s_in_offset]
     s_cselect_b32 s[s_flag_need_acc_yx], 1, 0
 
-    
+
     s_cmp_eq_u32 1, s[s_flag_need_acc_yx]
     s_cbranch_scc0 igemm_fwd_gtcx35_nhwc_bf16_bx0_ex1_bt64x128x32_wt32x32x16_ws1x1_wr2x1_ta1x8x1x1_1x4x1x64_tb1x8x2x1_1x4x1x64_gkgs_acc_yx_end_0  ; no need do accumulate yx
 igemm_fwd_gtcx35_nhwc_bf16_bx0_ex1_bt64x128x32_wt32x32x16_ws1x1_wr2x1_ta1x8x1x1_1x4x1x64_tb1x8x2x1_1x4x1x64_gkgs_acc_yx_0:

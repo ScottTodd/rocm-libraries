@@ -77,12 +77,9 @@ void hiprand_generate_test_func(hiprandRngType_t rng_type)
     hiprandGenerator_t generator = 0;
     HIPRAND_CHECK(hiprandCreateGenerator(&generator, rng_type));
 
-    const size_t output_size = 8192;
-    unsigned int * output;
-    HIP_CHECK(
-        hipMallocHelper((void **)&output,
-        output_size * sizeof(unsigned int))
-    );
+    const size_t  output_size = 8192;
+    unsigned int* output;
+    HIP_CHECK(hipMallocHelper((void**)&output, output_size * sizeof(unsigned int)));
     HIP_CHECK(hipDeviceSynchronize());
 
     // generate
@@ -90,13 +87,10 @@ void hiprand_generate_test_func(hiprandRngType_t rng_type)
     HIP_CHECK(hipDeviceSynchronize());
 
     std::vector<unsigned int> output_host(output_size);
-    HIP_CHECK(
-        hipMemcpy(
-            output_host.data(), output,
-            output_size * sizeof(unsigned int),
-            hipMemcpyDeviceToHost
-        )
-    );
+    HIP_CHECK(hipMemcpy(output_host.data(),
+                        output,
+                        output_size * sizeof(unsigned int),
+                        hipMemcpyDeviceToHost));
     HIP_CHECK(hipDeviceSynchronize());
     HIP_CHECK(hipFree(output));
 
@@ -162,11 +156,8 @@ void hiprand_generate_uniform_test_func(hiprandRngType_t rng_type)
     HIPRAND_CHECK(hiprandCreateGenerator(&generator, rng_type));
 
     const size_t output_size = 8192;
-    float * output;
-    HIP_CHECK(
-        hipMallocHelper((void **)&output,
-        output_size * sizeof(float))
-    );
+    float*       output;
+    HIP_CHECK(hipMallocHelper((void**)&output, output_size * sizeof(float)));
     HIP_CHECK(hipDeviceSynchronize());
 
     // generate
@@ -175,12 +166,7 @@ void hiprand_generate_uniform_test_func(hiprandRngType_t rng_type)
 
     std::vector<float> output_host(output_size);
     HIP_CHECK(
-        hipMemcpy(
-            output_host.data(), output,
-            output_size * sizeof(float),
-            hipMemcpyDeviceToHost
-        )
-    );
+        hipMemcpy(output_host.data(), output, output_size * sizeof(float), hipMemcpyDeviceToHost));
     HIP_CHECK(hipDeviceSynchronize());
     HIP_CHECK(hipFree(output));
 
@@ -207,11 +193,8 @@ void hiprand_generate_uniform_double_test_func(hiprandRngType_t rng_type)
     HIPRAND_CHECK(hiprandCreateGenerator(&generator, rng_type));
 
     const size_t output_size = 8192;
-    double * output;
-    HIP_CHECK(
-        hipMallocHelper((void **)&output,
-        output_size * sizeof(double))
-    );
+    double*      output;
+    HIP_CHECK(hipMallocHelper((void**)&output, output_size * sizeof(double)));
     HIP_CHECK(hipDeviceSynchronize());
 
     // generate
@@ -220,12 +203,7 @@ void hiprand_generate_uniform_double_test_func(hiprandRngType_t rng_type)
 
     std::vector<double> output_host(output_size);
     HIP_CHECK(
-        hipMemcpy(
-            output_host.data(), output,
-            output_size * sizeof(double),
-            hipMemcpyDeviceToHost
-        )
-    );
+        hipMemcpy(output_host.data(), output, output_size * sizeof(double), hipMemcpyDeviceToHost));
     HIP_CHECK(hipDeviceSynchronize());
     HIP_CHECK(hipFree(output));
 
@@ -252,11 +230,8 @@ void hiprand_generate_normal_test_func(hiprandRngType_t rng_type)
     HIPRAND_CHECK(hiprandCreateGenerator(&generator, rng_type));
 
     const size_t output_size = 8192;
-    float * output;
-    HIP_CHECK(
-        hipMallocHelper((void **)&output,
-        output_size * sizeof(float))
-    );
+    float*       output;
+    HIP_CHECK(hipMallocHelper((void**)&output, output_size * sizeof(float)));
     HIP_CHECK(hipDeviceSynchronize());
 
     // generate
@@ -265,12 +240,7 @@ void hiprand_generate_normal_test_func(hiprandRngType_t rng_type)
 
     std::vector<float> output_host(output_size);
     HIP_CHECK(
-        hipMemcpy(
-            output_host.data(), output,
-            output_size * sizeof(float),
-            hipMemcpyDeviceToHost
-        )
-    );
+        hipMemcpy(output_host.data(), output, output_size * sizeof(float), hipMemcpyDeviceToHost));
     HIP_CHECK(hipDeviceSynchronize());
     HIP_CHECK(hipFree(output));
 
@@ -305,11 +275,8 @@ void hiprand_generate_normal_double_test_func(hiprandRngType_t rng_type)
     HIPRAND_CHECK(hiprandCreateGenerator(&generator, rng_type));
 
     const size_t output_size = 8192;
-    double * output;
-    HIP_CHECK(
-        hipMallocHelper((void **)&output,
-        output_size * sizeof(double))
-    );
+    double*      output;
+    HIP_CHECK(hipMallocHelper((void**)&output, output_size * sizeof(double)));
     HIP_CHECK(hipDeviceSynchronize());
 
     // generate
@@ -318,12 +285,7 @@ void hiprand_generate_normal_double_test_func(hiprandRngType_t rng_type)
 
     std::vector<double> output_host(output_size);
     HIP_CHECK(
-        hipMemcpy(
-            output_host.data(), output,
-            output_size * sizeof(double),
-            hipMemcpyDeviceToHost
-        )
-    );
+        hipMemcpy(output_host.data(), output, output_size * sizeof(double), hipMemcpyDeviceToHost));
     HIP_CHECK(hipDeviceSynchronize());
     HIP_CHECK(hipFree(output));
 
@@ -358,11 +320,8 @@ void hiprand_generate_lognormal_test_func(hiprandRngType_t rng_type)
     HIPRAND_CHECK(hiprandCreateGenerator(&generator, rng_type));
 
     const size_t output_size = 8192;
-    float * output;
-    HIP_CHECK(
-        hipMallocHelper((void **)&output,
-        output_size * sizeof(float))
-    );
+    float*       output;
+    HIP_CHECK(hipMallocHelper((void**)&output, output_size * sizeof(float)));
     HIP_CHECK(hipDeviceSynchronize());
 
     // generate
@@ -371,12 +330,7 @@ void hiprand_generate_lognormal_test_func(hiprandRngType_t rng_type)
 
     std::vector<float> output_host(output_size);
     HIP_CHECK(
-        hipMemcpy(
-            output_host.data(), output,
-            output_size * sizeof(float),
-            hipMemcpyDeviceToHost
-        )
-    );
+        hipMemcpy(output_host.data(), output, output_size * sizeof(float), hipMemcpyDeviceToHost));
     HIP_CHECK(hipDeviceSynchronize());
     HIP_CHECK(hipFree(output));
 
@@ -395,7 +349,7 @@ void hiprand_generate_lognormal_test_func(hiprandRngType_t rng_type)
     stddev = std::sqrt(stddev / output_size);
 
     double logmean = std::log(mean * mean / std::sqrt(stddev + mean * mean));
-    double logstd = std::sqrt(std::log(1.0f + stddev/(mean * mean)));
+    double logstd  = std::sqrt(std::log(1.0f + stddev / (mean * mean)));
 
     EXPECT_NEAR(1.6, logmean, 1.6 * 0.2);
     EXPECT_NEAR(0.25, logstd, 0.25 * 0.2);
@@ -415,11 +369,8 @@ void hiprand_generate_lognormal_double_test_func(hiprandRngType_t rng_type)
     HIPRAND_CHECK(hiprandCreateGenerator(&generator, rng_type));
 
     const size_t output_size = 8192;
-    double * output;
-    HIP_CHECK(
-        hipMallocHelper((void **)&output,
-        output_size * sizeof(double))
-    );
+    double*      output;
+    HIP_CHECK(hipMallocHelper((void**)&output, output_size * sizeof(double)));
     HIP_CHECK(hipDeviceSynchronize());
 
     // generate
@@ -428,12 +379,7 @@ void hiprand_generate_lognormal_double_test_func(hiprandRngType_t rng_type)
 
     std::vector<double> output_host(output_size);
     HIP_CHECK(
-        hipMemcpy(
-            output_host.data(), output,
-            output_size * sizeof(double),
-            hipMemcpyDeviceToHost
-        )
-    );
+        hipMemcpy(output_host.data(), output, output_size * sizeof(double), hipMemcpyDeviceToHost));
     HIP_CHECK(hipDeviceSynchronize());
     HIP_CHECK(hipFree(output));
     double mean = 0;
@@ -451,7 +397,7 @@ void hiprand_generate_lognormal_double_test_func(hiprandRngType_t rng_type)
     stddev = std::sqrt(stddev / output_size);
 
     double logmean = std::log(mean * mean / std::sqrt(stddev + mean * mean));
-    double logstd = std::sqrt(std::log(1.0f + stddev/(mean * mean)));
+    double logstd  = std::sqrt(std::log(1.0f + stddev / (mean * mean)));
 
     EXPECT_NEAR(1.6, logmean, 1.6 * 0.2);
     EXPECT_NEAR(0.25, logstd, 0.25 * 0.2);
@@ -472,12 +418,9 @@ void hiprand_generate_poisson_test_func(hiprandRngType_t rng_type)
     hiprandGenerator_t generator = 0;
     HIPRAND_CHECK(hiprandCreateGenerator(&generator, rng_type));
 
-    const size_t output_size = 8192;
-    unsigned int * output;
-    HIP_CHECK(
-        hipMallocHelper((void **)&output,
-        output_size * sizeof(unsigned int))
-    );
+    const size_t  output_size = 8192;
+    unsigned int* output;
+    HIP_CHECK(hipMallocHelper((void**)&output, output_size * sizeof(unsigned int)));
     HIP_CHECK(hipDeviceSynchronize());
 
     // generate
@@ -485,13 +428,10 @@ void hiprand_generate_poisson_test_func(hiprandRngType_t rng_type)
     HIP_CHECK(hipDeviceSynchronize());
 
     std::vector<unsigned int> output_host(output_size);
-    HIP_CHECK(
-        hipMemcpy(
-            output_host.data(), output,
-            output_size * sizeof(unsigned int),
-            hipMemcpyDeviceToHost
-        )
-    );
+    HIP_CHECK(hipMemcpy(output_host.data(),
+                        output,
+                        output_size * sizeof(unsigned int),
+                        hipMemcpyDeviceToHost));
     HIP_CHECK(hipDeviceSynchronize());
     HIP_CHECK(hipFree(output));
 

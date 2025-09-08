@@ -71,7 +71,6 @@ namespace DGen
 
         static constexpr uint positiveZeroMask = 0;
         static constexpr uint negativeZeroMask = 1 << 23;
-
     };
 
 #include "f32_impl.hpp"

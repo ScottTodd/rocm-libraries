@@ -33,25 +33,25 @@ from typing import List
 from Tensile.Common import SemanticVersion, print2
 from .Validators import ToolchainDefaults, validateToolchain
 
-def _invoke(args: List[str], desc: str=""):
-  """Invokes a command with the provided arguments in a subprocess.
-  Args:
-      args: A list of arguments to pass to the subprocess.
-      desc: A description of the subprocess invocation.
-  Raises:
-      RuntimeError: If the subprocess invocation fails.
-  Return:
-      subprocess output
-  """
-  print2(f"{desc}: {' '.join(args)}")
-  try:
-      out = check_output(args, stderr=STDOUT)
-  except CalledProcessError as err:
-      raise RuntimeError(
-          f"Error with {desc}: {err.output}\n"
-          f"Failed command: {' '.join(args)}"
-      )
-  return out
+
+def _invoke(args: List[str], desc: str = ""):
+    """Invokes a command with the provided arguments in a subprocess.
+    Args:
+        args: A list of arguments to pass to the subprocess.
+        desc: A description of the subprocess invocation.
+    Raises:
+        RuntimeError: If the subprocess invocation fails.
+    Return:
+        subprocess output
+    """
+    print2(f"{desc}: {' '.join(args)}")
+    try:
+        out = check_output(args, stderr=STDOUT)
+    except CalledProcessError as err:
+        raise RuntimeError(
+            f"Error with {desc}: {err.output}\n" f"Failed command: {' '.join(args)}"
+        )
+    return out
 
 
 def _getVersion(executable: str, versionFlag: str, regex: str) -> str:
@@ -73,7 +73,9 @@ def _getVersion(executable: str, versionFlag: str, regex: str) -> str:
         match = search(regex, output, IGNORECASE)
         if match:
             result = match.group(1)
-            return SemanticVersion(*[int(c.split("-")[0]) for c in result.split(".")[:3]])
+            return SemanticVersion(
+                *[int(c.split("-")[0]) for c in result.split(".")[:3]]
+            )
         raise Exception(f"No version from {output} matches regex {regex}")
     except Exception as e:
         raise RuntimeError(f"Failed to get version when calling {args}: {e}")
@@ -87,7 +89,7 @@ def get_rocm_version() -> str:
     Return:
         ROCm version string
     """
-    return _getVersion(ToolchainDefaults.HIP_CONFIG, "--version", r'(.+)')
+    return _getVersion(ToolchainDefaults.HIP_CONFIG, "--version", r"(.+)")
 
 
 class Component:
@@ -95,7 +97,12 @@ class Component:
 
     _rocm_version = get_rocm_version()
 
-    def __init__(self, component_path: Path, version_flag: str="--version", version_regex: str=r"version\s+([\d.]+)"):
+    def __init__(
+        self,
+        component_path: Path,
+        version_flag: str = "--version",
+        version_regex: str = r"version\s+([\d.]+)",
+    ):
         self._version = _getVersion(str(component_path), version_flag, version_regex)
         self._component_path = component_path
 
@@ -138,7 +145,7 @@ class Assembler(Component):
         Invokes the assembler on the provided arguments
     """
 
-    def __init__(self, component_path: Path, co_version: str, debug: bool=False):
+    def __init__(self, component_path: Path, co_version: str, debug: bool = False):
         """Constructs an instance of an Assembler.
 
         Args:
@@ -150,9 +157,10 @@ class Assembler(Component):
         self._code_object_version = co_version
 
         self._default_args = [
-            *split(environ.get('Tensile_ASM_COMPILER_LAUNCHER', '')),
+            *split(environ.get("Tensile_ASM_COMPILER_LAUNCHER", "")),
             str(component_path),
-            "-x", "assembler",
+            "-x",
+            "assembler",
             "--target=amdgcn-amd-amdhsa",
             "-g" if debug else "",
             f"-mcode-object-version={co_version}",
@@ -175,13 +183,16 @@ class Assembler(Component):
             "-mwavefrontsize64" if wavefrontSize == 64 else "-mno-wavefrontsize64",
             srcPath,
             "-o",
-            destPath
+            destPath,
         ]
-        return _invoke(args, "Assembling assembly source code into object file (.s -> .o)")
+        return _invoke(
+            args, "Assembling assembly source code into object file (.s -> .o)"
+        )
 
     @property
     def code_object_version(self):
         return self._code_object_version
+
 
 class Compiler(Component):
     """
@@ -204,29 +215,48 @@ class Compiler(Component):
         Invokes the compiler on the provided arguments
     """
 
-    def __init__(self, compiler_path: Path, build_id_kind: str, asan_build: bool=False, save_temps: bool=False):
+    def __init__(
+        self,
+        compiler_path: Path,
+        build_id_kind: str,
+        asan_build: bool = False,
+        save_temps: bool = False,
+    ):
         """Constructs an instance of a Compiler."""
         super(Compiler, self).__init__(compiler_path)
 
         self.default_args = [
             *split(environ.get("Tensile_CXX_COMPILER_LAUNCHER", "")),
-             compiler_path,
+            compiler_path,
             "-D__HIP_HCC_COMPAT_MODE__=1",
             "--offload-device-only",
-            "-x", "hip", "-O3",
-            "-Xoffload-linker", f"--build-id={build_id_kind}",
+            "-x",
+            "hip",
+            "-O3",
+            "-Xoffload-linker",
+            f"--build-id={build_id_kind}",
             "-std=c++17",
         ]
 
         if asan_build:
-            self.default_args.extend(["-fsanitize=address", "-shared-libasan", "-fuse-ld=lld"])
+            self.default_args.extend(
+                ["-fsanitize=address", "-shared-libasan", "-fuse-ld=lld"]
+            )
         if save_temps:
             self.default_args.append("--save-temps")
-        if os_name == "nt":                                                    # should we use fPIIC on all arches?
-            self.default_args.extend(["-fms-extensions", "-fms-compatibility", "-fPIC", "-Wno-deprecated-declarations"])
+        if os_name == "nt":  # should we use fPIIC on all arches?
+            self.default_args.extend(
+                [
+                    "-fms-extensions",
+                    "-fms-compatibility",
+                    "-fPIC",
+                    "-Wno-deprecated-declarations",
+                ]
+            )
 
-
-    def __call__(self, include_path: str, target_list: List[str], srcPath: str, destPath: str):
+    def __call__(
+        self, include_path: str, target_list: List[str], srcPath: str, destPath: str
+    ):
         """Compiles a source file into an object file.
 
         Args:
@@ -239,7 +269,14 @@ class Compiler(Component):
         """
         archFlags = [f"--offload-arch={gfx}" for gfx in target_list]
         args = [
-            *(self.default_args), "-I", include_path, *archFlags, srcPath, "-c", "-o", destPath
+            *(self.default_args),
+            "-I",
+            include_path,
+            *archFlags,
+            srcPath,
+            "-c",
+            "-o",
+            destPath,
         ]
         return _invoke(args, f"Compiling HIP source kernels into objects (.cpp -> .o)")
 
@@ -273,7 +310,9 @@ class Bundler(Component):
     def targets(self, objFile: str):
         """returns a list of target triple strings of the form amdgcn-amd--gfx942"""
         args = [self._component_path, "--type=o", f"--input={objFile}", "-list"]
-        return _invoke(args, f"Listing target triples in object file").decode().split("\n")
+        return (
+            _invoke(args, f"Listing target triples in object file").decode().split("\n")
+        )
 
     def compress(self, srcPath: str, destPath: str, target: str):
         """Compresses a code object file using the provided bundler.
@@ -342,21 +381,26 @@ class Linker(Component):
         """Constructs an instance of a Linker."""
         super(Linker, self).__init__(linker_path)
         self.default_args = [
-                self._component_path,
-                "--target=amdgcn-amd-amdhsa",
-                "-Xlinker", f"--build-id={build_id_kind}",
+            self._component_path,
+            "--target=amdgcn-amd-amdhsa",
+            "-Xlinker",
+            f"--build-id={build_id_kind}",
         ]
 
     def _response_file_args(self, srcPaths: List[str], destPath: str) -> List[str]:
         """
         Create a response file and return the arguments to pass to the linker.
 
-        Since it is possible for the character limit of the operating system to be exceeded 
+        Since it is possible for the character limit of the operating system to be exceeded
         when invoking the linker, LLVM allows the provision of arguments via a "response file"
         Reference: https://llvm.org/docs/CommandLine.html#response-files
         """
         with open(Path.cwd() / "clang_args.txt", "wt") as file:
-            file.write(" ".join(srcPaths).replace('\\', '\\\\') if os_name == "nt" else " ".join(srcPaths))
+            file.write(
+                " ".join(srcPaths).replace("\\", "\\\\")
+                if os_name == "nt"
+                else " ".join(srcPaths)
+            )
         return [*(self.default_args), "-o", destPath, "@clang_args.txt"]
 
     def _use_response_file(self, args: List[str]) -> bool:
@@ -369,6 +413,7 @@ class Linker(Component):
         if os_name == "nt":
             return True
         from os import sysconf
+
         line_length = sum(len(arg) for arg in args) + len(args) - 1
         return line_length >= sysconf("SC_ARG_MAX")
 
@@ -385,7 +430,9 @@ class Linker(Component):
         args = [*(self.default_args), *srcPaths, "-o", destPath]
         if self._use_response_file(args):
             args = self._response_file_args(srcPaths, destPath)
-        return _invoke(args, "Linking assembly object files into code object (*.o -> .co)")
+        return _invoke(
+            args, "Linking assembly object files into code object (*.o -> .co)"
+        )
 
 
 # class DeviceEnumerator(Component):

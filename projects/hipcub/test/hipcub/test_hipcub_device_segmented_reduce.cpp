@@ -191,7 +191,7 @@ TYPED_TEST(HipcubDeviceSegmentedReduceOp, Reduce)
                 test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             HIP_CHECK(hipcub::DeviceSegmentedReduce::Reduce(d_temporary_storage,
@@ -205,7 +205,7 @@ TYPED_TEST(HipcubDeviceSegmentedReduceOp, Reduce)
                                                             init,
                                                             stream));
 
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipFree(d_temporary_storage));
@@ -388,7 +388,7 @@ TYPED_TEST(HipcubDeviceSegmentedReduce, Sum)
                 test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             HIP_CHECK(hipcub::DeviceSegmentedReduce::Sum(d_temporary_storage,
@@ -400,7 +400,7 @@ TYPED_TEST(HipcubDeviceSegmentedReduce, Sum)
                                                          d_offsets + 1,
                                                          stream));
 
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipFree(d_temporary_storage));
@@ -545,7 +545,7 @@ TYPED_TEST(HipcubDeviceSegmentedReduce, Min)
                 test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             HIP_CHECK(hipcub::DeviceSegmentedReduce::Min(d_temporary_storage,
@@ -557,7 +557,7 @@ TYPED_TEST(HipcubDeviceSegmentedReduce, Min)
                                                          d_offsets + 1,
                                                          stream));
 
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipFree(d_temporary_storage));
@@ -921,7 +921,7 @@ void test_argminmax(typename TestFixture::params::input_type empty_value)
             HIP_CHECK(hipDeviceSynchronize());
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             HIP_CHECK(function(d_temporary_storage,
@@ -933,7 +933,7 @@ void test_argminmax(typename TestFixture::params::input_type empty_value)
                                d_offsets + 1,
                                stream));
 
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipPeekAtLastError());

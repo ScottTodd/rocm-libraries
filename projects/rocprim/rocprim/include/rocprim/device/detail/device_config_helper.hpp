@@ -98,7 +98,7 @@ constexpr unsigned int merge_sort_block_size(const unsigned int item_scale)
 template<class Key, class Value>
 struct merge_sort_block_sort_config_base
 {
-    static constexpr unsigned int item_scale = ::rocprim::max(sizeof(Key), sizeof(Value));
+    static constexpr unsigned int item_scale   = ::rocprim::max(sizeof(Key), sizeof(Value));
     static constexpr bool         use_fallback = merge_sort_block_size(item_scale) * 2
                                              * merge_sort_items_per_thread(item_scale) * item_scale
                                          <= max_smem_per_block;
@@ -107,7 +107,7 @@ struct merge_sort_block_sort_config_base
         = use_fallback ? merge_sort_block_size(item_scale) * 2 : 256;
     static constexpr unsigned int items_per_thread
         = use_fallback ? merge_sort_items_per_thread(item_scale) : 1;
-    using type                                     = merge_sort_block_sort_config<block_size,
+    using type = merge_sort_block_sort_config<block_size,
                                               items_per_thread,
                                               block_sort_algorithm::stable_merge_sort>;
 };
@@ -152,16 +152,16 @@ struct merge_sort_block_merge_config : rocprim::detail::merge_sort_block_merge_c
 {
     constexpr merge_sort_block_merge_config()
         : rocprim::detail::merge_sort_block_merge_config_params{
-            {OddEvenBlockSize, OddEvenItemsPerThread, OddEvenSizeLimit},
-            {PartitionBlockSize, 1},
-            {MergePathBlockSize, MergePathItemsPerThread}
+              {OddEvenBlockSize, OddEvenItemsPerThread, OddEvenSizeLimit},
+              {PartitionBlockSize, 1},
+              {MergePathBlockSize, MergePathItemsPerThread}
     } {};
 };
 
 template<class Key, class Value>
 struct merge_sort_block_merge_config_base
 {
-    static constexpr unsigned int item_scale = ::rocprim::max(sizeof(Key), sizeof(Value));
+    static constexpr unsigned int item_scale   = ::rocprim::max(sizeof(Key), sizeof(Value));
     static constexpr bool         use_fallback = merge_sort_block_size(item_scale) * 2
                                              * merge_sort_items_per_thread(item_scale) * item_scale
                                          <= max_smem_per_block;
@@ -169,7 +169,7 @@ struct merge_sort_block_merge_config_base
         = use_fallback ? merge_sort_block_size(item_scale) : 128;
     static constexpr unsigned int items_per_thread
         = use_fallback ? merge_sort_items_per_thread(item_scale) : 1;
-    using type                                     = merge_sort_block_merge_config<block_size,
+    using type = merge_sort_block_merge_config<block_size,
                                                1,
                                                (1 << 17) + 70000,
                                                128,
@@ -213,10 +213,10 @@ struct radix_sort_onesweep_config : detail::radix_sort_onesweep_config_params
 
     constexpr radix_sort_onesweep_config()
         : radix_sort_onesweep_config_params{
-            {HistogramConfig::block_size, HistogramConfig::items_per_thread},
-            {     SortConfig::block_size,      SortConfig::items_per_thread},
-            RadixBits,
-            RadixRankAlgorithm,
+              {HistogramConfig::block_size, HistogramConfig::items_per_thread},
+              {     SortConfig::block_size,      SortConfig::items_per_thread},
+              RadixBits,
+              RadixRankAlgorithm,
     } {};
 #endif
 };
@@ -235,9 +235,9 @@ struct radix_sort_onesweep_config_base
 
     static constexpr unsigned int block_size = merge_sort_block_size(item_scale) * 4;
     using type                               = radix_sort_onesweep_config<
-        kernel_config<256, 12>,
-        kernel_config<block_size, ::rocprim::max(1u, 65000u / block_size / item_scale)>,
-        4>;
+                                      kernel_config<256, 12>,
+                                      kernel_config<block_size, ::rocprim::max(1u, 65000u / block_size / item_scale)>,
+                                      4>;
 };
 
 struct reduce_config_params
@@ -265,8 +265,8 @@ struct reduce_config : rocprim::detail::reduce_config_params
     using tag = detail::reduce_config_tag;
     constexpr reduce_config()
         : rocprim::detail::reduce_config_params{
-            {BlockSize, ItemsPerThread, SizeLimit},
-            BlockReduceMethod
+              {BlockSize, ItemsPerThread, SizeLimit},
+              BlockReduceMethod
     } {};
 };
 
@@ -337,10 +337,10 @@ struct scan_config : ::rocprim::detail::scan_config_params
 
     constexpr scan_config()
         : ::rocprim::detail::scan_config_params{
-            {BlockSize, ItemsPerThread, SizeLimit},
-            BlockLoadMethod,
-            BlockStoreMethod,
-            BlockScanMethod
+              {BlockSize, ItemsPerThread, SizeLimit},
+              BlockLoadMethod,
+              BlockStoreMethod,
+              BlockScanMethod
     } {};
 #endif
 };
@@ -414,10 +414,10 @@ struct scan_by_key_config : ::rocprim::detail::scan_by_key_config_params
 
     constexpr scan_by_key_config()
         : ::rocprim::detail::scan_by_key_config_params{
-            {BlockSize, ItemsPerThread, SizeLimit},
-            BlockLoadMethod,
-            BlockStoreMethod,
-            BlockScanMethod
+              {BlockSize, ItemsPerThread, SizeLimit},
+              BlockLoadMethod,
+              BlockStoreMethod,
+              BlockScanMethod
     } {};
 #endif
 };
@@ -608,17 +608,17 @@ struct segmented_radix_sort_config : public detail::segmented_radix_sort_config_
 
     constexpr segmented_radix_sort_config()
         : detail::segmented_radix_sort_config_params{
-            SortConfig(),
-            RadixBits,
-            EnableUnpartitionedWarpSort,
-            {warp_sort_config::partitioning_allowed,
-              warp_sort_config::logical_warp_size_small,
-              warp_sort_config::items_per_thread_small,
-              warp_sort_config::block_size_small,
-              warp_sort_config::partitioning_threshold,
-              warp_sort_config::logical_warp_size_medium,
-              warp_sort_config::items_per_thread_medium,
-              warp_sort_config::block_size_medium}
+              SortConfig(),
+              RadixBits,
+              EnableUnpartitionedWarpSort,
+              {warp_sort_config::partitioning_allowed,
+                warp_sort_config::logical_warp_size_small,
+                warp_sort_config::items_per_thread_small,
+                warp_sort_config::block_size_small,
+                warp_sort_config::partitioning_threshold,
+                warp_sort_config::logical_warp_size_medium,
+                warp_sort_config::items_per_thread_medium,
+                warp_sort_config::block_size_medium}
     }
     {}
 #endif
@@ -672,8 +672,8 @@ struct transform_config : public detail::transform_config_params
 
     constexpr transform_config()
         : detail::transform_config_params{
-            {BlockSize, ItemsPerThread, SizeLimit},
-            LoadType
+              {BlockSize, ItemsPerThread, SizeLimit},
+              LoadType
     }
     {}
 #endif
@@ -707,8 +707,8 @@ struct transform_pointer_config : public detail::transform_config_params
 
     constexpr transform_pointer_config()
         : detail::transform_config_params{
-            {BlockSize, ItemsPerThread, SizeLimit},
-            LoadType
+              {BlockSize, ItemsPerThread, SizeLimit},
+              LoadType
     }
     {}
 #endif
@@ -897,8 +897,8 @@ struct adjacent_difference_config : public detail::adjacent_difference_config_pa
 
     constexpr adjacent_difference_config()
         : detail::adjacent_difference_config_params{
-            {BlockSize, ItemsPerThread, SizeLimit},
-            BlockLoadMethod, BlockStoreMethod
+              {BlockSize, ItemsPerThread, SizeLimit},
+              BlockLoadMethod, BlockStoreMethod
     } {};
 #endif
 };
@@ -976,11 +976,11 @@ struct batch_memcpy_config : public detail::batch_memcpy_config_params
 
     constexpr batch_memcpy_config()
         : detail::batch_memcpy_config_params{
-            {NonBlevBlockSize, NonBlevItemsPerThread, SizeLimit},
-            TlevItemsPerThread,
-            {   BlevBlockSize,    BlevItemsPerThread, SizeLimit},
-            WlevSizeThreshold,
-            BlevSizeThreshold
+              {NonBlevBlockSize, NonBlevItemsPerThread, SizeLimit},
+              TlevItemsPerThread,
+              {   BlevBlockSize,    BlevItemsPerThread, SizeLimit},
+              WlevSizeThreshold,
+              BlevSizeThreshold
     } {};
 #endif
 };
@@ -1089,11 +1089,11 @@ struct select_config : public detail::partition_config_params
 
     constexpr select_config()
         : detail::partition_config_params{
-            {BlockSize, ItemsPerThread, SizeLimit},
-            KeyBlockLoadMethod,
-            ValueBlockLoadMethod,
-            FlagBlockLoadMethod,
-            BlockScanMethod
+              {BlockSize, ItemsPerThread, SizeLimit},
+              KeyBlockLoadMethod,
+              ValueBlockLoadMethod,
+              FlagBlockLoadMethod,
+              BlockScanMethod
     } {};
 #endif
 };
@@ -1177,11 +1177,11 @@ struct reduce_by_key_config : public detail::reduce_by_key_config_params
 
     constexpr reduce_by_key_config()
         : detail::reduce_by_key_config_params{
-            {BlockSize, ItemsPerThread, SizeLimit},
-            TilesPerBlock,
-            LoadKeysMethod,
-            LoadValuesMethod,
-            ScanAlgorithm
+              {BlockSize, ItemsPerThread, SizeLimit},
+              TilesPerBlock,
+              LoadKeysMethod,
+              LoadValuesMethod,
+              ScanAlgorithm
     } {};
 #endif
 };
@@ -1250,10 +1250,10 @@ struct nth_element_config : public detail::nth_element_config_params
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
     constexpr nth_element_config()
         : detail::nth_element_config_params{
-            StopRecursionSize,
-            NumberOfBuckets,
-            RadixRankAlgorithm,
-            {BlockSize, ItemsPerThread, ROCPRIM_GRID_SIZE_LIMIT}
+              StopRecursionSize,
+              NumberOfBuckets,
+              RadixRankAlgorithm,
+              {BlockSize, ItemsPerThread, ROCPRIM_GRID_SIZE_LIMIT}
     }
     {}
 #endif
@@ -1301,8 +1301,8 @@ struct non_trivial_runs_config : public detail::non_trivial_runs_config_params
 
     constexpr non_trivial_runs_config()
         : detail::non_trivial_runs_config_params{
-            {BlockSize, ItemsPerThread},
-            LoadInputMethod, BlockScanAlgorithm
+              {BlockSize, ItemsPerThread},
+              LoadInputMethod, BlockScanAlgorithm
     } {};
 #endif // DOXYGEN_DOCUMENTATION_BUILD
 };
@@ -1315,9 +1315,9 @@ struct default_non_trivial_runs_config_base
 {
     static constexpr unsigned int items_per_thread = 16;
     using small_config                             = non_trivial_runs_config<256U,
-                                                 items_per_thread,
-                                                 block_load_method::block_load_vectorize,
-                                                 block_scan_algorithm::reduce_then_scan>;
+                                                                             items_per_thread,
+                                                                             block_load_method::block_load_vectorize,
+                                                                             block_scan_algorithm::reduce_then_scan>;
 
     using OffsetCountPairT = ::rocprim::tuple<unsigned int, unsigned int>;
 
@@ -1367,7 +1367,7 @@ struct find_first_of_config : public detail::find_first_of_config_params
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
     constexpr find_first_of_config()
         : detail::find_first_of_config_params{
-            {BlockSize, ItemsPerThread, 0}
+              {BlockSize, ItemsPerThread, 0}
     }
     {}
 #endif
@@ -1385,7 +1385,7 @@ struct adjacent_find_config : public detail::adjacent_find_config_params
 #ifndef DOXYGEN_DOCUMENTATION_BUILD
     constexpr adjacent_find_config()
         : detail::adjacent_find_config_params{
-            {BlockSize, ItemsPerThread, ROCPRIM_GRID_SIZE_LIMIT}
+              {BlockSize, ItemsPerThread, ROCPRIM_GRID_SIZE_LIMIT}
     }
     {}
 #endif // DOXYGEN_DOCUMENTATION_BUILD
@@ -1438,7 +1438,7 @@ struct search_config : public detail::search_config_params
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
     constexpr search_config()
         : detail::search_config_params{
-            MaxSharedKeyBytes, {BlockSize, ItemsPerThread, ROCPRIM_GRID_SIZE_LIMIT}
+              MaxSharedKeyBytes, {BlockSize, ItemsPerThread, ROCPRIM_GRID_SIZE_LIMIT}
     }
     {}
 #endif
@@ -1463,8 +1463,8 @@ struct search_n_config : public detail::search_n_config_params
 #ifndef DOXYGEN_DOCUMENTATION_BUILD
     constexpr search_n_config()
         : detail::search_n_config_params{
-            {BlockSize, ItemsPerThread, ROCPRIM_GRID_SIZE_LIMIT},
-            Threshold
+              {BlockSize, ItemsPerThread, ROCPRIM_GRID_SIZE_LIMIT},
+              Threshold
     }
     {}
 #endif
@@ -1513,7 +1513,7 @@ struct merge_config : public detail::merge_config_params
 
     constexpr merge_config()
         : detail::merge_config_params{
-            {BlockSize, ItemsPerThread}
+              {BlockSize, ItemsPerThread}
     } {};
 
 #endif

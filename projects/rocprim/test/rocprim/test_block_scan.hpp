@@ -28,9 +28,9 @@
 #endif
 
 block_reduce_test_suite_type_def(suite_name_single, name_suffix)
-block_reduce_test_suite_type_def(suite_name_array, name_suffix)
+    block_reduce_test_suite_type_def(suite_name_array, name_suffix)
 
-typed_test_suite_def(suite_name_single, name_suffix, block_params);
+        typed_test_suite_def(suite_name_single, name_suffix, block_params);
 typed_test_suite_def(suite_name_array, name_suffix, block_params);
 
 typed_test_def(suite_name_single, name_suffix, InclusiveScan)
@@ -53,12 +53,13 @@ typed_test_def(suite_name_single, name_suffix, InclusiveScan)
         return;
     }
 
-    const size_t size = block_size * 58;
+    const size_t size      = block_size * 58;
     const size_t grid_size = size / block_size;
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
@@ -72,8 +73,8 @@ typed_test_def(suite_name_single, name_suffix, InclusiveScan)
             acc_type accumulator(0);
             for(size_t j = 0; j < block_size; j++)
             {
-                auto idx = i * block_size + j;
-                accumulator = binary_op_host(output[idx], accumulator);
+                auto idx      = i * block_size + j;
+                accumulator   = binary_op_host(output[idx], accumulator);
                 expected[idx] = static_cast<T>(accumulator);
             }
         }
@@ -179,7 +180,7 @@ typed_test_def(suite_name_single, name_suffix, InclusiveScanInitialValue)
 typed_test_def(suite_name_single, name_suffix, InclusiveScanReduce)
 {
     using T = typename TestFixture::input_type;
- // for bfloat16 and half we use double for host-side accumulation
+    // for bfloat16 and half we use double for host-side accumulation
     using binary_op_type_host = typename test_utils::select_plus_operator_host<T>::type;
     binary_op_type_host binary_op_host;
     using acc_type = typename test_utils::select_plus_operator_host<T>::acc_type;
@@ -196,12 +197,13 @@ typed_test_def(suite_name_single, name_suffix, InclusiveScanReduce)
         return;
     }
 
-    const size_t size = block_size * 58;
+    const size_t size      = block_size * 58;
     const size_t grid_size = size / block_size;
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
@@ -217,11 +219,11 @@ typed_test_def(suite_name_single, name_suffix, InclusiveScanReduce)
             acc_type accumulator(0);
             for(size_t j = 0; j < block_size; j++)
             {
-                auto idx = i * block_size + j;
-                accumulator = binary_op_host(output[idx], accumulator);
+                auto idx      = i * block_size + j;
+                accumulator   = binary_op_host(output[idx], accumulator);
                 expected[idx] = static_cast<T>(accumulator);
             }
-            expected_reductions[i] = expected[(i+1) * block_size - 1];
+            expected_reductions[i] = expected[(i + 1) * block_size - 1];
         }
 
         // Writing to device memory
@@ -248,7 +250,6 @@ typed_test_def(suite_name_single, name_suffix, InclusiveScanReduce)
             T(0),
             grid_size);
     }
-
 }
 
 typed_test_def(suite_name_single, name_suffix, InclusiveScanReduceInitialValue)
@@ -336,7 +337,7 @@ typed_test_def(suite_name_single, name_suffix, InclusiveScanReduceInitialValue)
 typed_test_def(suite_name_single, name_suffix, InclusiveScanPrefixCallback)
 {
     using T = typename TestFixture::input_type;
-     // for bfloat16 and half we use double for host-side accumulation
+    // for bfloat16 and half we use double for host-side accumulation
     using binary_op_type_host = typename test_utils::select_plus_operator_host<T>::type;
     binary_op_type_host binary_op_host;
     using acc_type = typename test_utils::select_plus_operator_host<T>::acc_type;
@@ -353,19 +354,20 @@ typed_test_def(suite_name_single, name_suffix, InclusiveScanPrefixCallback)
         return;
     }
 
-    const size_t size = block_size * 58;
+    const size_t size      = block_size * 58;
     const size_t grid_size = size / block_size;
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
         std::vector<T> output  = test_utils::get_random_data_wrapped<T>(size, 2, 50, seed_value);
         std::vector<T> output2 = output;
         std::vector<T> output_block_prefixes(size / block_size);
-        T block_prefix = test_utils::get_random_value<T>(0, 5, seed_value);
+        T              block_prefix = test_utils::get_random_value<T>(0, 5, seed_value);
 
         // Calculate expected results on host
         std::vector<T> expected(output.size(), T(0));
@@ -375,11 +377,11 @@ typed_test_def(suite_name_single, name_suffix, InclusiveScanPrefixCallback)
             acc_type accumulator = block_prefix;
             for(size_t j = 0; j < block_size; j++)
             {
-                auto idx = i * block_size + j;
-                accumulator = binary_op_host(output[idx], accumulator);
+                auto idx      = i * block_size + j;
+                accumulator   = binary_op_host(output[idx], accumulator);
                 expected[idx] = static_cast<T>(accumulator);
             }
-            expected_block_prefixes[i] = expected[(i+1) * block_size - 1];
+            expected_block_prefixes[i] = expected[(i + 1) * block_size - 1];
         }
 
         // Writing to device memory
@@ -406,13 +408,12 @@ typed_test_def(suite_name_single, name_suffix, InclusiveScanPrefixCallback)
             block_prefix,
             grid_size);
     }
-
 }
 
 typed_test_def(suite_name_single, name_suffix, ExclusiveScan)
 {
     using T = typename TestFixture::input_type;
-     // for bfloat16 and half we use double for host-side accumulation
+    // for bfloat16 and half we use double for host-side accumulation
     using binary_op_type_host = typename test_utils::select_plus_operator_host<T>::type;
     binary_op_type_host binary_op_host;
     using acc_type = typename test_utils::select_plus_operator_host<T>::acc_type;
@@ -429,18 +430,19 @@ typed_test_def(suite_name_single, name_suffix, ExclusiveScan)
         return;
     }
 
-    const size_t size = block_size * 58;
+    const size_t size      = block_size * 58;
     const size_t grid_size = size / block_size;
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
         std::vector<T> output  = test_utils::get_random_data_wrapped<T>(size, 2, 50, seed_value);
         std::vector<T> output2 = output;
-        const T init = test_utils::get_random_value<T>(0, 5, seed_value);
+        const T        init    = test_utils::get_random_value<T>(0, 5, seed_value);
 
         // Calculate expected results on host
         std::vector<T> expected(output.size(), T(0));
@@ -450,8 +452,8 @@ typed_test_def(suite_name_single, name_suffix, ExclusiveScan)
             expected[i * block_size] = init;
             for(size_t j = 1; j < block_size; j++)
             {
-                auto idx = i * block_size + j;
-                accumulator = binary_op_host(output[idx-1], accumulator);
+                auto idx      = i * block_size + j;
+                accumulator   = binary_op_host(output[idx - 1], accumulator);
                 expected[idx] = static_cast<T>(accumulator);
             }
         }
@@ -479,13 +481,12 @@ typed_test_def(suite_name_single, name_suffix, ExclusiveScan)
             init,
             grid_size);
     }
-
 }
 
 typed_test_def(suite_name_single, name_suffix, ExclusiveScanReduce)
 {
     using T = typename TestFixture::input_type;
-     // for bfloat16 and half we use double for host-side accumulation
+    // for bfloat16 and half we use double for host-side accumulation
     using binary_op_type_host = typename test_utils::select_plus_operator_host<T>::type;
     binary_op_type_host binary_op_host;
     using acc_type = typename test_utils::select_plus_operator_host<T>::acc_type;
@@ -501,18 +502,19 @@ typed_test_def(suite_name_single, name_suffix, ExclusiveScanReduce)
         return;
     }
 
-    const size_t size = block_size * 58;
+    const size_t size      = block_size * 58;
     const size_t grid_size = size / block_size;
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
         std::vector<T> output  = test_utils::get_random_data_wrapped<T>(size, 2, 50, seed_value);
         std::vector<T> output2 = output;
-        const T init = test_utils::get_random_value<T>(0, 5, seed_value);
+        const T        init    = test_utils::get_random_value<T>(0, 5, seed_value);
 
         // Output reduce results
         std::vector<T> output_reductions(size / block_size);
@@ -526,15 +528,15 @@ typed_test_def(suite_name_single, name_suffix, ExclusiveScanReduce)
             expected[i * block_size] = init;
             for(size_t j = 1; j < block_size; j++)
             {
-                auto idx = i * block_size + j;
-                accumulator = binary_op_host(output[idx-1], accumulator);
+                auto idx      = i * block_size + j;
+                accumulator   = binary_op_host(output[idx - 1], accumulator);
                 expected[idx] = static_cast<T>(accumulator);
             }
             acc_type accumulator_reductions(0);
             expected_reductions[i] = 0;
             for(size_t j = 0; j < block_size; j++)
             {
-                auto idx = i * block_size + j;
+                auto idx               = i * block_size + j;
                 accumulator_reductions = binary_op_host(accumulator_reductions, output[idx]);
                 expected_reductions[i] = static_cast<T>(accumulator_reductions);
             }
@@ -564,13 +566,12 @@ typed_test_def(suite_name_single, name_suffix, ExclusiveScanReduce)
             init,
             grid_size);
     }
-
 }
 
 typed_test_def(suite_name_single, name_suffix, ExclusiveScanPrefixCallback)
 {
     using T = typename TestFixture::input_type;
-     // for bfloat16 and half we use double for host-side accumulation
+    // for bfloat16 and half we use double for host-side accumulation
     using binary_op_type_host = typename test_utils::select_plus_operator_host<T>::type;
     binary_op_type_host binary_op_host;
     using acc_type = typename test_utils::select_plus_operator_host<T>::acc_type;
@@ -587,40 +588,42 @@ typed_test_def(suite_name_single, name_suffix, ExclusiveScanPrefixCallback)
         return;
     }
 
-    const size_t size = block_size * 58;
+    const size_t size      = block_size * 58;
     const size_t grid_size = size / block_size;
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
         std::vector<T> output  = test_utils::get_random_data_wrapped<T>(size, 2, 50, seed_value);
         std::vector<T> output2 = output;
         std::vector<T> output_block_prefixes(size / block_size);
-        T block_prefix = test_utils::get_random_value<T>(0, 5, seed_value);
+        T              block_prefix = test_utils::get_random_value<T>(0, 5, seed_value);
 
         // Calculate expected results on host
         std::vector<T> expected(output.size(), T(0));
         std::vector<T> expected_block_prefixes(output_block_prefixes.size(), T(0));
         for(size_t i = 0; i < output.size() / block_size; i++)
         {
-            acc_type accumulator = block_prefix;
+            acc_type accumulator     = block_prefix;
             expected[i * block_size] = block_prefix;
             for(size_t j = 1; j < block_size; j++)
             {
-                auto idx = i * block_size + j;
-                accumulator = binary_op_host(output[idx-1], accumulator);
+                auto idx      = i * block_size + j;
+                accumulator   = binary_op_host(output[idx - 1], accumulator);
                 expected[idx] = static_cast<T>(accumulator);
             }
 
             acc_type accumulator_block_prefixes = block_prefix;
-            expected_block_prefixes[i] = block_prefix;
+            expected_block_prefixes[i]          = block_prefix;
             for(size_t j = 0; j < block_size; j++)
             {
                 auto idx = i * block_size + j;
-                accumulator_block_prefixes = binary_op_host(output[idx], accumulator_block_prefixes);
+                accumulator_block_prefixes
+                    = binary_op_host(output[idx], accumulator_block_prefixes);
                 expected_block_prefixes[i] = static_cast<T>(accumulator_block_prefixes);
             }
         }
@@ -649,12 +652,11 @@ typed_test_def(suite_name_single, name_suffix, ExclusiveScanPrefixCallback)
             block_prefix,
             grid_size);
     }
-
 }
 
 typed_test_def(suite_name_array, name_suffix, InclusiveScan)
 {
-    using T = typename TestFixture::input_type;
+    using T                     = typename TestFixture::input_type;
     constexpr size_t block_size = TestFixture::block_size;
 
     static_for_input_array<0, 2, T, 0, block_size>::run();
@@ -662,7 +664,7 @@ typed_test_def(suite_name_array, name_suffix, InclusiveScan)
 
 typed_test_def(suite_name_array, name_suffix, InclusiveScanReduce)
 {
-    using T = typename TestFixture::input_type;
+    using T                     = typename TestFixture::input_type;
     constexpr size_t block_size = TestFixture::block_size;
 
     static_for_input_array<0, 2, T, 1, block_size>::run();
@@ -670,7 +672,7 @@ typed_test_def(suite_name_array, name_suffix, InclusiveScanReduce)
 
 typed_test_def(suite_name_array, name_suffix, InclusiveScanPrefixCallback)
 {
-    using T = typename TestFixture::input_type;
+    using T                     = typename TestFixture::input_type;
     constexpr size_t block_size = TestFixture::block_size;
 
     static_for_input_array<0, 2, T, 2, block_size>::run();
@@ -678,7 +680,7 @@ typed_test_def(suite_name_array, name_suffix, InclusiveScanPrefixCallback)
 
 typed_test_def(suite_name_array, name_suffix, ExclusiveScan)
 {
-    using T = typename TestFixture::input_type;
+    using T                     = typename TestFixture::input_type;
     constexpr size_t block_size = TestFixture::block_size;
 
     static_for_input_array<0, 2, T, 3, block_size>::run();
@@ -686,7 +688,7 @@ typed_test_def(suite_name_array, name_suffix, ExclusiveScan)
 
 typed_test_def(suite_name_array, name_suffix, ExclusiveScanReduce)
 {
-    using T = typename TestFixture::input_type;
+    using T                     = typename TestFixture::input_type;
     constexpr size_t block_size = TestFixture::block_size;
 
     static_for_input_array<0, 2, T, 4, block_size>::run();
@@ -694,7 +696,7 @@ typed_test_def(suite_name_array, name_suffix, ExclusiveScanReduce)
 
 typed_test_def(suite_name_array, name_suffix, ExclusiveScanPrefixCallback)
 {
-    using T = typename TestFixture::input_type;
+    using T                     = typename TestFixture::input_type;
     constexpr size_t block_size = TestFixture::block_size;
 
     static_for_input_array<0, 2, T, 5, block_size>::run();

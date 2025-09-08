@@ -24,8 +24,8 @@
 
 // required rocprim headers
 #include <rocprim/block/block_load.hpp>
-#include <rocprim/block/block_store.hpp>
 #include <rocprim/block/block_reduce.hpp>
+#include <rocprim/block/block_store.hpp>
 
 // required test headers
 #include "test_utils_types.hpp"

@@ -45,23 +45,33 @@ struct custom_type
 
     // Non-zero values in default constructor for checking reduce and scan:
     // ensure that scan_op(custom_type(), value) != value
-    ROCPRIM_HOST_DEVICE constexpr inline custom_type() : x(NonZero ? 12 : 0), y(NonZero ? 34 : 0)
+    ROCPRIM_HOST_DEVICE
+    constexpr inline custom_type()
+        : x(NonZero ? 12 : 0), y(NonZero ? 34 : 0)
     {}
 
-    ROCPRIM_HOST_DEVICE inline custom_type(T x, U y) : x(x), y(y) {}
+    ROCPRIM_HOST_DEVICE
+    inline custom_type(T x, U y)
+        : x(x), y(y)
+    {}
 
-    ROCPRIM_HOST_DEVICE inline custom_type(T xy) : x(xy), y(xy) {}
+    ROCPRIM_HOST_DEVICE
+    inline custom_type(T xy)
+        : x(xy), y(xy)
+    {}
 
     template<typename V, typename W>
-    ROCPRIM_HOST_DEVICE inline custom_type(const custom_type<V, W, NonZero>& other)
+    ROCPRIM_HOST_DEVICE
+    inline custom_type(const custom_type<V, W, NonZero>& other)
         : x(static_cast<T>(other.x)), y(static_cast<U>(other.y))
     {}
 
-    ROCPRIM_HOST_DEVICE inline ~custom_type() = default;
+    ROCPRIM_HOST_DEVICE
+    inline ~custom_type()
+        = default;
 
     ROCPRIM_HOST_DEVICE
-    inline custom_type
-        operator+(const custom_type& other) const
+    inline custom_type operator+(const custom_type& other) const
     {
         rocprim::plus<T> plus_T;
         rocprim::plus<U> plus_U;
@@ -69,8 +79,7 @@ struct custom_type
     }
 
     ROCPRIM_HOST_DEVICE
-    inline custom_type
-        operator-(const custom_type& other) const
+    inline custom_type operator-(const custom_type& other) const
     {
         rocprim::minus<T> minus_T;
         rocprim::minus<U> minus_U;
@@ -78,8 +87,7 @@ struct custom_type
     }
 
     ROCPRIM_HOST_DEVICE
-    inline custom_type&
-        operator=(const custom_type& other)
+    inline custom_type& operator=(const custom_type& other)
     {
         x = other.x;
         y = other.y;
@@ -87,8 +95,7 @@ struct custom_type
     }
 
     ROCPRIM_HOST_DEVICE
-    inline custom_type&
-        operator+=(const custom_type& other)
+    inline custom_type& operator+=(const custom_type& other)
     {
         x += other.x;
         y += other.y;
@@ -96,8 +103,7 @@ struct custom_type
     }
 
     ROCPRIM_HOST_DEVICE
-    inline bool
-        operator<(const custom_type& other) const
+    inline bool operator<(const custom_type& other) const
     {
         rocprim::less<T>     less_T;
         rocprim::equal_to<T> equal_to_T;
@@ -106,8 +112,7 @@ struct custom_type
     }
 
     ROCPRIM_HOST_DEVICE
-    inline bool
-        operator>(const custom_type& other) const
+    inline bool operator>(const custom_type& other) const
     {
         rocprim::greater<T>  greater_T;
         rocprim::equal_to<T> equal_to_T;
@@ -116,8 +121,7 @@ struct custom_type
     }
 
     ROCPRIM_HOST_DEVICE
-    inline bool
-        operator==(const custom_type& other) const
+    inline bool operator==(const custom_type& other) const
     {
         rocprim::equal_to<T> equal_to_T;
         rocprim::equal_to<U> equal_to_U;
@@ -125,8 +129,7 @@ struct custom_type
     }
 
     ROCPRIM_HOST_DEVICE
-    inline bool
-        operator!=(const custom_type& other) const
+    inline bool operator!=(const custom_type& other) const
     {
         return !(*this == other);
     }
@@ -149,23 +152,29 @@ struct custom_type_copyable
     T x;
     U y;
 
-    ROCPRIM_HOST_DEVICE constexpr inline custom_type_copyable()
+    ROCPRIM_HOST_DEVICE
+    constexpr inline custom_type_copyable()
         : x(NonZero ? 12 : 0), y(NonZero ? 34 : 0)
     {}
 
-    ROCPRIM_HOST_DEVICE inline custom_type_copyable(T x, U y) : x(x), y(y) {}
+    ROCPRIM_HOST_DEVICE
+    inline custom_type_copyable(T x, U y)
+        : x(x), y(y)
+    {}
 
-    ROCPRIM_HOST_DEVICE inline custom_type_copyable(T xy) : x(xy), y(xy) {}
+    ROCPRIM_HOST_DEVICE
+    inline custom_type_copyable(T xy)
+        : x(xy), y(xy)
+    {}
 
     template<typename V, typename W>
-    ROCPRIM_HOST_DEVICE inline custom_type_copyable(
-        const custom_type_copyable<V, W, NonZero>& other)
+    ROCPRIM_HOST_DEVICE
+    inline custom_type_copyable(const custom_type_copyable<V, W, NonZero>& other)
         : x(static_cast<T>(other.x)), y(static_cast<U>(other.y))
     {}
 
     ROCPRIM_HOST_DEVICE
-    inline bool
-        operator<(const custom_type_copyable& other) const
+    inline bool operator<(const custom_type_copyable& other) const
     {
         rocprim::less<T>     less_T;
         rocprim::equal_to<T> equal_to_T;
@@ -174,8 +183,7 @@ struct custom_type_copyable
     }
 
     ROCPRIM_HOST_DEVICE
-    inline bool
-        operator>(const custom_type_copyable& other) const
+    inline bool operator>(const custom_type_copyable& other) const
     {
         rocprim::greater<T>  greater_T;
         rocprim::equal_to<T> equal_to_T;
@@ -184,8 +192,7 @@ struct custom_type_copyable
     }
 
     ROCPRIM_HOST_DEVICE
-    inline bool
-        operator==(const custom_type_copyable& other) const
+    inline bool operator==(const custom_type_copyable& other) const
     {
         rocprim::equal_to<T> equal_to_T;
         rocprim::equal_to<U> equal_to_U;
@@ -193,8 +200,7 @@ struct custom_type_copyable
     }
 
     ROCPRIM_HOST_DEVICE
-    inline bool
-        operator!=(const custom_type_copyable& other) const
+    inline bool operator!=(const custom_type_copyable& other) const
     {
         return !(*this == other);
     }
@@ -225,21 +231,30 @@ struct custom_huge_type : custom_type<T, U, NonZero>
 
     // Non-zero values in default constructor for checking reduce and scan:
     // ensure that scan_op(custom_type(), value) != value
-    ROCPRIM_HOST_DEVICE constexpr inline custom_huge_type() : custom_type<T, U, NonZero>()
+    ROCPRIM_HOST_DEVICE
+    constexpr inline custom_huge_type()
+        : custom_type<T, U, NonZero>()
     {}
 
-    ROCPRIM_HOST_DEVICE inline custom_huge_type(T x, U y) : custom_type<T, U, NonZero>(x, y) {}
+    ROCPRIM_HOST_DEVICE
+    inline custom_huge_type(T x, U y)
+        : custom_type<T, U, NonZero>(x, y)
+    {}
 
-    ROCPRIM_HOST_DEVICE inline custom_huge_type(T xy) : custom_type<T, U, NonZero>(xy) {}
+    ROCPRIM_HOST_DEVICE
+    inline custom_huge_type(T xy)
+        : custom_type<T, U, NonZero>(xy)
+    {}
 
     template<typename V, typename W>
-    ROCPRIM_HOST_DEVICE inline custom_huge_type(const custom_type<V, W, NonZero>& other)
+    ROCPRIM_HOST_DEVICE
+    inline custom_huge_type(const custom_type<V, W, NonZero>& other)
         : custom_type<T, U, NonZero>(other)
     {}
 
     template<unsigned int OtherSize, typename V, typename W>
-    ROCPRIM_HOST_DEVICE inline custom_huge_type(
-        const custom_huge_type<OtherSize, V, W, NonZero>& other)
+    ROCPRIM_HOST_DEVICE
+    inline custom_huge_type(const custom_huge_type<OtherSize, V, W, NonZero>& other)
         : custom_type<T, U, NonZero>(static_cast<T>(other.x), static_cast<U>(other.y))
     {}
 

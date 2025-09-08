@@ -26,8 +26,8 @@
 #include "../config.hpp"
 #include "../detail/various.hpp"
 
-#include "../intrinsics.hpp"
 #include "../functional.hpp"
+#include "../intrinsics.hpp"
 
 #include "detail/warp_sort_shuffle.hpp"
 
@@ -263,9 +263,7 @@ public:
                 return;
             }
         }
-        base_type::sort(
-            thread_key, storage, compare_function
-        );
+        base_type::sort(thread_key, storage, compare_function);
     }
 
     /// \brief Warp sort for any data type using temporary storage.
@@ -330,9 +328,7 @@ public:
                 return;
             }
         }
-        base_type::sort(
-            thread_keys, storage, compare_function
-        );
+        base_type::sort(thread_keys, storage, compare_function);
     }
 
     /// \brief Warp sort for any data type using temporary storage.
@@ -383,9 +379,7 @@ public:
                 return;
             }
         }
-        base_type::sort(
-            thread_key, thread_value, compare_function
-        );
+        base_type::sort(thread_key, thread_value, compare_function);
     }
 
     /// \brief Warp sort by key for any data type.
@@ -433,9 +427,7 @@ public:
                 return;
             }
         }
-        base_type::sort(
-            thread_keys, thread_values, compare_function
-        );
+        base_type::sort(thread_keys, thread_values, compare_function);
     }
 
     /// \brief Warp sort by key for any data type.
@@ -506,9 +498,7 @@ public:
                 return;
             }
         }
-        base_type::sort(
-            thread_key, thread_value, storage, compare_function
-        );
+        base_type::sort(thread_key, thread_value, storage, compare_function);
     }
 
     /// \brief Warp sort by key for any data type using temporary storage.
@@ -575,9 +565,7 @@ public:
                 return;
             }
         }
-        base_type::sort(
-            thread_keys, thread_values, storage, compare_function
-        );
+        base_type::sort(thread_keys, thread_values, storage, compare_function);
     }
 
     /// \brief Warp sort by key for any data type using temporary storage.

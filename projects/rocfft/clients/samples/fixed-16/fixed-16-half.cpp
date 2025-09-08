@@ -116,9 +116,9 @@ int main()
     for(size_t i = 0; i < N; i++)
     {
         std::cout << "element " << i << " input:  (" << static_cast<double>(cx[i].x) << ","
-                  << static_cast<double>(cx[i].y) << ")"
-                  << " output: (" << static_cast<double>(y[i].x) << ","
-                  << static_cast<double>(y[i].y) << ")" << std::endl;
+                  << static_cast<double>(cx[i].y) << ")" << " output: ("
+                  << static_cast<double>(y[i].x) << "," << static_cast<double>(y[i].y) << ")"
+                  << std::endl;
     }
 
     if(hipFree(x) != hipSuccess)

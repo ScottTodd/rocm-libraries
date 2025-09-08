@@ -26,15 +26,11 @@
 
 #include <type_traits>
 
-template<
-    class T,
-    unsigned WarpSize,
-    ::hipcub::WarpLoadAlgorithm Algorithm
->
+template<class T, unsigned WarpSize, ::hipcub::WarpLoadAlgorithm Algorithm>
 struct Params
 {
-    using type = T;
-    static constexpr unsigned warp_size = WarpSize;
+    using type                                             = T;
+    static constexpr unsigned                    warp_size = WarpSize;
     static constexpr ::hipcub::WarpLoadAlgorithm algorithm = Algorithm;
 };
 
@@ -45,47 +41,47 @@ public:
     using params = Params;
 };
 
-using HipcubWarpLoadTestParams = ::testing::Types<
-    Params<int, 1U, ::hipcub::WARP_LOAD_DIRECT>,
-    Params<int, 1U, ::hipcub::WARP_LOAD_STRIPED>,
-    Params<int, 1U, ::hipcub::WARP_LOAD_VECTORIZE>,
-    Params<int, 1U, ::hipcub::WARP_LOAD_TRANSPOSE>,
+using HipcubWarpLoadTestParams = ::testing::Types<Params<int, 1U, ::hipcub::WARP_LOAD_DIRECT>,
+                                                  Params<int, 1U, ::hipcub::WARP_LOAD_STRIPED>,
+                                                  Params<int, 1U, ::hipcub::WARP_LOAD_VECTORIZE>,
+                                                  Params<int, 1U, ::hipcub::WARP_LOAD_TRANSPOSE>,
 
-    Params<int, 16U, ::hipcub::WARP_LOAD_DIRECT>,
-    Params<int, 16U, ::hipcub::WARP_LOAD_STRIPED>,
-    Params<int, 16U, ::hipcub::WARP_LOAD_VECTORIZE>,
-    Params<int, 16U, ::hipcub::WARP_LOAD_TRANSPOSE>,
+                                                  Params<int, 16U, ::hipcub::WARP_LOAD_DIRECT>,
+                                                  Params<int, 16U, ::hipcub::WARP_LOAD_STRIPED>,
+                                                  Params<int, 16U, ::hipcub::WARP_LOAD_VECTORIZE>,
+                                                  Params<int, 16U, ::hipcub::WARP_LOAD_TRANSPOSE>,
 
-    Params<int, 32U, ::hipcub::WARP_LOAD_DIRECT>,
-    Params<int, 32U, ::hipcub::WARP_LOAD_STRIPED>,
-    Params<int, 32U, ::hipcub::WARP_LOAD_VECTORIZE>,
-    Params<int, 32U, ::hipcub::WARP_LOAD_TRANSPOSE>,
+                                                  Params<int, 32U, ::hipcub::WARP_LOAD_DIRECT>,
+                                                  Params<int, 32U, ::hipcub::WARP_LOAD_STRIPED>,
+                                                  Params<int, 32U, ::hipcub::WARP_LOAD_VECTORIZE>,
+                                                  Params<int, 32U, ::hipcub::WARP_LOAD_TRANSPOSE>,
 
-    Params<int, 64U, ::hipcub::WARP_LOAD_DIRECT>,
-    Params<int, 64U, ::hipcub::WARP_LOAD_STRIPED>,
-    Params<int, 64U, ::hipcub::WARP_LOAD_VECTORIZE>,
-    Params<int, 64U, ::hipcub::WARP_LOAD_TRANSPOSE>
->;
+                                                  Params<int, 64U, ::hipcub::WARP_LOAD_DIRECT>,
+                                                  Params<int, 64U, ::hipcub::WARP_LOAD_STRIPED>,
+                                                  Params<int, 64U, ::hipcub::WARP_LOAD_VECTORIZE>,
+                                                  Params<int, 64U, ::hipcub::WARP_LOAD_TRANSPOSE>>;
 
 template<unsigned                    BlockSize,
          unsigned                    ItemsPerThread,
          unsigned                    LogicalWarpSize,
          ::hipcub::WarpLoadAlgorithm Algorithm,
          class T>
-__device__ auto warp_load_test(T* d_input, T* d_output)
+__device__
+auto warp_load_test(T* d_input, T* d_output)
     -> std::enable_if_t<test_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {
     using WarpLoadT = ::hipcub::WarpLoad<T, ItemsPerThread, Algorithm, LogicalWarpSize>;
     constexpr unsigned warps_in_block = BlockSize / LogicalWarpSize;
-    constexpr int tile_size = ItemsPerThread * LogicalWarpSize;
+    constexpr int      tile_size      = ItemsPerThread * LogicalWarpSize;
 
-    const unsigned                             warp_id = threadIdx.x / LogicalWarpSize;
-    __shared__ typename WarpLoadT::TempStorage temp_storage[warps_in_block];
-    T thread_data[ItemsPerThread];
+    const unsigned                  warp_id = threadIdx.x / LogicalWarpSize;
+    __shared__
+    typename WarpLoadT::TempStorage temp_storage[warps_in_block];
+    T                               thread_data[ItemsPerThread];
 
     WarpLoadT(temp_storage[warp_id]).Load(d_input + warp_id * tile_size, thread_data);
 
-    for (unsigned i = 0; i < ItemsPerThread; ++i)
+    for(unsigned i = 0; i < ItemsPerThread; ++i)
     {
         d_output[threadIdx.x * ItemsPerThread + i] = thread_data[i];
     }
@@ -96,7 +92,8 @@ template<unsigned                    BlockSize,
          unsigned                    LogicalWarpSize,
          ::hipcub::WarpLoadAlgorithm Algorithm,
          class T>
-__device__ auto warp_load_test(T* /*d_input*/, T* /*d_output*/)
+__device__
+auto warp_load_test(T* /*d_input*/, T* /*d_output*/)
     -> std::enable_if_t<!test_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {}
 
@@ -105,7 +102,8 @@ template<unsigned                    BlockSize,
          unsigned                    LogicalWarpSize,
          ::hipcub::WarpLoadAlgorithm Algorithm,
          class T>
-__global__ __launch_bounds__(BlockSize) void warp_load_kernel(T* d_input, T* d_output)
+__global__ __launch_bounds__(BlockSize)
+void warp_load_kernel(T* d_input, T* d_output)
 {
     warp_load_test<BlockSize, ItemsPerThread, LogicalWarpSize, Algorithm>(d_input, d_output);
 }
@@ -115,25 +113,23 @@ template<unsigned                    BlockSize,
          unsigned                    LogicalWarpSize,
          ::hipcub::WarpLoadAlgorithm Algorithm,
          class T>
-__device__ auto warp_load_guarded_test(T* d_input, T* d_output, int valid_items, T oob_default)
+__device__
+auto warp_load_guarded_test(T* d_input, T* d_output, int valid_items, T oob_default)
     -> std::enable_if_t<test_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {
     using WarpLoadT = ::hipcub::WarpLoad<T, ItemsPerThread, Algorithm, LogicalWarpSize>;
     constexpr unsigned warps_in_block = BlockSize / LogicalWarpSize;
-    constexpr int tile_size = ItemsPerThread * LogicalWarpSize;
+    constexpr int      tile_size      = ItemsPerThread * LogicalWarpSize;
 
-    const unsigned                             warp_id = threadIdx.x / LogicalWarpSize;
-    __shared__ typename WarpLoadT::TempStorage temp_storage[warps_in_block];
-    T thread_data[ItemsPerThread];
+    const unsigned                  warp_id = threadIdx.x / LogicalWarpSize;
+    __shared__
+    typename WarpLoadT::TempStorage temp_storage[warps_in_block];
+    T                               thread_data[ItemsPerThread];
 
-    WarpLoadT(temp_storage[warp_id]).Load(
-        d_input + warp_id * tile_size,
-        thread_data,
-        valid_items,
-        oob_default
-    );
+    WarpLoadT(temp_storage[warp_id])
+        .Load(d_input + warp_id * tile_size, thread_data, valid_items, oob_default);
 
-    for (unsigned i = 0; i < ItemsPerThread; ++i)
+    for(unsigned i = 0; i < ItemsPerThread; ++i)
     {
         d_output[threadIdx.x * ItemsPerThread + i] = thread_data[i];
     }
@@ -144,9 +140,9 @@ template<unsigned                    BlockSize,
          unsigned                    LogicalWarpSize,
          ::hipcub::WarpLoadAlgorithm Algorithm,
          class T>
-__device__ auto
-    warp_load_guarded_test(T* /*d_input*/, T* /*d_output*/, int /*valid_items*/, T /*oob_default*/)
-        -> std::enable_if_t<!test_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
+__device__
+auto warp_load_guarded_test(T* /*d_input*/, T* /*d_output*/, int /*valid_items*/, T /*oob_default*/)
+    -> std::enable_if_t<!test_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {}
 
 template<unsigned                    BlockSize,
@@ -154,10 +150,8 @@ template<unsigned                    BlockSize,
          unsigned                    LogicalWarpSize,
          ::hipcub::WarpLoadAlgorithm Algorithm,
          class T>
-__global__ __launch_bounds__(BlockSize) void warp_load_guarded_kernel(T*  d_input,
-                                                                      T*  d_output,
-                                                                      int valid_items,
-                                                                      T   oob_default)
+__global__ __launch_bounds__(BlockSize)
+void warp_load_guarded_kernel(T* d_input, T* d_output, int valid_items, T oob_default)
 {
     warp_load_guarded_test<BlockSize, ItemsPerThread, LogicalWarpSize, Algorithm>(d_input,
                                                                                   d_output,
@@ -166,16 +160,18 @@ __global__ __launch_bounds__(BlockSize) void warp_load_guarded_kernel(T*  d_inpu
 }
 
 template<class T>
-std::vector<T> stripe_vector(const std::vector<T>& v, const size_t warp_size, const size_t items_per_thread)
+std::vector<T>
+    stripe_vector(const std::vector<T>& v, const size_t warp_size, const size_t items_per_thread)
 {
-    const size_t warp_items = warp_size * items_per_thread;
+    const size_t   warp_items = warp_size * items_per_thread;
     std::vector<T> striped(v.size());
-    for (size_t i = 0; i < v.size(); ++i)
+    for(size_t i = 0; i < v.size(); ++i)
     {
         const size_t warp_idx = i % warp_items;
-        const size_t other_warp_idx = (warp_idx % items_per_thread) * warp_size + (warp_idx / items_per_thread);
+        const size_t other_warp_idx
+            = (warp_idx % items_per_thread) * warp_size + (warp_idx / items_per_thread);
         const size_t other_idx = other_warp_idx + warp_items * (i / warp_items);
-        striped[i] = v[other_idx];
+        striped[i]             = v[other_idx];
     }
     return striped;
 }
@@ -188,12 +184,12 @@ TYPED_TEST(HipcubWarpLoadTest, WarpLoad)
     SCOPED_TRACE(testing::Message() << "with device_id= " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using T = typename TestFixture::params::type;
-    constexpr unsigned warp_size = TestFixture::params::warp_size;
-    constexpr ::hipcub::WarpLoadAlgorithm algorithm = TestFixture::params::algorithm;
-    constexpr unsigned items_per_thread = 4;
-    constexpr unsigned block_size = 1024;
-    constexpr unsigned items_count = items_per_thread * block_size;
+    using T                                                = typename TestFixture::params::type;
+    constexpr unsigned                    warp_size        = TestFixture::params::warp_size;
+    constexpr ::hipcub::WarpLoadAlgorithm algorithm        = TestFixture::params::algorithm;
+    constexpr unsigned                    items_per_thread = 4;
+    constexpr unsigned                    block_size       = 1024;
+    constexpr unsigned                    items_count      = items_per_thread * block_size;
 
     SKIP_IF_UNSUPPORTED_WARP_SIZE(warp_size);
 
@@ -218,11 +214,11 @@ TYPED_TEST(HipcubWarpLoadTest, WarpLoad)
     HIP_CHECK(hipFree(d_output));
 
     auto expected = input;
-    if (algorithm == ::hipcub::WarpLoadAlgorithm::WARP_LOAD_STRIPED)
+    if(algorithm == ::hipcub::WarpLoadAlgorithm::WARP_LOAD_STRIPED)
     {
         expected = stripe_vector(input, warp_size, items_per_thread);
     }
-    
+
     ASSERT_EQ(expected, output);
 }
 
@@ -232,14 +228,14 @@ TYPED_TEST(HipcubWarpLoadTest, WarpLoadGuarded)
     SCOPED_TRACE(testing::Message() << "with device_id= " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using T = typename TestFixture::params::type;
-    constexpr unsigned warp_size = TestFixture::params::warp_size;
-    constexpr ::hipcub::WarpLoadAlgorithm algorithm = TestFixture::params::algorithm;
-    constexpr unsigned items_per_thread = 4;
-    constexpr unsigned block_size = 1024;
-    constexpr unsigned items_count = items_per_thread * block_size;
-    constexpr int valid_items = warp_size / 4;
-    constexpr T oob_default = std::numeric_limits<T>::max();
+    using T                                                = typename TestFixture::params::type;
+    constexpr unsigned                    warp_size        = TestFixture::params::warp_size;
+    constexpr ::hipcub::WarpLoadAlgorithm algorithm        = TestFixture::params::algorithm;
+    constexpr unsigned                    items_per_thread = 4;
+    constexpr unsigned                    block_size       = 1024;
+    constexpr unsigned                    items_count      = items_per_thread * block_size;
+    constexpr int                         valid_items      = warp_size / 4;
+    constexpr T                           oob_default      = std::numeric_limits<T>::max();
 
     SKIP_IF_UNSUPPORTED_WARP_SIZE(warp_size);
 
@@ -264,17 +260,18 @@ TYPED_TEST(HipcubWarpLoadTest, WarpLoadGuarded)
     HIP_CHECK(hipFree(d_output));
 
     auto expected = input;
-    for (size_t warp_idx = 0; warp_idx < block_size / warp_size; ++warp_idx)
+    for(size_t warp_idx = 0; warp_idx < block_size / warp_size; ++warp_idx)
     {
         auto segment_begin = std::next(expected.begin(), warp_idx * warp_size * items_per_thread);
-        auto segment_end = std::next(expected.begin(), (warp_idx + 1) * warp_size * items_per_thread);
+        auto segment_end
+            = std::next(expected.begin(), (warp_idx + 1) * warp_size * items_per_thread);
         std::fill(std::next(segment_begin, valid_items), segment_end, oob_default);
     }
-    
-    if (algorithm == ::hipcub::WarpLoadAlgorithm::WARP_LOAD_STRIPED)
+
+    if(algorithm == ::hipcub::WarpLoadAlgorithm::WARP_LOAD_STRIPED)
     {
         expected = stripe_vector(expected, warp_size, items_per_thread);
     }
-    
+
     ASSERT_EQ(expected, output);
 }

@@ -196,16 +196,14 @@ namespace
         Ti,
         Tex,
         To,
-        std::enable_if_t<
-            (std::is_same_v<
-                 Ti,
-                 Tex> && std::is_same_v<Tex, To> && (std::is_same_v<Ti, float> || std::is_same_v<Ti, double> || std::is_same_v<Ti, rocblas_float_complex> || std::is_same_v<Ti, rocblas_double_complex>))
-            || (std::is_same_v<
-                    Ti,
-                    rocblas_half> && std::is_same_v<Tex, float> && (std::is_same_v<To, Ti> || std::is_same_v<To, float>))
-            || (std::is_same_v<
-                    Ti,
-                    rocblas_bfloat16> && std::is_same_v<Tex, float> && (std::is_same_v<To, Ti> || std::is_same_v<To, float>))>>
+        std::enable_if_t<(std::is_same_v<Ti, Tex> && std::is_same_v<Tex, To>
+                          && (std::is_same_v<Ti, float> || std::is_same_v<Ti, double>
+                              || std::is_same_v<Ti, rocblas_float_complex>
+                              || std::is_same_v<Ti, rocblas_double_complex>))
+                         || (std::is_same_v<Ti, rocblas_half> && std::is_same_v<Tex, float>
+                             && (std::is_same_v<To, Ti> || std::is_same_v<To, float>))
+                         || (std::is_same_v<Ti, rocblas_bfloat16> && std::is_same_v<Tex, float>
+                             && (std::is_same_v<To, Ti> || std::is_same_v<To, float>))>>
         : rocblas_test_valid
     {
         void operator()(const Arguments& arg)

@@ -1957,7 +1957,7 @@ v_perm_b32 v[vgprValuA_X0_I0+29], v[vgprValuA_X0_I0_D3+3], v[vgprValuA_X0_I0_D2+
 v_perm_b32 v[vgprValuA_X0_I0+30], v[vgprValuA_X0_I0_D5+3], v[vgprValuA_X0_I0_D4+3], s[sgprPackKForV1] // select K=45 for vector=1
 v_perm_b32 v[vgprValuA_X0_I0+31], v[vgprValuA_X0_I0_D7+3], v[vgprValuA_X0_I0_D6+3], s[sgprPackKForV1] // select K=67 for vector=1
 
-  
+
 /* local read inc a */
 /* N/A, lro->8192 */
 /* self.localReadDoCntA 1 self.localReadDoCntB 1 */
@@ -2036,7 +2036,7 @@ s_add_u32 m0, m0, \LDSOFF                             // Move LDS write address 
 buffer_load_dwordx4 v[vgprGlobalReadOffset\base+7], s[sgprSrd\base:sgprSrd\base+3], 0 offen offset:0, lds // G -> Reg 0_0_7_0
 .endif
 .endm
-  
+
 
 /******************************************/
 /* Unrolled Loop 1/1 - Begin              */
@@ -2208,7 +2208,7 @@ GR A 11 4112
 v_mfma_f32_16x16x32_bf16 acc[132:135], v[vgprValuB_X0_I0+16+0+0:vgprValuB_X0_I0+16+0+0+3], v[vgprValuA_X0_I0+4+0+0:vgprValuA_X0_I0+4+0+0+3], acc[132:135] // left value = acc[132+0:135+0]
 v_perm_b32 v[vgprValuA_X1_I0+6], v[vgprValuA_X1_I0_D5+0], v[vgprValuA_X1_I0_D4+0], s[sgprPackKForV1] // select K=45 for vector=1
 v_xor_b32 v[vgprLocalReadAddrB], v[vgprLocalReadSwapAddrB], v[vgprLocalReadAddrB] // swap Red Blk
-  
+
 /*  mfmaIndex:34  */
 v_mfma_f32_16x16x32_bf16 acc[136:139], v[vgprValuB_X0_I0+16+0+0:vgprValuB_X0_I0+16+0+0+3], v[vgprValuA_X0_I0+8+0+0:vgprValuA_X0_I0+8+0+0+3], acc[136:139] // left value = acc[136+0:139+0]
 v_perm_b32 v[vgprValuA_X1_I0+7], v[vgprValuA_X1_I0_D7+0], v[vgprValuA_X1_I0_D6+0], s[sgprPackKForV1] // select K=67 for vector=1
@@ -2228,7 +2228,7 @@ GR A 13 4112
 v_mfma_f32_16x16x32_bf16 acc[148:151], v[vgprValuB_X0_I0+16+0+0:vgprValuB_X0_I0+16+0+0+3], v[vgprValuA_X0_I0+20+0+0:vgprValuA_X0_I0+20+0+0+3], acc[148:151] // left value = acc[148+0:151+0]
 v_perm_b32 v[vgprValuA_X1_I0+11], v[vgprValuA_X1_I0_D7+1], v[vgprValuA_X1_I0_D6+1], s[sgprPackKForV0] // select K=67 for vector=0
 v_perm_b32 v[vgprValuA_X1_I0+12], v[vgprValuA_X1_I0_D1+1], v[vgprValuA_X1_I0_D0+1], s[sgprPackKForV1] // select K=01 for vector=1
-  
+
 /*  mfmaIndex:38  */
 v_mfma_f32_16x16x32_bf16 acc[152:155], v[vgprValuB_X0_I0+16+0+0:vgprValuB_X0_I0+16+0+0+3], v[vgprValuA_X0_I0+24+0+0:vgprValuA_X0_I0+24+0+0+3], acc[152:155] // left value = acc[152+0:155+0]
 v_perm_b32 v[vgprValuA_X1_I0+13], v[vgprValuA_X1_I0_D3+1], v[vgprValuA_X1_I0_D2+1], s[sgprPackKForV1] // select K=23 for vector=1
@@ -2282,7 +2282,7 @@ v_perm_b32 v[vgprValuA_X1_I0+30], v[vgprValuA_X1_I0_D5+3], v[vgprValuA_X1_I0_D4+
 /*  mfmaIndex:48  */
 v_mfma_f32_16x16x32_bf16 acc[192:195], v[vgprValuB_X0_I0+24+0+0:vgprValuB_X0_I0+24+0+0+3], v[vgprValuA_X0_I0+0+0+0:vgprValuA_X0_I0+0+0+0+3], acc[192:195] // left value = acc[192+0:195+0]
 v_perm_b32 v[vgprValuA_X1_I0+31], v[vgprValuA_X1_I0_D7+3], v[vgprValuA_X1_I0_D6+3], s[sgprPackKForV1] // select K=67 for vector=1
-  
+
 /*  mfmaIndex:49  */
 v_mfma_f32_16x16x32_bf16 acc[196:199], v[vgprValuB_X0_I0+24+0+0:vgprValuB_X0_I0+24+0+0+3], v[vgprValuA_X0_I0+4+0+0:vgprValuA_X0_I0+4+0+0+3], acc[196:199] // left value = acc[196+0:199+0]
 /*  mfmaIndex:50  */
@@ -2444,12 +2444,12 @@ v_mfma_f32_16x16x32_bf16 acc[124:127], v[vgprValuB_X1_I0+12+0+0:vgprValuB_X1_I0+
 v_perm_b32 v[vgprValuA_X0_I0+24], v[vgprValuA_X0_I0_D1+3], v[vgprValuA_X0_I0_D0+3], s[sgprPackKForV0] // select K=01 for vector=0
 v_perm_b32 v[vgprValuA_X0_I0+25], v[vgprValuA_X0_I0_D3+3], v[vgprValuA_X0_I0_D2+3], s[sgprPackKForV0] // select K=23 for vector=0
 
-  
+
 /*  mfmaIndex:96  */
 v_mfma_f32_16x16x32_bf16 acc[128:131], v[vgprValuB_X1_I0+16+0+0:vgprValuB_X1_I0+16+0+0+3], v[vgprValuA_X1_I0+0+0+0:vgprValuA_X1_I0+0+0+0+3], acc[128:131] // left value = acc[128+0:131+0]
 v_perm_b32 v[vgprValuA_X0_I0+26], v[vgprValuA_X0_I0_D5+3], v[vgprValuA_X0_I0_D4+3], s[sgprPackKForV0] // select K=45 for vector=0
 v_perm_b32 v[vgprValuA_X0_I0+27], v[vgprValuA_X0_I0_D7+3], v[vgprValuA_X0_I0_D6+3], s[sgprPackKForV0] // select K=67 for vector=0
-  
+
 /*  mfmaIndex:97  */
 v_mfma_f32_16x16x32_bf16 acc[132:135], v[vgprValuB_X1_I0+16+0+0:vgprValuB_X1_I0+16+0+0+3], v[vgprValuA_X1_I0+4+0+0:vgprValuA_X1_I0+4+0+0+3], acc[132:135] // left value = acc[132+0:135+0]
 v_perm_b32 v[vgprValuA_X0_I0+28], v[vgprValuA_X0_I0_D1+3], v[vgprValuA_X0_I0_D0+3], s[sgprPackKForV1] // select K=01 for vector=1
@@ -2459,7 +2459,7 @@ v_perm_b32 v[vgprValuA_X0_I0+29], v[vgprValuA_X0_I0_D3+3], v[vgprValuA_X0_I0_D2+
 v_mfma_f32_16x16x32_bf16 acc[136:139], v[vgprValuB_X1_I0+16+0+0:vgprValuB_X1_I0+16+0+0+3], v[vgprValuA_X1_I0+8+0+0:vgprValuA_X1_I0+8+0+0+3], acc[136:139] // left value = acc[136+0:139+0]
 v_perm_b32 v[vgprValuA_X0_I0+30], v[vgprValuA_X0_I0_D5+3], v[vgprValuA_X0_I0_D4+3], s[sgprPackKForV1] // select K=45 for vector=1
 v_perm_b32 v[vgprValuA_X0_I0+31], v[vgprValuA_X0_I0_D7+3], v[vgprValuA_X0_I0_D6+3], s[sgprPackKForV1] // select K=67 for vector=1
-  
+
 /*  mfmaIndex:99  */
 v_mfma_f32_16x16x32_bf16 acc[140:143], v[vgprValuB_X1_I0+16+0+0:vgprValuB_X1_I0+16+0+0+3], v[vgprValuA_X1_I0+12+0+0:vgprValuA_X1_I0+12+0+0+3], acc[140:143] // left value = acc[140+0:143+0]
 /*  mfmaIndex:100  */
@@ -2484,7 +2484,7 @@ GR B 15 4160
 /*  mfmaIndex:105  */
 v_mfma_f32_16x16x32_bf16 acc[164:167], v[vgprValuB_X1_I0+20+0+0:vgprValuB_X1_I0+20+0+0+3], v[vgprValuA_X1_I0+4+0+0:vgprValuA_X1_I0+4+0+0+3], acc[164:167] // left value = acc[164+0:167+0]
 s_waitcnt vmcnt(8 + 8)
-  
+
 /*  mfmaIndex:106  */
 v_mfma_f32_16x16x32_bf16 acc[168:171], v[vgprValuB_X1_I0+20+0+0:vgprValuB_X1_I0+20+0+0+3], v[vgprValuA_X1_I0+8+0+0:vgprValuA_X1_I0+8+0+0+3], acc[168:171] // left value = acc[168+0:171+0]
 s_barrier
@@ -2493,7 +2493,7 @@ s_barrier
 v_mfma_f32_16x16x32_bf16 acc[172:175], v[vgprValuB_X1_I0+20+0+0:vgprValuB_X1_I0+20+0+0+3], v[vgprValuA_X1_I0+12+0+0:vgprValuA_X1_I0+12+0+0+3], acc[172:175] // left value = acc[172+0:175+0]
 ds_read_b128 v[vgprValuB_X0_I0+8:vgprValuB_X0_I0+8+3], v[vgprLocalReadAddrB] offset:256 // L -> Reg lro=0 swapByteOffset=0 ti=256 vIdx=0 eIdx=2 rIdx=0 oIdx=0 buffer=0 iui=0
 
-  
+
 /*  mfmaIndex:108  */
 v_mfma_f32_16x16x32_bf16 acc[176:179], v[vgprValuB_X1_I0+20+0+0:vgprValuB_X1_I0+20+0+0+3], v[vgprValuA_X1_I0+16+0+0:vgprValuA_X1_I0+16+0+0+3], acc[176:179] // left value = acc[176+0:179+0]
 /* local write swap offsets a */

@@ -43,7 +43,7 @@ struct ZeroPad
         , anchorPos(-1)
         , boundIndex(bi)
         , padStart(ps)
-        , padEnd(pe){};
+        , padEnd(pe) {};
 
     int32_t anchorIndex;
     int32_t anchorPos; //! position of anchorIndex in A or B tensor
@@ -90,7 +90,7 @@ struct BoundIndex
         : a(xa)
         , b(xb)
         , aMirror(aMirror)
-        , bMirror(bMirror){};
+        , bMirror(bMirror) {};
     size_t  a, b; //! positions in a or b tensor
     ZeroPad aZeroPad;
     ZeroPad bZeroPad;
@@ -163,7 +163,7 @@ struct RocsparseltContractionProblem
     const void*                 bias_vector;
     int64_t                     bias_stride;
 
-    void *workspace;
+    void*  workspace;
     size_t workspaceSize;
 
     hipStream_t* streams;

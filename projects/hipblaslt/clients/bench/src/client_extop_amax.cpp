@@ -116,7 +116,8 @@ int parseArgs(int                       argc,
             {
                 const std::string initStr{argv[++i]};
 
-                if(initStr != "rand_int" && initStr != "trig_float" && initStr != "hpl" && initStr != "special" && initStr != "zero")
+                if(initStr != "rand_int" && initStr != "trig_float" && initStr != "hpl"
+                   && initStr != "special" && initStr != "zero")
                 {
                     std::cerr << "Invalid initialization type: " << initStr << '\n';
                     return EXIT_FAILURE;
@@ -241,8 +242,9 @@ int AmaxTest(hipDataType type, hipDataType dtype, int m, int n, hipblaslt_initia
     dur *= 1000; // to mju-s
 
     std::cout << "[amax]:function,m,n,type,dtype,us\n";
-    std::cout << "amax," << std::to_string(m) << "," << std::to_string(n) << "," << hip_datatype_to_string(type) << ","
-              << hip_datatype_to_string(dtype) << "," << std::to_string(dur / numRuns) << std::endl;
+    std::cout << "amax," << std::to_string(m) << "," << std::to_string(n) << ","
+              << hip_datatype_to_string(type) << "," << hip_datatype_to_string(dtype) << ","
+              << std::to_string(dur / numRuns) << std::endl;
 
     hipErr = hipEventDestroy(beg);
     hipErr = hipEventDestroy(end);

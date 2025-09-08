@@ -84,7 +84,7 @@ namespace rocRoller
             using Base = ScaledMatrixMultiply;
 
             ScaledMatrixMultiplyGenerator(ContextPtr context)
-                : m_context(context){};
+                : m_context(context) {};
 
             static const std::string Name;
 

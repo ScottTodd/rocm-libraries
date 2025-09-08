@@ -49,7 +49,7 @@ hipsparse_routine::hipsparse_routine(const char* function)
 }
 
 hipsparse_routine::hipsparse_routine()
-    : value((value_type)-1){};
+    : value((value_type)-1) {};
 
 hipsparse_routine& hipsparse_routine::operator()(const char* function)
 {

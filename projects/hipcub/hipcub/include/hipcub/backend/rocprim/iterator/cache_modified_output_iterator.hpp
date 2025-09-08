@@ -40,24 +40,24 @@
 
 BEGIN_HIPCUB_NAMESPACE
 
-template <
-    CacheStoreModifier  MODIFIER,
-    typename            ValueType,
-    typename            OffsetT = ptrdiff_t>
+template<CacheStoreModifier MODIFIER, typename ValueType, typename OffsetT = ptrdiff_t>
 class CacheModifiedOutputIterator
 {
 private:
-
     // Proxy object
     struct Reference
     {
         ValueType* ptr;
 
         /// Constructor
-        __host__ __device__ __forceinline__ Reference(ValueType* ptr) : ptr(ptr) {}
+        __host__ __device__ __forceinline__
+        Reference(ValueType* ptr)
+            : ptr(ptr)
+        {}
 
         /// Assignment
-        __device__ __forceinline__ ValueType operator =(ValueType val)
+        __device__ __forceinline__
+        ValueType operator=(ValueType val)
         {
             ThreadStore<MODIFIER>(ptr, val);
             return val;
@@ -77,99 +77,106 @@ public:
         type; ///< The iterator category
 
 private:
-
     ValueType* ptr;
 
 public:
-
     /// Constructor
-    template <typename QualifiedValueType>
-    __host__ __device__ __forceinline__ CacheModifiedOutputIterator(
-        QualifiedValueType* ptr)     ///< Native pointer to wrap
-    :
-        ptr(const_cast<typename std::remove_cv<QualifiedValueType>::type *>(ptr))
+    template<typename QualifiedValueType>
+    __host__ __device__ __forceinline__
+    CacheModifiedOutputIterator(QualifiedValueType* ptr) ///< Native pointer to wrap
+        : ptr(const_cast<typename std::remove_cv<QualifiedValueType>::type*>(ptr))
     {}
 
     /// Postfix increment
-    __host__ __device__ __forceinline__ self_type operator++(int)
+    __host__ __device__ __forceinline__
+    self_type operator++(int)
     {
         self_type retval = *this;
         ptr++;
         return retval;
     }
 
-
     /// Prefix increment
-    __host__ __device__ __forceinline__ self_type operator++()
+    __host__ __device__ __forceinline__
+    self_type operator++()
     {
         ptr++;
         return *this;
     }
 
     /// Indirection
-    __host__ __device__ __forceinline__ reference operator*() const
+    __host__ __device__ __forceinline__
+    reference operator*() const
     {
         return Reference(ptr);
     }
 
     /// Addition
-    template <typename Distance>
-    __host__ __device__ __forceinline__ self_type operator+(Distance n) const
+    template<typename Distance>
+    __host__ __device__ __forceinline__
+    self_type operator+(Distance n) const
     {
         self_type retval(ptr + n);
         return retval;
     }
 
     /// Addition assignment
-    template <typename Distance>
-    __host__ __device__ __forceinline__ self_type& operator+=(Distance n)
+    template<typename Distance>
+    __host__ __device__ __forceinline__
+    self_type& operator+=(Distance n)
     {
         ptr += n;
         return *this;
     }
 
     /// Subtraction
-    template <typename Distance>
-    __host__ __device__ __forceinline__ self_type operator-(Distance n) const
+    template<typename Distance>
+    __host__ __device__ __forceinline__
+    self_type operator-(Distance n) const
     {
         self_type retval(ptr - n);
         return retval;
     }
 
     /// Subtraction assignment
-    template <typename Distance>
-    __host__ __device__ __forceinline__ self_type& operator-=(Distance n)
+    template<typename Distance>
+    __host__ __device__ __forceinline__
+    self_type& operator-=(Distance n)
     {
         ptr -= n;
         return *this;
     }
 
     /// Distance
-    __host__ __device__ __forceinline__ difference_type operator-(self_type other) const
+    __host__ __device__ __forceinline__
+    difference_type operator-(self_type other) const
     {
         return ptr - other.ptr;
     }
 
     /// Array subscript
-    template <typename Distance>
-    __host__ __device__ __forceinline__ reference operator[](Distance n) const
+    template<typename Distance>
+    __host__ __device__ __forceinline__
+    reference operator[](Distance n) const
     {
         return Reference(ptr + n);
     }
 
     /// Equal to
-    __host__ __device__ __forceinline__ bool operator==(const self_type& rhs) const
+    __host__ __device__ __forceinline__
+    bool operator==(const self_type& rhs) const
     {
         return (ptr == rhs.ptr);
     }
 
     /// Not equal to
-    __host__ __device__ __forceinline__ bool operator!=(const self_type& rhs) const
+    __host__ __device__ __forceinline__
+    bool operator!=(const self_type& rhs) const
     {
         return (ptr != rhs.ptr);
     }
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS    // Do not document
+#ifndef DOXYGEN_SHOULD_SKIP_THIS // Do not document
 
     /// ostream operator
     friend std::ostream& operator<<(std::ostream& os, const self_type& itr)

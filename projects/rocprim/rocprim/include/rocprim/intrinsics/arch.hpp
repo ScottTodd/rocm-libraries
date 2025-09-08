@@ -248,8 +248,7 @@ struct check_wave_size
     /// \brief The assertion to do.
     template<typename P>
     ROCPRIM_INLINE ROCPRIM_HOST_DEVICE
-    constexpr void
-        operator()(P predicate) const
+    constexpr void operator()(P predicate) const
     {
 #if !defined(__HIP_DEVICE_COMPILE__) || ROCPRIM_TARGET_SPIRV
         // When a dynamic wavefront size specializes, we actually

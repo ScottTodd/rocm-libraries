@@ -35851,7 +35851,7 @@
     reorderGRInstForDTVA: false
     reorderGRInstForDTVB: false
     tailLoopOptA: false
-    tailLoopOptB: false  
+    tailLoopOptB: false
   - 1LDSBuffer: 1
     ActivationAlt: false
     ActivationFuncCall: true
@@ -37875,7 +37875,7 @@
     reorderGRInstForDTVA: false
     reorderGRInstForDTVB: false
     tailLoopOptA: false
-    tailLoopOptB: false  
+    tailLoopOptB: false
   - 1LDSBuffer: 1
     ActivationAlt: false
     ActivationFuncCall: true

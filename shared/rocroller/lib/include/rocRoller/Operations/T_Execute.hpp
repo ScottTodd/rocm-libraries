@@ -250,22 +250,13 @@ namespace rocRoller
         };
 
         template <typename T>
-        concept CUnaryXOp = requires()
-        {
-            requires std::derived_from<T, E_Unary>;
-        };
+        concept CUnaryXOp = requires() { requires std::derived_from<T, E_Unary>; };
 
         template <typename T>
-        concept CBinaryXOp = requires()
-        {
-            requires std::derived_from<T, E_Binary>;
-        };
+        concept CBinaryXOp = requires() { requires std::derived_from<T, E_Binary>; };
 
         template <typename T>
-        concept CTernaryXOp = requires()
-        {
-            requires std::derived_from<T, E_Ternary>;
-        };
+        concept CTernaryXOp = requires() { requires std::derived_from<T, E_Ternary>; };
 
     }
 }

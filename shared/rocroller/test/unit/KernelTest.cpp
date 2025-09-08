@@ -283,7 +283,7 @@ amdhsa.kernels:
 
             auto v_ptr   = Register::Value::Placeholder(m_context,
                                                       Register::Type::Vector,
-                                                      {DataType::Float, PointerType::PointerGlobal},
+                                                        {DataType::Float, PointerType::PointerGlobal},
                                                       1);
             auto v_value = Register::Value::Placeholder(
                 m_context, Register::Type::Vector, DataType::Float, 1);
@@ -415,7 +415,7 @@ amdhsa.kernels:
 
             auto v_ptr   = Register::Value::Placeholder(m_context,
                                                       Register::Type::Vector,
-                                                      {DataType::Float, PointerType::PointerGlobal},
+                                                        {DataType::Float, PointerType::PointerGlobal},
                                                       1);
             auto v_value = Register::Value::Placeholder(
                 m_context, Register::Type::Vector, DataType::Float, 1);

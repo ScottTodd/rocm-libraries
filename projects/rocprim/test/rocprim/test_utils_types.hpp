@@ -31,58 +31,43 @@
 #include <cstddef>
 #include <stdint.h>
 
-template<
-    class T,
-    unsigned int WarpSize,
-    unsigned int ItemsPerThread = 1
->
+template<class T, unsigned int WarpSize, unsigned int ItemsPerThread = 1>
 struct warp_params
 {
-    using type = T;
-    static constexpr unsigned int warp_size = WarpSize;
+    using type                                     = T;
+    static constexpr unsigned int warp_size        = WarpSize;
     static constexpr unsigned int items_per_thread = ItemsPerThread;
 };
 
-template<
-    class T,
-    class U,
-    unsigned int BlockSize = 256U
->
+template<class T, class U, unsigned int BlockSize = 256U>
 struct block_params
 {
-    using input_type = T;
-    using output_type = U;
+    using input_type                         = T;
+    using output_type                        = U;
     static constexpr unsigned int block_size = BlockSize;
 };
 
-template<
-    class T,
-    class U,
-    unsigned int ItemsPerThread,
-    bool ShouldBeVectorized
->
+template<class T, class U, unsigned int ItemsPerThread, bool ShouldBeVectorized>
 struct vector_params
 {
-    using type = T;
-    using vector_type = U;
-    static constexpr unsigned int items_per_thread = ItemsPerThread;
-    static constexpr bool should_be_vectorized = ShouldBeVectorized;
+    using type                                         = T;
+    using vector_type                                  = U;
+    static constexpr unsigned int items_per_thread     = ItemsPerThread;
+    static constexpr bool         should_be_vectorized = ShouldBeVectorized;
 };
 
-template<
-    class Type,
-    rocprim::block_load_method Load,
-    rocprim::block_store_method Store,
-    unsigned int BlockSize,
-    unsigned int ItemsPerThread
->
+template<class Type,
+         rocprim::block_load_method  Load,
+         rocprim::block_store_method Store,
+         unsigned int                BlockSize,
+         unsigned int                ItemsPerThread>
 struct class_params
 {
-    using type = Type;
-    static constexpr rocprim::block_load_method load_method = Load;
-    static constexpr rocprim::block_store_method store_method = Store;
-    static constexpr unsigned int block_size = BlockSize;
-    static constexpr unsigned int items_per_thread = ItemsPerThread;
+    using type                                                    = Type;
+    static constexpr rocprim::block_load_method  load_method      = Load;
+    static constexpr rocprim::block_store_method store_method     = Store;
+    static constexpr unsigned int                block_size       = BlockSize;
+    static constexpr unsigned int                items_per_thread = ItemsPerThread;
 };
 
 // clang-format off
@@ -118,13 +103,10 @@ using WarpParamsFloating = ::testing::Types<warp_param_type(float),
                                             warp_param_type(rocprim::bfloat16)>;
 
 // Separate sort params (only power of two warp sizes)
-#define warp_sort_param_type(type, items_per_thread) \
-   warp_params<type, 2U, items_per_thread>, \
-   warp_params<type, 4U, items_per_thread>, \
-   warp_params<type, 8U, items_per_thread>, \
-   warp_params<type, 16U, items_per_thread>, \
-   warp_params<type, 32U, items_per_thread>, \
-   warp_params<type, 64U, items_per_thread>
+#define warp_sort_param_type(type, items_per_thread)                                       \
+    warp_params<type, 2U, items_per_thread>, warp_params<type, 4U, items_per_thread>,      \
+        warp_params<type, 8U, items_per_thread>, warp_params<type, 16U, items_per_thread>, \
+        warp_params<type, 32U, items_per_thread>, warp_params<type, 64U, items_per_thread>
 
 using __custom_int2 = common::custom_type<int, int, true>;
 
@@ -225,59 +207,64 @@ using BlockHistSortParamsFloating
                        block_param_type(rocprim::bfloat16, unsigned short),
                        block_param_type(rocprim::bfloat16, unsigned int)>;
 
-static constexpr size_t n_items = 7;
-static constexpr unsigned int items[n_items] = {
-    1, 2, 4, 5, 7, 15, 32
-};
+static constexpr size_t       n_items        = 7;
+static constexpr unsigned int items[n_items] = {1, 2, 4, 5, 7, 15, 32};
 
 // Global utility defines
 #define test_suite_type_def_helper(name, suffix) \
-    template<class Params> \
-    class name ## suffix : public ::testing::Test { \
-    public: \
-        using params = Params; \
+    template<class Params>                       \
+    class name##suffix : public ::testing::Test  \
+    {                                            \
+    public:                                      \
+        using params = Params;                   \
     };
 
 #define test_suite_type_def(name, suffix) test_suite_type_def_helper(name, suffix)
 
-#define block_histo_test_suite_type_def_helper(name, suffix) \
-    template<class Params> \
-    class name ## suffix : public ::testing::Test { \
-    public: \
-        using type = typename Params::input_type; \
-        using bin_type = typename Params::output_type; \
-        static constexpr unsigned int block_size = Params::block_size; \
-        static constexpr unsigned int bin_size = Params::block_size; \
+#define block_histo_test_suite_type_def_helper(name, suffix)                     \
+    template<class Params>                                                       \
+    class name##suffix : public ::testing::Test                                  \
+    {                                                                            \
+    public:                                                                      \
+        using type                               = typename Params::input_type;  \
+        using bin_type                           = typename Params::output_type; \
+        static constexpr unsigned int block_size = Params::block_size;           \
+        static constexpr unsigned int bin_size   = Params::block_size;           \
     };
 
-#define block_histo_test_suite_type_def(name, suffix) block_histo_test_suite_type_def_helper(name, suffix)
+#define block_histo_test_suite_type_def(name, suffix) \
+    block_histo_test_suite_type_def_helper(name, suffix)
 
-#define block_reduce_test_suite_type_def_helper(name, suffix) \
-    template<class Params> \
-    class name ## suffix : public ::testing::Test { \
-    public: \
-        using input_type = typename Params::input_type; \
-        static constexpr unsigned int block_size = Params::block_size; \
+#define block_reduce_test_suite_type_def_helper(name, suffix)                   \
+    template<class Params>                                                      \
+    class name##suffix : public ::testing::Test                                 \
+    {                                                                           \
+    public:                                                                     \
+        using input_type                         = typename Params::input_type; \
+        static constexpr unsigned int block_size = Params::block_size;          \
     };
 
-#define block_reduce_test_suite_type_def(name, suffix) block_reduce_test_suite_type_def_helper(name, suffix)
+#define block_reduce_test_suite_type_def(name, suffix) \
+    block_reduce_test_suite_type_def_helper(name, suffix)
 
-#define block_sort_test_suite_type_def_helper(name, suffix) \
-    template<class Params> \
-    class name ## suffix : public ::testing::Test { \
-    public: \
-        using key_type = typename Params::input_type; \
-        using value_type = typename Params::output_type; \
-        static constexpr unsigned int block_size = Params::block_size; \
+#define block_sort_test_suite_type_def_helper(name, suffix)                      \
+    template<class Params>                                                       \
+    class name##suffix : public ::testing::Test                                  \
+    {                                                                            \
+    public:                                                                      \
+        using key_type                           = typename Params::input_type;  \
+        using value_type                         = typename Params::output_type; \
+        static constexpr unsigned int block_size = Params::block_size;           \
     };
 
-#define block_sort_test_suite_type_def(name, suffix) block_sort_test_suite_type_def_helper(name, suffix)
+#define block_sort_test_suite_type_def(name, suffix) \
+    block_sort_test_suite_type_def_helper(name, suffix)
 
-#define typed_test_suite_def_helper(name, suffix, params) TYPED_TEST_SUITE(name ## suffix, params)
+#define typed_test_suite_def_helper(name, suffix, params) TYPED_TEST_SUITE(name##suffix, params)
 
 #define typed_test_suite_def(name, suffix, params) typed_test_suite_def_helper(name, suffix, params)
 
-#define typed_test_def_helper(suite, suffix, name) TYPED_TEST(suite ## suffix, name)
+#define typed_test_def_helper(suite, suffix, name) TYPED_TEST(suite##suffix, name)
 
 #define typed_test_def(suite, suffix, name) typed_test_def_helper(suite, suffix, name)
 

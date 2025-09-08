@@ -50,7 +50,7 @@ template<class Params>
 class RocprimArgIndexIteratorTests : public ::testing::Test
 {
 public:
-    using input_type = typename Params::input_type;
+    using input_type             = typename Params::input_type;
     const bool debug_synchronous = false;
 };
 
@@ -175,10 +175,10 @@ TYPED_TEST(RocprimArgIndexIteratorTests, ReduceArgMinimum)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using T = typename TestFixture::input_type;
-    using Iterator = typename rocprim::arg_index_iterator<T*>;
-    using key_value = typename Iterator::value_type;
-    using difference_type = typename Iterator::difference_type;
+    using T                      = typename TestFixture::input_type;
+    using Iterator               = typename rocprim::arg_index_iterator<T*>;
+    using key_value              = typename Iterator::value_type;
+    using difference_type        = typename Iterator::difference_type;
     const bool debug_synchronous = false;
 
     const size_t size = 1024;
@@ -187,7 +187,8 @@ TYPED_TEST(RocprimArgIndexIteratorTests, ReduceArgMinimum)
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
@@ -204,7 +205,7 @@ TYPED_TEST(RocprimArgIndexIteratorTests, ReduceArgMinimum)
                             rocprim::numeric_limits<T>::max());
 
         // Calculate expected results on host
-        Iterator x(input.data());
+        Iterator  x(input.data());
         key_value expected = std::accumulate(x, x + size, max, reduce_op);
 
         test_utils::test_kernel_wrapper(

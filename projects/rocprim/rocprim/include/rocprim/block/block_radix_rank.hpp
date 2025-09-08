@@ -224,11 +224,12 @@ public:
     /// \endcode
     /// \endparblock
     template<typename Key, unsigned ItemsPerThread>
-    ROCPRIM_DEVICE void rank_keys(const Key (&keys)[ItemsPerThread],
-                                  unsigned int (&ranks)[ItemsPerThread],
-                                  storage_type& storage,
-                                  unsigned int  begin_bit = 0,
-                                  unsigned int  pass_bits = RadixBits)
+    ROCPRIM_DEVICE
+    void rank_keys(const Key (&keys)[ItemsPerThread],
+                   unsigned int (&ranks)[ItemsPerThread],
+                   storage_type& storage,
+                   unsigned int  begin_bit = 0,
+                   unsigned int  pass_bits = RadixBits)
     {
         base_type::rank_keys(keys, ranks, storage, begin_bit, pass_bits);
     }
@@ -247,12 +248,14 @@ public:
     /// \param [in] pass_bits [optional] the number of bits used in key comparison. Must be in
     /// the range <tt>(0; RadixBits]</tt>. Default value: RadixBits.
     template<typename Key, unsigned ItemsPerThread>
-    ROCPRIM_DEVICE void rank_keys(const Key (&keys)[ItemsPerThread],
-                                  unsigned int (&ranks)[ItemsPerThread],
-                                  unsigned int begin_bit = 0,
-                                  unsigned int pass_bits = RadixBits)
+    ROCPRIM_DEVICE
+    void rank_keys(const Key (&keys)[ItemsPerThread],
+                   unsigned int (&ranks)[ItemsPerThread],
+                   unsigned int begin_bit = 0,
+                   unsigned int pass_bits = RadixBits)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         base_type::rank_keys(keys, ranks, storage, begin_bit, pass_bits);
     }
 
@@ -299,11 +302,12 @@ public:
     /// \endcode
     /// \endparblock
     template<typename Key, unsigned ItemsPerThread>
-    ROCPRIM_DEVICE void rank_keys_desc(const Key (&keys)[ItemsPerThread],
-                                       unsigned int (&ranks)[ItemsPerThread],
-                                       storage_type& storage,
-                                       unsigned int  begin_bit = 0,
-                                       unsigned int  pass_bits = RadixBits)
+    ROCPRIM_DEVICE
+    void rank_keys_desc(const Key (&keys)[ItemsPerThread],
+                        unsigned int (&ranks)[ItemsPerThread],
+                        storage_type& storage,
+                        unsigned int  begin_bit = 0,
+                        unsigned int  pass_bits = RadixBits)
     {
         base_type::rank_keys_desc(keys, ranks, storage, begin_bit, pass_bits);
     }
@@ -322,12 +326,14 @@ public:
     /// \param [in] pass_bits [optional] the number of bits used in key comparison. Must be in
     /// the range <tt>(0; RadixBits]</tt>. Default value: RadixBits.
     template<typename Key, unsigned ItemsPerThread>
-    ROCPRIM_DEVICE void rank_keys_desc(const Key (&keys)[ItemsPerThread],
-                                       unsigned int (&ranks)[ItemsPerThread],
-                                       unsigned int begin_bit = 0,
-                                       unsigned int pass_bits = RadixBits)
+    ROCPRIM_DEVICE
+    void rank_keys_desc(const Key (&keys)[ItemsPerThread],
+                        unsigned int (&ranks)[ItemsPerThread],
+                        unsigned int begin_bit = 0,
+                        unsigned int pass_bits = RadixBits)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         base_type::rank_keys_desc(keys, ranks, storage, begin_bit, pass_bits);
     }
 
@@ -382,10 +388,11 @@ public:
     /// \endcode
     /// \endparblock
     template<typename Key, unsigned ItemsPerThread, typename DigitExtractor>
-    ROCPRIM_DEVICE void rank_keys(const Key (&keys)[ItemsPerThread],
-                                  unsigned int (&ranks)[ItemsPerThread],
-                                  storage_type&  storage,
-                                  DigitExtractor digit_extractor)
+    ROCPRIM_DEVICE
+    void rank_keys(const Key (&keys)[ItemsPerThread],
+                   unsigned int (&ranks)[ItemsPerThread],
+                   storage_type&  storage,
+                   DigitExtractor digit_extractor)
     {
         base_type::rank_keys(keys, ranks, storage, digit_extractor);
     }
@@ -409,11 +416,13 @@ public:
     /// This function will be used during ranking to extract the digit that indicates
     /// the key's value. Values return by this function object must be in range [0; 1 << RadixBits).
     template<typename Key, unsigned ItemsPerThread, typename DigitExtractor>
-    ROCPRIM_DEVICE void rank_keys(const Key (&keys)[ItemsPerThread],
-                                  unsigned int (&ranks)[ItemsPerThread],
-                                  DigitExtractor digit_extractor)
+    ROCPRIM_DEVICE
+    void rank_keys(const Key (&keys)[ItemsPerThread],
+                   unsigned int (&ranks)[ItemsPerThread],
+                   DigitExtractor digit_extractor)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         base_type::rank_keys(keys, ranks, storage, digit_extractor);
     }
 
@@ -468,10 +477,11 @@ public:
     /// \endcode
     /// \endparblock
     template<typename Key, unsigned ItemsPerThread, typename DigitExtractor>
-    ROCPRIM_DEVICE void rank_keys_desc(const Key (&keys)[ItemsPerThread],
-                                       unsigned int (&ranks)[ItemsPerThread],
-                                       storage_type&  storage,
-                                       DigitExtractor digit_extractor)
+    ROCPRIM_DEVICE
+    void rank_keys_desc(const Key (&keys)[ItemsPerThread],
+                        unsigned int (&ranks)[ItemsPerThread],
+                        storage_type&  storage,
+                        DigitExtractor digit_extractor)
     {
         base_type::rank_keys_desc(keys, ranks, storage, digit_extractor);
     }
@@ -495,11 +505,13 @@ public:
     /// This function will be used during ranking to extract the digit that indicates
     /// the key's value. Values return by this function object must be in range [0; 1 << RadixBits).
     template<typename Key, unsigned ItemsPerThread, typename DigitExtractor>
-    ROCPRIM_DEVICE void rank_keys_desc(const Key (&keys)[ItemsPerThread],
-                                       unsigned int (&ranks)[ItemsPerThread],
-                                       DigitExtractor digit_extractor)
+    ROCPRIM_DEVICE
+    void rank_keys_desc(const Key (&keys)[ItemsPerThread],
+                        unsigned int (&ranks)[ItemsPerThread],
+                        DigitExtractor digit_extractor)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         base_type::rank_keys_desc(keys, ranks, storage, digit_extractor);
     }
 
@@ -556,12 +568,13 @@ public:
     /// }
     /// \endcode
     template<typename Key, unsigned ItemsPerThread, typename DigitExtractor>
-    ROCPRIM_DEVICE void rank_keys(const Key (&keys)[ItemsPerThread],
-                                  unsigned int (&ranks)[ItemsPerThread],
-                                  storage_type&  storage,
-                                  DigitExtractor digit_extractor,
-                                  unsigned int (&prefix)[digits_per_thread],
-                                  unsigned int (&counts)[digits_per_thread])
+    ROCPRIM_DEVICE
+    void rank_keys(const Key (&keys)[ItemsPerThread],
+                   unsigned int (&ranks)[ItemsPerThread],
+                   storage_type&  storage,
+                   DigitExtractor digit_extractor,
+                   unsigned int (&prefix)[digits_per_thread],
+                   unsigned int (&counts)[digits_per_thread])
     {
         base_type::rank_keys(keys, ranks, storage, digit_extractor, prefix, counts);
     }

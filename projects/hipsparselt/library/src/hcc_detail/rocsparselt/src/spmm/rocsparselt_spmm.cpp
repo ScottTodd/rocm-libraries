@@ -27,8 +27,8 @@
 #include "rocsparselt_spmm.hpp"
 #include "definitions.h"
 #include "handle.h"
-#include "status.h"
 #include "rocsparselt_spmm_utils.hpp"
+#include "status.h"
 #include "utility.hpp"
 
 #include <hip/hip_runtime_api.h>
@@ -82,11 +82,10 @@ rocsparselt_status rocsparselt_matmul_get_workspace(const rocsparselt_handle*   
             *workspaceSize = 0;
         else
         {
-            *workspaceSize = _plan->alg_selection->configs[_plan->alg_selection->config_id]
-                                 .max_workspace_bytes
-                            + _plan->alg_selection->configs[_plan->alg_selection->config_id]
-                                 .synchronizer_bytes;
-
+            *workspaceSize
+                = _plan->alg_selection->configs[_plan->alg_selection->config_id].max_workspace_bytes
+                  + _plan->alg_selection->configs[_plan->alg_selection->config_id]
+                        .synchronizer_bytes;
         }
         log_api(_handle, __func__, *workspaceSize);
         return rocsparselt_status_success;
@@ -174,16 +173,19 @@ rocsparselt_status rocsparselt_matmul_impl(const char*                    caller
     {
         for(int id = 0; id < _plan->alg_selection->config_max_id; id++)
         {
-            workspaceSize = max(workspaceSize, _plan->alg_selection->configs[id].max_workspace_bytes \
-                            + _plan->alg_selection->configs[id].synchronizer_bytes);
+            workspaceSize = max(workspaceSize,
+                                _plan->alg_selection->configs[id].max_workspace_bytes
+                                    + _plan->alg_selection->configs[id].synchronizer_bytes);
         }
     }
     else
     {
-        if (_plan->alg_selection->config_max_id != 0)
+        if(_plan->alg_selection->config_max_id != 0)
         {
-            workspaceSize = _plan->alg_selection->configs[_plan->alg_selection->config_id].max_workspace_bytes \
-                            + _plan->alg_selection->configs[_plan->alg_selection->config_id].synchronizer_bytes;
+            workspaceSize
+                = _plan->alg_selection->configs[_plan->alg_selection->config_id].max_workspace_bytes
+                  + _plan->alg_selection->configs[_plan->alg_selection->config_id]
+                        .synchronizer_bytes;
         }
     }
 
@@ -202,7 +204,8 @@ rocsparselt_status rocsparselt_matmul_impl(const char*                    caller
         {
             std::ostringstream stringStream;
             stringStream << "The parameter number 9 (workspace) required a device memroy with ";
-            stringStream << workspaceSize  << " bytes, but current is " << workspaceSizeIn << " bytes.\n";
+            stringStream << workspaceSize << " bytes, but current is " << workspaceSizeIn
+                         << " bytes.\n";
             stringStream << "Some of the solutions will be skiped during the Search.";
             auto msg = stringStream.str();
             hipsparselt_cout << msg << std::endl;
@@ -211,8 +214,10 @@ rocsparselt_status rocsparselt_matmul_impl(const char*                    caller
         else
         {
             std::ostringstream stringStream;
-            stringStream << "The parameter number 9 (workspace) had an illegal value expected a device memroy with ";
-            stringStream << workspaceSize  << " bytes, but current is " << workspaceSizeIn << " bytes.";
+            stringStream << "The parameter number 9 (workspace) had an illegal value expected a "
+                            "device memroy with ";
+            stringStream << workspaceSize << " bytes, but current is " << workspaceSizeIn
+                         << " bytes.";
             auto msg = stringStream.str();
             hipsparselt_cerr << msg << std::endl;
             log_error(_handle, caller, msg);
@@ -242,9 +247,9 @@ rocsparselt_status rocsparselt_matmul_impl(const char*                    caller
     int config_max_id     = _plan->alg_selection->config_max_id;
     int search_iterations = search ? _plan->alg_selection->search_iterations : 0; //default
 
-#define EX_PARM                                                                                               \
-    caller, _handle, _plan, alpha, beta, d_A, d_B, d_C, d_D, workspace, workspaceSizeIn, streams, numStreams, \
-        &config_id, config_max_id, search_iterations
+#define EX_PARM                                                                                   \
+    caller, _handle, _plan, alpha, beta, d_A, d_B, d_C, d_D, workspace, workspaceSizeIn, streams, \
+        numStreams, &config_id, config_max_id, search_iterations
 
     log_api(_handle,
             caller,

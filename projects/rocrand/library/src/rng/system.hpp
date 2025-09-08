@@ -257,8 +257,8 @@ namespace detail
 {
 
 template<auto Kernel, typename ConfigProvider, typename T, bool IsDynamic, typename... Args>
-__global__ __launch_bounds__(
-    (host::get_block_size<ConfigProvider, T>(IsDynamic))) void kernel_wrapper(Args... args)
+__global__ __launch_bounds__((host::get_block_size<ConfigProvider, T>(IsDynamic)))
+void kernel_wrapper(Args... args)
 {
     Kernel(blockIdx, threadIdx, gridDim, blockDim, args...);
 }
@@ -342,7 +342,8 @@ struct syncthreads;
 template<>
 struct syncthreads<true>
 {
-    __device__ void operator()()
+    __device__
+    void operator()()
     {
         __syncthreads();
     }

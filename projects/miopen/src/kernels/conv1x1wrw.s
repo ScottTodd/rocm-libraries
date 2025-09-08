@@ -1290,4 +1290,3 @@ amdhsa.kernels:
 .endif
 
 METADATA %.AUTO_SGPR_COUNT, %.AUTO_VGPR_COUNT, %workgroup_size_x, %.AUTO_LDS_BYTE_SIZE, %KERNEL_ARGUMENTS_SIZE
-

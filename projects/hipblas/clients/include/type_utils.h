@@ -60,7 +60,7 @@ inline bool hipblas_isnan(float arg)
 inline bool hipblas_isnan(hipblasHalf arg)
 {
     auto half_data = static_cast<unsigned short>(arg);
-    return (~(half_data)&0x7c00) == 0 && (half_data & 0x3ff) != 0;
+    return (~(half_data) & 0x7c00) == 0 && (half_data & 0x3ff) != 0;
 }
 inline bool hipblas_isnan(std::complex<float> arg)
 {

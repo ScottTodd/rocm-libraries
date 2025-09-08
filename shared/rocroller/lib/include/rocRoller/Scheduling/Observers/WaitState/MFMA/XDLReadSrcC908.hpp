@@ -47,7 +47,7 @@ namespace rocRoller
         public:
             XDLReadSrcC908() {}
             XDLReadSrcC908(ContextPtr context)
-                : WaitStateObserver<XDLReadSrcC908>(context){};
+                : WaitStateObserver<XDLReadSrcC908>(context) {};
 
             /**
              * Overriden as we need to target src C only

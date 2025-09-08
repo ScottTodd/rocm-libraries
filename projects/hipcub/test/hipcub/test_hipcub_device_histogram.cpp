@@ -69,7 +69,7 @@ inline auto get_random_samples(size_t size, U min, U max, unsigned int seed_valu
 {
     const long long min1 = static_cast<long long>(min);
     const long long max1 = static_cast<long long>(max);
-    const long long d = max1 - min1;
+    const long long d    = max1 - min1;
     return test_utils::get_random_data<T>(
         size,
         static_cast<T>(
@@ -85,7 +85,7 @@ inline auto get_random_samples(size_t size, U min, U max, unsigned int seed_valu
 {
     const double min1 = static_cast<double>(min);
     const double max1 = static_cast<double>(max);
-    const double d = max1 - min1;
+    const double d    = max1 - min1;
     return test_utils::get_random_data<T>(
         size,
         static_cast<T>(
@@ -98,8 +98,8 @@ inline auto get_random_samples(size_t size, U min, U max, unsigned int seed_valu
 template<class T>
 struct transform_op
 {
-    __host__ __device__ inline
-    T operator()(T x) const
+    __host__ __device__
+    inline T operator()(T x) const
     {
         return x * T(1.0);
     }
@@ -124,7 +124,8 @@ struct params1
 };
 
 template<class Params>
-class HipcubDeviceHistogramEven : public ::testing::Test {
+class HipcubDeviceHistogramEven : public ::testing::Test
+{
 public:
     using params = Params;
 };
@@ -153,9 +154,9 @@ TYPED_TEST(HipcubDeviceHistogramEven, Even)
     SCOPED_TRACE(testing::Message() << "with device_id= " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using sample_type = typename TestFixture::params::sample_type;
-    using counter_type = typename TestFixture::params::counter_type;
-    using level_type = typename TestFixture::params::level_type;
+    using sample_type           = typename TestFixture::params::sample_type;
+    using counter_type          = typename TestFixture::params::counter_type;
+    using level_type            = typename TestFixture::params::level_type;
     constexpr unsigned int bins = TestFixture::params::bins;
 
     // native host types
@@ -185,42 +186,38 @@ TYPED_TEST(HipcubDeviceHistogramEven, Even)
 
     for(auto dim : get_dims())
     {
-        SCOPED_TRACE(
-            testing::Message() << "with dim = {" <<
-            std::get<0>(dim) << ", " << std::get<1>(dim) << ", " << std::get<2>(dim) << "}"
-        );
+        SCOPED_TRACE(testing::Message() << "with dim = {" << std::get<0>(dim) << ", "
+                                        << std::get<1>(dim) << ", " << std::get<2>(dim) << "}");
 
-        const size_t rows = std::get<0>(dim);
-        const size_t columns = std::get<1>(dim);
+        const size_t rows       = std::get<0>(dim);
+        const size_t columns    = std::get<1>(dim);
         const size_t row_stride = columns + std::get<2>(dim);
 
         const size_t row_stride_bytes = row_stride * sizeof(sample_type);
-        const size_t size = std::max<size_t>(1, rows * row_stride);
+        const size_t size             = std::max<size_t>(1, rows * row_stride);
 
-        for (size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
+        for(size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
         {
-            unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+            unsigned int seed_value
+                = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
             SCOPED_TRACE(testing::Message() << "with seed= " << seed_value);
 
             // Generate data
-            std::vector<sample_type> input = test_utils::get_random_data<sample_type>(
-                size,
-                static_cast<sample_type>(lower_level),
-                static_cast<sample_type>(upper_level),
-                seed_value
-            );
+            std::vector<sample_type> input
+                = test_utils::get_random_data<sample_type>(size,
+                                                           static_cast<sample_type>(lower_level),
+                                                           static_cast<sample_type>(upper_level),
+                                                           seed_value);
 
-            sample_type * d_input;
-            counter_type * d_histogram;
+            sample_type*  d_input;
+            counter_type* d_histogram;
             HIP_CHECK(test_common_utils::hipMallocHelper(&d_input, size * sizeof(sample_type)));
-            HIP_CHECK(test_common_utils::hipMallocHelper(&d_histogram, bins * sizeof(counter_type)));
             HIP_CHECK(
-                hipMemcpy(
-                    d_input, input.data(),
-                    size * sizeof(sample_type),
-                    hipMemcpyHostToDevice
-                )
-            );
+                test_common_utils::hipMallocHelper(&d_histogram, bins * sizeof(counter_type)));
+            HIP_CHECK(hipMemcpy(d_input,
+                                input.data(),
+                                size * sizeof(sample_type),
+                                hipMemcpyHostToDevice));
 
             // Calculate expected results on host
             std::vector<counter_type> histogram_expected(bins, 0);
@@ -270,11 +267,12 @@ TYPED_TEST(HipcubDeviceHistogramEven, Even)
 
             ASSERT_GT(temporary_storage_bytes, 0U);
 
-            void * d_temporary_storage;
-            HIP_CHECK(test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
+            void* d_temporary_storage;
+            HIP_CHECK(
+                test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             if(rows == 1)
@@ -304,17 +302,14 @@ TYPED_TEST(HipcubDeviceHistogramEven, Even)
                                                                  stream));
             }
 
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             std::vector<counter_type> histogram(bins);
-            HIP_CHECK(
-                hipMemcpy(
-                    histogram.data(), d_histogram,
-                    bins * sizeof(counter_type),
-                    hipMemcpyDeviceToHost
-                )
-            );
+            HIP_CHECK(hipMemcpy(histogram.data(),
+                                d_histogram,
+                                bins * sizeof(counter_type),
+                                hipMemcpyDeviceToHost));
 
             HIP_CHECK(hipFree(d_temporary_storage));
             HIP_CHECK(hipFree(d_input));
@@ -458,7 +453,8 @@ struct params2
 };
 
 template<class Params>
-class HipcubDeviceHistogramRange : public ::testing::Test {
+class HipcubDeviceHistogramRange : public ::testing::Test
+{
 public:
     using params = Params;
 };
@@ -486,9 +482,9 @@ TYPED_TEST(HipcubDeviceHistogramRange, Range)
     HIP_CHECK(hipSetDevice(device_id));
 
     // device types
-    using sample_type = typename TestFixture::params::sample_type;
-    using counter_type = typename TestFixture::params::counter_type;
-    using level_type = typename TestFixture::params::level_type;
+    using sample_type           = typename TestFixture::params::sample_type;
+    using counter_type          = typename TestFixture::params::counter_type;
+    using level_type            = typename TestFixture::params::level_type;
     constexpr unsigned int bins = TestFixture::params::bins;
 
     // native host types
@@ -502,38 +498,35 @@ TYPED_TEST(HipcubDeviceHistogramRange, Range)
         HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
     }
 
-    std::random_device rd;
+    std::random_device         rd;
     std::default_random_engine gen(rd());
 
-    std::uniform_int_distribution<unsigned int> bin_length_dis(
-        TestFixture::params::min_bin_length,
-        TestFixture::params::max_bin_length
-    );
+    std::uniform_int_distribution<unsigned int> bin_length_dis(TestFixture::params::min_bin_length,
+                                                               TestFixture::params::max_bin_length);
 
     for(auto dim : get_dims())
     {
-        SCOPED_TRACE(
-            testing::Message() << "with dim = {" <<
-            std::get<0>(dim) << ", " << std::get<1>(dim) << ", " << std::get<2>(dim) << "}"
-        );
+        SCOPED_TRACE(testing::Message() << "with dim = {" << std::get<0>(dim) << ", "
+                                        << std::get<1>(dim) << ", " << std::get<2>(dim) << "}");
 
-        const size_t rows = std::get<0>(dim);
-        const size_t columns = std::get<1>(dim);
+        const size_t rows       = std::get<0>(dim);
+        const size_t columns    = std::get<1>(dim);
         const size_t row_stride = columns + std::get<2>(dim);
 
         const size_t row_stride_bytes = row_stride * sizeof(sample_type);
-        const size_t size = std::max<size_t>(1, rows * row_stride);
+        const size_t size             = std::max<size_t>(1, rows * row_stride);
 
-        for (size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
+        for(size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
         {
-            unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+            unsigned int seed_value
+                = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
             SCOPED_TRACE(testing::Message() << "with seed= " << seed_value);
 
             // Generate data
-            std::vector<level_type> levels;
+            std::vector<level_type>        levels;
             std::vector<native_level_type> n_levels;
             native_level_type              n_level = TestFixture::params::start_level;
-            for(unsigned int bin = 0 ; bin < bins; bin++)
+            for(unsigned int bin = 0; bin < bins; bin++)
             {
                 n_levels.push_back(n_level);
                 levels.push_back(test_utils::convert_to_device<level_type>(n_level));
@@ -543,33 +536,25 @@ TYPED_TEST(HipcubDeviceHistogramRange, Range)
             n_levels.push_back(n_level);
             levels.push_back(test_utils::convert_to_device<level_type>(n_level));
 
-            std::vector<sample_type> input = get_random_samples<sample_type>(
-                size,
-                levels[0],
-                levels[bins],
-                seed_value
-            );
+            std::vector<sample_type> input
+                = get_random_samples<sample_type>(size, levels[0], levels[bins], seed_value);
 
-            sample_type * d_input;
-            level_type * d_levels;
-            counter_type * d_histogram;
+            sample_type*  d_input;
+            level_type*   d_levels;
+            counter_type* d_histogram;
             HIP_CHECK(test_common_utils::hipMallocHelper(&d_input, size * sizeof(sample_type)));
-            HIP_CHECK(test_common_utils::hipMallocHelper(&d_levels, (bins + 1) * sizeof(level_type)));
-            HIP_CHECK(test_common_utils::hipMallocHelper(&d_histogram, bins * sizeof(counter_type)));
             HIP_CHECK(
-                hipMemcpy(
-                    d_input, input.data(),
-                    size * sizeof(sample_type),
-                    hipMemcpyHostToDevice
-                )
-            );
+                test_common_utils::hipMallocHelper(&d_levels, (bins + 1) * sizeof(level_type)));
             HIP_CHECK(
-                hipMemcpy(
-                    d_levels, levels.data(),
-                    (bins + 1) * sizeof(level_type),
-                    hipMemcpyHostToDevice
-                )
-            );
+                test_common_utils::hipMallocHelper(&d_histogram, bins * sizeof(counter_type)));
+            HIP_CHECK(hipMemcpy(d_input,
+                                input.data(),
+                                size * sizeof(sample_type),
+                                hipMemcpyHostToDevice));
+            HIP_CHECK(hipMemcpy(d_levels,
+                                levels.data(),
+                                (bins + 1) * sizeof(level_type),
+                                hipMemcpyHostToDevice));
 
             // Calculate expected results on host
             std::vector<counter_type> histogram_expected(bins, 0);
@@ -616,11 +601,12 @@ TYPED_TEST(HipcubDeviceHistogramRange, Range)
 
             ASSERT_GT(temporary_storage_bytes, 0U);
 
-            void * d_temporary_storage;
-            HIP_CHECK(test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
+            void* d_temporary_storage;
+            HIP_CHECK(
+                test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             if(rows == 1)
@@ -648,17 +634,14 @@ TYPED_TEST(HipcubDeviceHistogramRange, Range)
                                                                   stream));
             }
 
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             std::vector<counter_type> histogram(bins);
-            HIP_CHECK(
-                hipMemcpy(
-                    histogram.data(), d_histogram,
-                    bins * sizeof(counter_type),
-                    hipMemcpyDeviceToHost
-                )
-            );
+            HIP_CHECK(hipMemcpy(histogram.data(),
+                                d_histogram,
+                                bins * sizeof(counter_type),
+                                hipMemcpyDeviceToHost));
 
             HIP_CHECK(hipFree(d_temporary_storage));
             HIP_CHECK(hipFree(d_input));
@@ -701,7 +684,8 @@ struct params3
 };
 
 template<class Params>
-class HipcubDeviceHistogramMultiEven : public ::testing::Test {
+class HipcubDeviceHistogramMultiEven : public ::testing::Test
+{
 public:
     using params = Params;
 };
@@ -732,21 +716,21 @@ TYPED_TEST(HipcubDeviceHistogramMultiEven, MultiEven)
     HIP_CHECK(hipSetDevice(device_id));
 
     // device types
-    using sample_type = typename TestFixture::params::sample_type;
+    using sample_type  = typename TestFixture::params::sample_type;
     using counter_type = typename TestFixture::params::counter_type;
-    using level_type = typename TestFixture::params::level_type;
+    using level_type   = typename TestFixture::params::level_type;
 
     // native host types
     using native_sample_type = test_utils::convert_to_fundamental_t<sample_type>;
     using native_level_type  = test_utils::convert_to_fundamental_t<level_type>;
 
-    constexpr unsigned int channels = TestFixture::params::channels;
+    constexpr unsigned int channels        = TestFixture::params::channels;
     constexpr unsigned int active_channels = TestFixture::params::active_channels;
 
-    unsigned int bins[active_channels];
-    int num_levels[active_channels];
-    level_type lower_level[active_channels];
-    level_type upper_level[active_channels];
+    unsigned int      bins[active_channels];
+    int               num_levels[active_channels];
+    level_type        lower_level[active_channels];
+    level_type        upper_level[active_channels];
     native_level_type n_lower_level[active_channels];
     native_level_type n_upper_level[active_channels];
 
@@ -762,7 +746,7 @@ TYPED_TEST(HipcubDeviceHistogramMultiEven, MultiEven)
 
         bins[channel]          = (n_upper_level[channel] - n_lower_level[channel]) / scale;
         n_upper_level[channel] = n_lower_level[channel] + bins[channel] * scale;
-        num_levels[channel] = bins[channel] + 1;
+        num_levels[channel]    = bins[channel] + 1;
 
         lower_level[channel] = test_utils::convert_to_device<level_type>(n_lower_level[channel]);
         upper_level[channel] = test_utils::convert_to_device<level_type>(n_upper_level[channel]);
@@ -777,21 +761,20 @@ TYPED_TEST(HipcubDeviceHistogramMultiEven, MultiEven)
 
     for(auto dim : get_dims())
     {
-        SCOPED_TRACE(
-            testing::Message() << "with dim = {" <<
-            std::get<0>(dim) << ", " << std::get<1>(dim) << ", " << std::get<2>(dim) << "}"
-        );
+        SCOPED_TRACE(testing::Message() << "with dim = {" << std::get<0>(dim) << ", "
+                                        << std::get<1>(dim) << ", " << std::get<2>(dim) << "}");
 
-        const size_t rows = std::get<0>(dim);
-        const size_t columns = std::get<1>(dim);
+        const size_t rows       = std::get<0>(dim);
+        const size_t columns    = std::get<1>(dim);
         const size_t row_stride = columns * channels + std::get<2>(dim);
 
         const size_t row_stride_bytes = row_stride * sizeof(sample_type);
-        const size_t size = std::max<size_t>(1, rows * row_stride);
+        const size_t size             = std::max<size_t>(1, rows * row_stride);
 
-        for (size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
+        for(size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
         {
-            unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+            unsigned int seed_value
+                = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
             SCOPED_TRACE(testing::Message() << "with seed= " << seed_value);
 
             std::vector<unsigned int> channel_seeds = test_utils::get_random_data<unsigned int>(
@@ -807,26 +790,22 @@ TYPED_TEST(HipcubDeviceHistogramMultiEven, MultiEven)
             for(unsigned int channel = 0; channel < channels; channel++)
             {
                 const size_t gen_columns = (row_stride + channels - 1) / channels;
-                const size_t gen_size = rows * gen_columns;
+                const size_t gen_size    = rows * gen_columns;
 
                 std::vector<sample_type> channel_input;
                 if(channel < active_channels)
                 {
-                    channel_input = get_random_samples<sample_type>(
-                        gen_size,
-                        lower_level[channel],
-                        upper_level[channel],
-                        channel_seeds[channel]
-                    );
+                    channel_input = get_random_samples<sample_type>(gen_size,
+                                                                    lower_level[channel],
+                                                                    upper_level[channel],
+                                                                    channel_seeds[channel]);
                 }
                 else
                 {
-                    channel_input = get_random_samples<sample_type>(
-                        gen_size,
-                        lower_level[0],
-                        upper_level[0],
-                        channel_seeds[channel]
-                    );
+                    channel_input = get_random_samples<sample_type>(gen_size,
+                                                                    lower_level[0],
+                                                                    upper_level[0],
+                                                                    channel_seeds[channel]);
                 }
                 // Interleave values
                 for(size_t row = 0; row < rows; row++)
@@ -836,26 +815,25 @@ TYPED_TEST(HipcubDeviceHistogramMultiEven, MultiEven)
                         const size_t index = column * channels + channel;
                         if(index < row_stride)
                         {
-                            input[row * row_stride + index] = channel_input[row * gen_columns + column];
+                            input[row * row_stride + index]
+                                = channel_input[row * gen_columns + column];
                         }
                     }
                 }
             }
 
-            sample_type * d_input;
-            counter_type * d_histogram[active_channels];
+            sample_type*  d_input;
+            counter_type* d_histogram[active_channels];
             HIP_CHECK(test_common_utils::hipMallocHelper(&d_input, size * sizeof(sample_type)));
             for(unsigned int channel = 0; channel < active_channels; channel++)
             {
-                HIP_CHECK(test_common_utils::hipMallocHelper(&d_histogram[channel], bins[channel] * sizeof(counter_type)));
+                HIP_CHECK(test_common_utils::hipMallocHelper(&d_histogram[channel],
+                                                             bins[channel] * sizeof(counter_type)));
             }
-            HIP_CHECK(
-                hipMemcpy(
-                    d_input, input.data(),
-                    size * sizeof(sample_type),
-                    hipMemcpyHostToDevice
-                )
-            );
+            HIP_CHECK(hipMemcpy(d_input,
+                                input.data(),
+                                size * sizeof(sample_type),
+                                hipMemcpyHostToDevice));
 
             // Calculate expected results on host
             std::vector<counter_type> histogram_expected[active_channels];
@@ -914,11 +892,12 @@ TYPED_TEST(HipcubDeviceHistogramMultiEven, MultiEven)
 
             ASSERT_GT(temporary_storage_bytes, 0U);
 
-            void * d_temporary_storage;
-            HIP_CHECK(test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
+            void* d_temporary_storage;
+            HIP_CHECK(
+                test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             if(rows == 1)
@@ -950,20 +929,17 @@ TYPED_TEST(HipcubDeviceHistogramMultiEven, MultiEven)
                     stream)));
             }
 
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             std::vector<counter_type> histogram[active_channels];
             for(unsigned int channel = 0; channel < active_channels; channel++)
             {
                 histogram[channel] = std::vector<counter_type>(bins[channel]);
-                HIP_CHECK(
-                    hipMemcpy(
-                        histogram[channel].data(), d_histogram[channel],
-                        bins[channel] * sizeof(counter_type),
-                        hipMemcpyDeviceToHost
-                    )
-                );
+                HIP_CHECK(hipMemcpy(histogram[channel].data(),
+                                    d_histogram[channel],
+                                    bins[channel] * sizeof(counter_type),
+                                    hipMemcpyDeviceToHost));
                 HIP_CHECK(hipFree(d_histogram[channel]));
             }
 
@@ -1014,7 +990,8 @@ struct params4
 };
 
 template<class Params>
-class HipcubDeviceHistogramMultiRange : public ::testing::Test {
+class HipcubDeviceHistogramMultiRange : public ::testing::Test
+{
 public:
     using params = Params;
 };
@@ -1042,32 +1019,31 @@ TYPED_TEST(HipcubDeviceHistogramMultiRange, MultiRange)
     HIP_CHECK(hipSetDevice(device_id));
 
     // device types
-    using sample_type = typename TestFixture::params::sample_type;
+    using sample_type  = typename TestFixture::params::sample_type;
     using counter_type = typename TestFixture::params::counter_type;
-    using level_type = typename TestFixture::params::level_type;
+    using level_type   = typename TestFixture::params::level_type;
 
     // native host types
     using native_sample_type = test_utils::convert_to_fundamental_t<sample_type>;
     using native_level_type  = test_utils::convert_to_fundamental_t<level_type>;
 
-    constexpr unsigned int channels = TestFixture::params::channels;
+    constexpr unsigned int channels        = TestFixture::params::channels;
     constexpr unsigned int active_channels = TestFixture::params::active_channels;
 
-    std::random_device rd;
+    std::random_device         rd;
     std::default_random_engine gen(rd());
 
-    unsigned int bins[active_channels];
-    int num_levels[active_channels];
+    unsigned int                                bins[active_channels];
+    int                                         num_levels[active_channels];
     std::uniform_int_distribution<unsigned int> bin_length_dis[active_channels];
     for(unsigned int channel = 0; channel < active_channels; channel++)
     {
         // Use different ranges for different channels
-        bins[channel] = TestFixture::params::bins + channel;
+        bins[channel]       = TestFixture::params::bins + channel;
         num_levels[channel] = bins[channel] + 1;
-        bin_length_dis[channel] = std::uniform_int_distribution<unsigned int>(
-            TestFixture::params::min_bin_length,
-            TestFixture::params::max_bin_length
-        );
+        bin_length_dis[channel]
+            = std::uniform_int_distribution<unsigned int>(TestFixture::params::min_bin_length,
+                                                          TestFixture::params::max_bin_length);
     }
 
     hipStream_t stream = 0; // default
@@ -1079,21 +1055,20 @@ TYPED_TEST(HipcubDeviceHistogramMultiRange, MultiRange)
 
     for(auto dim : get_dims())
     {
-        SCOPED_TRACE(
-            testing::Message() << "with dim = {" <<
-            std::get<0>(dim) << ", " << std::get<1>(dim) << ", " << std::get<2>(dim) << "}"
-        );
+        SCOPED_TRACE(testing::Message() << "with dim = {" << std::get<0>(dim) << ", "
+                                        << std::get<1>(dim) << ", " << std::get<2>(dim) << "}");
 
-        const size_t rows = std::get<0>(dim);
-        const size_t columns = std::get<1>(dim);
+        const size_t rows       = std::get<0>(dim);
+        const size_t columns    = std::get<1>(dim);
         const size_t row_stride = columns * channels + std::get<2>(dim);
 
         const size_t row_stride_bytes = row_stride * sizeof(sample_type);
-        const size_t size = std::max<size_t>(1, rows * row_stride);
+        const size_t size             = std::max<size_t>(1, rows * row_stride);
 
-        for (size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
+        for(size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
         {
-            unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+            unsigned int seed_value
+                = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
             SCOPED_TRACE(testing::Message() << "with seed= " << seed_value);
 
             std::vector<unsigned int> channel_seeds = test_utils::get_random_data<unsigned int>(
@@ -1103,13 +1078,13 @@ TYPED_TEST(HipcubDeviceHistogramMultiRange, MultiRange)
                 seed_value);
 
             // Generate data
-            std::vector<level_type> levels[active_channels];
+            std::vector<level_type>        levels[active_channels];
             std::vector<native_level_type> n_levels[active_channels];
 
             for(unsigned int channel = 0; channel < active_channels; channel++)
             {
                 native_level_type n_level = TestFixture::params::start_level;
-                for(unsigned int bin = 0 ; bin < bins[channel]; bin++)
+                for(unsigned int bin = 0; bin < bins[channel]; bin++)
                 {
                     n_levels[channel].push_back(n_level);
                     levels[channel].push_back(test_utils::convert_to_device<level_type>(n_level));
@@ -1124,26 +1099,22 @@ TYPED_TEST(HipcubDeviceHistogramMultiRange, MultiRange)
             for(unsigned int channel = 0; channel < channels; channel++)
             {
                 const size_t gen_columns = (row_stride + channels - 1) / channels;
-                const size_t gen_size = rows * gen_columns;
+                const size_t gen_size    = rows * gen_columns;
 
                 std::vector<sample_type> channel_input;
                 if(channel < active_channels)
                 {
-                    channel_input = get_random_samples<sample_type>(
-                        gen_size,
-                        levels[channel][0],
-                        levels[channel][bins[channel]],
-                        channel_seeds[channel]
-                    );
+                    channel_input = get_random_samples<sample_type>(gen_size,
+                                                                    levels[channel][0],
+                                                                    levels[channel][bins[channel]],
+                                                                    channel_seeds[channel]);
                 }
                 else
                 {
-                    channel_input = get_random_samples<sample_type>(
-                        gen_size,
-                        levels[0][0],
-                        levels[0][bins[0]],
-                        channel_seeds[channel]
-                    );
+                    channel_input = get_random_samples<sample_type>(gen_size,
+                                                                    levels[0][0],
+                                                                    levels[0][bins[0]],
+                                                                    channel_seeds[channel]);
                 }
                 // Interleave values
                 for(size_t row = 0; row < rows; row++)
@@ -1153,37 +1124,35 @@ TYPED_TEST(HipcubDeviceHistogramMultiRange, MultiRange)
                         const size_t index = column * channels + channel;
                         if(index < row_stride)
                         {
-                            input[row * row_stride + index] = channel_input[row * gen_columns + column];
+                            input[row * row_stride + index]
+                                = channel_input[row * gen_columns + column];
                         }
                     }
                 }
             }
 
-            sample_type * d_input;
-            level_type * d_levels[active_channels];
-            counter_type * d_histogram[active_channels];
+            sample_type*  d_input;
+            level_type*   d_levels[active_channels];
+            counter_type* d_histogram[active_channels];
             HIP_CHECK(test_common_utils::hipMallocHelper(&d_input, size * sizeof(sample_type)));
             for(unsigned int channel = 0; channel < active_channels; channel++)
             {
-                HIP_CHECK(test_common_utils::hipMallocHelper(&d_levels[channel], num_levels[channel] * sizeof(level_type)));
-                HIP_CHECK(test_common_utils::hipMallocHelper(&d_histogram[channel], bins[channel] * sizeof(counter_type)));
+                HIP_CHECK(
+                    test_common_utils::hipMallocHelper(&d_levels[channel],
+                                                       num_levels[channel] * sizeof(level_type)));
+                HIP_CHECK(test_common_utils::hipMallocHelper(&d_histogram[channel],
+                                                             bins[channel] * sizeof(counter_type)));
             }
-            HIP_CHECK(
-                hipMemcpy(
-                    d_input, input.data(),
-                    size * sizeof(sample_type),
-                    hipMemcpyHostToDevice
-                )
-            );
+            HIP_CHECK(hipMemcpy(d_input,
+                                input.data(),
+                                size * sizeof(sample_type),
+                                hipMemcpyHostToDevice));
             for(unsigned int channel = 0; channel < active_channels; channel++)
             {
-                HIP_CHECK(
-                    hipMemcpy(
-                        d_levels[channel], levels[channel].data(),
-                        num_levels[channel] * sizeof(level_type),
-                        hipMemcpyHostToDevice
-                    )
-                );
+                HIP_CHECK(hipMemcpy(d_levels[channel],
+                                    levels[channel].data(),
+                                    num_levels[channel] * sizeof(level_type),
+                                    hipMemcpyHostToDevice));
             }
 
             // Calculate expected results on host
@@ -1242,11 +1211,12 @@ TYPED_TEST(HipcubDeviceHistogramMultiRange, MultiRange)
 
             ASSERT_GT(temporary_storage_bytes, 0U);
 
-            void * d_temporary_storage;
-            HIP_CHECK(test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
+            void* d_temporary_storage;
+            HIP_CHECK(
+                test_common_utils::hipMallocHelper(&d_temporary_storage, temporary_storage_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             if(rows == 1)
@@ -1276,20 +1246,17 @@ TYPED_TEST(HipcubDeviceHistogramMultiRange, MultiRange)
                     stream)));
             }
 
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             std::vector<counter_type> histogram[active_channels];
             for(unsigned int channel = 0; channel < active_channels; channel++)
             {
                 histogram[channel] = std::vector<counter_type>(bins[channel]);
-                HIP_CHECK(
-                    hipMemcpy(
-                        histogram[channel].data(), d_histogram[channel],
-                        bins[channel] * sizeof(counter_type),
-                        hipMemcpyDeviceToHost
-                    )
-                );
+                HIP_CHECK(hipMemcpy(histogram[channel].data(),
+                                    d_histogram[channel],
+                                    bins[channel] * sizeof(counter_type),
+                                    hipMemcpyDeviceToHost));
                 HIP_CHECK(hipFree(d_levels[channel]));
                 HIP_CHECK(hipFree(d_histogram[channel]));
             }

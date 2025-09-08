@@ -43,8 +43,7 @@ namespace rocRoller
                                  Register::RegisterIdHash>;
 
         template <class T>
-        concept CWaitStateObserver = requires(T obs, Instruction const& inst)
-        {
+        concept CWaitStateObserver = requires(T obs, Instruction const& inst) {
             requires CObserverConst<T>;
 
             {
@@ -57,7 +56,7 @@ namespace rocRoller
                  * @return Worst case NOPs required if the hazard is discovered.
                  */
                 obs.getMaxNops(inst)
-                } -> std::same_as<int>;
+            } -> std::same_as<int>;
 
             {
                 /*
@@ -67,7 +66,7 @@ namespace rocRoller
                  * @return True if the instruction could cause a hazard according to this rule.
                  */
                 obs.trigger(inst)
-                } -> std::same_as<bool>;
+            } -> std::same_as<bool>;
 
             {
                 /*
@@ -78,7 +77,7 @@ namespace rocRoller
                  * True if the hazard is caused by writing registers, False if by reading.
                  */
                 obs.writeTrigger()
-                } -> std::same_as<bool>;
+            } -> std::same_as<bool>;
 
             {
                 /*
@@ -93,14 +92,14 @@ namespace rocRoller
                  * @return The number of NOPs this instruction should have according to this rule.
                  */
                 obs.getNops(inst)
-                } -> std::same_as<int>;
+            } -> std::same_as<int>;
 
             {
                 /*
                 * Get a descriptive comment string
                 */
                 obs.getComment()
-                } -> std::same_as<std::string>;
+            } -> std::same_as<std::string>;
         };
 
         template <class DerivedObserver>

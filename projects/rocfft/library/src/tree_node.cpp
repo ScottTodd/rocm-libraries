@@ -630,8 +630,7 @@ void CommPointToPoint::Print(rocfft_ostream& os, const int indent) const
     const std::string indentStr("    ", indent);
 
     os << indentStr << "CommPointToPoint " << precision_name(precision) << " "
-       << PrintArrayType(arrayType) << ":"
-       << "\n";
+       << PrintArrayType(arrayType) << ":" << "\n";
     os << indentStr << "  srcCommRank: " << srcLocation.comm_rank << "\n";
     os << indentStr << "  srcDeviceID: " << srcLocation.device << "\n";
     os << indentStr << "  srcBuf: " << PrintBufferPtrOffset(srcPtr, srcOffset) << "\n";
@@ -888,8 +887,7 @@ void CommGather::Print(rocfft_ostream& os, const int indent) const
         indentStr += "    ";
 
     os << indentStr << "CommGather " << precision_name(precision) << " "
-       << PrintArrayType(arrayType) << ":"
-       << "\n";
+       << PrintArrayType(arrayType) << ":" << "\n";
     os << indentStr << "  destCommRank: " << destLocation.comm_rank << "\n";
     os << indentStr << "  destDeviceID: " << destLocation.device << "\n";
 

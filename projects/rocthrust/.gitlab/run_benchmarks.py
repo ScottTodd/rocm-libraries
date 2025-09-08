@@ -29,7 +29,18 @@ import subprocess
 import sys
 import time
 
-BenchmarkContext = namedtuple('BenchmarkContext', ['gpu_architecture', 'benchmark_output_dir', 'benchmark_dir', 'benchmark_filename_regex', 'benchmark_filter_regex', 'seed'])
+BenchmarkContext = namedtuple(
+    "BenchmarkContext",
+    [
+        "gpu_architecture",
+        "benchmark_output_dir",
+        "benchmark_dir",
+        "benchmark_filename_regex",
+        "benchmark_filter_regex",
+        "seed",
+    ],
+)
+
 
 def run_benchmarks(benchmark_context):
     def is_benchmark_executable(filename):
@@ -40,64 +51,97 @@ def run_benchmarks(benchmark_context):
 
         # we are not interested in permissions, just whether there is any execution flag set
         # and it is a regular file (S_IFREG)
-        return (st_mode & (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)) and (st_mode & stat.S_IFREG)
+        return (st_mode & (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)) and (
+            st_mode & stat.S_IFREG
+        )
 
     success = True
-    benchmark_names = [name for name in os.listdir(benchmark_context.benchmark_dir) if is_benchmark_executable(name)]
+    benchmark_names = [
+        name
+        for name in os.listdir(benchmark_context.benchmark_dir)
+        if is_benchmark_executable(name)
+    ]
     benchmark_names.sort()
-    print('The following benchmarks will be ran:\n{}'.format('\n'.join(benchmark_names)), file=sys.stderr, flush=True)
+    print(
+        "The following benchmarks will be ran:\n{}".format("\n".join(benchmark_names)),
+        file=sys.stderr,
+        flush=True,
+    )
     for benchmark_name in benchmark_names:
-        results_json_name = f'{benchmark_name}_{benchmark_context.gpu_architecture}.json'
+        results_json_name = (
+            f"{benchmark_name}_{benchmark_context.gpu_architecture}.json"
+        )
 
         benchmark_path = os.path.join(benchmark_context.benchmark_dir, benchmark_name)
-        results_json_path = os.path.join(benchmark_context.benchmark_output_dir, results_json_name)
+        results_json_path = os.path.join(
+            benchmark_context.benchmark_output_dir, results_json_name
+        )
         args = [
             benchmark_path,
-            '--name_format',
-            'json',
-            '--benchmark_out_format=json',
-            f'--benchmark_out={results_json_path}',
-            f'--benchmark_filter={benchmark_context.benchmark_filter_regex}'
+            "--name_format",
+            "json",
+            "--benchmark_out_format=json",
+            f"--benchmark_out={results_json_path}",
+            f"--benchmark_filter={benchmark_context.benchmark_filter_regex}",
         ]
         if benchmark_context.seed:
-            args += ['--seed', benchmark_context.seed]
+            args += ["--seed", benchmark_context.seed]
         try:
             start_time = time.time()
             subprocess.check_call(args)
             end_time = time.time()
             duration = end_time - start_time
-            
-            print(f'Benchmark {benchmark_name} took {duration:.3f} seconds to run', file=sys.stderr, flush=True)
+
+            print(
+                f"Benchmark {benchmark_name} took {duration:.3f} seconds to run",
+                file=sys.stderr,
+                flush=True,
+            )
         except subprocess.CalledProcessError as error:
-            print(f'Could not run benchmark at {benchmark_path}. Error: "{error}"', file=sys.stderr, flush=True)
+            print(
+                f'Could not run benchmark at {benchmark_path}. Error: "{error}"',
+                file=sys.stderr,
+                flush=True,
+            )
             success = False
     return success
 
 
-
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--benchmark_dir',
-        help='The local directory that contains the benchmark executables',
-        required=True)
-    parser.add_argument('--benchmark_gpu_architecture',
-        help='The architecture of the currently enabled GPU',
-        required=True)
-    parser.add_argument('--benchmark_output_dir',
-        help='The directory to write the benchmarks to',
-        required=True)
-    parser.add_argument('--benchmark_filename_regex',
-        help='Regular expression that controls the list of benchmark executables to run',
-        default=r'^benchmark',
-        required=False)
-    parser.add_argument('--benchmark_filter_regex',
-        help='Regular expression that controls the list of benchmarks to run in each benchmark executable',
-        default='',
-        required=False)
-    parser.add_argument('--seed',
-        help='Controls the seed for random number generation for each benchmark case',
-        default='',
-        required=False)
+    parser.add_argument(
+        "--benchmark_dir",
+        help="The local directory that contains the benchmark executables",
+        required=True,
+    )
+    parser.add_argument(
+        "--benchmark_gpu_architecture",
+        help="The architecture of the currently enabled GPU",
+        required=True,
+    )
+    parser.add_argument(
+        "--benchmark_output_dir",
+        help="The directory to write the benchmarks to",
+        required=True,
+    )
+    parser.add_argument(
+        "--benchmark_filename_regex",
+        help="Regular expression that controls the list of benchmark executables to run",
+        default=r"^benchmark",
+        required=False,
+    )
+    parser.add_argument(
+        "--benchmark_filter_regex",
+        help="Regular expression that controls the list of benchmarks to run in each benchmark executable",
+        default="",
+        required=False,
+    )
+    parser.add_argument(
+        "--seed",
+        help="Controls the seed for random number generation for each benchmark case",
+        default="",
+        required=False,
+    )
 
     args = parser.parse_args()
 
@@ -107,14 +151,15 @@ def main():
         args.benchmark_dir,
         args.benchmark_filename_regex,
         args.benchmark_filter_regex,
-        args.seed)
+        args.seed,
+    )
 
     benchmark_run_successful = run_benchmarks(benchmark_context)
 
     return benchmark_run_successful
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     success = main()
     if success:
         exit(0)

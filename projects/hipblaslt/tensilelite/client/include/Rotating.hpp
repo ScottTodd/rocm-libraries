@@ -33,34 +33,38 @@ namespace TensileLite
     struct RotatingUnitInfo
     {
         std::vector<size_t> sizes;
-        size_t totalSize;
-        size_t rotatingNum;
+        size_t              totalSize;
+        size_t              rotatingNum;
     };
 
     struct RotatingMemoryUnit
     {
         std::shared_ptr<void> data;
-        size_t size;
+        size_t                size;
     };
 
     class RotatingMemory
     {
     public:
-        explicit RotatingMemory(size_t num) : m_rotatingBufferNum(num) {}
+        explicit RotatingMemory(size_t num)
+            : m_rotatingBufferNum(num)
+        {
+        }
         ~RotatingMemory() {}
         void addRotatingSize(std::vector<size_t> sizes);
         void createRotatingMemory(int32_t mode, size_t rotatingSize);
         std::vector<std::vector<RotatingMemoryUnit>> getRotatingMemory() const;
-        std::shared_ptr<void> getData() const;
-        size_t getDataSize() const;
-        size_t getDataLargestUnitSize() const;
+        std::shared_ptr<void>                        getData() const;
+        size_t                                       getDataSize() const;
+        size_t                                       getDataLargestUnitSize() const;
+
     private:
-        size_t m_rotatingBufferNum;
-        size_t m_rotatingSize;
-        std::vector<RotatingUnitInfo> m_rotatingInfo;
+        size_t                                       m_rotatingBufferNum;
+        size_t                                       m_rotatingSize;
+        std::vector<RotatingUnitInfo>                m_rotatingInfo;
         std::vector<std::vector<RotatingMemoryUnit>> m_rotatingMemory;
-        std::shared_ptr<void> m_data;
-        size_t m_size;
-        size_t m_largestUnitSize;
+        std::shared_ptr<void>                        m_data;
+        size_t                                       m_size;
+        size_t                                       m_largestUnitSize;
     };
 }

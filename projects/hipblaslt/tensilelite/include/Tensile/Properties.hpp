@@ -125,49 +125,61 @@ namespace TensileLite
             return rv;
         }
 
-        template<typename Tp, typename Tpv, typename Tc, typename Ts, typename Tsv, typename... T>
-        void debugEvalCmp(std::ostream& stream, Tp prob, Tpv prob_val, Tc cmp, Ts sol, Tsv sol_val, T... args) const
+        template <typename Tp, typename Tpv, typename Tc, typename Ts, typename Tsv, typename... T>
+        void debugEvalCmp(std::ostream& stream,
+                          Tp            prob,
+                          Tpv           prob_val,
+                          Tc            cmp,
+                          Ts            sol,
+                          Tsv           sol_val,
+                          T... args) const
         {
-            if (cmp == "==")
+            if(cmp == "==")
             {
-                if (prob_val != sol_val)
-                    stream << "((" << prob << "=" << prob_val << ") != (" << sol << "=" << sol_val <<  ")), ";
+                if(prob_val != sol_val)
+                    stream << "((" << prob << "=" << prob_val << ") != (" << sol << "=" << sol_val
+                           << ")), ";
             }
-            else if (cmp == ">")
+            else if(cmp == ">")
             {
-                if (prob_val <= sol_val)
-                    stream << "((" << prob << "=" << prob_val << ") <= (" << sol << "=" << sol_val <<  ")), ";
+                if(prob_val <= sol_val)
+                    stream << "((" << prob << "=" << prob_val << ") <= (" << sol << "=" << sol_val
+                           << ")), ";
             }
-            else if (cmp == "<")
+            else if(cmp == "<")
             {
-                if (prob_val >= sol_val)
-                    stream << "((" << prob << "=" << prob_val << ") >= (" << sol << "=" << sol_val <<  ")), ";
+                if(prob_val >= sol_val)
+                    stream << "((" << prob << "=" << prob_val << ") >= (" << sol << "=" << sol_val
+                           << ")), ";
             }
-            else if (cmp == ">=")
+            else if(cmp == ">=")
             {
-                if (prob_val < sol_val)
-                    stream << "((" << prob << "=" << prob_val << ") < (" << sol << "=" << sol_val <<  ")), ";
+                if(prob_val < sol_val)
+                    stream << "((" << prob << "=" << prob_val << ") < (" << sol << "=" << sol_val
+                           << ")), ";
             }
-            else if (cmp == "<=")
+            else if(cmp == "<=")
             {
-                if (prob_val > sol_val)
-                    stream << "((" << prob << "=" << prob_val << ") > (" << sol << "=" << sol_val <<  ")), ";
+                if(prob_val > sol_val)
+                    stream << "((" << prob << "=" << prob_val << ") > (" << sol << "=" << sol_val
+                           << ")), ";
             }
-            else if (cmp == "%")
+            else if(cmp == "%")
             {
-                if constexpr (std::is_same<Tpv, size_t>::value)
-                    if (prob_val % sol_val != 0)
-                        stream << "((" << prob << "=" << prob_val << ") % (" << sol << "=" << sol_val <<  ") != 0), ";
+                if constexpr(std::is_same<Tpv, size_t>::value)
+                    if(prob_val % sol_val != 0)
+                        stream << "((" << prob << "=" << prob_val << ") % (" << sol << "="
+                               << sol_val << ") != 0), ";
             }
             else
             {
                 stream << "(invalid statement), ";
             }
-            if constexpr (sizeof...(args) >= 5)
+            if constexpr(sizeof...(args) >= 5)
                 debugEvalCmp(stream, args...);
         }
 
-        template<typename... T>
+        template <typename... T>
         Value debugEvalCmp(Object const& object, std::ostream& stream, T... args) const
         {
             Value rv = (*this)(object);

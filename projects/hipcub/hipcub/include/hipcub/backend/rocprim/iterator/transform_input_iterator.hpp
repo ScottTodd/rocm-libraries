@@ -60,22 +60,23 @@ class HIPCUB_DEPRECATED_BECAUSE(
 {
     using Iterator = rocprim::transform_iterator<InputIteratorT, ConversionOp, ValueType>;
     using Base     = detail::IteratorWrapper<
-        Iterator,
-        TransformInputIterator<ValueType, ConversionOp, InputIteratorT, OffsetT>>;
+            Iterator,
+            TransformInputIterator<ValueType, ConversionOp, InputIteratorT, OffsetT>>;
 
 public:
     using iterator_category = typename detail::IteratorCategory<typename Iterator::value_type,
                                                                 typename Iterator::reference>::type;
     using self_type         = typename Iterator::self_type;
-    using unary_function = typename Iterator::unary_function;
+    using unary_function    = typename Iterator::unary_function;
 
-    __host__ __device__ __forceinline__ TransformInputIterator(InputIteratorT iterator,
-                                                             ConversionOp   transform)
+    __host__ __device__ __forceinline__
+    TransformInputIterator(InputIteratorT iterator, ConversionOp transform)
         : Base(Iterator(iterator, transform))
     {}
 
     // Cast from wrapped iterator to class itself
-    __host__ __device__ __forceinline__ explicit TransformInputIterator(Iterator iterator)
+    __host__ __device__ __forceinline__
+    explicit TransformInputIterator(Iterator iterator)
         : Base(iterator)
     {}
 };

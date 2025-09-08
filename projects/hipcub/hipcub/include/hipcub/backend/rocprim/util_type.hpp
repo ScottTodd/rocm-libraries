@@ -47,7 +47,7 @@
 
 BEGIN_HIPCUB_NAMESPACE
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS    // Do not document
+#ifndef DOXYGEN_SHOULD_SKIP_THIS // Do not document
 
 using NullType = ::rocprim::empty_type;
 
@@ -57,26 +57,29 @@ using NullType = ::rocprim::empty_type;
     #define HIPCUB_IS_INT128_ENABLED 1
 #endif // !defined(HIPCUB_IS_INT128_ENABLED)
 
-template<bool B, typename T, typename F> struct
-[[deprecated("[Since 1.16] If is deprecated use std::conditional instead.")]] If
+template<bool B, typename T, typename F>
+struct [[deprecated("[Since 1.16] If is deprecated use std::conditional instead.")]]
+If
 {
     using Type = typename std::conditional<B, T, F>::type;
 };
 
-template<typename T> struct
-[[deprecated("[Since 1.16] IsPointer is deprecated use std::is_pointer instead.")]] IsPointer
+template<typename T>
+struct [[deprecated("[Since 1.16] IsPointer is deprecated use std::is_pointer instead.")]] IsPointer
 {
     static constexpr bool VALUE = std::is_pointer<T>::value;
 };
 
-template<typename T> struct
-[[deprecated("[Since 1.16] IsVolatile is deprecated use std::is_volatile instead.")]] IsVolatile
+template<typename T>
+struct [[deprecated(
+    "[Since 1.16] IsVolatile is deprecated use std::is_volatile instead.")]] IsVolatile
 {
     static constexpr bool VALUE = std::is_volatile<T>::value;
 };
 
-template<typename T> struct 
-[[deprecated("[Since 1.16] RemoveQualifiers is deprecated use std::remove_cv instead.")]] RemoveQualifiers
+template<typename T>
+struct [[deprecated(
+    "[Since 1.16] RemoveQualifiers is deprecated use std::remove_cv instead.")]] RemoveQualifiers
 {
     using Type = typename std::remove_cv<T>::type;
 };
@@ -102,7 +105,7 @@ struct Log2Impl<N, 0, COUNT>
     static constexpr int VALUE = (1 << (COUNT - 1) < N) ? COUNT : COUNT - 1;
 };
 
-} // end of detail namespace
+} // namespace detail
 
 template<int N>
 struct Log2
@@ -114,34 +117,34 @@ struct Log2
 template<typename T>
 struct DoubleBuffer
 {
-    T * d_buffers[2];
+    T* d_buffers[2];
 
     int selector;
 
-    HIPCUB_HOST_DEVICE inline
-    DoubleBuffer()
+    HIPCUB_HOST_DEVICE
+    inline DoubleBuffer()
     {
-        selector = 0;
+        selector     = 0;
         d_buffers[0] = nullptr;
         d_buffers[1] = nullptr;
     }
 
-    HIPCUB_HOST_DEVICE inline
-    DoubleBuffer(T * d_current, T * d_alternate)
+    HIPCUB_HOST_DEVICE
+    inline DoubleBuffer(T* d_current, T* d_alternate)
     {
-        selector = 0;
+        selector     = 0;
         d_buffers[0] = d_current;
         d_buffers[1] = d_alternate;
     }
 
-    HIPCUB_HOST_DEVICE inline
-    T * Current()
+    HIPCUB_HOST_DEVICE
+    inline T* Current()
     {
         return d_buffers[selector];
     }
 
-    HIPCUB_HOST_DEVICE inline
-    T * Alternate()
+    HIPCUB_HOST_DEVICE
+    inline T* Alternate()
     {
         return d_buffers[selector ^ 1];
     }
@@ -150,35 +153,33 @@ struct DoubleBuffer
 template<int A>
 struct HIPCUB_DEPRECATED_BECAUSE("Use ::std::integral_constant instead") Int2Type
 {
-    enum {VALUE = A};
+    enum
+    {
+        VALUE = A
+    };
 };
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS // Do not document
 
-template<
-    class Key,
-    class Value
->
+template<class Key, class Value>
 using KeyValuePair = ::rocprim::key_value_pair<Key, Value>;
 
 #endif
 
-template <typename T, typename Iter = T*>
+template<typename T, typename Iter = T*>
 using FutureValue = ::rocprim::future_value<T, Iter>;
 
 namespace detail
 {
 
 template<typename T>
-inline
-::rocprim::double_buffer<T> to_double_buffer(DoubleBuffer<T>& source)
+inline ::rocprim::double_buffer<T> to_double_buffer(DoubleBuffer<T>& source)
 {
     return ::rocprim::double_buffer<T>(source.Current(), source.Alternate());
 }
 
 template<typename T>
-inline
-void update_double_buffer(DoubleBuffer<T>& target, ::rocprim::double_buffer<T>& source)
+inline void update_double_buffer(DoubleBuffer<T>& target, ::rocprim::double_buffer<T>& source)
 {
     if(target.Current() != source.current())
     {
@@ -188,43 +189,43 @@ void update_double_buffer(DoubleBuffer<T>& target, ::rocprim::double_buffer<T>& 
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS // Do not document
 
-template <typename T>
-using is_integral_or_enum =
-  std::integral_constant<bool, std::is_integral<T>::value || std::is_enum<T>::value>;
+template<typename T>
+using is_integral_or_enum
+    = std::integral_constant<bool, std::is_integral<T>::value || std::is_enum<T>::value>;
 
 #endif
 
-}
+} // namespace detail
 
 // CUB deprecated this API, and suggests to use `::cuda::ceil_div` instead,
 // which is implemented in file `libcudacxx/include/cuda/__cmath/ceil_div.h`.
 template<typename NumeratorT, typename DenominatorT>
 HIPCUB_DEPRECATED_BECAUSE("Use hip::ceil_div instead from 'libhipcxx'")
-HIPCUB_HOST_DEVICE __forceinline__ constexpr NumeratorT
-    DivideAndRoundUp(NumeratorT n, DenominatorT d)
+HIPCUB_HOST_DEVICE __forceinline__
+constexpr NumeratorT DivideAndRoundUp(NumeratorT n, DenominatorT d)
 {
-  static_assert(hipcub::detail::is_integral_or_enum<NumeratorT>::value &&
-                hipcub::detail::is_integral_or_enum<DenominatorT>::value,
-                "DivideAndRoundUp is only intended for integral types.");
+    static_assert(hipcub::detail::is_integral_or_enum<NumeratorT>::value
+                      && hipcub::detail::is_integral_or_enum<DenominatorT>::value,
+                  "DivideAndRoundUp is only intended for integral types.");
 
-  // Static cast to undo integral promotion.
-  return static_cast<NumeratorT>(n / d + (n % d != 0 ? 1 : 0));
+    // Static cast to undo integral promotion.
+    return static_cast<NumeratorT>(n / d + (n % d != 0 ? 1 : 0));
 }
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS    // Do not document
+#ifndef DOXYGEN_SHOULD_SKIP_THIS // Do not document
 
 /******************************************************************************
  * Size and alignment
  ******************************************************************************/
 
 /// Structure alignment
-template <typename T>
+template<typename T>
 struct AlignBytes
 {
     struct Pad
     {
-        T       val;
-        char    byte;
+        T    val;
+        char byte;
     };
 
     enum
@@ -237,9 +238,9 @@ struct AlignBytes
     using Type = T;
 };
 
-// Specializations where host C++ compilers (e.g., 32-bit Windows) may disagree
-// with device C++ compilers (EDG) on types passed as template parameters through
-// kernel functions
+    // Specializations where host C++ compilers (e.g., 32-bit Windows) may disagree
+    // with device C++ compilers (EDG) on types passed as template parameters through
+    // kernel functions
 
     #define __HIPCUB_ALIGN_BYTES(t, b)                  \
         template<>                                      \
@@ -260,13 +261,13 @@ __HIPCUB_ALIGN_BYTES(long long, 8)
 __HIPCUB_ALIGN_BYTES(unsigned long long, 8)
 __HIPCUB_ALIGN_BYTES(float2, 8)
 __HIPCUB_ALIGN_BYTES(double, 8)
-#ifdef _WIN32
-    __HIPCUB_ALIGN_BYTES(long2, 8)
-    __HIPCUB_ALIGN_BYTES(ulong2, 8)
-#else
-    __HIPCUB_ALIGN_BYTES(long2, 16)
-    __HIPCUB_ALIGN_BYTES(ulong2, 16)
-#endif
+    #ifdef _WIN32
+__HIPCUB_ALIGN_BYTES(long2, 8)
+__HIPCUB_ALIGN_BYTES(ulong2, 8)
+    #else
+__HIPCUB_ALIGN_BYTES(long2, 16)
+__HIPCUB_ALIGN_BYTES(ulong2, 16)
+    #endif
 __HIPCUB_ALIGN_BYTES(int4, 16)
 __HIPCUB_ALIGN_BYTES(uint4, 16)
 __HIPCUB_ALIGN_BYTES(float4, 16)
@@ -279,25 +280,33 @@ __HIPCUB_ALIGN_BYTES(longlong4, 16)
 __HIPCUB_ALIGN_BYTES(ulonglong4, 16)
 __HIPCUB_ALIGN_BYTES(double4, 16)
 
-template <typename T> struct AlignBytes<volatile T> : AlignBytes<T> {};
-template <typename T> struct AlignBytes<const T> : AlignBytes<T> {};
-template <typename T> struct AlignBytes<const volatile T> : AlignBytes<T> {};
-
+template<typename T>
+struct AlignBytes<volatile T> : AlignBytes<T>
+{};
+template<typename T>
+struct AlignBytes<const T> : AlignBytes<T>
+{};
+template<typename T>
+struct AlignBytes<const volatile T> : AlignBytes<T>
+{};
 
 /// Unit-words of data movement
-template <typename T>
+template<typename T>
 struct UnitWord
 {
-    enum {
+    enum
+    {
         ALIGN_BYTES = AlignBytes<T>::ALIGN_BYTES
     };
 
-    template <typename Unit>
+    template<typename Unit>
     struct IsMultiple
     {
-        enum {
-            UNIT_ALIGN_BYTES    = AlignBytes<Unit>::ALIGN_BYTES,
-            IS_MULTIPLE         = (sizeof(T) % sizeof(Unit) == 0) && (int(ALIGN_BYTES) % int(UNIT_ALIGN_BYTES) == 0)
+        enum
+        {
+            UNIT_ALIGN_BYTES = AlignBytes<Unit>::ALIGN_BYTES,
+            IS_MULTIPLE
+            = (sizeof(T) % sizeof(Unit) == 0) && (int(ALIGN_BYTES) % int(UNIT_ALIGN_BYTES) == 0)
         };
     };
 
@@ -324,10 +333,9 @@ struct UnitWord
         typename std::conditional<IsMultiple<int2>::IS_MULTIPLE, uint2, ShuffleWord>::type>::type;
 };
 
-
 // float2 specialization workaround (for SM10-SM13)
-template <>
-struct UnitWord <float2>
+template<>
+struct UnitWord<float2>
 {
     using ShuffleWord  = int;
     using VolatileWord = unsigned long long;
@@ -336,8 +344,8 @@ struct UnitWord <float2>
 };
 
 // float4 specialization workaround (for SM10-SM13)
-template <>
-struct UnitWord <float4>
+template<>
+struct UnitWord<float4>
 {
     using ShuffleWord  = int;
     using VolatileWord = unsigned long long;
@@ -345,10 +353,9 @@ struct UnitWord <float4>
     using TextureWord  = float4;
 };
 
-
 // char2 specialization workaround (for SM10-SM13)
-template <>
-struct UnitWord <char2>
+template<>
+struct UnitWord<char2>
 {
     using ShuffleWord  = unsigned short;
     using VolatileWord = unsigned short;
@@ -356,10 +363,15 @@ struct UnitWord <char2>
     using TextureWord  = unsigned short;
 };
 
-
-template <typename T> struct UnitWord<volatile T> : UnitWord<T> {};
-template <typename T> struct UnitWord<const T> : UnitWord<T> {};
-template <typename T> struct UnitWord<const volatile T> : UnitWord<T> {};
+template<typename T>
+struct UnitWord<volatile T> : UnitWord<T>
+{};
+template<typename T>
+struct UnitWord<const T> : UnitWord<T>
+{};
+template<typename T>
+struct UnitWord<const volatile T> : UnitWord<T>
+{};
 
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 
@@ -461,7 +473,7 @@ HIPCUB_DEFINE_VECTOR_TYPE(bool, unsigned char)
 /**
  * \brief A storage-backing wrapper that allows types with non-trivial constructors to be aliased in unions
  */
-template <typename T>
+template<typename T>
 struct Uninitialized
 {
     /// Biggest memory-access word that T is a whole multiple of and is not larger than the alignment of T
@@ -469,13 +481,14 @@ struct Uninitialized
 
     static constexpr std::size_t DATA_SIZE = sizeof(T);
     static constexpr std::size_t WORD_SIZE = sizeof(DeviceWord);
-    static constexpr std::size_t WORDS = DATA_SIZE / WORD_SIZE;
+    static constexpr std::size_t WORDS     = DATA_SIZE / WORD_SIZE;
 
     /// Backing storage
     DeviceWord storage[WORDS];
 
     /// Alias
-    HIPCUB_HOST_DEVICE __forceinline__ T& Alias()
+    HIPCUB_HOST_DEVICE __forceinline__
+    T& Alias()
     {
         return reinterpret_cast<T&>(*this);
     }
@@ -526,7 +539,7 @@ HIPCUB_CLANG_SUPPRESS_DEPRECATED_POP
  * Basic type traits (unsigned primitive specialization)
  */
 HIPCUB_CLANG_SUPPRESS_DEPRECATED_PUSH
-template <typename _UnsignedBits, typename T>
+template<typename _UnsignedBits, typename T>
 struct BaseTraits<UNSIGNED_INTEGER, true, false, _UnsignedBits, T>
 {
     using UnsignedBits = _UnsignedBits;
@@ -544,28 +557,32 @@ struct BaseTraits<UNSIGNED_INTEGER, true, false, _UnsignedBits, T>
 
     using key_codec = decltype(::rocprim::traits::get<T>().template radix_key_codec<false>());
 
-    static HIPCUB_HOST_DEVICE __forceinline__ UnsignedBits TwiddleIn(UnsignedBits key)
+    static HIPCUB_HOST_DEVICE __forceinline__
+    UnsignedBits TwiddleIn(UnsignedBits key)
     {
         return key;
     }
 
-    static HIPCUB_HOST_DEVICE __forceinline__ UnsignedBits TwiddleOut(UnsignedBits key)
+    static HIPCUB_HOST_DEVICE __forceinline__
+    UnsignedBits TwiddleOut(UnsignedBits key)
     {
         return key;
     }
 
-    static HIPCUB_HOST_DEVICE __forceinline__ T Max()
+    static HIPCUB_HOST_DEVICE __forceinline__
+    T Max()
     {
         UnsignedBits retval_bits = MAX_KEY;
-        T retval;
+        T            retval;
         memcpy(&retval, &retval_bits, sizeof(T));
         return retval;
     }
 
-    static HIPCUB_HOST_DEVICE __forceinline__ T Lowest()
+    static HIPCUB_HOST_DEVICE __forceinline__
+    T Lowest()
     {
         UnsignedBits retval_bits = LOWEST_KEY;
-        T retval;
+        T            retval;
         memcpy(&retval, &retval_bits, sizeof(T));
         return retval;
     }
@@ -576,7 +593,7 @@ HIPCUB_CLANG_SUPPRESS_DEPRECATED_POP
  * Basic type traits (signed primitive specialization)
  */
 HIPCUB_CLANG_SUPPRESS_DEPRECATED_PUSH
-template <typename _UnsignedBits, typename T>
+template<typename _UnsignedBits, typename T>
 struct BaseTraits<SIGNED_INTEGER, true, false, _UnsignedBits, T>
 {
     using UnsignedBits = _UnsignedBits;
@@ -595,23 +612,27 @@ struct BaseTraits<SIGNED_INTEGER, true, false, _UnsignedBits, T>
 
     using key_codec = decltype(::rocprim::traits::get<T>().template radix_key_codec<false>());
 
-    static HIPCUB_HOST_DEVICE __forceinline__ UnsignedBits TwiddleIn(UnsignedBits key)
+    static HIPCUB_HOST_DEVICE __forceinline__
+    UnsignedBits TwiddleIn(UnsignedBits key)
     {
         return key ^ HIGH_BIT;
     };
 
-    static HIPCUB_HOST_DEVICE __forceinline__ UnsignedBits TwiddleOut(UnsignedBits key)
+    static HIPCUB_HOST_DEVICE __forceinline__
+    UnsignedBits TwiddleOut(UnsignedBits key)
     {
         return key ^ HIGH_BIT;
     };
 
-    static HIPCUB_HOST_DEVICE __forceinline__ T Max()
+    static HIPCUB_HOST_DEVICE __forceinline__
+    T Max()
     {
         UnsignedBits retval = MAX_KEY;
         return reinterpret_cast<T&>(retval);
     }
 
-    static HIPCUB_HOST_DEVICE __forceinline__ T Lowest()
+    static HIPCUB_HOST_DEVICE __forceinline__
+    T Lowest()
     {
         UnsignedBits retval = LOWEST_KEY;
         return reinterpret_cast<T&>(retval);
@@ -620,62 +641,78 @@ struct BaseTraits<SIGNED_INTEGER, true, false, _UnsignedBits, T>
 HIPCUB_CLANG_SUPPRESS_DEPRECATED_POP
 
 // This API needs to be deprecated once libhipcxx is available.
-template <typename _T>
+template<typename _T>
 struct FpLimits;
 
 // This API needs to be deprecated once libhipcxx is available.
-template <>
+template<>
 struct FpLimits<float>
 {
-    static HIPCUB_HOST_DEVICE __forceinline__ float Max() {
+    static HIPCUB_HOST_DEVICE __forceinline__
+    float Max()
+    {
         return std::numeric_limits<float>::max();
     }
 
-    static HIPCUB_HOST_DEVICE __forceinline__ float Lowest() {
+    static HIPCUB_HOST_DEVICE __forceinline__
+    float Lowest()
+    {
         return std::numeric_limits<float>::max() * float(-1);
     }
 };
 
 // This API needs to be deprecated once libhipcxx is available.
-template <>
+template<>
 struct FpLimits<double>
 {
-    static HIPCUB_HOST_DEVICE __forceinline__ double Max() {
+    static HIPCUB_HOST_DEVICE __forceinline__
+    double Max()
+    {
         return std::numeric_limits<double>::max();
     }
 
-    static HIPCUB_HOST_DEVICE __forceinline__ double Lowest() {
-        return std::numeric_limits<double>::max()  * double(-1);
+    static HIPCUB_HOST_DEVICE __forceinline__
+    double Lowest()
+    {
+        return std::numeric_limits<double>::max() * double(-1);
     }
 };
 
 // This API needs to be deprecated once libhipcxx is available.
-template <>
+template<>
 struct FpLimits<__half>
 {
-    static HIPCUB_HOST_DEVICE __forceinline__ __half Max() {
+    static HIPCUB_HOST_DEVICE __forceinline__
+    __half Max()
+    {
         unsigned short max_word = 0x7BFF;
         return reinterpret_cast<__half&>(max_word);
     }
 
-    static HIPCUB_HOST_DEVICE __forceinline__ __half Lowest() {
+    static HIPCUB_HOST_DEVICE __forceinline__
+    __half Lowest()
+    {
         unsigned short lowest_word = 0xFBFF;
         return reinterpret_cast<__half&>(lowest_word);
     }
 };
 
 // This API needs to be deprecated once libhipcxx is available.
-template <>
+template<>
 struct FpLimits<hip_bfloat16>
 {
-    static HIPCUB_HOST_DEVICE __forceinline__ hip_bfloat16  Max() {
+    static HIPCUB_HOST_DEVICE __forceinline__
+    hip_bfloat16 Max()
+    {
         unsigned short max_word = 0x7F7F;
-        return reinterpret_cast<hip_bfloat16 &>(max_word);
+        return reinterpret_cast<hip_bfloat16&>(max_word);
     }
 
-    static HIPCUB_HOST_DEVICE __forceinline__ hip_bfloat16  Lowest() {
+    static HIPCUB_HOST_DEVICE __forceinline__
+    hip_bfloat16 Lowest()
+    {
         unsigned short lowest_word = 0xFF7F;
-        return reinterpret_cast<hip_bfloat16 &>(lowest_word);
+        return reinterpret_cast<hip_bfloat16&>(lowest_word);
     }
 };
 
@@ -683,7 +720,7 @@ struct FpLimits<hip_bfloat16>
  * Basic type traits (fp primitive specialization)
  */
 HIPCUB_CLANG_SUPPRESS_DEPRECATED_PUSH
-template <typename _UnsignedBits, typename T>
+template<typename _UnsignedBits, typename T>
 struct BaseTraits<FLOATING_POINT, true, false, _UnsignedBits, T>
 {
     using UnsignedBits = _UnsignedBits;
@@ -702,23 +739,29 @@ struct BaseTraits<FLOATING_POINT, true, false, _UnsignedBits, T>
         nullptr_TYPE                                                              = false,
     };
 
-    static HIPCUB_HOST_DEVICE __forceinline__ UnsignedBits TwiddleIn(UnsignedBits key)
+    static HIPCUB_HOST_DEVICE __forceinline__
+    UnsignedBits TwiddleIn(UnsignedBits key)
     {
         UnsignedBits mask = (key & HIGH_BIT) ? UnsignedBits(-1) : HIGH_BIT;
         return key ^ mask;
     };
 
-    static HIPCUB_HOST_DEVICE __forceinline__ UnsignedBits TwiddleOut(UnsignedBits key)
+    static HIPCUB_HOST_DEVICE __forceinline__
+    UnsignedBits TwiddleOut(UnsignedBits key)
     {
         UnsignedBits mask = (key & HIGH_BIT) ? HIGH_BIT : UnsignedBits(-1);
         return key ^ mask;
     };
 
-    static HIPCUB_HOST_DEVICE __forceinline__ T Max() {
+    static HIPCUB_HOST_DEVICE __forceinline__
+    T Max()
+    {
         return FpLimits<T>::Max();
     }
 
-    static HIPCUB_HOST_DEVICE __forceinline__ T Lowest() {
+    static HIPCUB_HOST_DEVICE __forceinline__
+    T Lowest()
+    {
         return FpLimits<T>::Lowest();
     }
 };
@@ -728,22 +771,60 @@ HIPCUB_CLANG_SUPPRESS_DEPRECATED_POP
  * \brief Numeric type traits
  */
 HIPCUB_CLANG_SUPPRESS_DEPRECATED_PUSH
-template <typename T> struct NumericTraits :            BaseTraits<NOT_A_NUMBER, false, false, T, T> {};
+template<typename T>
+struct NumericTraits : BaseTraits<NOT_A_NUMBER, false, false, T, T>
+{};
 
-template <> struct NumericTraits<NullType> :            BaseTraits<NOT_A_NUMBER, false, true, NullType, NullType> {};
+template<>
+struct NumericTraits<NullType> : BaseTraits<NOT_A_NUMBER, false, true, NullType, NullType>
+{};
 
-template <> struct NumericTraits<char> :                BaseTraits<(std::numeric_limits<char>::is_signed) ? SIGNED_INTEGER : UNSIGNED_INTEGER, true, false, unsigned char, char> {};
-template <> struct NumericTraits<signed char> :         BaseTraits<SIGNED_INTEGER, true, false, unsigned char, signed char> {};
-template <> struct NumericTraits<short> :               BaseTraits<SIGNED_INTEGER, true, false, unsigned short, short> {};
-template <> struct NumericTraits<int> :                 BaseTraits<SIGNED_INTEGER, true, false, unsigned int, int> {};
-template <> struct NumericTraits<long> :                BaseTraits<SIGNED_INTEGER, true, false, unsigned long, long> {};
-template <> struct NumericTraits<long long> :           BaseTraits<SIGNED_INTEGER, true, false, unsigned long long, long long> {};
+template<>
+struct NumericTraits<char>
+    : BaseTraits<(std::numeric_limits<char>::is_signed) ? SIGNED_INTEGER : UNSIGNED_INTEGER,
+                 true,
+                 false,
+                 unsigned char,
+                 char>
+{};
+template<>
+struct NumericTraits<signed char>
+    : BaseTraits<SIGNED_INTEGER, true, false, unsigned char, signed char>
+{};
+template<>
+struct NumericTraits<short> : BaseTraits<SIGNED_INTEGER, true, false, unsigned short, short>
+{};
+template<>
+struct NumericTraits<int> : BaseTraits<SIGNED_INTEGER, true, false, unsigned int, int>
+{};
+template<>
+struct NumericTraits<long> : BaseTraits<SIGNED_INTEGER, true, false, unsigned long, long>
+{};
+template<>
+struct NumericTraits<long long>
+    : BaseTraits<SIGNED_INTEGER, true, false, unsigned long long, long long>
+{};
 
-template <> struct NumericTraits<unsigned char> :       BaseTraits<UNSIGNED_INTEGER, true, false, unsigned char, unsigned char> {};
-template <> struct NumericTraits<unsigned short> :      BaseTraits<UNSIGNED_INTEGER, true, false, unsigned short, unsigned short> {};
-template <> struct NumericTraits<unsigned int> :        BaseTraits<UNSIGNED_INTEGER, true, false, unsigned int, unsigned int> {};
-template <> struct NumericTraits<unsigned long> :       BaseTraits<UNSIGNED_INTEGER, true, false, unsigned long, unsigned long> {};
-template <> struct NumericTraits<unsigned long long> :  BaseTraits<UNSIGNED_INTEGER, true, false, unsigned long long, unsigned long long> {};
+template<>
+struct NumericTraits<unsigned char>
+    : BaseTraits<UNSIGNED_INTEGER, true, false, unsigned char, unsigned char>
+{};
+template<>
+struct NumericTraits<unsigned short>
+    : BaseTraits<UNSIGNED_INTEGER, true, false, unsigned short, unsigned short>
+{};
+template<>
+struct NumericTraits<unsigned int>
+    : BaseTraits<UNSIGNED_INTEGER, true, false, unsigned int, unsigned int>
+{};
+template<>
+struct NumericTraits<unsigned long>
+    : BaseTraits<UNSIGNED_INTEGER, true, false, unsigned long, unsigned long>
+{};
+template<>
+struct NumericTraits<unsigned long long>
+    : BaseTraits<UNSIGNED_INTEGER, true, false, unsigned long long, unsigned long long>
+{};
 
     #if HIPCUB_IS_INT128_ENABLED
 template<>
@@ -762,22 +843,26 @@ struct NumericTraits<__uint128_t>
 
     using key_codec = decltype(::rocprim::traits::get<T>().template radix_key_codec<false>());
 
-    static __host__ __device__ __forceinline__ UnsignedBits TwiddleIn(UnsignedBits key)
+    static __host__ __device__ __forceinline__
+    UnsignedBits TwiddleIn(UnsignedBits key)
     {
         return key;
     }
 
-    static __host__ __device__ __forceinline__ UnsignedBits TwiddleOut(UnsignedBits key)
+    static __host__ __device__ __forceinline__
+    UnsignedBits TwiddleOut(UnsignedBits key)
     {
         return key;
     }
 
-    static __host__ __device__ __forceinline__ T Max()
+    static __host__ __device__ __forceinline__
+    T Max()
     {
         return MAX_KEY;
     }
 
-    static __host__ __device__ __forceinline__ T Lowest()
+    static __host__ __device__ __forceinline__
+    T Lowest()
     {
         return LOWEST_KEY;
     }
@@ -795,28 +880,32 @@ struct NumericTraits<__int128_t>
     static constexpr UnsignedBits MAX_KEY    = UnsignedBits(-1) ^ HIGH_BIT;
 
     HIPCUB_DEPRECATED_BECAUSE("Use <rocprim/type_traits> instead.")
-    static constexpr bool PRIMITIVE = false;
+    static constexpr bool PRIMITIVE    = false;
     static constexpr bool nullptr_TYPE = false;
 
     using key_codec = decltype(::rocprim::traits::get<T>().template radix_key_codec<false>());
 
-    static __host__ __device__ __forceinline__ UnsignedBits TwiddleIn(UnsignedBits key)
+    static __host__ __device__ __forceinline__
+    UnsignedBits TwiddleIn(UnsignedBits key)
     {
         return key ^ HIGH_BIT;
     };
 
-    static __host__ __device__ __forceinline__ UnsignedBits TwiddleOut(UnsignedBits key)
+    static __host__ __device__ __forceinline__
+    UnsignedBits TwiddleOut(UnsignedBits key)
     {
         return key ^ HIGH_BIT;
     };
 
-    static __host__ __device__ __forceinline__ T Max()
+    static __host__ __device__ __forceinline__
+    T Max()
     {
         UnsignedBits retval = MAX_KEY;
         return reinterpret_cast<T&>(retval);
     }
 
-    static __host__ __device__ __forceinline__ T Lowest()
+    static __host__ __device__ __forceinline__
+    T Lowest()
     {
         UnsignedBits retval = LOWEST_KEY;
         return reinterpret_cast<T&>(retval);
@@ -824,12 +913,24 @@ struct NumericTraits<__int128_t>
 };
     #endif
 
-template <> struct NumericTraits<float> :               BaseTraits<FLOATING_POINT, true, false, unsigned int, float> {};
-template <> struct NumericTraits<double> :              BaseTraits<FLOATING_POINT, true, false, unsigned long long, double> {};
-template <> struct NumericTraits<__half> :              BaseTraits<FLOATING_POINT, true, false, unsigned short, __half> {};
-template <> struct NumericTraits<hip_bfloat16 > :       BaseTraits<FLOATING_POINT, true, false, unsigned short, hip_bfloat16 > {};
+template<>
+struct NumericTraits<float> : BaseTraits<FLOATING_POINT, true, false, unsigned int, float>
+{};
+template<>
+struct NumericTraits<double> : BaseTraits<FLOATING_POINT, true, false, unsigned long long, double>
+{};
+template<>
+struct NumericTraits<__half> : BaseTraits<FLOATING_POINT, true, false, unsigned short, __half>
+{};
+template<>
+struct NumericTraits<hip_bfloat16>
+    : BaseTraits<FLOATING_POINT, true, false, unsigned short, hip_bfloat16>
+{};
 
-template <> struct NumericTraits<bool> :                BaseTraits<UNSIGNED_INTEGER, true, false, typename UnitWord<bool>::VolatileWord, bool> {};
+template<>
+struct NumericTraits<bool>
+    : BaseTraits<UNSIGNED_INTEGER, true, false, typename UnitWord<bool>::VolatileWord, bool>
+{};
 HIPCUB_CLANG_SUPPRESS_DEPRECATED_POP
 
 /**

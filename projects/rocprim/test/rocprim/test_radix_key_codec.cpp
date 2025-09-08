@@ -331,7 +331,7 @@ void encode_then_decode_test(Key key, Decomposer decomposer)
     constexpr auto input_traits = ::rocprim::traits::get<Key>();
     constexpr auto codec        = input_traits.template radix_key_codec<Descending>();
     using codec_t               = decltype(codec);
-    using BitKey  = typename codec_t::bit_key_type;
+    using BitKey                = typename codec_t::bit_key_type;
 
     BitKey bit_key = codec_t::encode(key, decomposer);
     codec_t::encode_inplace(key, decomposer);
@@ -358,7 +358,7 @@ void encode_then_extract_test(Key                key,
     constexpr auto input_traits = ::rocprim::traits::get<Key>();
     constexpr auto codec        = input_traits.template radix_key_codec<Descending>();
     using codec_t               = decltype(codec);
-    using BitKey  = typename codec_t::bit_key_type;
+    using BitKey                = typename codec_t::bit_key_type;
 
     BitKey bit_key = codec_t::encode(key, decomposer);
     codec_t::encode_inplace(key, decomposer);
@@ -389,7 +389,7 @@ void encode_then_extract_test_custom(Key                key,
     constexpr auto input_traits = ::rocprim::traits::get<Key>();
     constexpr auto codec        = input_traits.template radix_key_codec<Descending>();
     using codec_t               = decltype(codec);
-    using BitKey  = typename codec_t::bit_key_type;
+    using BitKey                = typename codec_t::bit_key_type;
 
     BitKey bit_key = codec_t::encode(key, decomposer);
     codec_t::encode_inplace(key, decomposer);

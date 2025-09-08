@@ -89,7 +89,8 @@ void histogram_shared_kernel_impl(SampleIterator                        samples,
 #ifndef _WIN32
     HIP_DYNAMIC_SHARED(unsigned int, block_histogram);
 #else
-    __shared__ unsigned int block_histogram[params.shared_impl_max_bins];
+    __shared__
+    unsigned int block_histogram[params.shared_impl_max_bins];
 #endif
 
     histogram_shared<params.histogram_config.block_size,
@@ -127,8 +128,7 @@ struct HistogramSharedOp
 
     template<class ArchConfig>
     ROCPRIM_DEVICE
-    inline void
-        operator()(ArchConfig) const
+    inline void operator()(ArchConfig) const
     {
         histogram_shared_kernel_impl<ArchConfig,
                                      Channels,
@@ -168,8 +168,8 @@ template<class Config,
          class Kernel,
          template<typename, rocprim::detail::target_arch>
          class LaunchSelector>
-auto make_histogram_launch_plan(rocprim::detail::target_arch arch, Kernel kernel)
-    -> histogram_launch_plan<Kernel>
+auto make_histogram_launch_plan(rocprim::detail::target_arch arch,
+                                Kernel kernel) -> histogram_launch_plan<Kernel>
 {
     histogram_launch_plan<Kernel> plan{nullptr, std::move(kernel), 0u, 0u};
 

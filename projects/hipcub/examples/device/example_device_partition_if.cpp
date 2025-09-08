@@ -48,14 +48,12 @@
 
 using namespace hipcub;
 
-
 //---------------------------------------------------------------------
 // Globals, constants and typedefs
 //---------------------------------------------------------------------
 
-bool                            g_verbose = false;  // Whether to display input/output to console
-hipcub::CachingDeviceAllocator  g_allocator;  // Caching allocator for device memory
-
+bool                           g_verbose = false; // Whether to display input/output to console
+hipcub::CachingDeviceAllocator g_allocator; // Caching allocator for device memory
 
 /// Selection functor type
 struct GreaterThan
@@ -63,14 +61,16 @@ struct GreaterThan
     int compare;
 
     __host__ __device__ __forceinline__
-    GreaterThan(int compare) : compare(compare) {}
+    GreaterThan(int compare)
+        : compare(compare)
+    {}
 
     __host__ __device__ __forceinline__
-    bool operator()(const int &a) const {
+    bool operator()(const int& a) const
+    {
         return (a > compare);
     }
 };
-
 
 //---------------------------------------------------------------------
 // Test generation
@@ -79,24 +79,21 @@ struct GreaterThan
 /**
  * Initialize problem, setting runs of random length chosen from [1..max_segment]
  */
-void Initialize(
-    int     *h_in,
-    int     num_items,
-    int     max_segment)
+void Initialize(int* h_in, int num_items, int max_segment)
 {
     int key = 0;
-    int i = 0;
-    while (i < num_items)
+    int i   = 0;
+    while(i < num_items)
     {
         // Randomly select number of repeating occurrences uniformly from [1..max_segment]
-        unsigned short max_short = (unsigned short) -1;
+        unsigned short max_short = (unsigned short)-1;
         unsigned short repeat;
         RandomBits(repeat);
-        repeat = (unsigned short) ((float(repeat) * (float(max_segment) / float(max_short))));
+        repeat = (unsigned short)((float(repeat) * (float(max_segment) / float(max_short))));
         repeat = std::max<unsigned short>(1, repeat);
 
         int j = i;
-        while (j < std::min<int>(i + repeat, num_items))
+        while(j < std::min<int>(i + repeat, num_items))
         {
             h_in[j] = key;
             j++;
@@ -106,7 +103,7 @@ void Initialize(
         key++;
     }
 
-    if (g_verbose)
+    if(g_verbose)
     {
         printf("Input:\n");
         DisplayResults(h_in, num_items);
@@ -114,21 +111,16 @@ void Initialize(
     }
 }
 
-
 /**
  * Solve unique problem
  */
-template <typename SelectOp>
-int Solve(
-    int             *h_in,
-    SelectOp        select_op,
-    int             *h_reference,
-    int             num_items)
+template<typename SelectOp>
+int Solve(int* h_in, SelectOp select_op, int* h_reference, int num_items)
 {
     int num_selected = 0;
-    for (int i = 0; i < num_items; ++i)
+    for(int i = 0; i < num_items; ++i)
     {
-        if (select_op(h_in[i]))
+        if(select_op(h_in[i]))
         {
             h_reference[num_selected] = h_in[i];
             num_selected++;
@@ -142,7 +134,6 @@ int Solve(
     return num_selected;
 }
 
-
 //---------------------------------------------------------------------
 // Main
 //---------------------------------------------------------------------
@@ -152,8 +143,8 @@ int Solve(
  */
 int main(int argc, char** argv)
 {
-    int num_items           = 150;
-    int max_segment         = 40;       // Maximum segment length
+    int num_items   = 150;
+    int max_segment = 40; // Maximum segment length
 
     // Initialize command line
     CommandLineArgs args(argc, argv);
@@ -162,14 +153,15 @@ int main(int argc, char** argv)
     args.GetCmdLineArgument("maxseg", max_segment);
 
     // Print usage
-    if (args.CheckCmdLineFlag("help"))
+    if(args.CheckCmdLineFlag("help"))
     {
         printf("%s "
-            "[--n=<input items> "
-            "[--device=<device-id>] "
-            "[--maxseg=<max segment length>]"
-            "[--v] "
-            "\n", argv[0]);
+               "[--n=<input items> "
+               "[--device=<device-id>] "
+               "[--maxseg=<max segment length>]"
+               "[--v] "
+               "\n",
+               argv[0]);
         exit(0);
     }
 
@@ -177,15 +169,16 @@ int main(int argc, char** argv)
     HIP_CHECK(args.DeviceInit());
 
     // Allocate host arrays
-    int *h_in        = new int[num_items];
-    int *h_reference = new int[num_items];
+    int* h_in        = new int[num_items];
+    int* h_reference = new int[num_items];
 
     // DevicePartition a pivot index
     unsigned int pivot_index;
-    unsigned int max_int = (unsigned int) -1;
+    unsigned int max_int = (unsigned int)-1;
     RandomBits(pivot_index);
-    pivot_index = (unsigned int) ((float(pivot_index) * (float(num_items - 1) / float(max_int))));
-    printf("Pivot idx: %d\n", pivot_index); fflush(stdout);
+    pivot_index = (unsigned int)((float(pivot_index) * (float(num_items - 1) / float(max_int))));
+    printf("Pivot idx: %d\n", pivot_index);
+    fflush(stdout);
 
     // Initialize problem and solution
     Initialize(h_in, num_items, max_segment);
@@ -193,8 +186,12 @@ int main(int argc, char** argv)
 
     int num_selected = Solve(h_in, select_op, h_reference, num_items);
 
-    printf("hipcub::DevicePartition::If %d items, %d selected (avg run length %d), %d-byte elements\n",
-        num_items, num_selected, (num_selected > 0) ? num_items / num_selected : 0, (int) sizeof(int));
+    printf(
+        "hipcub::DevicePartition::If %d items, %d selected (avg run length %d), %d-byte elements\n",
+        num_items,
+        num_selected,
+        (num_selected > 0) ? num_items / num_selected : 0,
+        (int)sizeof(int));
     fflush(stdout);
 
     // Allocate problem device arrays
@@ -211,8 +208,8 @@ int main(int argc, char** argv)
     HIP_CHECK(g_allocator.DeviceAllocate((void**)&d_num_selected_out, sizeof(int)));
 
     // Allocate temporary storage
-    void*           d_temp_storage     = nullptr;
-    size_t          temp_storage_bytes = 0;
+    void*  d_temp_storage     = nullptr;
+    size_t temp_storage_bytes = 0;
     HIP_CHECK(hipcub::DevicePartition::If(d_temp_storage,
                                           temp_storage_bytes,
                                           d_in,

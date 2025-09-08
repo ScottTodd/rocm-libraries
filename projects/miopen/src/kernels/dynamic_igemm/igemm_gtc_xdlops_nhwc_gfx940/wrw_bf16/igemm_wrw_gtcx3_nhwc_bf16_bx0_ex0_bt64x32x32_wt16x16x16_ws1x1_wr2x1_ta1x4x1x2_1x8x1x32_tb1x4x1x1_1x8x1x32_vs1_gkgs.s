@@ -51,11 +51,11 @@
 ; gemm_k_global_split        : 1
 ; vector_c                   : 1
 ; vector_store               : 1
-; 
+;
 ; block_size                 : 256
 ; lds_total                  : 16384
 ; lds_buffer_num             : 2
-; 
+;
 .set k_p_in, 0
 .set k_p_wei, 8
 .set k_p_out, 16
@@ -311,8 +311,8 @@ igemm_wrw_gtcx3_nhwc_bf16_bx0_ex0_bt64x32x32_wt16x16x16_ws1x1_wr2x1_ta1x4x1x2_1x
 
     v_mov_b32 v[v_tmp+5], v0
     ; xdlops mapping, get source matrix gemm index, k_pack:4, v_pack:1, k_pack_per_thread:1
-    v_and_b32 v[v_gemm_in], 15, v[v_tmp+5]           ; block_n index 
-    v_and_b32 v[v_gemm_im], 15, v[v_tmp+5]           ; block_m index 
+    v_and_b32 v[v_gemm_in], 15, v[v_tmp+5]           ; block_n index
+    v_and_b32 v[v_gemm_im], 15, v[v_tmp+5]           ; block_m index
     v_lshlrev_b32 v[v_gemm_in], 2, v[v_gemm_in]   ; shift left k_pack:4
     v_lshlrev_b32 v[v_gemm_im], 2, v[v_gemm_im]   ; shift left k_pack:4
     v_lshrrev_b32 v[v_tmp+5], 4, v[v_tmp+5]
@@ -434,14 +434,14 @@ igemm_wrw_gtcx3_nhwc_bf16_bx0_ex0_bt64x32x32_wt16x16x16_ws1x1_wr2x1_ta1x4x1x2_1x
     s_waitcnt vmcnt(4)
     v_pack_b32_f16 v[v_tmp], v[v_gld_b], v[v_gld_b+1]
     v_pack_b32_f16 v[v_tmp+1], v[v_gld_b+2], v[v_gld_b+3]
-    ds_write_b64 v[v_sst_b_os], v[v_tmp:v_tmp+1] 
+    ds_write_b64 v[v_sst_b_os], v[v_tmp:v_tmp+1]
 
     s_waitcnt vmcnt(0)
     v_pack_b32_f16 v[v_tmp], v[v_gld_a], v[v_gld_a+1]
     v_pack_b32_f16 v[v_tmp+1], v[v_gld_a+2], v[v_gld_a+3]
     v_pack_b32_f16 v[v_tmp+2], v[v_gld_a], v[v_gld_a+1] op_sel:[1, 1]
     v_pack_b32_f16 v[v_tmp+3], v[v_gld_a+2], v[v_gld_a+3] op_sel:[1, 1]
-    ds_write_b128 v[v_sst_a_os], v[v_tmp:v_tmp+3] 
+    ds_write_b128 v[v_sst_a_os], v[v_tmp:v_tmp+3]
 
     .v_clear_nc a_c, 8
     ; make sure acc WAR harzard, at least 1 nop for src_c
@@ -481,7 +481,7 @@ L_igemm_wrw_gtcx3_nhwc_bf16_bx0_ex0_bt64x32x32_wt16x16x16_ws1x1_wr2x1_ta1x4x1x2_
     ds_read_b64 v[v_a+6:v_a+6+1], v[v_sld_a_os] offset:2304 ; load i_k:1 into local buffer 1, repeat 1
     s_waitcnt lgkmcnt(1)
     v_mfma_f32_16x16x16bf16_1k v[a_c+0:a_c+3], v[v_a+4:v_a+5], v[v_b+2:v_b+3], v[a_c+0:a_c+3]     ; repeat:0x0, step:0x0, num_a_c:4
-    
+
     s_waitcnt lgkmcnt(0)
     s_waitcnt vmcnt(4)
     v_pack_b32_f16 v[v_tmp], v[v_gld_b], v[v_gld_b+1]

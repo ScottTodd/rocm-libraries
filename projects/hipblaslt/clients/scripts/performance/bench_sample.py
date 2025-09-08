@@ -22,6 +22,7 @@ import statistics
 from dataclasses import dataclass, field
 from typing import Dict, List
 
+
 @dataclass
 class MeasurementKey:
     name: str = None
@@ -35,33 +36,34 @@ class MeasurementKey:
         self.values = []
 
     def getMeanName(self):
-        assert(self.name != None)
-        return 'mean_' + self.name
+        assert self.name != None
+        return "mean_" + self.name
 
     def getMedianName(self):
-        assert(self.name != None)
-        return 'median_' + self.name
+        assert self.name != None
+        return "median_" + self.name
 
     def addSample(self, value):
         self.samples += 1
         self.values.append(float(value))
 
     def calcMean(self):
-        assert(len(self.values) == self.samples)
-        assert(self.name != None)
+        assert len(self.values) == self.samples
+        assert self.name != None
         self.mean = statistics.mean(self.values)
         return self.mean
 
     def calcMedian(self):
-        assert(len(self.values) == self.samples)
-        assert(self.name != None)
+        assert len(self.values) == self.samples
+        assert self.name != None
         self.median = statistics.median(self.values)
         return self.median
 
     def getValuesStr(self):
-        assert(len(self.values) == self.samples)
-        assert(self.name != None)
-        return ','.join([str(v) for v in self.values])
+        assert len(self.values) == self.samples
+        assert self.name != None
+        return ",".join([str(v) for v in self.values])
+
 
 @dataclass
 class BenchSample:
@@ -76,20 +78,20 @@ class BenchSample:
     def getMeasurementMeanMedianPair(self, key):
         mean = self.measurements[key].calcMean()
         median = self.measurements[key].calcMedian()
-        return str(mean) + ',' + str(median)
+        return str(mean) + "," + str(median)
 
     def getMeasurementValues(self, key):
         return self.measurements[key].getValuesStr()
 
     def finalize(self, num_samples, keysOrder):
-        assert(self.probKey != None)
-        content = self.probKey + ',' + str(num_samples)
+        assert self.probKey != None
+        content = self.probKey + "," + str(num_samples)
 
         for key in keysOrder:
-            assert(self.measurements[key].samples == num_samples)
-            content += ',' + self.getMeasurementMeanMedianPair(key)
+            assert self.measurements[key].samples == num_samples
+            content += "," + self.getMeasurementMeanMedianPair(key)
 
         for key in keysOrder:
-            content += ',' + self.getMeasurementValues(key)
+            content += "," + self.getMeasurementValues(key)
 
         return content

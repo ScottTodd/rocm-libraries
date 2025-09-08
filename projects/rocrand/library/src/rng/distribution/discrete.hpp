@@ -64,7 +64,8 @@ public:
     {}
 
     template<class T>
-    __forceinline__ __host__ __device__ unsigned int operator()(T x) const
+    __forceinline__ __host__ __device__
+    unsigned int operator()(T x) const
     {
         if constexpr((Method & DISCRETE_METHOD_ALIAS) != 0)
         {
@@ -227,15 +228,15 @@ public:
         small.reserve(size);
         large.reserve(size);
 
-        for (unsigned int i = 0; i < size; i++)
+        for(unsigned int i = 0; i < size; i++)
         {
-            if (p[i] >= average)
+            if(p[i] >= average)
                 large.push_back(i);
             else
                 small.push_back(i);
         }
 
-        while (!small.empty() && !large.empty())
+        while(!small.empty() && !large.empty())
         {
             const unsigned int less = small.back();
             small.pop_back();
@@ -243,21 +244,21 @@ public:
             large.pop_back();
 
             h_probability[less] = p[less] * size;
-            h_alias[less] = more;
+            h_alias[less]       = more;
 
             p[more] = (p[more] + p[less]) - average;
 
-            if (p[more] >= average)
+            if(p[more] >= average)
                 large.push_back(more);
             else
                 small.push_back(more);
         }
 
-        for (unsigned int i : small)
+        for(unsigned int i : small)
         {
             h_probability[i] = 1.0;
         }
-        for (unsigned int i : large)
+        for(unsigned int i : large)
         {
             h_probability[i] = 1.0;
         }
@@ -384,7 +385,7 @@ private:
                               h_cdf.data(),
                               sizeof(double) * distribution.size,
                               hipMemcpyHostToDevice);
-            if (error != hipSuccess)
+            if(error != hipSuccess)
             {
                 return ROCRAND_STATUS_INTERNAL_ERROR;
             }

@@ -200,4 +200,3 @@
     .v_lanegroup_dotx_fp16_8x8x2 \c,\a+2,\b+2
     .v_lanegroup_dotx_fp16_8x8x2 \c,\a+3,\b+3
 .endm
-

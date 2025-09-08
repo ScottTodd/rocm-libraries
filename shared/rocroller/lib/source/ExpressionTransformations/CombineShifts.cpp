@@ -81,7 +81,8 @@ namespace rocRoller
             }
 
             template <CBinary Expr>
-            requires(!CShift<Expr>) ExpressionPtr operator()(Expr const& expr) const
+                requires(!CShift<Expr>)
+            ExpressionPtr operator()(Expr const& expr) const
             {
                 Expr cpy = expr;
 

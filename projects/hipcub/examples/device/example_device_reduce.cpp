@@ -51,9 +51,8 @@ using namespace hipcub;
 // Globals, constants and typedefs
 //---------------------------------------------------------------------
 
-bool                            g_verbose = false;  // Whether to display input/output to console
-hipcub::CachingDeviceAllocator  g_allocator;  // Caching allocator for device memory
-
+bool                           g_verbose = false; // Whether to display input/output to console
+hipcub::CachingDeviceAllocator g_allocator; // Caching allocator for device memory
 
 //---------------------------------------------------------------------
 // Test generation
@@ -62,14 +61,12 @@ hipcub::CachingDeviceAllocator  g_allocator;  // Caching allocator for device me
 /**
  * Initialize problem
  */
-void Initialize(
-    int   *h_in,
-    int     num_items)
+void Initialize(int* h_in, int num_items)
 {
-    for (int i = 0; i < num_items; ++i)
+    for(int i = 0; i < num_items; ++i)
         h_in[i] = i;
 
-    if (g_verbose)
+    if(g_verbose)
     {
         printf("Input:\n");
         DisplayResults(h_in, num_items);
@@ -77,24 +74,19 @@ void Initialize(
     }
 }
 
-
 /**
  * Compute solution
  */
-void Solve(
-    int           *h_in,
-    int           &h_reference,
-    int             num_items)
+void Solve(int* h_in, int& h_reference, int num_items)
 {
-    for (int i = 0; i < num_items; ++i)
+    for(int i = 0; i < num_items; ++i)
     {
-        if (i == 0)
+        if(i == 0)
             h_reference = h_in[0];
         else
             h_reference += h_in[i];
     }
 }
-
 
 //---------------------------------------------------------------------
 // Main
@@ -113,13 +105,14 @@ int main(int argc, char** argv)
     args.GetCmdLineArgument("n", num_items);
 
     // Print usage
-    if (args.CheckCmdLineFlag("help"))
+    if(args.CheckCmdLineFlag("help"))
     {
         printf("%s "
-            "[--n=<input items> "
-            "[--device=<device-id>] "
-            "[--v] "
-            "\n", argv[0]);
+               "[--n=<input items> "
+               "[--device=<device-id>] "
+               "[--v] "
+               "\n",
+               argv[0]);
         exit(0);
     }
 
@@ -127,7 +120,8 @@ int main(int argc, char** argv)
     HIP_CHECK(args.DeviceInit());
 
     printf("hipcub::DeviceReduce::Sum() %d items (%d-byte elements)\n",
-        num_items, (int) sizeof(int));
+           num_items,
+           (int)sizeof(int));
     fflush(stdout);
 
     // Allocate host arrays
@@ -150,8 +144,8 @@ int main(int argc, char** argv)
     HIP_CHECK(g_allocator.DeviceAllocate((void**)&d_out, sizeof(int) * 1));
 
     // Request and allocate temporary storage
-    void*           d_temp_storage     = nullptr;
-    size_t          temp_storage_bytes = 0;
+    void*  d_temp_storage     = nullptr;
+    size_t temp_storage_bytes = 0;
     HIP_CHECK(
         hipcub::DeviceReduce::Sum(d_temp_storage, temp_storage_bytes, d_in, d_out, num_items));
     HIP_CHECK(g_allocator.DeviceAllocate(&d_temp_storage, temp_storage_bytes));

@@ -356,7 +356,7 @@ namespace TensileLite
             inline double operator()(Key const& p1, Key const& p2) const
             {
                 double distance = 0.0;
-                double gridK = p2.size() > 3 ? p2[3] : p2[2];
+                double gridK    = p2.size() > 3 ? p2[3] : p2[2];
 
                 // and nearest K
                 double K = p1.size() > 3 ? p1[3] : p1[2];

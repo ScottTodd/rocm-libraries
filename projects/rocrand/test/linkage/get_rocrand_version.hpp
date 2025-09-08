@@ -20,12 +20,12 @@
 #ifndef TEST_LINKAGE_GET_ROCRAND_VERSION_HPP_
 #define TEST_LINKAGE_GET_ROCRAND_VERSION_HPP_
 
-#include <stdio.h>
 #include <hip/hip_runtime.h>
+#include <stdio.h>
 
 #include <rocrand/rocrand.h>
-#include <rocrand/rocrand_kernel.h>
 #include <rocrand/rocrand.hpp>
+#include <rocrand/rocrand_kernel.h>
 
 int get_rocrand_version();
 

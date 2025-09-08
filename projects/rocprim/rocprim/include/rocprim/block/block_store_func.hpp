@@ -52,13 +52,9 @@ BEGIN_ROCPRIM_NAMESPACE
 /// \param flat_id a local flat 1D thread id in a block (tile) for the calling thread
 /// \param block_output the input iterator from the thread block to store to
 /// \param items array that data is stored to thread block
-template<
-    class OutputIterator,
-    class T,
-    unsigned int ItemsPerThread
->
+template<class OutputIterator, class T, unsigned int ItemsPerThread>
 ROCPRIM_DEVICE ROCPRIM_INLINE
-void block_store_direct_blocked(unsigned int flat_id,
+void block_store_direct_blocked(unsigned int   flat_id,
                                 OutputIterator block_output,
                                 T (&items)[ItemsPerThread])
 {
@@ -66,10 +62,10 @@ void block_store_direct_blocked(unsigned int flat_id,
                   "The type T must be such that an object of type OutputIterator "
                   "can be dereferenced and assigned a value of type T.");
 
-    unsigned int offset = flat_id * ItemsPerThread;
+    unsigned int   offset      = flat_id * ItemsPerThread;
     OutputIterator thread_iter = block_output + offset;
     ROCPRIM_UNROLL
-    for (unsigned int item = 0; item < ItemsPerThread; item++)
+    for(unsigned int item = 0; item < ItemsPerThread; item++)
     {
         thread_iter[item] = items[item];
     }
@@ -92,13 +88,9 @@ void block_store_direct_blocked(unsigned int flat_id,
 /// \param block_output the input iterator from the thread block to store to
 /// \param items array that data is stored to thread block
 /// \param valid maximum range of valid numbers to store
-template<
-    class OutputIterator,
-    class T,
-    unsigned int ItemsPerThread
->
+template<class OutputIterator, class T, unsigned int ItemsPerThread>
 ROCPRIM_DEVICE ROCPRIM_INLINE
-void block_store_direct_blocked(unsigned int flat_id,
+void block_store_direct_blocked(unsigned int   flat_id,
                                 OutputIterator block_output,
                                 T (&items)[ItemsPerThread],
                                 unsigned int valid)
@@ -107,12 +99,12 @@ void block_store_direct_blocked(unsigned int flat_id,
                   "The type T must be such that an object of type OutputIterator "
                   "can be dereferenced and assigned a value of type T.");
 
-    unsigned int offset = flat_id * ItemsPerThread;
+    unsigned int   offset      = flat_id * ItemsPerThread;
     OutputIterator thread_iter = block_output + offset;
     ROCPRIM_UNROLL
-    for (unsigned int item = 0; item < ItemsPerThread; item++)
+    for(unsigned int item = 0; item < ItemsPerThread; item++)
     {
-        if (item + offset < valid)
+        if(item + offset < valid)
         {
             thread_iter[item] = items[item];
         }
@@ -144,29 +136,25 @@ void block_store_direct_blocked(unsigned int flat_id,
 /// \param flat_id a local flat 1D thread id in a block (tile) for the calling thread
 /// \param block_output the input iterator from the thread block to load from
 /// \param items array that data is loaded to
-template<
-    class T,
-    class U,
-    unsigned int ItemsPerThread
->
+template<class T, class U, unsigned int ItemsPerThread>
 ROCPRIM_DEVICE ROCPRIM_INLINE
-auto
-block_store_direct_blocked_vectorized(unsigned int flat_id,
-                                      T* block_output,
-                                      U (&items)[ItemsPerThread]) -> typename std::enable_if<detail::is_vectorizable<T, ItemsPerThread>::value>::type
+auto block_store_direct_blocked_vectorized(unsigned int flat_id,
+                                           T*           block_output,
+                                           U (&items)[ItemsPerThread]) ->
+    typename std::enable_if<detail::is_vectorizable<T, ItemsPerThread>::value>::type
 {
     static_assert(std::is_convertible<U, T>::value,
                   "The type U must be such that it can be implicitly converted to T.");
 
     using vector_type = typename detail::match_vector_type<T, ItemsPerThread>::type;
     constexpr unsigned int vectors_per_thread = (sizeof(T) * ItemsPerThread) / sizeof(vector_type);
-    vector_type *vectors_ptr = reinterpret_cast<vector_type*>(const_cast<T*>(block_output));
+    vector_type* vectors_ptr = reinterpret_cast<vector_type*>(const_cast<T*>(block_output));
 
     vector_type raw_vector_items[vectors_per_thread];
-    T *raw_items = reinterpret_cast<T*>(raw_vector_items);
+    T*          raw_items = reinterpret_cast<T*>(raw_vector_items);
 
     ROCPRIM_UNROLL
-    for (unsigned int item = 0; item < ItemsPerThread; item++)
+    for(unsigned int item = 0; item < ItemsPerThread; item++)
     {
         raw_items[item] = items[item];
     }
@@ -174,16 +162,12 @@ block_store_direct_blocked_vectorized(unsigned int flat_id,
     block_store_direct_blocked(flat_id, vectors_ptr, raw_vector_items);
 }
 
-template<
-    class T,
-    class U,
-    unsigned int ItemsPerThread
->
+template<class T, class U, unsigned int ItemsPerThread>
 ROCPRIM_DEVICE ROCPRIM_INLINE
-auto
-block_store_direct_blocked_vectorized(unsigned int flat_id,
-                                      T* block_output,
-                                      U (&items)[ItemsPerThread]) -> typename std::enable_if<!detail::is_vectorizable<T, ItemsPerThread>::value>::type
+auto block_store_direct_blocked_vectorized(unsigned int flat_id,
+                                           T*           block_output,
+                                           U (&items)[ItemsPerThread]) ->
+    typename std::enable_if<!detail::is_vectorizable<T, ItemsPerThread>::value>::type
 {
     block_store_direct_blocked(flat_id, block_output, items);
 }
@@ -205,14 +189,9 @@ block_store_direct_blocked_vectorized(unsigned int flat_id,
 /// \param flat_id a local flat 1D thread id in a block (tile) for the calling thread
 /// \param block_output the input iterator from the thread block to store to
 /// \param items array that data is stored to thread block
-template<
-    unsigned int BlockSize,
-    class OutputIterator,
-    class T,
-    unsigned int ItemsPerThread
->
+template<unsigned int BlockSize, class OutputIterator, class T, unsigned int ItemsPerThread>
 ROCPRIM_DEVICE ROCPRIM_INLINE
-void block_store_direct_striped(unsigned int flat_id,
+void block_store_direct_striped(unsigned int   flat_id,
                                 OutputIterator block_output,
                                 T (&items)[ItemsPerThread])
 {
@@ -222,9 +201,9 @@ void block_store_direct_striped(unsigned int flat_id,
 
     OutputIterator thread_iter = block_output + flat_id;
     ROCPRIM_UNROLL
-    for (unsigned int item = 0; item < ItemsPerThread; item++)
+    for(unsigned int item = 0; item < ItemsPerThread; item++)
     {
-         thread_iter[item * BlockSize] = items[item];
+        thread_iter[item * BlockSize] = items[item];
     }
 }
 
@@ -246,14 +225,9 @@ void block_store_direct_striped(unsigned int flat_id,
 /// \param block_output the input iterator from the thread block to store to
 /// \param items array that data is stored to thread block
 /// \param valid maximum range of valid numbers to store
-template<
-    unsigned int BlockSize,
-    class OutputIterator,
-    class T,
-    unsigned int ItemsPerThread
->
+template<unsigned int BlockSize, class OutputIterator, class T, unsigned int ItemsPerThread>
 ROCPRIM_DEVICE ROCPRIM_INLINE
-void block_store_direct_striped(unsigned int flat_id,
+void block_store_direct_striped(unsigned int   flat_id,
                                 OutputIterator block_output,
                                 T (&items)[ItemsPerThread],
                                 unsigned int valid)
@@ -264,12 +238,12 @@ void block_store_direct_striped(unsigned int flat_id,
 
     OutputIterator thread_iter = block_output + flat_id;
     ROCPRIM_UNROLL
-    for (unsigned int item = 0; item < ItemsPerThread; item++)
+    for(unsigned int item = 0; item < ItemsPerThread; item++)
     {
         unsigned int offset = item * BlockSize;
-        if (flat_id + offset < valid)
+        if(flat_id + offset < valid)
         {
-             thread_iter[offset] = items[item];
+            thread_iter[offset] = items[item];
         }
     }
 }
@@ -318,7 +292,7 @@ void block_store_direct_warp_striped(unsigned int   flat_id,
 
     OutputIterator thread_iter = block_output + thread_id + warp_offset;
     ROCPRIM_UNROLL
-    for (unsigned int item = 0; item < ItemsPerThread; item++)
+    for(unsigned int item = 0; item < ItemsPerThread; item++)
     {
         thread_iter[item * VirtualWaveSize] = items[item];
     }
@@ -412,10 +386,10 @@ void block_store_direct_warp_striped(unsigned int   flat_id,
 
     OutputIterator thread_iter = block_output + thread_id + warp_offset;
     ROCPRIM_UNROLL
-    for (unsigned int item = 0; item < ItemsPerThread; item++)
+    for(unsigned int item = 0; item < ItemsPerThread; item++)
     {
         unsigned int offset = item * VirtualWaveSize;
-        if (warp_offset + thread_id + offset < valid)
+        if(warp_offset + thread_id + offset < valid)
         {
             thread_iter[offset] = items[item];
         }

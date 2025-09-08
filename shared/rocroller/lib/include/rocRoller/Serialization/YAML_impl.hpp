@@ -55,7 +55,7 @@ namespace rocRoller
             YAML::Emitter                emitter;
             Serialization::EmitterOutput yout(&emitter);
             yout.outputDoc(obj);
-            rv                            = emitter.c_str();
+            rv = emitter.c_str();
 #endif
 
             return rv;

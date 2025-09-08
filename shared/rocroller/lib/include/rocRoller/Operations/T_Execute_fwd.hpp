@@ -68,8 +68,7 @@ namespace rocRoller
                                  E_Conditional>;
 
         template <typename T>
-        concept CXOp = requires()
-        {
+        concept CXOp = requires() {
             requires std::constructible_from<XOp, T>;
             requires !std::same_as<XOp, T>;
         };

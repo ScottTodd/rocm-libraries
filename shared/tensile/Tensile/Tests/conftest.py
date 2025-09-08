@@ -30,14 +30,17 @@ from Tensile.Utilities.Toolchain import validateToolchain, ToolchainDefaults
 try:
     import xdist  # noqa
 except ImportError:
+
     @pytest.fixture(scope="session")
     def worker_id():
         return None
+
 
 testdir = os.path.dirname(__file__)
 moddir = os.path.dirname(testdir)
 rootdir = os.path.dirname(moddir)
 sys.path.append(rootdir)
+
 
 def pytest_addoption(parser):
     parser.addoption("--tensile-options")
@@ -47,6 +50,7 @@ def pytest_addoption(parser):
     parser.addoption("--timing-file", default=None)
     parser.addoption("--asm-cache")
 
+
 @pytest.fixture(scope="session")
 def timing_path(pytestconfig, tmpdir_factory):
     userDir = pytestconfig.getoption("--timing-file")
@@ -54,11 +58,13 @@ def timing_path(pytestconfig, tmpdir_factory):
         return userDir
     return str(tmpdir_factory.mktemp("results") / "timing.csv")
 
+
 @pytest.fixture(autouse=True)
 def incremental_timer(request, worker_lock_instance, timing_path):
-    #import pdb
-    #pdb.set_trace()
+    # import pdb
+    # pdb.set_trace()
     import datetime
+
     start = datetime.datetime.now()
     yield
     stop = datetime.datetime.now()
@@ -68,12 +74,14 @@ def incremental_timer(request, worker_lock_instance, timing_path):
         with open(timing_path, "a") as f:
             f.write("{},{}\n".format(request.node.name, testtime.total_seconds()))
 
+
 @pytest.fixture(scope="session")
 def builddir(pytestconfig, tmpdir_factory):
     userDir = pytestconfig.getoption("--builddir")
     if userDir is not None:
         return userDir
     return str(tmpdir_factory.mktemp("0_Build"))
+
 
 @pytest.fixture(scope="session")
 def worker_lock_path(tmp_path_factory, worker_id):
@@ -82,9 +90,11 @@ def worker_lock_path(tmp_path_factory, worker_id):
 
     return tmp_path_factory.getbasetemp().parent / "client_execution.lock"
 
+
 @pytest.fixture
 def tensile_script_path():
-    return os.path.join(moddir, 'bin', 'Tensile')
+    return os.path.join(moddir, "bin", "Tensile")
+
 
 @pytest.fixture
 def worker_lock_instance(worker_lock_path):
@@ -92,7 +102,9 @@ def worker_lock_instance(worker_lock_path):
         return open(os.devnull)
 
     import filelock
+
     return filelock.FileLock(str(worker_lock_path))
+
 
 @pytest.fixture
 def tensile_args(pytestconfig, builddir, worker_lock_path):
@@ -112,6 +124,7 @@ def tensile_args(pytestconfig, builddir, worker_lock_path):
 
     return rv
 
+
 def pytest_collection_modifyitems(items):
     """
     Mainly for tests that aren't simple YAML files (including unit tests).
@@ -122,6 +135,7 @@ def pytest_collection_modifyitems(items):
         components = relpath.split(os.path.sep)
         if len(components) > 0 and len(components[0]) > 0:
             item.add_marker(getattr(pytest.mark, components[0]))
+
 
 @pytest.fixture
 def useGlobalParameters(tensile_args):
@@ -145,14 +159,14 @@ def useGlobalParameters(tensile_args):
                 assembler,
                 offloadBundler,
                 hipconfig,
-                deviceEnumerator
+                deviceEnumerator,
             ) = validateToolchain(
                 args.CxxCompiler,
                 args.CCompiler,
                 args.Assembler,
                 args.OffloadBundler,
                 ToolchainDefaults.HIP_CONFIG,
-                ToolchainDefaults.DEVICE_ENUMERATOR
+                ToolchainDefaults.DEVICE_ENUMERATOR,
             )
             params = {
                 "CxxCompiler": cxxCompiler,
@@ -178,10 +192,11 @@ def useGlobalParameters(tensile_args):
 
     return gpUpdater
 
+
 @pytest.fixture
 def initGlobalParametersForTCL():
     from Tensile import Common
-    from Tensile.TensileCreateLib.ParseArguments import parseArguments    
+    from Tensile.TensileCreateLib.ParseArguments import parseArguments
 
     class gpUpdater:
         def __init__(self, tcl_args):

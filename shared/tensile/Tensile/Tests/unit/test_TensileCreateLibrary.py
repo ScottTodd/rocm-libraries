@@ -118,7 +118,9 @@ def test_loadSolutions(caplog, useGlobalParameters):
         assert expectedKernelName2 == actualKernelName2
 
 
-@pytest.mark.skip(reason="System issue with find assempler called when assigning defaults")
+@pytest.mark.skip(
+    reason="System issue with find assempler called when assigning defaults"
+)
 def test_WriteClientLibraryFromSolutions(tmpdir):
     Common.globalParameters["MergeFiles"] = True
     Common.globalParameters["CodeObjectVersion"] = "default"
@@ -223,7 +225,9 @@ def test_verifyManifest():
     # Create an empty manifest
     with open(manifestFile, mode="x") as manifest:
 
-        assert tcl.verifyManifest(manifestFile), "an empty manifest should always succeed"
+        assert tcl.verifyManifest(
+            manifestFile
+        ), "an empty manifest should always succeed"
 
         # add to file manifest that is not on disk
         manifest.write("foo.asm\n")
@@ -233,24 +237,31 @@ def test_verifyManifest():
         ), "file in manifest are on disk, but shouldn't be"
 
         with open(testFoo, mode="x"):
-            assert tcl.verifyManifest(manifestFile), "file in manifest isn't on disk, but should be"
+            assert tcl.verifyManifest(
+                manifestFile
+            ), "file in manifest isn't on disk, but should be"
 
         manifest.write("bar.asm\n")
         manifest.flush()
-        assert not tcl.verifyManifest(manifestFile), "bar.asm in manifest should not be on disk"
+        assert not tcl.verifyManifest(
+            manifestFile
+        ), "bar.asm in manifest should not be on disk"
 
     with open(testBar, mode="x"):
-        assert tcl.verifyManifest(manifestFile), "files in manifest isn't on disk, but should be"
+        assert tcl.verifyManifest(
+            manifestFile
+        ), "files in manifest isn't on disk, but should be"
 
     with open(manifestFile, "a") as generatedFile:
         for filePath in range(5):
             generatedFile.write("%s\n" % (filePath))
 
-    assert not tcl.verifyManifest(manifestFile), "files in manifest are on disk, but shouldn't be"
+    assert not tcl.verifyManifest(
+        manifestFile
+    ), "files in manifest are on disk, but shouldn't be"
 
 
 def test_findLogicFiles():
-
     def setup():
         baseDir = Path("no-commit-test-logic-files")
 
@@ -273,7 +284,9 @@ def test_findLogicFiles():
             createDirectoryWithYamls(baseDir / d, "foo", "yaml")
 
         result = tcl.findLogicFiles(baseDir, logicArchs, lazyLoading, experimentalDir)
-        expected = findLogicFiles_oldLogic(baseDir, logicArchs, lazyLoading, experimentalDir)
+        expected = findLogicFiles_oldLogic(
+            baseDir, logicArchs, lazyLoading, experimentalDir
+        )
         return result == expected
 
     def outputMatchesOldLogic2():
@@ -286,7 +299,9 @@ def test_findLogicFiles():
             createDirectoryWithYamls(baseDir / d, d, "yaml")
 
         result = tcl.findLogicFiles(baseDir, logicArchs, lazyLoading, experimentalDir)
-        expected = findLogicFiles_oldLogic(baseDir, logicArchs, lazyLoading, experimentalDir)
+        expected = findLogicFiles_oldLogic(
+            baseDir, logicArchs, lazyLoading, experimentalDir
+        )
         return result == expected
 
     def outputMatchesOldLogic3():
@@ -297,7 +312,9 @@ def test_findLogicFiles():
             createDirectoryWithYamls(baseDir / d, d, "yaml")
 
         result = tcl.findLogicFiles(baseDir, logicArchs, lazyLoading, experimentalDir)
-        expected = findLogicFiles_oldLogic(baseDir, logicArchs, lazyLoading, experimentalDir)
+        expected = findLogicFiles_oldLogic(
+            baseDir, logicArchs, lazyLoading, experimentalDir
+        )
         return result == expected
 
     def verifyYamlAndYml():
@@ -312,12 +329,20 @@ def test_findLogicFiles():
             createDirectoryWithYamls(baseDir / "yml" / d, d, "yml")
 
         result = tcl.findLogicFiles(baseDir, logicArchs, lazyLoading, experimentalDir)
-        expected = findLogicFiles_oldLogic(baseDir, logicArchs, lazyLoading, experimentalDir)
+        expected = findLogicFiles_oldLogic(
+            baseDir, logicArchs, lazyLoading, experimentalDir
+        )
         return len(result) == len(expected) * 2
 
-    assert outputMatchesOldLogic1(), "Output differs from old logic, not backwards compatible."
-    assert outputMatchesOldLogic2(), "Output differs from old logic, not backwards compatible."
-    assert outputMatchesOldLogic3(), "Output differs from old logic, not backwards compatible."
+    assert (
+        outputMatchesOldLogic1()
+    ), "Output differs from old logic, not backwards compatible."
+    assert (
+        outputMatchesOldLogic2()
+    ), "Output differs from old logic, not backwards compatible."
+    assert (
+        outputMatchesOldLogic3()
+    ), "Output differs from old logic, not backwards compatible."
     assert (
         verifyYamlAndYml()
     ), "Output should have twice as many files as old logic (which only parses .yaml)"
@@ -335,7 +360,9 @@ def test_sanityCheck():
     # Ensure that old logic also succeeds
     sanityCheck_oldLogic(srcPaths, asmPaths, coPathsMatch, False)
 
-    with pytest.raises(ValueError, match=r"(.*) unexpected code object files: \['tux.hsaco'\]"):
+    with pytest.raises(
+        ValueError, match=r"(.*) unexpected code object files: \['tux.hsaco'\]"
+    ):
         tcl.sanityCheck(srcPaths, asmPaths, coPathsExtra, False)
     # Ensure that old logic also fails
     with pytest.raises(Exception):
@@ -344,7 +371,9 @@ def test_sanityCheck():
         except:
             raise Exception
 
-    with pytest.raises(ValueError, match=r"(.*) missing expected code object files: \['gru.co'\]"):
+    with pytest.raises(
+        ValueError, match=r"(.*) missing expected code object files: \['gru.co'\]"
+    ):
         tcl.sanityCheck(srcPaths, asmPaths, coPathsMissing, False)
     # Ensure that old logic also fails
     with pytest.raises(Exception):
@@ -408,7 +437,9 @@ def test_generateMasterFileList():
     result = tcl.generateMasterFileList(libraries, archs, lazy=True)
 
     for idx, t in enumerate(result[0:2]):
-        assert t[0] == "TensileLibrary_lazy_arch" + str(idx), "Incorrect naming for key."
+        assert t[0] == "TensileLibrary_lazy_arch" + str(
+            idx
+        ), "Incorrect naming for key."
         assert isinstance(t[1], MasterLibraryMock), "Incorrect type for value."
         assert t[1].data == idx, "Incorrect data."
 
@@ -419,7 +450,6 @@ def test_generateMasterFileList():
 
 
 def test_logicDataAndSolutionsConstruction(initGlobalParametersForTCL):
-
     def testCase1(logicFiles: List[LibraryIO.LibraryLogic], separateArch: bool):
         # clear the set to prevent testing errors caused
         # by the fact that ArchitectureSet is shared across
@@ -446,7 +476,9 @@ def test_logicDataAndSolutionsConstruction(initGlobalParametersForTCL):
 
         solutions = tcl.generateSolutions(masterLibraries, separate=separateArch)
         assert isinstance(solutions, list), "generateSolutions should return a list."
-        assert len(solutions) == 19, "There should be 19 solutions after adding the fallback."
+        assert (
+            len(solutions) == 19
+        ), "There should be 19 solutions after adding the fallback."
 
     def testCase2(yamlFiles: List[str], separateArch: bool):
         # clear the set to prevent testing errors caused
@@ -465,7 +497,9 @@ def test_logicDataAndSolutionsConstruction(initGlobalParametersForTCL):
 
         solutions = tcl.generateSolutions(masterLibraries, separate=separateArch)
         assert isinstance(solutions, list), "generateSolutions should return a list."
-        assert len(solutions) == 19, "There should be 19 solutions after adding the fallback."
+        assert (
+            len(solutions) == 19
+        ), "There should be 19 solutions after adding the fallback."
 
     def testCase3(logicFiles: List[LibraryIO.LibraryLogic]):
         # clear the set to prevent testing errors caused
@@ -480,7 +514,12 @@ def test_logicDataAndSolutionsConstruction(initGlobalParametersForTCL):
             len(masterLibraries[arch].lazyLibraries.keys()) == 1
         ), f"There should be 1 key prior to adding the fallback for {arch}."
         assert (
-            len(next(iter(masterLibraries[arch].lazyLibraries.values())).solutions.values()) == 17
+            len(
+                next(
+                    iter(masterLibraries[arch].lazyLibraries.values())
+                ).solutions.values()
+            )
+            == 17
         ), f"There should be 17 solutions prior to adding the fallback for {arch}."
 
         tcl.addFallback(masterLibraries)
@@ -491,18 +530,25 @@ def test_logicDataAndSolutionsConstruction(initGlobalParametersForTCL):
 
         for name, lib in masterLibraries[arch].lazyLibraries.items():
             if "fallback" in name:
-                assert len(lib.solutions.values()) == 2, "There should be 2 fallback solutions."
+                assert (
+                    len(lib.solutions.values()) == 2
+                ), "There should be 2 fallback solutions."
             else:
-                assert len(lib.solutions.values()) == 17, "There should be 17 gfx900 solutions."
+                assert (
+                    len(lib.solutions.values()) == 17
+                ), "There should be 17 gfx900 solutions."
 
         solutions = tcl.generateSolutions(masterLibraries, separate=True)
         assert isinstance(solutions, list), "generateSolutions should return a list."
-        assert len(solutions) == 19, "There should be 19 solutions after adding the fallback."
+        assert (
+            len(solutions) == 19
+        ), "There should be 19 solutions after adding the fallback."
 
     requiredArgs = ["--jobs=2", "/unused/logic/path", "/unused/output/path", "HIP"]
     rootPath = Path(__file__).parent.parent / "test_data" / "unit" / "solutions"
     yamlFiles = [
-        rootPath / f for f in ["vega10_Cijk_Ailk_Bjlk_CB_GB.yaml", "hip_Cijk_Ailk_Bjlk_CB_GB.yaml"]
+        rootPath / f
+        for f in ["vega10_Cijk_Ailk_Bjlk_CB_GB.yaml", "hip_Cijk_Ailk_Bjlk_CB_GB.yaml"]
     ]
 
     with initGlobalParametersForTCL(["--architecture=gfx900"] + requiredArgs):
@@ -539,15 +585,20 @@ def setupSolutionsAndKernels(
 ) -> Tuple[List[Solution], List[Solution], KernelWriterAssembly, KernelWriterSource]:
     """Reusable logic for setting up testable solutions and kernels"""
 
-    (cxxCompiler, cCompiler, assembler, offloadBundler, hipconfig, deviceEnumerator) = (
-        validateToolchain(
-            ToolchainDefaults.CXX_COMPILER,
-            ToolchainDefaults.C_COMPILER,
-            ToolchainDefaults.ASSEMBLER,
-            ToolchainDefaults.OFFLOAD_BUNDLER,
-            ToolchainDefaults.HIP_CONFIG,
-            ToolchainDefaults.DEVICE_ENUMERATOR,
-        )
+    (
+        cxxCompiler,
+        cCompiler,
+        assembler,
+        offloadBundler,
+        hipconfig,
+        deviceEnumerator,
+    ) = validateToolchain(
+        ToolchainDefaults.CXX_COMPILER,
+        ToolchainDefaults.C_COMPILER,
+        ToolchainDefaults.ASSEMBLER,
+        ToolchainDefaults.OFFLOAD_BUNDLER,
+        ToolchainDefaults.HIP_CONFIG,
+        ToolchainDefaults.DEVICE_ENUMERATOR,
     )
     params = {
         "CxxCompiler": cxxCompiler,
@@ -559,7 +610,10 @@ def setupSolutionsAndKernels(
     }
     Common.assignGlobalParameters(params)
     _, _, _, _, _, lib = LibraryIO.parseLibraryLogicFile(
-        unittestPath.parent / "test_data" / "unit" / "aldebaran_Cijk_AlikC_Bljk_ZB_GB.yaml"
+        unittestPath.parent
+        / "test_data"
+        / "unit"
+        / "aldebaran_Cijk_AlikC_Bljk_ZB_GB.yaml"
     )
     solutions = [sol.originalSolution for sol in lib.solutions.values()]
     kernels, _, _ = tcl.generateKernelObjectsFromSolutions(solutions)
@@ -570,14 +624,21 @@ def setupSolutionsAndKernels(
 
 
 def test_prepAsm(setupSolutionsAndKernels):
-    solutions, kernels, kernelWriterAssembly, kernelWriterSource = setupSolutionsAndKernels
+    (
+        solutions,
+        kernels,
+        kernelWriterAssembly,
+        kernelWriterSource,
+    ) = setupSolutionsAndKernels
     buildPath = Path("no-commit-prep-asm")
     buildPath.mkdir(exist_ok=True)
 
     def testLinux():
-        tcl.prepAsm(kernelWriterAssembly, True, Path("no-commit-prep-asm"), (9, 0, 10), 1)
+        tcl.prepAsm(
+            kernelWriterAssembly, True, Path("no-commit-prep-asm"), (9, 0, 10), 1
+        )
 
-        expected = """#!/bin/sh 
+        expected = """#!/bin/sh
 # usage: asm-new.sh kernelName(no extension) [--wave32]
 f=$1
 shift
@@ -603,7 +664,9 @@ mkdir -p ../../../asm_backup && cp $f.s ../../../asm_backup/$f.s
             assert contents == expected, "Assembler script doesn't match expectation"
 
     def testWindows():
-        tcl.prepAsm(kernelWriterAssembly, False, Path("no-commit-prep-asm"), (9, 0, 10), 1)
+        tcl.prepAsm(
+            kernelWriterAssembly, False, Path("no-commit-prep-asm"), (9, 0, 10), 1
+        )
 
         expected = """@echo off
 set f=%1
@@ -653,13 +716,17 @@ def test_markDuplicateKernels():
     kernelWriterAssembly = MockKernelWriter()
     kernelsOut = tcl.markDuplicateKernels(kernelsAsm, kernelWriterAssembly)
 
-    assert len(kernelsOut) == len(kernelsAsm), "Lengths of input and output should match"
+    assert len(kernelsOut) == len(
+        kernelsAsm
+    ), "Lengths of input and output should match"
     assert all([not k.duplicate for k in kernelsOut]), "All kernels should be unique"
 
     kernelsAsm = [MockSolution(name, "Assembly") for name in ["A", "B", "B", "C"]]
     kernelsOut = tcl.markDuplicateKernels(kernelsAsm, kernelWriterAssembly)
 
-    assert len(kernelsOut) == len(kernelsAsm), "Lengths of input and output should match"
+    assert len(kernelsOut) == len(
+        kernelsAsm
+    ), "Lengths of input and output should match"
     for i in range(len(kernelsOut)):
         isDup = kernelsOut[i].duplicate
         assert isDup if i == 2 else not isDup, "Duplicate status is incorrect"
@@ -667,7 +734,9 @@ def test_markDuplicateKernels():
     kernelsSrc = [MockSolution(name, "Source") for name in ["D", "E", "E", "F"]]
     kernelsOut = tcl.markDuplicateKernels(kernelsSrc, kernelWriterAssembly)
 
-    assert len(kernelsOut) == len(kernelsSrc), "Lengths of input and output should match"
+    assert len(kernelsOut) == len(
+        kernelsSrc
+    ), "Lengths of input and output should match"
     for i in range(len(kernelsOut)):
         with pytest.raises(
             AttributeError, match="'MockSolution' object has no attribute 'duplicate'"
@@ -677,11 +746,14 @@ def test_markDuplicateKernels():
     kernelsAll = kernelsSrc + kernelsAsm
     kernelsOut = tcl.markDuplicateKernels(kernelsAll, kernelWriterAssembly)
 
-    assert len(kernelsOut) == len(kernelsAll), "Lengths of input and output should match"
+    assert len(kernelsOut) == len(
+        kernelsAll
+    ), "Lengths of input and output should match"
     for i in range(len(kernelsAll)):
         if i < len(kernelsSrc):
             with pytest.raises(
-                AttributeError, match="'MockSolution' object has no attribute 'duplicate'"
+                AttributeError,
+                match="'MockSolution' object has no attribute 'duplicate'",
             ):
                 kernelsOut[i].duplicate
         else:
@@ -691,7 +763,12 @@ def test_markDuplicateKernels():
 
 @pytest.mark.skip(reason="Debugging function")
 def test_filterProcessingErrors(setupSolutionsAndKernels):
-    solutions, kernels, kernelWriterAssembly, kernelWriterSource = setupSolutionsAndKernels
+    (
+        solutions,
+        kernels,
+        kernelWriterAssembly,
+        kernelWriterSource,
+    ) = setupSolutionsAndKernels
     kernels = tcl.markDuplicateKernels(kernels, kernelWriterAssembly)
 
     results = [(-2, 0, 0, 0, 0)] * len(kernels)
@@ -705,7 +782,9 @@ def test_filterProcessingErrors(setupSolutionsAndKernels):
 
     results = [(-2, 0, 0, 0, 0)] + [(0, 0, 0, 0, 0)] * (len(kernels) - 1)
     with pytest.raises(ValueError, match=r"Found 1 error\(s\) (.*)"):
-        tcl.filterProcessingErrors(kernels, solutions, results, printLevel=1, ignoreErr=False)
+        tcl.filterProcessingErrors(
+            kernels, solutions, results, printLevel=1, ignoreErr=False
+        )
 
 
 def test_processKernelSource(setupSolutionsAndKernels):
@@ -744,7 +823,9 @@ def test_processKernelSource(setupSolutionsAndKernels):
         ),
     ]
 
-    assert results == expected, "Assembly files shouldn't have any header or source content"
+    assert (
+        results == expected
+    ), "Assembly files shouldn't have any header or source content"
 
 
 def test_generateKernelSourceAndHeaderFiles_generic():
@@ -765,7 +846,9 @@ def test_generateKernelSourceAndHeaderFiles_generic():
     kernelFiles = tcl.generateKernelSourceAndHeaderFiles(filesToWrite)
 
     # Undocumented internal logic of generateKernelSourceAndHeaderFiles
-    assert len(kernelFiles) == 1, "Only one file should be created when mergeFiles == True"
+    assert (
+        len(kernelFiles) == 1
+    ), "Only one file should be created when mergeFiles == True"
 
     assert (
         kernelFiles[0] == "no-commit-kernel-build-files/Kernels.cpp"
@@ -923,7 +1006,9 @@ def test_filterBuildErrors():
     writerSelector = lambda lang: kernelWriter
 
     def noBuildFailures():
-        kernelsToBuild = tcl.filterBuildErrors(kernels, {}, writerSelector, ignoreErr=False)
+        kernelsToBuild = tcl.filterBuildErrors(
+            kernels, {}, writerSelector, ignoreErr=False
+        )
         assert kernelsToBuild == kernels, "All kernels should be built without failure"
 
     def buildFailuresIgnoreErr():
@@ -950,7 +1035,9 @@ def test_filterBuildErrors():
 
     def buildFailuresNoIgnoreErr():
         with pytest.raises(RuntimeError, match=r"Kernel compilation failed (.*)"):
-            tcl.filterBuildErrors(kernels, kernelsWithBuildErrors, writerSelector, ignoreErr=False)
+            tcl.filterBuildErrors(
+                kernels, kernelsWithBuildErrors, writerSelector, ignoreErr=False
+            )
 
     noBuildFailures()
     buildFailuresIgnoreErr()
@@ -966,7 +1053,10 @@ def setup_writeKernelHelpersTests():
 
 
 def test_writeKernelHelpers_createFiles(
-    setup_writeKernelHelpersTests, mock_toFile, mock_openFile, mock_getKernelSourceAndHeaderCode
+    setup_writeKernelHelpersTests,
+    mock_toFile,
+    mock_openFile,
+    mock_getKernelSourceAndHeaderCode,
 ):
     kernelFiles, kernWriter, basepath = setup_writeKernelHelpersTests
     mock_getKernelSourceAndHeaderCode.return_value = (
@@ -1002,18 +1092,25 @@ def test_writeKernelHelpers_withOpenFiles(
         "kernelName",
     )
 
-    tcl.writeKernelHelpers(kernWriter, kernelSourceFile, kernelHeaderFile, basepath, kernelFiles)
+    tcl.writeKernelHelpers(
+        kernWriter, kernelSourceFile, kernelHeaderFile, basepath, kernelFiles
+    )
 
     expected_calls = [
         call(kernelSourceFile, ["source_code", "abc"]),
         call(kernelHeaderFile, ["header_code", "def"]),
     ]
     assert mock_toFile.call_args_list == expected_calls
-    assert kernelFiles == [], "kernelFiles should remain unchanged when opened files are provided"
+    assert (
+        kernelFiles == []
+    ), "kernelFiles should remain unchanged when opened files are provided"
 
 
 def test_writeKernelHelpers_failure(
-    setup_writeKernelHelpersTests, mock_toFile, mock_printWarning, mock_getKernelSourceAndHeaderCode
+    setup_writeKernelHelpersTests,
+    mock_toFile,
+    mock_printWarning,
+    mock_getKernelSourceAndHeaderCode,
 ):
     kernelFiles, kernWriter, basepath = setup_writeKernelHelpersTests
     mock_getKernelSourceAndHeaderCode.return_value = (
@@ -1025,7 +1122,9 @@ def test_writeKernelHelpers_failure(
 
     tcl.writeKernelHelpers(kernWriter, None, None, basepath, kernelFiles)
 
-    mock_printWarning.assert_called_once_with("Invalid kernel: kernelName may be corrupt")
+    mock_printWarning.assert_called_once_with(
+        "Invalid kernel: kernelName may be corrupt"
+    )
     expected_calls = [
         call(basepath / "Kernels" / "kernelName.cpp", ["// src comment", ""]),
         call(basepath / "Kernels" / "kernelName.h", ["// hdr comment", ""]),
@@ -1126,7 +1225,9 @@ def findLogicFiles_oldLogic(logicPath, logicArchs, lazyLoading, experimentalDir)
     return logicFiles
 
 
-def sanityCheck_oldLogic(sourceLibPaths, asmLibPaths, codeObjectFiles, genSourcesAndExit):
+def sanityCheck_oldLogic(
+    sourceLibPaths, asmLibPaths, codeObjectFiles, genSourcesAndExit
+):
     bothLibSet = set(sourceLibPaths + asmLibPaths)
     setA = set(map(os.path.normcase, set(codeObjectFiles)))
     setB = set(map(os.path.normcase, bothLibSet))
@@ -1134,6 +1235,10 @@ def sanityCheck_oldLogic(sourceLibPaths, asmLibPaths, codeObjectFiles, genSource
     sanityCheck0 = setA - setB
     sanityCheck1 = setB - setA
 
-    assert len(sanityCheck0) == 0, "Unexpected code object files: {}".format(sanityCheck0)
+    assert len(sanityCheck0) == 0, "Unexpected code object files: {}".format(
+        sanityCheck0
+    )
     if not genSourcesAndExit:
-        assert len(sanityCheck1) == 0, "Missing expected code object files: {}".format(sanityCheck1)
+        assert len(sanityCheck1) == 0, "Missing expected code object files: {}".format(
+            sanityCheck1
+        )

@@ -64,7 +64,7 @@
 
 #define MIO_DRIVER_BN_REFERENCE_COMPUTE_3D_AS_2D 1 // Resolves issue #1974
 
-//#define BN_RUNFOR_PROFILER
+// #define BN_RUNFOR_PROFILER
 
 template <typename TInput,
           typename Tref,

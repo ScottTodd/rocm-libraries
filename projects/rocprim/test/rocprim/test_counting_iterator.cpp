@@ -49,7 +49,7 @@ template<class Params>
 class RocprimCountingIteratorTests : public ::testing::Test
 {
 public:
-    using input_type = typename Params::input_type;
+    using input_type             = typename Params::input_type;
     const bool debug_synchronous = false;
 };
 
@@ -162,9 +162,9 @@ TYPED_TEST(RocprimCountingIteratorTests, Transform)
     int device_id = test_common_utils::obtain_device_from_ctest();
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
-    
-    using T = typename TestFixture::input_type;
-    using Iterator = typename rocprim::counting_iterator<T>;
+
+    using T                      = typename TestFixture::input_type;
+    using Iterator               = typename rocprim::counting_iterator<T>;
     const bool debug_synchronous = TestFixture::debug_synchronous;
 
     const size_t size = 1024;
@@ -173,24 +173,20 @@ TYPED_TEST(RocprimCountingIteratorTests, Transform)
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
         SCOPED_TRACE(testing::Message() << "with size = " << size);
 
         // Create counting_iterator<U> with random starting point
         Iterator input_begin(test_utils::get_random_value<T>(0, 200, seed_value));
 
-        std::vector<T> output(size);
+        std::vector<T>        output(size);
         common::device_ptr<T> d_output(output.size());
 
         // Calculate expected results on host
         std::vector<T> expected(size);
-        std::transform(
-            input_begin,
-            input_begin + size,
-            expected.begin(),
-            transform<T>()
-        );
+        std::transform(input_begin, input_begin + size, expected.begin(), transform<T>());
 
         // Run
         HIP_CHECK(rocprim::transform(input_begin,

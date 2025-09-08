@@ -40,9 +40,13 @@ namespace
 template<typename T>
 struct LessOp
 {
-    HIPCUB_HOST_DEVICE LessOp(const T& pivot) : pivot_{pivot} {}
+    HIPCUB_HOST_DEVICE
+    LessOp(const T& pivot)
+        : pivot_{pivot}
+    {}
 
-    HIPCUB_HOST_DEVICE bool operator()(const T& val) const
+    HIPCUB_HOST_DEVICE
+    bool operator()(const T& val) const
     {
         return val < pivot_;
     }

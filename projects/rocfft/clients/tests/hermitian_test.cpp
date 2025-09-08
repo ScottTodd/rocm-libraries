@@ -71,8 +71,7 @@ void run_1D_hermitian_test(size_t length)
         std::cout << "non-Hermitian input:";
         for(const auto& val : h_input)
         {
-            std::cout << " "
-                      << "(" << val.x << ", " << val.y << ")";
+            std::cout << " " << "(" << val.x << ", " << val.y << ")";
         }
         std::cout << std::endl;
     }
@@ -122,8 +121,7 @@ void run_1D_hermitian_test(size_t length)
         std::cout << "Hermitian input:";
         for(const auto& val : h_input1)
         {
-            std::cout << " "
-                      << "(" << val.x << ", " << val.y << ")";
+            std::cout << " " << "(" << val.x << ", " << val.y << ")";
         }
         std::cout << std::endl;
     }

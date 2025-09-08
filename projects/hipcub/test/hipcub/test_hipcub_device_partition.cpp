@@ -154,7 +154,7 @@ TYPED_TEST(HipcubDevicePartitionTests, Flagged)
             HIP_CHECK(hipDeviceSynchronize());
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             // Run
@@ -168,7 +168,7 @@ TYPED_TEST(HipcubDevicePartitionTests, Flagged)
                 input.size(),
                 stream));
 
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipDeviceSynchronize());
@@ -460,7 +460,7 @@ TYPED_TEST(HipcubDevicePartitionTests, If)
             HIP_CHECK(hipDeviceSynchronize());
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             // Run
@@ -474,7 +474,7 @@ TYPED_TEST(HipcubDevicePartitionTests, If)
                 select_op,
                 stream));
 
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipDeviceSynchronize());
@@ -671,7 +671,10 @@ namespace
 template<typename T>
 struct LessOp
 {
-    HIPCUB_HOST_DEVICE LessOp(const T& pivot) : pivot_{pivot} {}
+    HIPCUB_HOST_DEVICE
+    LessOp(const T& pivot)
+        : pivot_{pivot}
+    {}
 
     HIPCUB_HOST_DEVICE
     bool operator()(const T& val) const
@@ -778,7 +781,7 @@ TYPED_TEST(HipcubDevicePartitionTests, IfThreeWay)
             HIP_CHECK(hipMalloc(&d_temp_storage, temp_storage_size_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             // Run
@@ -795,7 +798,7 @@ TYPED_TEST(HipcubDevicePartitionTests, IfThreeWay)
                 second_op,
                 stream));
 
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipDeviceSynchronize());

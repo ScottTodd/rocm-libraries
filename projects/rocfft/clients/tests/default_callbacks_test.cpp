@@ -326,7 +326,7 @@ struct Test_Callback
     // ------------------------------------------------
 
     template <typename T>
-    void set_load_callback(){};
+    void set_load_callback() {};
 
     template <>
     void set_load_callback<rocfft_complex<double>>()
@@ -363,7 +363,7 @@ struct Test_Callback
     // ------------------------------------------------
 
     template <typename T>
-    void set_store_callback(){};
+    void set_store_callback() {};
 
     template <>
     void set_store_callback<rocfft_complex<double>>()

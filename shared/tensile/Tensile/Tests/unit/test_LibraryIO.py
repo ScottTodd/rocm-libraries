@@ -142,10 +142,12 @@ def createLibraryLogicList(arch_str, suffix_str, fp16AltImpl, fp16AltImplRound):
     # paths to test data
     scriptDir = os.path.dirname(os.path.realpath(__file__))
     dataDir = os.path.realpath(os.path.join(scriptDir, "..", "test_data", "unit"))
-    problemTypePath = os.path.realpath( \
-            os.path.join(dataDir, "library_data", "problemType.yaml"))
-    solutionParametersPath = os.path.realpath( \
-            os.path.join(dataDir, "library_data", "initialSolutionParameters.yaml"))
+    problemTypePath = os.path.realpath(
+        os.path.join(dataDir, "library_data", "problemType.yaml")
+    )
+    solutionParametersPath = os.path.realpath(
+        os.path.join(dataDir, "library_data", "initialSolutionParameters.yaml")
+    )
 
     # read test data
     problemType = LibraryIO.readYAML(problemTypePath)["ProblemType"]
@@ -180,14 +182,18 @@ def createLibraryLogicList(arch_str, suffix_str, fp16AltImpl, fp16AltImplRound):
     return rv
 
 
-def createLibraryLogicDict(arch_str, suffix_str, lib_str, fp16AltImpl_str, fp16AltImplRound_str):
+def createLibraryLogicDict(
+    arch_str, suffix_str, lib_str, fp16AltImpl_str, fp16AltImplRound_str
+):
     # paths to test data
     scriptDir = os.path.dirname(os.path.realpath(__file__))
     dataDir = os.path.realpath(os.path.join(scriptDir, "..", "test_data", "unit"))
-    problemTypePath = os.path.realpath( \
-            os.path.join(dataDir, "library_data", "problemType.yaml"))
-    solutionParametersPath = os.path.realpath( \
-            os.path.join(dataDir, "library_data", "initialSolutionParameters.yaml"))
+    problemTypePath = os.path.realpath(
+        os.path.join(dataDir, "library_data", "problemType.yaml")
+    )
+    solutionParametersPath = os.path.realpath(
+        os.path.join(dataDir, "library_data", "initialSolutionParameters.yaml")
+    )
 
     # read test data
     problemType = LibraryIO.readYAML(problemTypePath)["ProblemType"]
@@ -229,8 +235,9 @@ def test_parseSolutionsData(useGlobalParameters):
         # paths to test data
         scriptDir = os.path.dirname(os.path.realpath(__file__))
         dataDir = os.path.realpath(os.path.join(scriptDir, "..", "test_data", "unit"))
-        solutionsPath = os.path.realpath(os.path.join( \
-                dataDir, "solutions", "solutions_nn_3.yaml"))
+        solutionsPath = os.path.realpath(
+            os.path.join(dataDir, "solutions", "solutions_nn_3.yaml")
+        )
 
         solutions = LibraryIO.readYAML(solutionsPath)
 
@@ -240,58 +247,88 @@ def test_parseSolutionsData(useGlobalParameters):
 
 def test_parseLibraryLogicList(useGlobalParameters):
     with useGlobalParameters():
-        LibraryIO.parseLibraryLogicData(createLibraryLogicList(vega20_l, dvEff_l, False, False),
-                                        "test_parseLibraryLogicList")
+        LibraryIO.parseLibraryLogicData(
+            createLibraryLogicList(vega20_l, dvEff_l, False, False),
+            "test_parseLibraryLogicList",
+        )
 
-        LibraryIO.parseLibraryLogicData(createLibraryLogicList(aldebaran_l, cuEff_l, False, False),
-                                        "test_parseLibraryLogicList")
+        LibraryIO.parseLibraryLogicData(
+            createLibraryLogicList(aldebaran_l, cuEff_l, False, False),
+            "test_parseLibraryLogicList",
+        )
 
-        LibraryIO.parseLibraryLogicData(createLibraryLogicList(vega20_l, legacySuffix_l, False, False),
-                                        "test_parseLibraryLogicList")
+        LibraryIO.parseLibraryLogicData(
+            createLibraryLogicList(vega20_l, legacySuffix_l, False, False),
+            "test_parseLibraryLogicList",
+        )
 
-        LibraryIO.parseLibraryLogicData(createLibraryLogicList(aldebaran_l, dvEff_l, True, False),
-                                        "test_parseLibraryLogicList")
+        LibraryIO.parseLibraryLogicData(
+            createLibraryLogicList(aldebaran_l, dvEff_l, True, False),
+            "test_parseLibraryLogicList",
+        )
 
-        LibraryIO.parseLibraryLogicData(createLibraryLogicList(aldebaran_l, dvEff_l, True, True),
-                                        "test_parseLibraryLogicList")
+        LibraryIO.parseLibraryLogicData(
+            createLibraryLogicList(aldebaran_l, dvEff_l, True, True),
+            "test_parseLibraryLogicList",
+        )
         assert True
 
 
 def test_parseLibraryLogicMatching(useGlobalParameters):
     with useGlobalParameters():
         LibraryIO.parseLibraryLogicData(
-            createLibraryLogicDict(vega20_d, matchingLibrary, dvEff_d, fp16AltImplFalse_d, None),
-            "test_parseLibraryLogicMatching")
+            createLibraryLogicDict(
+                vega20_d, matchingLibrary, dvEff_d, fp16AltImplFalse_d, None
+            ),
+            "test_parseLibraryLogicMatching",
+        )
 
         LibraryIO.parseLibraryLogicData(
             createLibraryLogicDict(aldebaran_d, matchingLibrary, cuEff_d, None, None),
-            "test_parseLibraryLogicMatching")
+            "test_parseLibraryLogicMatching",
+        )
 
         LibraryIO.parseLibraryLogicData(
-            createLibraryLogicDict(aldebaran_d, matchingLibrary, dvEff_d, fp16AltImpl_d, None),
-            "test_parseLibraryLogicMatching")
+            createLibraryLogicDict(
+                aldebaran_d, matchingLibrary, dvEff_d, fp16AltImpl_d, None
+            ),
+            "test_parseLibraryLogicMatching",
+        )
 
         LibraryIO.parseLibraryLogicData(
-            createLibraryLogicDict(aldebaran_d, matchingLibrary, dvEff_d, fp16AltImpl_d, fp16AltImplRound_d),
-            "test_parseLibraryLogicMatching")
+            createLibraryLogicDict(
+                aldebaran_d, matchingLibrary, dvEff_d, fp16AltImpl_d, fp16AltImplRound_d
+            ),
+            "test_parseLibraryLogicMatching",
+        )
         assert True
 
 
 def test_parseLibraryLogicDecisionTree(useGlobalParameters):
     with useGlobalParameters():
         LibraryIO.parseLibraryLogicData(
-            createLibraryLogicDict(vega20_d, treeLibrary, dvEff_d, fp16AltImplFalse_d, None),
-            "test_parseLibraryLogicDecisionTree")
+            createLibraryLogicDict(
+                vega20_d, treeLibrary, dvEff_d, fp16AltImplFalse_d, None
+            ),
+            "test_parseLibraryLogicDecisionTree",
+        )
 
         LibraryIO.parseLibraryLogicData(
             createLibraryLogicDict(aldebaran_d, treeLibrary, cuEff_d, None, None),
-            "test_parseLibraryLogicDecisionTree")
+            "test_parseLibraryLogicDecisionTree",
+        )
 
         LibraryIO.parseLibraryLogicData(
-            createLibraryLogicDict(aldebaran_d, treeLibrary, dvEff_d, fp16AltImpl_d, None),
-            "test_parseLibraryLogicDecisionTree")
+            createLibraryLogicDict(
+                aldebaran_d, treeLibrary, dvEff_d, fp16AltImpl_d, None
+            ),
+            "test_parseLibraryLogicDecisionTree",
+        )
 
         LibraryIO.parseLibraryLogicData(
-            createLibraryLogicDict(aldebaran_d, treeLibrary, dvEff_d, fp16AltImpl_d, fp16AltImplRound_d),
-            "test_parseLibraryLogicDecisionTree")
+            createLibraryLogicDict(
+                aldebaran_d, treeLibrary, dvEff_d, fp16AltImpl_d, fp16AltImplRound_d
+            ),
+            "test_parseLibraryLogicDecisionTree",
+        )
         assert True

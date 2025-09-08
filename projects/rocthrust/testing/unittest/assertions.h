@@ -484,8 +484,7 @@ void assert_equal(
       f << "  (output limit reached)\n";
     }
     f << "--------------------------------\n";
-    f << "Sequences differ at " << mismatches << " of " << min_length << " positions"
-      << "\n";
+    f << "Sequences differ at " << mismatches << " of " << min_length << " positions" << "\n";
   }
   else if (length1 != length2)
   {
@@ -768,22 +767,20 @@ void check_assert_throws(
     }
     case threw_wrong_type: {
       unittest::UnitTestFailure f;
-      f << "[" << file_name << ":" << line_number << "] did not throw an "
-        << "object of type " << exception_name;
+      f << "[" << file_name << ":" << line_number << "] did not throw an " << "object of type " << exception_name;
       throw f;
     }
     case threw_right_type_but_wrong_value: {
       unittest::UnitTestFailure f;
-      f << "[" << file_name << ":" << line_number << "] threw an object of the "
-        << "correct type (" << exception_name << ") but wrong value";
+      f << "[" << file_name << ":" << line_number << "] threw an object of the " << "correct type (" << exception_name
+        << ") but wrong value";
       throw f;
     }
     case threw_right_type:
       break;
     default: {
       unittest::UnitTestFailure f;
-      f << "[" << file_name << ":" << line_number << "] encountered an "
-        << "unknown error";
+      f << "[" << file_name << ":" << line_number << "] encountered an " << "unknown error";
       throw f;
     }
   }

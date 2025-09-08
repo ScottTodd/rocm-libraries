@@ -34,7 +34,6 @@
 
 #include <fcntl.h>
 
-
 /* ============================================================================================ */
 // Return path of this executable
 std::string hipsparselt_exepath()

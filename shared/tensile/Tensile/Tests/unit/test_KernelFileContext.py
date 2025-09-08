@@ -85,7 +85,9 @@ def test_openKernelFiles_withAll(mock_openFile, mock_pathResolve):
 
 
 def test_openKernelFiles_withNumMergedFiles(mock_openFile, mock_pathResolve):
-    x, y = _openKernelFiles(2, False, False, Path("/some/path"), ["kernel1.cpp", "kernel2.cpp"])
+    x, y = _openKernelFiles(
+        2, False, False, Path("/some/path"), ["kernel1.cpp", "kernel2.cpp"]
+    )
     assert mock_openFile[0].call_args_list == [
         call("kernel1.cpp", "a", encoding="utf-8"),
         call("kernel1.h", "a", encoding="utf-8"),
@@ -103,20 +105,32 @@ def test_closeKerneFiles(mock_openFile, mock_pathResolve):
     assert mock_file.close.call_count == 2
 
 
-def test_KernelFileContextManager_withOnlyLazyLoadingEnabled(mock_openFile, mock_pathResolve):
-    with pytest.raises(ValueError, match="If lazy loading is enabled, merge files must be as well"):
+def test_KernelFileContextManager_withOnlyLazyLoadingEnabled(
+    mock_openFile, mock_pathResolve
+):
+    with pytest.raises(
+        ValueError, match="If lazy loading is enabled, merge files must be as well"
+    ):
         with KernelFileContextManager(True, False, 1, Path("/some/path"), []):
             pass
 
 
-def test_KernelFileContextManager_withOnlyMergeFilesEnabled(mock_openFile, mock_pathResolve):
+def test_KernelFileContextManager_withOnlyMergeFilesEnabled(
+    mock_openFile, mock_pathResolve
+):
     with KernelFileContextManager(False, True, 1, Path("/some/path"), []):
         mock_openFile[0].assert_called()
 
 
-def test_KernelFileContextManager_withNoMergeFilesAndNum(mock_openFile, mock_pathResolve):
-    with KernelFileContextManager(False, False, 3, Path("/some/path"), ["a_kernel.cpp"]) as (x, y):
-        assert x is None and y is None, "We expect nothing to be opened in this situation"
+def test_KernelFileContextManager_withNoMergeFilesAndNum(
+    mock_openFile, mock_pathResolve
+):
+    with KernelFileContextManager(
+        False, False, 3, Path("/some/path"), ["a_kernel.cpp"]
+    ) as (x, y):
+        assert (
+            x is None and y is None
+        ), "We expect nothing to be opened in this situation"
 
 
 def test_KernelFileContextManager_withNoOutputPath(mock_openFile, mock_pathResolve):

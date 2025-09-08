@@ -54,10 +54,13 @@ __global__ void compress_kernel(const Ti*      in,
                                 int64_t        c_sizes,
                                 int64_t        m_sizes)
 {
-    constexpr int    metadata_tiles_y = 8;
-    constexpr int    tiles_y          = 4;
+    constexpr int metadata_tiles_y = 8;
+    constexpr int tiles_y          = 4;
 
-    using c_type = std::conditional_t<std::is_same<__hip_fp8_e4m3, Ti>::value || std::is_same<__hip_fp8_e5m2, Ti>::value, float, Ti>;
+    using c_type        = std::conditional_t<std::is_same<__hip_fp8_e4m3, Ti>::value
+                                                 || std::is_same<__hip_fp8_e5m2, Ti>::value,
+                                             float,
+                                             Ti>;
     const c_type ZERO_C = static_cast<c_type>(0.0f);
     const Ti     ZERO   = static_cast<Ti>(0.0f);
 

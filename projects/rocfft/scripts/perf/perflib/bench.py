@@ -27,136 +27,138 @@ import tempfile
 import time
 
 
-def run(bench,
-        length,
-        direction=-1,
-        real=False,
-        inplace=True,
-        precision='single',
-        nbatch=1,
-        ntrial=1,
-        mp_exec='/usr/bin/mpirun',
-        mp_size=1,
-        ingrid=None,
-        outgrid=None,
-        ngpus=1,
-        device=None,
-        libraries=None,
-        verbose=False,
-        timeout=300,
-        sequence=None,
-        skiphip=True,
-        scalability=False):
+def run(
+    bench,
+    length,
+    direction=-1,
+    real=False,
+    inplace=True,
+    precision="single",
+    nbatch=1,
+    ntrial=1,
+    mp_exec="/usr/bin/mpirun",
+    mp_size=1,
+    ingrid=None,
+    outgrid=None,
+    ngpus=1,
+    device=None,
+    libraries=None,
+    verbose=False,
+    timeout=300,
+    sequence=None,
+    skiphip=True,
+    scalability=False,
+):
     """Run rocFFT bench and return execution times."""
     cmd = [pathlib.Path(bench).resolve()]
 
     if libraries is not None:
         for library in libraries:
-            cmd += ['--lib', pathlib.Path(library).resolve()]
+            cmd += ["--lib", pathlib.Path(library).resolve()]
         if len(libraries) > 1:
             # only use different randomizations if using dyna-bench
             if sequence is not None:
-                cmd += ['--sequence', str(sequence)]
+                cmd += ["--sequence", str(sequence)]
 
     if mp_size == 1:
         if skiphip:
-            cmd += ['--ignore_runtime_failures']
+            cmd += ["--ignore_runtime_failures"]
         else:
-            cmd += ['--no-ignore_runtime_failures']
+            cmd += ["--no-ignore_runtime_failures"]
 
     if isinstance(length, int):
-        cmd += ['--length', length]
+        cmd += ["--length", length]
     else:
-        cmd += ['--length'] + list(length)
+        cmd += ["--length"] + list(length)
 
     if len(ingrid) > 0:
         if isinstance(ingrid, int):
-            if (mp_size == 1):
-                cmd += ['--ingrid', ingrid]
+            if mp_size == 1:
+                cmd += ["--ingrid", ingrid]
             else:
-                cmd += ['--imgrid', ingrid]
+                cmd += ["--imgrid", ingrid]
         else:
-            if (mp_size == 1):
-                cmd += ['--ingrid'] + list(ingrid)
+            if mp_size == 1:
+                cmd += ["--ingrid"] + list(ingrid)
             else:
-                cmd += ['--imgrid'] + list(ingrid)
+                cmd += ["--imgrid"] + list(ingrid)
 
     if len(outgrid) > 0:
         if isinstance(outgrid, int):
-            if (mp_size == 1):
-                cmd += ['--outgrid', outgrid]
+            if mp_size == 1:
+                cmd += ["--outgrid", outgrid]
             else:
-                cmd += ['--omgrid', outgrid]
+                cmd += ["--omgrid", outgrid]
         else:
-            if (mp_size == 1):
-                cmd += ['--outgrid'] + list(outgrid)
+            if mp_size == 1:
+                cmd += ["--outgrid"] + list(outgrid)
             else:
-                cmd += ['--omgrid'] + list(outgrid)
+                cmd += ["--omgrid"] + list(outgrid)
 
-    if (ngpus > 1):
-        cmd += ['--ngpus', ngpus]
+    if ngpus > 1:
+        cmd += ["--ngpus", ngpus]
 
-    cmd += ['-N', ntrial]
-    cmd += ['-b', nbatch]
+    cmd += ["-N", ntrial]
+    cmd += ["-b", nbatch]
     if not inplace:
-        cmd += ['-o']
-    if precision == 'half':
-        cmd += ['--precision', 'half']
-    elif precision == 'single':
-        cmd += ['--precision', 'single']
-    elif precision == 'double':
-        cmd += ['--precision', 'double']
+        cmd += ["-o"]
+    if precision == "half":
+        cmd += ["--precision", "half"]
+    elif precision == "single":
+        cmd += ["--precision", "single"]
+    elif precision == "double":
+        cmd += ["--precision", "double"]
     if mp_size == 1 and (device is not None):
-        cmd += ['--device', device]
+        cmd += ["--device", device]
 
     # default to slab decomposition for scalability experiments,
     # which grants the least number of transpositions
     # TODO: extend to further decompositions
-    if (scalability):
-        if (ngpus > 1):
-            if (len(length) == 3):
-                cmd += ['--ingrid'] + list([1, 1, ngpus])
-                cmd += ['--outgrid'] + list([ngpus, 1, 1])
-            elif (len(length) == 2):
-                cmd += ['--ingrid'] + list([1, ngpus])
-                cmd += ['--outgrid'] + list([ngpus, 1])
+    if scalability:
+        if ngpus > 1:
+            if len(length) == 3:
+                cmd += ["--ingrid"] + list([1, 1, ngpus])
+                cmd += ["--outgrid"] + list([ngpus, 1, 1])
+            elif len(length) == 2:
+                cmd += ["--ingrid"] + list([1, ngpus])
+                cmd += ["--outgrid"] + list([ngpus, 1])
 
-        if (mp_size > 1):
-            if (len(length) == 3):
-                cmd += ['--imgrid'] + list([1, 1, mp_size])
-                cmd += ['--omgrid'] + list([mp_size, 1, 1])
-            elif (len(length) == 2):
-                cmd += ['--imgrid'] + list([1, mp_size])
-                cmd += ['--omgrid'] + list([mp_size, 1])
+        if mp_size > 1:
+            if len(length) == 3:
+                cmd += ["--imgrid"] + list([1, 1, mp_size])
+                cmd += ["--omgrid"] + list([mp_size, 1, 1])
+            elif len(length) == 2:
+                cmd += ["--imgrid"] + list([1, mp_size])
+                cmd += ["--omgrid"] + list([mp_size, 1])
 
     itype, otype = 0, 0
     if real:
         if direction == -1:
-            cmd += ['-t', 2, '--itype', 2, '--otype', 3]
+            cmd += ["-t", 2, "--itype", 2, "--otype", 3]
         if direction == 1:
-            cmd += ['-t', 3, '--itype', 3, '--otype', 2]
+            cmd += ["-t", 3, "--itype", 3, "--otype", 2]
     else:
         if direction == -1:
-            cmd += ['-t', 0]
+            cmd += ["-t", 0]
         if direction == 1:
-            cmd += ['-t', 1]
+            cmd += ["-t", 1]
 
     if verbose:
-        cmd += ['--verbose']
+        cmd += ["--verbose"]
 
-    if (mp_size > 1):
+    if mp_size > 1:
         cmd.insert(0, str(mp_size))
         cmd.insert(
             0, "-n"
         )  # flag to set the number of MPI processes for mpirun or equivalent
         cmd.insert(0, mp_exec)
-        cmd += ['--benchmark']
+        cmd += ["--benchmark"]
 
     cmd = [str(x) for x in cmd]
 
-    logging.info('running: ' + ' '.join(cmd))
+    logging.info("running: " + " ".join(cmd))
     if verbose:
-        print('running: ' + ' '.join(cmd))
+        print("running: " + " ".join(cmd))
     fout = tempfile.TemporaryFile(mode="w+")
     ferr = tempfile.TemporaryFile(mode="w+")
 
@@ -189,18 +191,20 @@ def run(bench,
 
     for line in cout.splitlines():
         if line.startswith(tokentoken):
-            token = line[len(tokentoken):]
+            token = line[len(tokentoken) :]
 
     for line in cerr.splitlines():
         if line.startswith(soltokenTag):
-            soltoken = line[len(soltokenTag):]
+            soltoken = line[len(soltokenTag) :]
         elif line.startswith(matchTag):
-            match = line[len(matchTag):]
+            match = line[len(matchTag) :]
 
     if proc.returncode == 0:
         for m in re.finditer(
-                r'(?:Max rank time|Execution gpu time):\s*([0-9. ]+)\s*ms',
-                cout, re.MULTILINE):
+            r"(?:Max rank time|Execution gpu time):\s*([0-9. ]+)\s*ms",
+            cout,
+            re.MULTILINE,
+        ):
             raw = m.group(1)
             t = [float(x) for x in raw.split() if x.strip()]
             times.append(t)
@@ -208,18 +212,18 @@ def run(bench,
         logging.info("PROCESS FAILED with return code " + str(proc.returncode))
 
     if verbose:
-        print('finished: ' + ' '.join(cmd))
+        print("finished: " + " ".join(cmd))
 
     if proc.returncode == 0:
         if "SKIPPED" in cout:
-            print('s', end='', flush=True)
+            print("s", end="", flush=True)
         elif "HIP_V_THROWERROR" in cout:
-            print('h', end='', flush=True)
+            print("h", end="", flush=True)
             # TODO: print hip runtime failed cases?
         else:
-            print('.', end='', flush=True)
+            print(".", end="", flush=True)
     else:
-        print('x', end='', flush=True)
+        print("x", end="", flush=True)
 
     success = proc.returncode == 0
 

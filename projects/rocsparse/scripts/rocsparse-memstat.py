@@ -28,57 +28,62 @@ import argparse
 import json
 
 ##
-def export_csv(obasename, delim, legend, results, verbose = False,debug = False):
+def export_csv(obasename, delim, legend, results, verbose=False, debug=False):
     if verbose:
-        print('//rocsparse-memstat  - output file : \'' + obasename + '\'')
+        print("//rocsparse-memstat  - output file : '" + obasename + "'")
     out = open(obasename, "w+")
     for i in range(len(results)):
         for j in range(len(legend)):
             field = results[i][legend[j]]
-            if (j>0):
-                if (legend[j]=="tag"):
-                    out.write(delim+"\""+field+"\"")
+            if j > 0:
+                if legend[j] == "tag":
+                    out.write(delim + '"' + field + '"')
                 else:
-                    out.write(delim+field)
+                    out.write(delim + field)
             else:
-                if (legend[j]=="tag"):
-                    out.write("\""+field+"\"")
+                if legend[j] == "tag":
+                    out.write('"' + field + '"')
                 else:
                     out.write(field)
-        out.write('\n')
+        out.write("\n")
     out.close()
+
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-w', '--workingdir',     required=False, default = './')
-    parser.add_argument('-o', '--obasename',    required=False, default = 'a.csv')
-    parser.add_argument('-v', '--verbose',         required=False, default = False, action = "store_true")
-    parser.add_argument('-d', '--debug',         required=False, default = False, action = "store_true")
+    parser.add_argument("-w", "--workingdir", required=False, default="./")
+    parser.add_argument("-o", "--obasename", required=False, default="a.csv")
+    parser.add_argument(
+        "-v", "--verbose", required=False, default=False, action="store_true"
+    )
+    parser.add_argument(
+        "-d", "--debug", required=False, default=False, action="store_true"
+    )
     user_args, unknown_args = parser.parse_known_args()
-    verbose=user_args.verbose
-    debug=user_args.debug
+    verbose = user_args.verbose
+    debug = user_args.debug
     obasename = user_args.obasename
     if len(unknown_args) > 1:
-        print('expecting only one input file.')
-    with open(unknown_args[0],"r") as f:
-        case=json.load(f)
+        print("expecting only one input file.")
+    with open(unknown_args[0], "r") as f:
+        case = json.load(f)
 
-    results = case['results']
-    legend =  case['legend']
-    leaks=case['leaks']
-    if (len(leaks)==0):
-        print('//rocsparse-memstat state: clean.')
+    results = case["results"]
+    legend = case["legend"]
+    leaks = case["leaks"]
+    if len(leaks) == 0:
+        print("//rocsparse-memstat state: clean.")
     else:
-        print('//rocsparse-memstat state: unclean, leaking:')
+        print("//rocsparse-memstat state: unclean, leaking:")
         for j in range(len(leaks)):
-            print(f"mode: {leaks[j]['mode']}",end="")
-            print(f", size: {leaks[j]['nbytes']} bytes",end="")
+            print(f"mode: {leaks[j]['mode']}", end="")
+            print(f", size: {leaks[j]['nbytes']} bytes", end="")
             print(f", location: {leaks[j]['tag']}")
     if verbose:
-        print('//rocsparse-memstat  - input file :  \'' + unknown_args[0] + '\'')
+        print("//rocsparse-memstat  - input file :  '" + unknown_args[0] + "'")
 
-    export_csv( obasename,', ', legend, results, verbose,debug)
+    export_csv(obasename, ", ", legend, results, verbose, debug)
+
 
 if __name__ == "__main__":
     main()
-

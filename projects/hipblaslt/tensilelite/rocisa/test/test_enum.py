@@ -22,6 +22,7 @@
 
 from rocisa.enum import SignatureValueKind, InstType
 
+
 def test_enum():
     assert SignatureValueKind.SIG_VALUE == SignatureValueKind.SIG_VALUE
     assert InstType.INST_BF8_F8 == InstType.INST_BF8_F8

@@ -22,84 +22,95 @@
 #
 ################################################################################
 
+
 def getGlcBitName(memoryModifierFormat):
-  if memoryModifierFormat == "GLC":
-    return "glc"
-  return "sc0"
+    if memoryModifierFormat == "GLC":
+        return "glc"
+    return "sc0"
+
 
 def getSlcBitName(memoryModifierFormat):
-  if memoryModifierFormat == "GLC":
-    return "slc"
-  return "sc1"
+    if memoryModifierFormat == "GLC":
+        return "slc"
+    return "sc1"
+
 
 ################################################################################
 # Memory Instruction
 ################################################################################
 class MemoryInstruction:
-  def __init__(self, name, numAddresses, numOffsets, \
-      offsetMultiplier, blockWidth, formatting, memoryModifierFormat, forceSC1=False):
-    self.name = name
-    self.formatting = formatting
-    self.numAddresses = numAddresses
-    self.numOffsets = numOffsets
-    self.offsetMultiplier = offsetMultiplier
-    self.blockWidth = blockWidth
-    self.memoryModifierFormat = memoryModifierFormat
-    self.numBlocks = 2 if self.numAddresses > 1 or self.numOffsets > 1 else 1
-    self.totalWidth = self.blockWidth * self.numBlocks
-    self.forceSC1 = forceSC1
-    #in Quad-Cycle
-    if (name == "_ds_load_b128"):
-      self.IssueLatency = 2
-    elif (name == "_ds_store_b128"):
-      self.IssueLatency = 5
-    elif (name == "_ds_store2_b64"):
-      self.IssueLatency = 3
-    elif (name == "_ds_store_b64"):
-      self.IssueLatency = 3
-    elif (name == "_ds_store2_b32"):
-      self.IssueLatency = 3
-    elif (name == "_ds_store_b32"):
-      self.IssueLatency = 2
-    elif (name == "_ds_store_u16") :
-      self.IssueLatency = 2
-    else:
-      self.IssueLatency = 1
-    self.endLine = "\n"
+    def __init__(
+        self,
+        name,
+        numAddresses,
+        numOffsets,
+        offsetMultiplier,
+        blockWidth,
+        formatting,
+        memoryModifierFormat,
+        forceSC1=False,
+    ):
+        self.name = name
+        self.formatting = formatting
+        self.numAddresses = numAddresses
+        self.numOffsets = numOffsets
+        self.offsetMultiplier = offsetMultiplier
+        self.blockWidth = blockWidth
+        self.memoryModifierFormat = memoryModifierFormat
+        self.numBlocks = 2 if self.numAddresses > 1 or self.numOffsets > 1 else 1
+        self.totalWidth = self.blockWidth * self.numBlocks
+        self.forceSC1 = forceSC1
+        # in Quad-Cycle
+        if name == "_ds_load_b128":
+            self.IssueLatency = 2
+        elif name == "_ds_store_b128":
+            self.IssueLatency = 5
+        elif name == "_ds_store2_b64":
+            self.IssueLatency = 3
+        elif name == "_ds_store_b64":
+            self.IssueLatency = 3
+        elif name == "_ds_store2_b32":
+            self.IssueLatency = 3
+        elif name == "_ds_store_b32":
+            self.IssueLatency = 2
+        elif name == "_ds_store_u16":
+            self.IssueLatency = 2
+        else:
+            self.IssueLatency = 1
+        self.endLine = "\n"
 
-  ########################################
+    ########################################
 
-  # write in assembly format
-  def toString(self, params, comment, nonTemporal=0, highBits=0):
-    name = self.name
-    if highBits:
-      name += "_d16_hi"
-    instStr = "%s %s" % (name, (self.formatting % params) )
-    if (nonTemporal & 1) != 0 or self.forceSC1:
-      instStr += " " + getGlcBitName(self.memoryModifierFormat)
-    if (nonTemporal & 2) != 0 or self.forceSC1:
-      instStr += " " + getSlcBitName(self.memoryModifierFormat)
-    if (nonTemporal & 4) != 0:
-      instStr += " nt"
-    line = "%-50s // %s%s" % (instStr, comment, self.endLine)
-    return line
+    # write in assembly format
+    def toString(self, params, comment, nonTemporal=0, highBits=0):
+        name = self.name
+        if highBits:
+            name += "_d16_hi"
+        instStr = "%s %s" % (name, (self.formatting % params))
+        if (nonTemporal & 1) != 0 or self.forceSC1:
+            instStr += " " + getGlcBitName(self.memoryModifierFormat)
+        if (nonTemporal & 2) != 0 or self.forceSC1:
+            instStr += " " + getSlcBitName(self.memoryModifierFormat)
+        if (nonTemporal & 4) != 0:
+            instStr += " nt"
+        line = "%-50s // %s%s" % (instStr, comment, self.endLine)
+        return line
 
-  # Like toString, but don't add a comment or newline
-  # Designed to feed into Code.Inst constructors, somewhat
-  def toCodeInst(self, params, nonTemporal=0, highBits=0):
-    name = self.name
-    if highBits:
-      name += "_d16_hi"
-    instStr = "%s %s" % (name, (self.formatting % params) )
-    if nonTemporal%2==1 or self.forceSC1:
-      instStr += " " + getGlcBitName(self.memoryModifierFormat)
-    if (nonTemporal//2)%2==1 or self.forceSC1:
-      instStr += " " + getSlcBitName(self.memoryModifierFormat)
-    if (nonTemporal//4)%2==1:
-      instStr += " nt"
-    line = "%-50s" % (instStr)
-    return line
+    # Like toString, but don't add a comment or newline
+    # Designed to feed into Code.Inst constructors, somewhat
+    def toCodeInst(self, params, nonTemporal=0, highBits=0):
+        name = self.name
+        if highBits:
+            name += "_d16_hi"
+        instStr = "%s %s" % (name, (self.formatting % params))
+        if nonTemporal % 2 == 1 or self.forceSC1:
+            instStr += " " + getGlcBitName(self.memoryModifierFormat)
+        if (nonTemporal // 2) % 2 == 1 or self.forceSC1:
+            instStr += " " + getSlcBitName(self.memoryModifierFormat)
+        if (nonTemporal // 4) % 2 == 1:
+            instStr += " nt"
+        line = "%-50s" % (instStr)
+        return line
 
-
-  def __str__(self):
-    return self.name
+    def __str__(self):
+        return self.name

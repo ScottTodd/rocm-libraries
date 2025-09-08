@@ -27,13 +27,13 @@ import subprocess
 def get_active_tests_tokens(accutest):
     """Run rocfft-test and fetch all active accuracy tests tokens"""
 
-    cmd = [pathlib.Path(accutest).resolve(), '--gtest_list_tests']
+    cmd = [pathlib.Path(accutest).resolve(), "--gtest_list_tests"]
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
 
-    sub_str_1 = b'/accuracy_test.'
-    sub_str_2 = b'DISABLED'
-    sub_str_3 = b'vs_fftw/'
-    sub_str_4 = b'#'
+    sub_str_1 = b"/accuracy_test."
+    sub_str_2 = b"DISABLED"
+    sub_str_3 = b"vs_fftw/"
+    sub_str_4 = b"#"
 
     test_tokens = set()
 
@@ -57,8 +57,7 @@ def get_active_tests_tokens(accutest):
 
     proc.stdout.close()
     ret_code = proc.wait()
-    if (ret_code != 0):
-        logging.warn(f'Unable to run accuracy tests. Return code: ' +
-                     str(ret_code))
+    if ret_code != 0:
+        logging.warn(f"Unable to run accuracy tests. Return code: " + str(ret_code))
 
     return test_tokens

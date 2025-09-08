@@ -49,13 +49,13 @@ namespace TensileLite
     void RotatingMemory::createRotatingMemory(int32_t mode, size_t rotatingSize)
     {
         // Check how many rotating units are needed
-        m_rotatingSize = rotatingSize;
+        m_rotatingSize      = rotatingSize;
         size_t maxNumRotate = 0;
-        for (auto& unit : m_rotatingInfo)
+        for(auto& unit : m_rotatingInfo)
         {
-            size_t num = std::ceil((float)rotatingSize / unit.totalSize);
+            size_t num       = std::ceil((float)rotatingSize / unit.totalSize);
             unit.rotatingNum = num;
-            maxNumRotate = std::max(maxNumRotate, num);
+            maxNumRotate     = std::max(maxNumRotate, num);
         }
 
         m_rotatingMemory.resize(maxNumRotate);
@@ -76,7 +76,7 @@ namespace TensileLite
             }
         }
 
-        size_t totalSize = 0;
+        size_t totalSize       = 0;
         size_t largestUnitSize = 0;
         if(mode == 0)
         {
@@ -108,22 +108,22 @@ namespace TensileLite
         {
             throw std::runtime_error("Unsupported mode");
         }
-        m_size = totalSize;
+        m_size            = totalSize;
         m_largestUnitSize = largestUnitSize;
 
-        void* ptr   = nullptr;
+        void* ptr = nullptr;
         static_cast<void>(hipMalloc(&ptr, totalSize));
         m_data = std::shared_ptr<void>(ptr, hipFree);
         std::cout << "Rotating memory size: " << totalSize << std::endl;
 
-        size_t limit = (mode == 1) ? m_rotatingMemory.size() : 1;
+        size_t limit  = (mode == 1) ? m_rotatingMemory.size() : 1;
         size_t offset = 0;
         for(size_t i = 0; i < limit; i++)
         {
             for(auto& rotatingUnit : m_rotatingMemory[i])
             {
-                rotatingUnit.data = std::shared_ptr<void>(
-                        m_data, (void*)((uint8_t*)m_data.get() + offset));
+                rotatingUnit.data
+                    = std::shared_ptr<void>(m_data, (void*)((uint8_t*)m_data.get() + offset));
                 offset += rotatingUnit.size;
                 if(offset > totalSize)
                 {

@@ -52,18 +52,18 @@ struct TypedMatrixTransformIO : public MatrixTransformIO
 {
     TypedMatrixTransformIO(int64_t m, int64_t n, int64_t b, hipblaslt_initialization initMethod)
     {
-        auto        hipErr = hipMalloc(&this->a, m * n * b * sizeof(DType));
-        hipErr = hipMalloc(&this->b, m * n * b * sizeof(DType));
-        hipErr = hipMalloc(&this->c, m * n * b * sizeof(DType));
+        auto hipErr = hipMalloc(&this->a, m * n * b * sizeof(DType));
+        hipErr      = hipMalloc(&this->b, m * n * b * sizeof(DType));
+        hipErr      = hipMalloc(&this->c, m * n * b * sizeof(DType));
         init(this->a, m * n * b, initMethod);
         init(this->b, m * n * b, initMethod);
     }
 
     ~TypedMatrixTransformIO() override
     {
-        auto        hipErr = hipFree(a);
-        hipErr = hipFree(b);
-        hipErr = hipFree(c);
+        auto hipErr = hipFree(a);
+        hipErr      = hipFree(b);
+        hipErr      = hipFree(c);
     }
 
     void* getBuf(size_t i) override
@@ -262,7 +262,8 @@ static int parseArguments(int                       argc,
                 {
                     const std::string initStr{argv[++i]};
 
-                    if(initStr != "rand_int" && initStr != "trig_float" && initStr != "hpl" && initStr != "special" && initStr != "zero")
+                    if(initStr != "rand_int" && initStr != "trig_float" && initStr != "hpl"
+                       && initStr != "special" && initStr != "zero")
                     {
                         std::cerr << "Invalid initialization type: " << initStr << '\n';
                         return EXIT_FAILURE;
@@ -366,9 +367,9 @@ void validation(void*    c,
     std::vector<DType> dA(m * n * batchSize);
     std::vector<DType> dB(m * n * batchSize);
     std::vector<DType> dC(m * n * batchSize);
-    auto        hipErr = hipMemcpyDtoH(dA.data(), a, m * n * batchSize * sizeof(DType));
-    hipErr = hipMemcpyDtoH(dB.data(), b, m * n * batchSize * sizeof(DType));
-    hipErr = hipMemcpyDtoH(dC.data(), c, m * n * batchSize * sizeof(DType));
+    auto               hipErr = hipMemcpyDtoH(dA.data(), a, m * n * batchSize * sizeof(DType));
+    hipErr                    = hipMemcpyDtoH(dB.data(), b, m * n * batchSize * sizeof(DType));
+    hipErr                    = hipMemcpyDtoH(dC.data(), c, m * n * batchSize * sizeof(DType));
 
     std::transform(begin(dC), end(dC), begin(hC), [](auto i) { return float(i); });
 

@@ -50,16 +50,26 @@ public:
     /// \brief Type of the represented C array.
     using c_array_t = T[Count];
 
-    ROCPRIM_HOST_DEVICE uninitialized_array()                           = default;
-    ROCPRIM_HOST_DEVICE uninitialized_array(const uninitialized_array&) = delete;
+    ROCPRIM_HOST_DEVICE
+    uninitialized_array()
+        = default;
+    ROCPRIM_HOST_DEVICE
+    uninitialized_array(const uninitialized_array&)
+        = delete;
 
     /// \brief Default move constructor.
-    ROCPRIM_HOST_DEVICE uninitialized_array(uninitialized_array&&) = default;
+    ROCPRIM_HOST_DEVICE
+    uninitialized_array(uninitialized_array&&)
+        = default;
 
-    ROCPRIM_HOST_DEVICE uninitialized_array& operator=(const uninitialized_array&) = delete;
+    ROCPRIM_HOST_DEVICE
+    uninitialized_array& operator=(const uninitialized_array&)
+        = delete;
 
     /// \brief Default move assignment.
-    ROCPRIM_HOST_DEVICE uninitialized_array& operator=(uninitialized_array&&) = default;
+    ROCPRIM_HOST_DEVICE
+    uninitialized_array& operator=(uninitialized_array&&)
+        = default;
 
     /// \brief Constructs a value in-place at the specified array index.
     /// \note This function calls the constructor of `T` with the specified arguments.
@@ -72,7 +82,9 @@ public:
     /// \param args The arguments to call the constructor with.
     /// \returns A reference to the newly constructed element.
     template<typename... Args>
-    [[maybe_unused]] ROCPRIM_HOST_DEVICE T& emplace(const unsigned int index, Args&&... args)
+    [[maybe_unused]]
+    ROCPRIM_HOST_DEVICE
+    T& emplace(const unsigned int index, Args&&... args)
     {
         T* ptr = reinterpret_cast<T*>(&storage[0]) + index;
         return *new(ptr) T(std::forward<Args>(args)...);
@@ -81,7 +93,9 @@ public:
     /// \brief Returns a reference to the underlying memory as a typed array.
     /// \note Manipulating items in the returned array reference at indices that
     /// were not previously filled by calls to `emplace` MUST be avoided.
-    [[nodiscard]] ROCPRIM_HOST_DEVICE c_array_t& get_unsafe_array()
+    [[nodiscard]]
+    ROCPRIM_HOST_DEVICE
+    c_array_t& get_unsafe_array()
     {
         return *reinterpret_cast<c_array_t*>(&storage[0]);
     }

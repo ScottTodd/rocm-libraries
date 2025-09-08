@@ -112,8 +112,7 @@ private:
 struct half_less
 {
     ROCPRIM_HOST_DEVICE
-    inline bool
-        operator()(const rocprim::half& a, const rocprim::half& b) const
+    inline bool operator()(const rocprim::half& a, const rocprim::half& b) const
     {
 #if __HIP_DEVICE_COMPILE__
         return a < b;
@@ -126,8 +125,7 @@ struct half_less
 struct half_plus
 {
     ROCPRIM_HOST_DEVICE
-    inline rocprim::half
-        operator()(const rocprim::half& a, const rocprim::half& b) const
+    inline rocprim::half operator()(const rocprim::half& a, const rocprim::half& b) const
     {
 #if __HIP_DEVICE_COMPILE__
         return a + b;
@@ -140,8 +138,7 @@ struct half_plus
 struct half_equal_to
 {
     ROCPRIM_HOST_DEVICE
-    inline bool
-        operator()(const rocprim::half& a, const rocprim::half& b) const
+    inline bool operator()(const rocprim::half& a, const rocprim::half& b) const
     {
 #if __HIP_DEVICE_COMPILE__
         return a == b;
@@ -156,10 +153,14 @@ using engine_type = std::minstd_rand;
 // generate_random_data_n() generates only part of sequence and replicates it,
 // because benchmarks usually do not need "true" random sequence.
 template<typename OutputIter, typename U, typename V, typename Generator>
-inline auto generate_random_data_n(
-    OutputIter it, size_t size, U min, V max, Generator& gen, size_t max_random_size = 1024 * 1024)
-    -> typename std::enable_if_t<rocprim::is_integral<common::it_value_t<OutputIter>>::value,
-                                 OutputIter>
+inline auto generate_random_data_n(OutputIter it,
+                                   size_t     size,
+                                   U          min,
+                                   V          max,
+                                   Generator& gen,
+                                   size_t     max_random_size = 1024 * 1024) ->
+    typename std::enable_if_t<rocprim::is_integral<common::it_value_t<OutputIter>>::value,
+                              OutputIter>
 {
     using T = common::it_value_t<OutputIter>;
 
@@ -225,8 +226,8 @@ struct is_comparable
 private:
     // A dummy template function that attempts to compare two objects of types T and U
     template<typename V, typename W>
-    static auto test(V&& v, W&& w)
-        -> decltype(std::declval<V>() < std::declval<W>(), std::true_type{});
+    static auto test(V&& v, W&& w) -> decltype(std::declval<V>() < std::declval<W>(),
+                                               std::true_type{});
 
     // Fallback if the above template function is not valid
     template<typename, typename>
@@ -256,8 +257,7 @@ struct custom_type_decomposer
     using U = typename CustomType::second_type;
 
     __host__ __device__
-    ::rocprim::tuple<T&, U&>
-        operator()(CustomType& key) const
+    ::rocprim::tuple<T&, U&> operator()(CustomType& key) const
     {
         return ::rocprim::tuple<T&, U&>{key.x, key.y};
     }

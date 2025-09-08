@@ -109,7 +109,7 @@ namespace TensileLite
 #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
             q[0] = v.data;
 #else
-            q[1]      = v.data;
+            q[1] = v.data;
 #endif
             return fp32;
         }

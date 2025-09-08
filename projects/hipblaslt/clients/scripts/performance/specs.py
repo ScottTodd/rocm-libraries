@@ -160,7 +160,6 @@ def get_device_info() -> str:
     return architecture_name, internal_product_name
 
 
-
 def get_sbios_info() -> str:
 
     """
@@ -170,12 +169,14 @@ def get_sbios_info() -> str:
 
     """
 
-    sbios_info = 'None'
+    sbios_info = "None"
     try:
-        sbios_info = Path('/sys/class/dmi/id/bios_vendor').read_text().strip() + Path(
-        '/sys/class/dmi/id/bios_version').read_text().strip()
+        sbios_info = (
+            Path("/sys/class/dmi/id/bios_vendor").read_text().strip()
+            + Path("/sys/class/dmi/id/bios_version").read_text().strip()
+        )
     except Exception:
-        sbios_info = 'None'
+        sbios_info = "None"
     return sbios_info
 
 

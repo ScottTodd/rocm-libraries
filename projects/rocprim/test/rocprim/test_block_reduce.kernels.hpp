@@ -38,18 +38,12 @@
 #include <iostream>
 #include <vector>
 
-template<
-    unsigned int BlockSize,
-    rocprim::block_reduce_algorithm Algorithm,
-    class T,
-    class BinaryOp
->
-__global__
-__launch_bounds__(BlockSize)
+template<unsigned int BlockSize, rocprim::block_reduce_algorithm Algorithm, class T, class BinaryOp>
+__global__ __launch_bounds__(BlockSize)
 void reduce_kernel(T* device_output, T* device_output_reductions)
 {
-    const unsigned int index = (blockIdx.x * BlockSize) + threadIdx.x;
-    T value = device_output[index];
+    const unsigned int                             index = (blockIdx.x * BlockSize) + threadIdx.x;
+    T                                              value = device_output[index];
     rocprim::block_reduce<T, BlockSize, Algorithm> breduce;
     breduce.reduce(value, value, BinaryOp());
     if(threadIdx.x == 0)
@@ -58,21 +52,16 @@ void reduce_kernel(T* device_output, T* device_output_reductions)
     }
 }
 
-template <
-    class T,
-    unsigned int BlockSize,
-    rocprim::block_reduce_algorithm Algorithm,
-    class BinaryOp
->
+template<class T, unsigned int BlockSize, rocprim::block_reduce_algorithm Algorithm, class BinaryOp>
 struct static_run_algo
 {
     static void run(std::vector<T>& output,
                     std::vector<T>& output_reductions,
                     std::vector<T>& expected_reductions,
-                    T* device_output,
-                    T* device_output_reductions,
-                    size_t grid_size,
-                    bool check_equal)
+                    T*              device_output,
+                    T*              device_output_reductions,
+                    size_t          grid_size,
+                    bool            check_equal)
     {
         float precision = 0;
         if(!check_equal)
@@ -93,30 +82,26 @@ struct static_run_algo
             }
         }
 
-        HIP_CHECK(
-            hipMemcpy(
-                device_output, output.data(),
-                output.size() * sizeof(T),
-                hipMemcpyHostToDevice
-            )
-        );
+        HIP_CHECK(hipMemcpy(device_output,
+                            output.data(),
+                            output.size() * sizeof(T),
+                            hipMemcpyHostToDevice));
 
         // Running kernel
-        hipLaunchKernelGGL(
-            HIP_KERNEL_NAME(reduce_kernel<BlockSize, Algorithm, T, BinaryOp>),
-            dim3(grid_size), dim3(BlockSize), 0, 0,
-            device_output, device_output_reductions
-        );
+        hipLaunchKernelGGL(HIP_KERNEL_NAME(reduce_kernel<BlockSize, Algorithm, T, BinaryOp>),
+                           dim3(grid_size),
+                           dim3(BlockSize),
+                           0,
+                           0,
+                           device_output,
+                           device_output_reductions);
         HIP_CHECK(hipGetLastError());
 
         // Reading results back
-        HIP_CHECK(
-            hipMemcpy(
-                output_reductions.data(), device_output_reductions,
-                output_reductions.size() * sizeof(T),
-                hipMemcpyDeviceToHost
-            )
-        );
+        HIP_CHECK(hipMemcpy(output_reductions.data(),
+                            device_output_reductions,
+                            output_reductions.size() * sizeof(T),
+                            hipMemcpyDeviceToHost));
 
         // Verifying results
         if(check_equal)
@@ -130,18 +115,14 @@ struct static_run_algo
     }
 };
 
-template<
-    unsigned int BlockSize,
-    rocprim::block_reduce_algorithm Algorithm,
-    class T,
-    class BinaryOp
->
-__global__
-__launch_bounds__(BlockSize)
-void reduce_valid_kernel(T* device_output, T* device_output_reductions, const unsigned int valid_items)
+template<unsigned int BlockSize, rocprim::block_reduce_algorithm Algorithm, class T, class BinaryOp>
+__global__ __launch_bounds__(BlockSize)
+void reduce_valid_kernel(T*                 device_output,
+                         T*                 device_output_reductions,
+                         const unsigned int valid_items)
 {
-    const unsigned int index = (blockIdx.x * BlockSize) + threadIdx.x;
-    T value = device_output[index];
+    const unsigned int                             index = (blockIdx.x * BlockSize) + threadIdx.x;
+    T                                              value = device_output[index];
     rocprim::block_reduce<T, BlockSize, Algorithm> breduce;
     breduce.reduce(value, value, valid_items, BinaryOp());
     if(threadIdx.x == 0)
@@ -150,46 +131,38 @@ void reduce_valid_kernel(T* device_output, T* device_output_reductions, const un
     }
 }
 
-template <
-    class T,
-    unsigned int BlockSize,
-    rocprim::block_reduce_algorithm Algorithm,
-    class BinaryOp
->
+template<class T, unsigned int BlockSize, rocprim::block_reduce_algorithm Algorithm, class BinaryOp>
 struct static_run_valid
 {
-    static void run(std::vector<T>& output,
-                    std::vector<T>& output_reductions,
+    static void run(std::vector<T>&       output,
+                    std::vector<T>&       output_reductions,
                     const std::vector<T>& expected_reductions,
-                    T* device_output,
-                    T* device_output_reductions,
-                    const unsigned int valid_items,
-                    size_t grid_size)
+                    T*                    device_output,
+                    T*                    device_output_reductions,
+                    const unsigned int    valid_items,
+                    size_t                grid_size)
     {
-        HIP_CHECK(
-            hipMemcpy(
-                device_output, output.data(),
-                output.size() * sizeof(T),
-                hipMemcpyHostToDevice
-            )
-        );
+        HIP_CHECK(hipMemcpy(device_output,
+                            output.data(),
+                            output.size() * sizeof(T),
+                            hipMemcpyHostToDevice));
 
         // Running kernel
-        hipLaunchKernelGGL(
-            HIP_KERNEL_NAME(reduce_valid_kernel<BlockSize, Algorithm, T, BinaryOp>),
-            dim3(grid_size), dim3(BlockSize), 0, 0,
-            device_output, device_output_reductions, valid_items
-        );
+        hipLaunchKernelGGL(HIP_KERNEL_NAME(reduce_valid_kernel<BlockSize, Algorithm, T, BinaryOp>),
+                           dim3(grid_size),
+                           dim3(BlockSize),
+                           0,
+                           0,
+                           device_output,
+                           device_output_reductions,
+                           valid_items);
         HIP_CHECK(hipGetLastError());
 
         // Reading results back
-        HIP_CHECK(
-            hipMemcpy(
-                output_reductions.data(), device_output_reductions,
-                output_reductions.size() * sizeof(T),
-                hipMemcpyDeviceToHost
-            )
-        );
+        HIP_CHECK(hipMemcpy(output_reductions.data(),
+                            device_output_reductions,
+                            output_reductions.size() * sizeof(T),
+                            hipMemcpyDeviceToHost));
 
         // Verifying results
         test_utils::assert_near(output_reductions,
@@ -198,15 +171,12 @@ struct static_run_valid
     }
 };
 
-template<
-    unsigned int BlockSize,
-    unsigned int ItemsPerThread,
-    rocprim::block_reduce_algorithm Algorithm,
-    class T,
-    class BinaryOp
->
-__global__
-__launch_bounds__(BlockSize)
+template<unsigned int                    BlockSize,
+         unsigned int                    ItemsPerThread,
+         rocprim::block_reduce_algorithm Algorithm,
+         class T,
+         class BinaryOp>
+__global__ __launch_bounds__(BlockSize)
 void reduce_array_kernel(T* device_output, T* device_output_reductions)
 {
     const unsigned int index = ((blockIdx.x * BlockSize) + threadIdx.x) * ItemsPerThread;
@@ -218,7 +188,7 @@ void reduce_array_kernel(T* device_output, T* device_output_reductions)
     }
 
     rocprim::block_reduce<T, BlockSize, Algorithm> breduce;
-    T reduction;
+    T                                              reduction;
     breduce.reduce(in_out, reduction, BinaryOp());
 
     if(threadIdx.x == 0)
@@ -228,18 +198,17 @@ void reduce_array_kernel(T* device_output, T* device_output_reductions)
 }
 
 // Test for reduce
-template<
-    class T,
-    unsigned int BlockSize = 256U,
-    unsigned int ItemsPerThread = 1U,
-    rocprim::block_reduce_algorithm Algorithm = rocprim::block_reduce_algorithm::using_warp_reduce
->
+template<class T,
+         unsigned int                    BlockSize      = 256U,
+         unsigned int                    ItemsPerThread = 1U,
+         rocprim::block_reduce_algorithm Algorithm
+         = rocprim::block_reduce_algorithm::using_warp_reduce>
 void test_block_reduce_input_arrays()
 {
     using binary_op_type = rocprim::maximum<T>;
 
-    static constexpr auto algorithm = Algorithm;
-    static constexpr size_t block_size = BlockSize;
+    static constexpr auto   algorithm        = Algorithm;
+    static constexpr size_t block_size       = BlockSize;
     static constexpr size_t items_per_thread = ItemsPerThread;
 
     // Given block size not supported
@@ -249,8 +218,8 @@ void test_block_reduce_input_arrays()
     }
 
     const size_t items_per_block = block_size * items_per_thread;
-    const size_t size = items_per_block * 19;
-    const size_t grid_size = size / items_per_block;
+    const size_t size            = items_per_block * 19;
+    const size_t grid_size       = size / items_per_block;
 
     SCOPED_TRACE(testing::Message() << "with items_per_block = " << items_per_block);
     SCOPED_TRACE(testing::Message() << "with size = " << size);
@@ -258,7 +227,8 @@ void test_block_reduce_input_arrays()
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
@@ -276,7 +246,7 @@ void test_block_reduce_input_arrays()
             for(size_t j = 0; j < items_per_block; j++)
             {
                 auto idx = i * items_per_block + j;
-                value = binary_op(value, output[idx]);
+                value    = binary_op(value, output[idx]);
             }
             expected_reductions[i] = value;
         }
@@ -303,17 +273,15 @@ void test_block_reduce_input_arrays()
         // Verifying results
         ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(output_reductions, expected_reductions));
     }
-
 }
 
 // Static for-loop
-template <
-    unsigned int First,
-    unsigned int Last,
-    class T,
-    unsigned int BlockSize = 256U,
-    rocprim::block_reduce_algorithm Algorithm = rocprim::block_reduce_algorithm::using_warp_reduce
->
+template<unsigned int First,
+         unsigned int Last,
+         class T,
+         unsigned int                    BlockSize = 256U,
+         rocprim::block_reduce_algorithm Algorithm
+         = rocprim::block_reduce_algorithm::using_warp_reduce>
 struct static_for_input_array
 {
     static void run()
@@ -326,17 +294,10 @@ struct static_for_input_array
     }
 };
 
-template <
-    unsigned int N,
-    class T,
-    unsigned int BlockSize,
-    rocprim::block_reduce_algorithm Algorithm
->
+template<unsigned int N, class T, unsigned int BlockSize, rocprim::block_reduce_algorithm Algorithm>
 struct static_for_input_array<N, N, T, BlockSize, Algorithm>
 {
-    static void run()
-    {
-    }
+    static void run() {}
 };
 
 #endif // TEST_BLOCK_REDUCE_KERNELS_HPP_

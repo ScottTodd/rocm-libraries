@@ -104,8 +104,8 @@ template <>
 inline constexpr double sum_error_tolerance_for_gfx11<float, hipblasBfloat16, float> = 1 / 10.0;
 
 template <>
-inline constexpr double
-    sum_error_tolerance_for_gfx11<float, hipblasBfloat16, hipblasBfloat16> = 1 / 10.0;
+inline constexpr double sum_error_tolerance_for_gfx11<float, hipblasBfloat16, hipblasBfloat16>
+    = 1 / 10.0;
 
 template <>
 inline constexpr double sum_error_tolerance_for_gfx11<float, hipblasHalf, float> = 1 / 100.0;
@@ -114,17 +114,17 @@ template <>
 inline constexpr double sum_error_tolerance_for_gfx11<float, hipblasHalf, hipblasHalf> = 1 / 100.0;
 
 template <>
+inline constexpr double sum_error_tolerance_for_gfx11<hipblasHalf, hipblasHalf, hipblasHalf>
+    = 1 / 100.0;
+
+template <>
 inline constexpr double
-    sum_error_tolerance_for_gfx11<hipblasHalf, hipblasHalf, hipblasHalf> = 1 / 100.0;
+    sum_error_tolerance_for_gfx11<std::complex<float>, std::complex<float>, std::complex<float>>
+    = 1 / 10000.0;
 
 template <>
-inline constexpr double sum_error_tolerance_for_gfx11<std::complex<float>,
-                                                      std::complex<float>,
-                                                      std::complex<float>> = 1 / 10000.0;
-
-template <>
-inline constexpr double sum_error_tolerance_for_gfx11<std::complex<double>,
-                                                      std::complex<double>,
-                                                      std::complex<double>> = 1 / 1000000.0;
+inline constexpr double
+    sum_error_tolerance_for_gfx11<std::complex<double>, std::complex<double>, std::complex<double>>
+    = 1 / 1000000.0;
 
 #endif

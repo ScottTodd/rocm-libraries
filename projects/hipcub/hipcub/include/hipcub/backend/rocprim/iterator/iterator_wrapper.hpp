@@ -47,7 +47,8 @@ public:
 
     WrappedIterator iterator_;
 
-    __host__ __device__ __forceinline__ IteratorWrapper(WrappedIterator iterator)
+    __host__ __device__ __forceinline__
+    IteratorWrapper(WrappedIterator iterator)
         : iterator_(iterator)
     {}
 
@@ -60,16 +61,14 @@ private:
 
 public:
     __host__ __device__ __forceinline__
-    DerivedIterator&
-        operator++()
+    DerivedIterator& operator++()
     {
         iterator_++;
         return derived();
     }
 
     __host__ __device__ __forceinline__
-    DerivedIterator
-        operator++(int)
+    DerivedIterator operator++(int)
     {
         DerivedIterator old_ci = derived();
         iterator_++;
@@ -77,16 +76,14 @@ public:
     }
 
     __host__ __device__ __forceinline__
-    DerivedIterator&
-        operator--()
+    DerivedIterator& operator--()
     {
         iterator_--;
         return derived();
     }
 
     __host__ __device__ __forceinline__
-    DerivedIterator
-        operator--(int)
+    DerivedIterator operator--(int)
     {
         DerivedIterator old_ci = derived();
         iterator_--;
@@ -94,59 +91,51 @@ public:
     }
 
     __host__ __device__ __forceinline__
-    value_type
-        operator*() const
+    value_type operator*() const
     {
         return iterator_.operator*();
     }
 
     __host__ __device__ __forceinline__
-    pointer
-        operator->() const
+    pointer operator->() const
     {
         return iterator_.operator->();
     }
 
     __host__ __device__ __forceinline__
-    value_type
-        operator[](difference_type distance) const
+    value_type operator[](difference_type distance) const
     {
         return iterator_[distance];
     }
 
     __host__ __device__ __forceinline__
-    DerivedIterator
-        operator+(difference_type distance) const
+    DerivedIterator operator+(difference_type distance) const
     {
         return DerivedIterator(iterator_ + distance);
     }
 
     __host__ __device__ __forceinline__
-    DerivedIterator&
-        operator+=(difference_type distance)
+    DerivedIterator& operator+=(difference_type distance)
     {
         iterator_ += distance;
         return derived();
     }
 
     __host__ __device__ __forceinline__
-    DerivedIterator
-        operator-(difference_type distance) const
+    DerivedIterator operator-(difference_type distance) const
     {
         return DerivedIterator(iterator_ - distance);
     }
 
     __host__ __device__ __forceinline__
-    DerivedIterator&
-        operator-=(difference_type distance)
+    DerivedIterator& operator-=(difference_type distance)
     {
         iterator_ -= distance;
         return derived();
     }
 
     __host__ __device__ __forceinline__
-    difference_type
-        operator-(DerivedIterator other) const
+    difference_type operator-(DerivedIterator other) const
     {
         return iterator_.operator-(other.iterator_);
     }
@@ -188,8 +177,7 @@ public:
     }
 
     [[deprecated]]
-    friend std::ostream&
-        operator<<(std::ostream& os, const DerivedIterator& iter)
+    friend std::ostream& operator<<(std::ostream& os, const DerivedIterator& iter)
     {
         os << iter.iterator_;
         return os;

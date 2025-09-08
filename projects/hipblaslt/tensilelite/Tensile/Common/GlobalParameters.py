@@ -34,47 +34,60 @@ from Tensile import __version__
 
 from .Architectures import isaToGfx
 from .Types import IsaVersion, IsaInfo
-from .Utilities import locateExe, versionIsCompatible, print1, print2, printExit, printWarning, \
-     getVerbosity
+from .Utilities import (
+    locateExe,
+    versionIsCompatible,
+    print1,
+    print2,
+    printExit,
+    printWarning,
+    getVerbosity,
+)
 from .ValidParameters import validParameters
 
 startTime = time.time()
 
 globalParameters = OrderedDict()
-globalParameters["MinimumRequiredVersion"] = (
-    "0.0.0"  # which version of tensile is required to handle all the features required by this configuration file
-)
-globalParameters["PerformanceMetric"] = (
-    "DeviceEfficiency"  # performance metric for benchmarking; one of {DeviceEfficiency, CUEfficiency}
-)
-globalParameters["ClientLogLevel"] = (
-    3  # the log level of client. 0=Error, 1=Terse, 2=Verbose, 3=Debug (Aligned with ResultReporter.hpp)
-)
+globalParameters[
+    "MinimumRequiredVersion"
+] = "0.0.0"  # which version of tensile is required to handle all the features required by this configuration file
+globalParameters[
+    "PerformanceMetric"
+] = "DeviceEfficiency"  # performance metric for benchmarking; one of {DeviceEfficiency, CUEfficiency}
+globalParameters[
+    "ClientLogLevel"
+] = 3  # the log level of client. 0=Error, 1=Terse, 2=Verbose, 3=Debug (Aligned with ResultReporter.hpp)
 # benchmarking
 globalParameters["KernelTime"] = False  # T=use device timers, F=use host timers
-globalParameters["PreciseKernelTime"] = (
-    True  # T=On hip, use the timestamps for kernel start and stop rather than separate events.  Can provide more accurate kernel timing.  For GlobalSplitU kernels, recommend disabling this to provide consistent
-)
+globalParameters[
+    "PreciseKernelTime"
+] = True  # T=On hip, use the timestamps for kernel start and stop rather than separate events.  Can provide more accurate kernel timing.  For GlobalSplitU kernels, recommend disabling this to provide consistent
 # timing between GSU / non-GSU kernels
 globalParameters["PinClocks"] = False  # T=pin gpu clocks and fan, F=don't
-globalParameters["HardwareMonitor"] = (
-    True  # False: disable benchmarking client monitoring clocks using rocm-smi.
-)
-globalParameters["MinFlopsPerSync"] = (
-    1  # Minimum number of flops per sync to increase stability for small problems
-)
-globalParameters["NumBenchmarks"] = (
-    1  # how many benchmark data points to collect per problem/solution
-)
-globalParameters["SyncsPerBenchmark"] = (
-    1  # how iterations of the stream synchronization for-loop to do per benchmark data point
-)
-globalParameters["EnqueuesPerSync"] = 1  # how many solution enqueues to perform per synchronization
-globalParameters["MaxEnqueuesPerSync"] = -1  # max solution enqueues to perform per synchronization
-globalParameters["SleepPercent"] = (
-    300  # how long to sleep after every data point: 25 means 25% of solution time. Sleeping lets gpu cool down more.
-)
-globalParameters["SkipSlowSolutionRatio"] = 0.0  # Skip slow solution during warm-up stage.
+globalParameters[
+    "HardwareMonitor"
+] = True  # False: disable benchmarking client monitoring clocks using rocm-smi.
+globalParameters[
+    "MinFlopsPerSync"
+] = 1  # Minimum number of flops per sync to increase stability for small problems
+globalParameters[
+    "NumBenchmarks"
+] = 1  # how many benchmark data points to collect per problem/solution
+globalParameters[
+    "SyncsPerBenchmark"
+] = 1  # how iterations of the stream synchronization for-loop to do per benchmark data point
+globalParameters[
+    "EnqueuesPerSync"
+] = 1  # how many solution enqueues to perform per synchronization
+globalParameters[
+    "MaxEnqueuesPerSync"
+] = -1  # max solution enqueues to perform per synchronization
+globalParameters[
+    "SleepPercent"
+] = 300  # how long to sleep after every data point: 25 means 25% of solution time. Sleeping lets gpu cool down more.
+globalParameters[
+    "SkipSlowSolutionRatio"
+] = 0.0  # Skip slow solution during warm-up stage.
 # The valid range of this ratio is (0.0 ~ 1.0), and 0.0 means no skipping.
 # Skip condition:  warm-up time * ratio > current best sol's warm-up time
 # Suggestion:
@@ -83,12 +96,12 @@ globalParameters["SkipSlowSolutionRatio"] = 0.0  # Skip slow solution during war
 #     Large size :  0.9
 
 # validation
-globalParameters["NumElementsToValidate"] = (
-    128  # number of elements to validate, 128 will be evenly spaced out (with prime number stride) across C tensor
-)
-globalParameters["NumElementsToValidateWinner"] = (
-    0  # number of elements to validate in LibraryClient stage, the exact number to be validated is max(NumElementsToValidate,NumElementsToValidateWinner)
-)
+globalParameters[
+    "NumElementsToValidate"
+] = 128  # number of elements to validate, 128 will be evenly spaced out (with prime number stride) across C tensor
+globalParameters[
+    "NumElementsToValidateWinner"
+] = 0  # number of elements to validate in LibraryClient stage, the exact number to be validated is max(NumElementsToValidate,NumElementsToValidateWinner)
 globalParameters["BoundsCheck"] = 0  # Bounds check
 # 1: Perform bounds check to find out of bounds reads/writes.  NumElementsToValidate must be -1.
 # 2: Perform bounds check by front side guard page
@@ -98,27 +111,31 @@ globalParameters["BoundsCheck"] = 0  # Bounds check
 globalParameters["ValidationMaxToPrint"] = 4  # maximum number of mismatches to print
 globalParameters["ValidationPrintValids"] = False  # print matches too
 # steps
-globalParameters["ForceRedoBenchmarkProblems"] = (
-    True  # if False and benchmarking already complete, then benchmarking will be skipped when tensile is re-run
-)
-globalParameters["ForceRedoLibraryLogic"] = (
-    True  # if False and library logic already analyzed, then library logic will be skipped when tensile is re-run
-)
-globalParameters["ForceRedoLibraryClient"] = (
-    True  # if False and library client already built, then building library client will be skipped when tensile is re-run
-)
+globalParameters[
+    "ForceRedoBenchmarkProblems"
+] = True  # if False and benchmarking already complete, then benchmarking will be skipped when tensile is re-run
+globalParameters[
+    "ForceRedoLibraryLogic"
+] = True  # if False and library logic already analyzed, then library logic will be skipped when tensile is re-run
+globalParameters[
+    "ForceRedoLibraryClient"
+] = True  # if False and library client already built, then building library client will be skipped when tensile is re-run
 
-globalParameters["ShowProgressBar"] = (
-    True  # if False and library client already built, then building library client will be skipped when tensile is re-run
-)
-globalParameters["SolutionSelectionAlg"] = (
-    1  # algorithm to determine which solutions to keep. 0=removeLeastImportantSolutions, 1=keepWinnerSolutions (faster)
-)
-globalParameters["GenerateSourcesAndExit"] = False  # Exit after kernel source generation.
-globalParameters["ExitOnFails"] = (
-    1  # 1: Exit after benchmark run if failures detected.  2: Exit during benchmark run.
-)
-globalParameters["CpuThreads"] = (
+globalParameters[
+    "ShowProgressBar"
+] = True  # if False and library client already built, then building library client will be skipped when tensile is re-run
+globalParameters[
+    "SolutionSelectionAlg"
+] = 1  # algorithm to determine which solutions to keep. 0=removeLeastImportantSolutions, 1=keepWinnerSolutions (faster)
+globalParameters[
+    "GenerateSourcesAndExit"
+] = False  # Exit after kernel source generation.
+globalParameters[
+    "ExitOnFails"
+] = 1  # 1: Exit after benchmark run if failures detected.  2: Exit during benchmark run.
+globalParameters[
+    "CpuThreads"
+] = (
     -1
 )  # How many CPU threads to use for kernel generation.  0=no threading, -1 == nproc, N=min(nproc,N).  TODO - 0 sometimes fails with a kernel name error?  0 does not check error codes correctly
 globalParameters["NumWarmups"] = 0
@@ -130,9 +147,9 @@ globalParameters["ISA"] = []
 ########################################
 # less common
 ########################################
-globalParameters["CMakeBuildType"] = (
-    "Release"  # whether benchmark clients and library client should be release or debug
-)
+globalParameters[
+    "CMakeBuildType"
+] = "Release"  # whether benchmark clients and library client should be release or debug
 globalParameters["LogicFormat"] = "yaml"  # set library backend (yaml, or json)
 globalParameters["LibraryFormat"] = "yaml"  # set library backend (yaml, or msgpack)
 
@@ -176,48 +193,54 @@ globalParameters["DataInitTypeScaleC"] = 2
 globalParameters["DataInitTypeScaleD"] = 2
 globalParameters["DataInitTypeScaleAlphaVec"] = 3
 globalParameters["DataInitValueActivationArgs"] = [2.0, 2.0]
-globalParameters["CEqualD"] = (
-    False  # Set to true if testing for the case where the pointer to C is the same as D.
-)
+globalParameters[
+    "CEqualD"
+] = False  # Set to true if testing for the case where the pointer to C is the same as D.
 # When this parameter is set to 0, the Tensile client will use srand(time(NULL)).
 # If not 0 the Tensile client will use srand(seed).
 globalParameters["DataInitSeed"] = 0
-globalParameters["PruneSparseMode"] = (
-    0  # Prune mode for Sparse Matrix: 0=random, 1=XX00, 2=X0X0, 3=0XX0, 4=X00X, 5=0X0X, 6=00XX
-)
+globalParameters[
+    "PruneSparseMode"
+] = 0  # Prune mode for Sparse Matrix: 0=random, 1=XX00, 2=X0X0, 3=0XX0, 4=X00X, 5=0X0X, 6=00XX
 
 # build parameters
 globalParameters["CMakeCXXFlags"] = ""  # pass flags to cmake
 globalParameters["CMakeCFlags"] = ""  # pass flags to cmake
 globalParameters["AsanBuild"] = False  # build with asan
-#globalParameters["SaveTemps"] = False  # Generate intermediate results of hip kernels
-globalParameters["KeepBuildTmp"] = False  # If true, do not remove artifacts in build_tmp
+# globalParameters["SaveTemps"] = False  # Generate intermediate results of hip kernels
+globalParameters[
+    "KeepBuildTmp"
+] = False  # If true, do not remove artifacts in build_tmp
 
 # debug for assembly
-#globalParameters["SplitGSU"] = False  # Split GSU kernel into GSU1 and GSUM
+# globalParameters["SplitGSU"] = False  # Split GSU kernel into GSU1 and GSUM
 
 # Tensor printing controls:
 globalParameters["PrintTensorA"] = 0  # Print TensorA after initialization
 globalParameters["PrintTensorB"] = 0  # Print TensorB after initialization
-globalParameters["PrintTensorC"] = (
-    0  # Print TensorC.  0x1=after init; 0x2=after copy-back; 0x3=both
-)
-globalParameters["PrintTensorD"] = (
-    0  # Print TensorD.  0x1=after init; 0x2=after copy-back; 0x3=both
-)
-globalParameters["PrintTensorRef"] = (
-    0  # Print reference tensor.  0x1=after init; 0x2=after copy-back; 0x3=both
-)
+globalParameters[
+    "PrintTensorC"
+] = 0  # Print TensorC.  0x1=after init; 0x2=after copy-back; 0x3=both
+globalParameters[
+    "PrintTensorD"
+] = 0  # Print TensorD.  0x1=after init; 0x2=after copy-back; 0x3=both
+globalParameters[
+    "PrintTensorRef"
+] = 0  # Print reference tensor.  0x1=after init; 0x2=after copy-back; 0x3=both
 globalParameters["PrintTensorBias"] = 0  # Print TensorBias after initialization
-globalParameters["PrintTensorScaleAlphaVec"] = 0  # Print TensorScaleAlphaVec after initialization
+globalParameters[
+    "PrintTensorScaleAlphaVec"
+] = 0  # Print TensorScaleAlphaVec after initialization
 globalParameters["PrintTensorAmaxD"] = 0  # Print AmaxD after validation
-globalParameters["PrintWinnersOnly"] = False  # Only print the solutions which become the fastest
-globalParameters["PrintCodeCommands"] = (
-    False  # print the commands used to generate the code objects (asm,link,hip-clang, etc)
-)
-globalParameters["DumpTensors"] = (
-    False  # If True, dump tensors to binary files instead of printing them.
-)
+globalParameters[
+    "PrintWinnersOnly"
+] = False  # Only print the solutions which become the fastest
+globalParameters[
+    "PrintCodeCommands"
+] = False  # print the commands used to generate the code objects (asm,link,hip-clang, etc)
+globalParameters[
+    "DumpTensors"
+] = False  # If True, dump tensors to binary files instead of printing them.
 
 # If PrintMax* is greater than the dimension, the middle elements will be replaced with "..."
 
@@ -226,15 +249,15 @@ globalParameters["DumpTensors"] = (
 globalParameters["Platform"] = 0  # select opencl platform
 
 # shouldn't need to change
-globalParameters["ClientExecutionLockPath"] = (
-    None  # Path for a file lock to ensure only one client is executed at once.  filelock module is required if this is enabled.
-)
-globalParameters["LibraryUpdateFile"] = (
-    ""  # File name for writing indices and speeds suitable for updating an existing library logic file
-)
-globalParameters["LibraryUpdateComment"] = (
-    False  # Include solution name as a comment in the library update file
-)
+globalParameters[
+    "ClientExecutionLockPath"
+] = None  # Path for a file lock to ensure only one client is executed at once.  filelock module is required if this is enabled.
+globalParameters[
+    "LibraryUpdateFile"
+] = ""  # File name for writing indices and speeds suitable for updating an existing library logic file
+globalParameters[
+    "LibraryUpdateComment"
+] = False  # Include solution name as a comment in the library update file
 
 # internal, i.e., gets set during startup
 globalParameters["ROCmSMIPath"] = None  # /opt/rocm/bin/rocm-smi
@@ -255,40 +278,44 @@ globalParameters["PerfModelL2ReadBwMul"] = 2
 globalParameters["PerfModelReadEfficiency"] = 0.85
 
 # limitation for training
-globalParameters["MaxWorkspaceSize"] = 128 * 1024 * 1024  # max workspace for training (128MB)
-#globalParameters["MinKForGSU"] = 32  # min K size to use GlobalSplitU algorithm (only for HPA now)
+globalParameters["MaxWorkspaceSize"] = (
+    128 * 1024 * 1024
+)  # max workspace for training (128MB)
+# globalParameters["MinKForGSU"] = 32  # min K size to use GlobalSplitU algorithm (only for HPA now)
 
 # control if a solution is run for a given problem
 globalParameters["GranularityThreshold"] = 0.0
 
-globalParameters["PristineOnGPU"] = (
-    True  # use Pristine memory on Tensile trainning verification or not
-)
+globalParameters[
+    "PristineOnGPU"
+] = True  # use Pristine memory on Tensile trainning verification or not
 
-globalParameters["SeparateArchitectures"] = (
-    False  # write Tensile library metadata to separate files for each architecture
-)
+globalParameters[
+    "SeparateArchitectures"
+] = False  # write Tensile library metadata to separate files for each architecture
 
-globalParameters["LazyLibraryLoading"] = (
-    False  # Load library and code object files when needed instead of at startup
-)
+globalParameters[
+    "LazyLibraryLoading"
+] = False  # Load library and code object files when needed instead of at startup
 
 globalParameters["EnableMarker"] = False  # Enable Tensile markers
 
 globalParameters["UseUserArgs"] = False
 
 globalParameters["RotatingBufferSize"] = 0  # Size in MB
-globalParameters["RotatingMode"] = (
-    0  # Default is 0, allocated in order A0B0C0D0..ANBNCNDN. 1 is in order A0 pad B0 pad .... AN pad BN pad.
-)
+globalParameters[
+    "RotatingMode"
+] = 0  # Default is 0, allocated in order A0B0C0D0..ANBNCNDN. 1 is in order A0 pad B0 pad .... AN pad BN pad.
 # Mode 0 requires memcpy everytime when the problem changes to reset the data, but mode 1 doesn't.
 
 globalParameters["BuildIdKind"] = "sha1"
-globalParameters["AsmDebug"] = (
-    False  # Set to True to keep debug information for compiled code objects
-)
+globalParameters[
+    "AsmDebug"
+] = False  # Set to True to keep debug information for compiled code objects
 
-globalParameters["UseEffLike"] = True  # Set to False to use winnerGFlops as the performance metric
+globalParameters[
+    "UseEffLike"
+] = True  # Set to False to use winnerGFlops as the performance metric
 
 # Save a copy - since pytest doesn't re-run this initialization code and YAML files can override global settings - odd things can happen
 # we should do this here...
@@ -417,7 +444,7 @@ defaultBenchmarkCommonParameters = [
     {"ConvertAfterDS": [False]},
     {"ForceDisableShadowInit": [False]},
     {"LDSTrInst": [False]},
-    {"WaveSplitK": [ False ]},
+    {"WaveSplitK": [False]},
     {"MbskPrefetchMethod": [0]},
 ]
 
@@ -429,14 +456,25 @@ for paramDict in defaultBenchmarkCommonParameters:
 # other non-benchmark options for solutions
 
 
-
 defaultProblemSizes = [{"Range": [[2880], 0, 0]}]
 defaultBenchmarkFinalProblemSizes = [{"Range": [[64, 64, 64, 512], 0, 0]}]
 defaultBatchedProblemSizes = [{"Range": [[2880], 0, [1], 0]}]
 defaultBatchedBenchmarkFinalProblemSizes = [{"Range": [[64, 64, 64, 512], 0, [1], 0]}]
 
 
-defaultSolutionSummationSizes = [32, 64, 96, 128, 256, 512, 1024, 2048, 4096, 8192, 16192]
+defaultSolutionSummationSizes = [
+    32,
+    64,
+    96,
+    128,
+    256,
+    512,
+    1024,
+    2048,
+    4096,
+    8192,
+    16192,
+]
 
 
 ################################################################################
@@ -488,7 +526,9 @@ def printCapabilitiesTable(isaInfoMap: Dict[str, IsaInfo]):
 
     def capRow(isaInfoMap, cap, capType):
         return [cap] + [
-            "1" if cap in getattr(info, capType) and getattr(info, capType)[cap] else "-"
+            "1"
+            if cap in getattr(info, capType) and getattr(info, capType)[cap]
+            else "-"
             for info in isaInfoMap.values()
         ]
 
@@ -501,7 +541,9 @@ def printCapabilitiesTable(isaInfoMap: Dict[str, IsaInfo]):
     )
     asmCapRows = [capRow(isaInfoMap, cap, "asmCaps") for cap in allAsmCaps]
 
-    allArchCaps = sorted(set(itertools.chain(*[info.archCaps for info in isaInfoMap.values()])))
+    allArchCaps = sorted(
+        set(itertools.chain(*[info.archCaps for info in isaInfoMap.values()]))
+    )
     archCapRows = [capRow(isaInfoMap, cap, "archCaps") for cap in allArchCaps]
 
     printTable([headerRow] + asmCapRows + archCapRows)
@@ -552,7 +594,9 @@ def assignGlobalParameters(config, isaInfoMap: Dict[IsaVersion, IsaInfo]):
 
     globalParameters["ROCmBinPath"] = os.path.join(globalParameters["ROCmPath"], "bin")
     try:
-        globalParameters["ROCmSMIPath"] = locateExe(globalParameters["ROCmBinPath"], "rocm-smi")
+        globalParameters["ROCmSMIPath"] = locateExe(
+            globalParameters["ROCmBinPath"], "rocm-smi"
+        )
     except OSError:
         if os.name == "nt":
             # rocm-smi is not presently supported on Windows so do not require it.
@@ -588,7 +632,8 @@ def assignGlobalParameters(config, isaInfoMap: Dict[IsaVersion, IsaInfo]):
     try:
         compiler = "hipcc"
         output = subprocess.run(
-            [compiler, "--version"], check=True,
+            [compiler, "--version"],
+            check=True,
             stdout=subprocess.PIPE,
             # Avoids some warning spam on Windows.
             stderr=subprocess.DEVNULL,
@@ -640,5 +685,6 @@ def setupRestoreClocks():
                 subprocess.call([rsmi, "-d", "0", "--setfan", "50"])
 
     atexit.register(restoreClocks)
+
 
 setupRestoreClocks()

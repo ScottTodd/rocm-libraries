@@ -23,7 +23,7 @@
  * SOFTWARE.
  *
  *******************************************************************************/
-   #pragma once
+#pragma once
 
 #include <cstdlib>
 #include <string>
@@ -76,9 +76,9 @@ namespace rocsparselt
     private:
         friend LazySingleton<Debug>;
 
-        int         m_value;
-        int         m_value2;
-        bool        m_printMarker = false;
+        int  m_value;
+        int  m_value2;
+        bool m_printMarker = false;
 
         Debug();
     };

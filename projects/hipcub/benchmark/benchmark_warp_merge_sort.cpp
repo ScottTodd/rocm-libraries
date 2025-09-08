@@ -46,7 +46,8 @@ template<unsigned int BlockSize,
          unsigned int ItemsPerThread,
          typename T,
          typename Compare>
-__device__ auto sort_keys_benchmark(const T* input, T* output, Compare compare_op)
+__device__
+auto sort_keys_benchmark(const T* input, T* output, Compare compare_op)
     -> std::enable_if_t<benchmark_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {
     constexpr unsigned int items_per_block = BlockSize * ItemsPerThread;
@@ -60,7 +61,8 @@ __device__ auto sort_keys_benchmark(const T* input, T* output, Compare compare_o
     const unsigned int     warp_id         = threadIdx.x / LogicalWarpSize;
 
     using warp_merge_sort = hipcub::WarpMergeSort<T, ItemsPerThread, LogicalWarpSize>;
-    __shared__ typename warp_merge_sort::TempStorage storage[warps_per_block];
+    __shared__
+    typename warp_merge_sort::TempStorage storage[warps_per_block];
 
     warp_merge_sort wsort{storage[warp_id]};
     wsort.Sort(keys, compare_op);
@@ -73,7 +75,8 @@ template<unsigned int BlockSize,
          unsigned int ItemsPerThread,
          typename T,
          typename Compare>
-__device__ auto sort_keys_benchmark(const T* /*input*/, T* /*output*/, Compare /*compare_op*/)
+__device__
+auto sort_keys_benchmark(const T* /*input*/, T* /*output*/, Compare /*compare_op*/)
     -> std::enable_if_t<!benchmark_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {}
 
@@ -82,8 +85,8 @@ template<unsigned int BlockSize,
          unsigned int ItemsPerThread,
          typename T,
          typename Compare>
-__global__
-    __launch_bounds__(BlockSize) void sort_keys(const T* input, T* output, Compare compare_op)
+__global__ __launch_bounds__(BlockSize)
+void sort_keys(const T* input, T* output, Compare compare_op)
 {
     sort_keys_benchmark<BlockSize, LogicalWarpSize, ItemsPerThread>(input, output, compare_op);
 }
@@ -93,7 +96,8 @@ template<unsigned int BlockSize,
          unsigned int ItemsPerThread,
          typename T,
          typename Compare>
-__device__ auto sort_pairs_benchmark(const T* input, T* output, Compare compare_op)
+__device__
+auto sort_pairs_benchmark(const T* input, T* output, Compare compare_op)
     -> std::enable_if_t<benchmark_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {
     constexpr unsigned int items_per_block = BlockSize * ItemsPerThread;
@@ -113,7 +117,8 @@ __device__ auto sort_pairs_benchmark(const T* input, T* output, Compare compare_
     const unsigned int     warp_id         = threadIdx.x / LogicalWarpSize;
 
     using warp_merge_sort = hipcub::WarpMergeSort<T, ItemsPerThread, LogicalWarpSize, T>;
-    __shared__ typename warp_merge_sort::TempStorage storage[warps_per_block];
+    __shared__
+    typename warp_merge_sort::TempStorage storage[warps_per_block];
 
     warp_merge_sort wsort{storage[warp_id]};
     wsort.Sort(keys, values, compare_op);
@@ -131,7 +136,8 @@ template<unsigned int BlockSize,
          unsigned int ItemsPerThread,
          typename T,
          typename Compare>
-__device__ auto sort_pairs_benchmark(const T* /*input*/, T* /*output*/, Compare /*compare_op*/)
+__device__
+auto sort_pairs_benchmark(const T* /*input*/, T* /*output*/, Compare /*compare_op*/)
     -> std::enable_if_t<!benchmark_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {}
 
@@ -140,8 +146,8 @@ template<unsigned int BlockSize,
          unsigned int ItemsPerThread,
          typename T,
          typename Compare>
-__global__
-    __launch_bounds__(BlockSize) void sort_pairs(const T* input, T* output, Compare compare_op)
+__global__ __launch_bounds__(BlockSize)
+void sort_pairs(const T* input, T* output, Compare compare_op)
 {
     sort_pairs_benchmark<BlockSize, LogicalWarpSize, ItemsPerThread>(input, output, compare_op);
 }
@@ -157,17 +163,19 @@ template<unsigned int BlockSize,
          unsigned int ItemsPerThread,
          typename T,
          typename Compare>
-__device__ auto sort_keys_segmented_benchmark(const T*            input,
-                                              T*                  output,
-                                              const unsigned int* segment_sizes,
-                                              Compare             compare)
+__device__
+auto sort_keys_segmented_benchmark(const T*            input,
+                                   T*                  output,
+                                   const unsigned int* segment_sizes,
+                                   Compare             compare)
     -> std::enable_if_t<benchmark_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {
     constexpr unsigned int max_segment_size   = LogicalWarpSize * ItemsPerThread;
     constexpr unsigned int segments_per_block = BlockSize / LogicalWarpSize;
 
     using warp_merge_sort = hipcub::WarpMergeSort<T, ItemsPerThread, LogicalWarpSize>;
-    __shared__ typename warp_merge_sort::TempStorage storage[segments_per_block];
+    __shared__
+    typename warp_merge_sort::TempStorage storage[segments_per_block];
 
     const unsigned int warp_id = threadIdx.x / LogicalWarpSize;
     warp_merge_sort    wsort{storage[warp_id]};
@@ -192,10 +200,11 @@ template<unsigned int BlockSize,
          unsigned int ItemsPerThread,
          typename T,
          typename Compare>
-__device__ auto sort_keys_segmented_benchmark(const T* /*input*/,
-                                              T* /*output*/,
-                                              const unsigned int* /*segment_sizes*/,
-                                              Compare /*compare*/)
+__device__
+auto sort_keys_segmented_benchmark(const T* /*input*/,
+                                   T* /*output*/,
+                                   const unsigned int* /*segment_sizes*/,
+                                   Compare /*compare*/)
     -> std::enable_if_t<!benchmark_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {}
 
@@ -204,10 +213,11 @@ template<unsigned int BlockSize,
          unsigned int ItemsPerThread,
          typename T,
          typename Compare>
-__global__ __launch_bounds__(BlockSize) void sort_keys_segmented(const T*            input,
-                                                                 T*                  output,
-                                                                 const unsigned int* segment_sizes,
-                                                                 Compare             compare)
+__global__ __launch_bounds__(BlockSize)
+void sort_keys_segmented(const T*            input,
+                         T*                  output,
+                         const unsigned int* segment_sizes,
+                         Compare             compare)
 {
     sort_keys_segmented_benchmark<BlockSize, LogicalWarpSize, ItemsPerThread>(input,
                                                                               output,
@@ -220,17 +230,19 @@ template<unsigned int BlockSize,
          unsigned int ItemsPerThread,
          typename T,
          typename Compare>
-__device__ auto sort_pairs_segmented_benchmark(const T*            input,
-                                               T*                  output,
-                                               const unsigned int* segment_sizes,
-                                               Compare             compare)
+__device__
+auto sort_pairs_segmented_benchmark(const T*            input,
+                                    T*                  output,
+                                    const unsigned int* segment_sizes,
+                                    Compare             compare)
     -> std::enable_if_t<benchmark_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {
     constexpr unsigned int max_segment_size   = LogicalWarpSize * ItemsPerThread;
     constexpr unsigned int segments_per_block = BlockSize / LogicalWarpSize;
 
     using warp_merge_sort = hipcub::WarpMergeSort<T, ItemsPerThread, LogicalWarpSize, T>;
-    __shared__ typename warp_merge_sort::TempStorage storage[segments_per_block];
+    __shared__
+    typename warp_merge_sort::TempStorage storage[segments_per_block];
 
     const unsigned int warp_id = threadIdx.x / LogicalWarpSize;
     warp_merge_sort    wsort{storage[warp_id]};
@@ -272,10 +284,11 @@ template<unsigned int BlockSize,
          unsigned int ItemsPerThread,
          typename T,
          typename Compare>
-__device__ auto sort_pairs_segmented_benchmark(const T* /*input*/,
-                                               T* /*output*/,
-                                               const unsigned int* /*segment_sizes*/,
-                                               Compare /*compare*/)
+__device__
+auto sort_pairs_segmented_benchmark(const T* /*input*/,
+                                    T* /*output*/,
+                                    const unsigned int* /*segment_sizes*/,
+                                    Compare /*compare*/)
     -> std::enable_if_t<!benchmark_utils::device_test_enabled_for_warp_size_v<LogicalWarpSize>>
 {}
 
@@ -284,10 +297,11 @@ template<unsigned int BlockSize,
          unsigned int ItemsPerThread,
          typename T,
          typename Compare>
-__global__ __launch_bounds__(BlockSize) void sort_pairs_segmented(const T*            input,
-                                                                  T*                  output,
-                                                                  const unsigned int* segment_sizes,
-                                                                  Compare             compare)
+__global__ __launch_bounds__(BlockSize)
+void sort_pairs_segmented(const T*            input,
+                          T*                  output,
+                          const unsigned int* segment_sizes,
+                          Compare             compare)
 {
     sort_pairs_segmented_benchmark<BlockSize, LogicalWarpSize, ItemsPerThread>(input,
                                                                                output,
@@ -333,7 +347,8 @@ void run_benchmark(benchmark::State&     state,
                                                                                    d_output,
                                                                                    CompareOp{});
             }
-        } else if(benchmark_kind == benchmark_kinds::sort_pairs)
+        }
+        else if(benchmark_kind == benchmark_kinds::sort_pairs)
         {
             for(unsigned int i = 0; i < Trials; ++i)
             {
@@ -411,7 +426,8 @@ void run_segmented_benchmark(benchmark::State&     state,
                                                                        d_segment_sizes,
                                                                        CompareOp{});
             }
-        } else if(benchmark_kind == benchmark_kinds::sort_pairs)
+        }
+        else if(benchmark_kind == benchmark_kinds::sort_pairs)
         {
             for(unsigned int i = 0; i < Trials; ++i)
             {
@@ -505,7 +521,8 @@ int main(int argc, char* argv[])
         if(result > 0)
         {
             std::cout << "[HIP] Device warp size: " << result << std::endl;
-        } else
+        }
+        else
         {
             std::cerr << "Failed to get device warp size! Aborting.\n";
             std::exit(1);

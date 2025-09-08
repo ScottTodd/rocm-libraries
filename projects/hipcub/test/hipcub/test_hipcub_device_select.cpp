@@ -171,13 +171,13 @@ TYPED_TEST(HipcubDeviceSelectTests, Flagged)
             HIP_CHECK(test_common_utils::hipMallocHelper(&d_temp_storage, temp_storage_size_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             // Run
             call(d_temp_storage, temp_storage_size_bytes);
 
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipDeviceSynchronize());
@@ -244,10 +244,10 @@ TEST(HipcubDeviceSelectTests, FlagNormalization)
     for(size_t size : test_utils::get_sizes(seed_value))
     {
         SCOPED_TRACE(testing::Message() << "with size= " << size);
-        rocprim::counting_iterator<T>    d_input(0);
-        rocprim::counting_iterator<F>    d_flags(1);
-        U*                               d_output;
-        unsigned int*                    d_selected_count_output;
+        rocprim::counting_iterator<T> d_input(0);
+        rocprim::counting_iterator<F> d_flags(1);
+        U*                            d_output;
+        unsigned int*                 d_selected_count_output;
 
         HIP_CHECK(test_common_utils::hipMallocHelper(&d_output, size * sizeof(*d_output)));
         HIP_CHECK(test_common_utils::hipMallocHelper(&d_selected_count_output,
@@ -319,8 +319,7 @@ struct TestSelectOp
 {
     template<class T>
     __host__ __device__
-    inline bool
-        operator()(const T& value) const
+    inline bool operator()(const T& value) const
     {
         if(value > T(50))
             return true;
@@ -427,13 +426,13 @@ TYPED_TEST(HipcubDeviceSelectTests, SelectOp)
             HIP_CHECK(test_common_utils::hipMallocHelper(&d_temp_storage, temp_storage_size_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             // Run
             call(d_temp_storage, temp_storage_size_bytes);
 
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipDeviceSynchronize());
@@ -592,13 +591,13 @@ TYPED_TEST(HipcubDeviceSelectTests, FlaggedIf)
             HIP_CHECK(test_common_utils::hipMallocHelper(&d_temp_storage, temp_storage_size_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             // Run
             call(d_temp_storage, temp_storage_size_bytes);
 
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipDeviceSynchronize());
@@ -743,7 +742,7 @@ TYPED_TEST(HipcubDeviceSelectTests, Unique)
                 HIP_CHECK(hipDeviceSynchronize());
 
                 test_utils::GraphHelper gHelper;
-                if (TestFixture::use_graphs)
+                if(TestFixture::use_graphs)
                     gHelper.startStreamCapture(stream);
 
                 // Run
@@ -755,7 +754,7 @@ TYPED_TEST(HipcubDeviceSelectTests, Unique)
                                                        input.size(),
                                                        stream));
 
-                if (TestFixture::use_graphs)
+                if(TestFixture::use_graphs)
                     gHelper.createAndLaunchGraph(stream);
 
                 HIP_CHECK(hipDeviceSynchronize());
@@ -807,9 +806,9 @@ TEST(HipcubDeviceSelectTests, UniqueDiscardOutputIterator)
     for(size_t size : test_utils::get_sizes(seed_value))
     {
         SCOPED_TRACE(testing::Message() << "with size= " << size);
-        rocprim::counting_iterator<unsigned int>    d_input(0);
-        rocprim::discard_iterator                   d_output;
-        size_t*                                     d_selected_count_output;
+        rocprim::counting_iterator<unsigned int> d_input(0);
+        rocprim::discard_iterator                d_output;
+        size_t*                                  d_selected_count_output;
 
         HIP_CHECK(test_common_utils::hipMallocHelper((&d_selected_count_output), sizeof(size_t)));
 
@@ -857,10 +856,9 @@ TEST(HipcubDeviceSelectTests, UniqueDiscardOutputIterator)
 template<class T>
 struct TestLargeIndicesSelectOp
 {
-    T max_value;
+    T           max_value;
     __host__ __device__
-    inline bool
-        operator()(const T& value) const
+    inline bool operator()(const T& value) const
     {
         return test_utils::less()(value, T(max_value));
     }
@@ -901,11 +899,11 @@ TEST_P(HipcubDeviceSelectLargeIndicesTests, LargeIndicesSelectOp)
 #endif
 
         // Generate data
-        rocprim::counting_iterator<T>    d_input(0);
-        U*                               d_output;
-        selected_count_type*             d_selected_count_output;
-        selected_count_type              expected_output_size = selected_size;
-        TestLargeIndicesSelectOp<T>      select_op{expected_output_size};
+        rocprim::counting_iterator<T> d_input(0);
+        U*                            d_output;
+        selected_count_type*          d_selected_count_output;
+        selected_count_type           expected_output_size = selected_size;
+        TestLargeIndicesSelectOp<T>   select_op{expected_output_size};
         HIP_CHECK(test_common_utils::hipMallocHelper(&d_output,
                                                      sizeof(d_output[0]) * expected_output_size));
         HIP_CHECK(test_common_utils::hipMallocHelper(&d_selected_count_output,
@@ -1150,7 +1148,7 @@ TYPED_TEST(HipcubDeviceUniqueByKeyTests, UniqueByKey)
                     test_common_utils::hipMallocHelper(&d_temp_storage, temp_storage_size_bytes));
 
                 test_utils::GraphHelper gHelper;
-                if (TestFixture::use_graphs)
+                if(TestFixture::use_graphs)
                     gHelper.startStreamCapture(stream);
 
                 // run
@@ -1165,7 +1163,7 @@ TYPED_TEST(HipcubDeviceUniqueByKeyTests, UniqueByKey)
                                                             equality_op,
                                                             stream));
 
-                if (TestFixture::use_graphs)
+                if(TestFixture::use_graphs)
                     gHelper.createAndLaunchGraph(stream);
 
                 // Check if number of selected value is as expected
@@ -1243,8 +1241,8 @@ TEST(HipcubDeviceUniqueByKeyTests, LargeIndicesUniqueByKey)
             const size_t input_index  = output_index * TestUniqueEqualityOp::segment;
             rocprim::counting_iterator<key_type>   d_keys_input(0);
             rocprim::counting_iterator<value_type> d_values_input(123);
-            key_type*   d_keys_output;
-            value_type* d_values_output;
+            key_type*                              d_keys_output;
+            value_type*                            d_values_output;
             HIP_CHECK(test_common_utils::hipMallocHelper(&d_keys_output, sizeof(*d_keys_output)));
             HIP_CHECK(
                 test_common_utils::hipMallocHelper(&d_values_output, sizeof(*d_values_output)));

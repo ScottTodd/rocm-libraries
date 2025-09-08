@@ -26,7 +26,6 @@
 
 #pragma once
 
-
 namespace DGen
 {
     struct OCP_E3M2_MXFP6_DATA

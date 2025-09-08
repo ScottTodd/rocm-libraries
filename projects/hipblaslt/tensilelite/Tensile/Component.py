@@ -71,11 +71,13 @@ from collections.abc import Mapping
 import inspect
 from dataclasses import dataclass
 
+
 @dataclass
 class LraTileProperties:
     """
     Lra tile assignment properties.
     """
+
 
 def PartialMatch(pattern, obj, debug=False, level=0):
     indent = "    " * level
@@ -86,8 +88,7 @@ def PartialMatch(pattern, obj, debug=False, level=0):
             if debug:
                 print("{indent}call({obj}) == False".format(indent=indent, obj=obj))
             return False
-    elif isinstance(pattern, Mapping) and \
-         isinstance(obj, Mapping):
+    elif isinstance(pattern, Mapping) and isinstance(obj, Mapping):
         for key, value in pattern.items():
             if key not in obj:
                 if debug:
@@ -96,23 +97,29 @@ def PartialMatch(pattern, obj, debug=False, level=0):
 
             if debug:
                 print("{indent} recursing into {key}".format(indent=indent, key=key))
-            if not PartialMatch(value, obj[key], debug, level+1):
+            if not PartialMatch(value, obj[key], debug, level + 1):
                 return False
 
     elif pattern != obj:
         if debug:
-            print("{indent}{pattern} != {obj}".format(indent=indent, pattern=pattern, obj=obj))
+            print(
+                "{indent}{pattern} != {obj}".format(
+                    indent=indent, pattern=pattern, obj=obj
+                )
+            )
         return False
 
     if debug:
         print("{indent}: True".format(indent=indent))
     return True
 
+
 class ComponentMeta(abc.ABCMeta):
     """
     Metaclass which auto-registers each subclass in an "implementations"
     member of its parent class, to allow for hierarchical searching.
     """
+
     def __init__(cls, name, bases, namespace, **kwargs):
         if inspect.isabstract(cls):
             cls.implementations = {}
@@ -120,6 +127,7 @@ class ComponentMeta(abc.ABCMeta):
         for base in bases:
             base.implementations[name] = cls
             setattr(base, name, cls)
+
 
 class Component(metaclass=ComponentMeta):
     """
@@ -136,7 +144,9 @@ class Component(metaclass=ComponentMeta):
         attrs = ["asmCaps", "archCaps", "kernel"]
         for attr in attrs:
             if hasattr(cls, attr):
-                if not PartialMatch(getattr(cls, attr), getattr(writer.states, attr), debug):
+                if not PartialMatch(
+                    getattr(cls, attr), getattr(writer.states, attr), debug
+                ):
                     return False
 
         return True
@@ -170,7 +180,9 @@ class Component(metaclass=ComponentMeta):
             return None
 
         if len(found) > 1:
-            raise RuntimeError("Found {} implementations for {}".format(len(found), cls.__name__))
+            raise RuntimeError(
+                "Found {} implementations for {}".format(len(found), cls.__name__)
+            )
 
         return found[0]()
 
@@ -200,27 +212,32 @@ class Component(metaclass=ComponentMeta):
         """
         Returns a comment which helps identify where a piece of code was generated.
         """
-        return "{}".format('.'.join(self.componentPath()))
+        return "{}".format(".".join(self.componentPath()))
+
 
 class MAC(Component):
     """
     Multiply-accumulate block.
     """
 
+
 class Signature(Component):
     """
     Function signature block.
     """
+
 
 class LocalRead(Component):
     """
     Local read block.
     """
 
+
 class SumUnroll(Component):
     """
     Sum unroll block.
     """
+
     @abc.abstractmethod
     def initSumUnroll(self, writer, kernel):
         pass
@@ -233,43 +250,62 @@ class SumUnroll(Component):
     def storeSumLDS(self, writer, kernel, tP):
         pass
 
+
 class ShiftVectorComponents(Component):
     """
     Shift vector components block.
     """
+
 
 class ComputeStoreVgprs(Component):
     """
     Compute store vgprs block.
     """
 
+
 class NotLocalFullTileElements(Component):
     """
     Not local full tile elements block.
     """
+
 
 class LraTileAssignment(Component):
     """
     Lra tile assignment block.
     """
 
+
 class PackData(Component):
     """
     Pack data block.
     """
 
+
 class SIA(Component):
     """
     ScheduleIterAlg block.
     """
+
     @abc.abstractmethod
-    def schedIntoIteration(self, writer, kernel, tensorParametersA, tensorParametersB, \
-        localWriteEndIter, firstIter, lastLoop, lastLc, globalReadIncACode, \
-        globalReadIncBCode):
+    def schedIntoIteration(
+        self,
+        writer,
+        kernel,
+        tensorParametersA,
+        tensorParametersB,
+        localWriteEndIter,
+        firstIter,
+        lastLoop,
+        lastLc,
+        globalReadIncACode,
+        globalReadIncBCode,
+    ):
         pass
+
 
 class GlobalWriteComponents(Component):
     pass
+
 
 # Importing here allows auto-registry of components in the Components directory.
 # Each file must be listed in __all__ in Components/__init__.py

@@ -90,7 +90,11 @@ def create_github_file(filename: str, dir_name: str = None) -> str:
         try:
             repo = git.Repo(Path(dir_name))
             os.chdir(cwd)
-        except (git.InvalidGitRepositoryError, git.exc.NoSuchPathError, Exception) as err:
+        except (
+            git.InvalidGitRepositoryError,
+            git.exc.NoSuchPathError,
+            Exception,
+        ) as err:
             print(err)
             os.chdir(cwd)
             repo = git.Repo(search_parent_directories=True)
@@ -100,9 +104,11 @@ def create_github_file(filename: str, dir_name: str = None) -> str:
             print("Repository is in a detached HEAD state.")
             # You can use repo.head.commit to get the current commit
             git_hash = repo.head.commit.hexsha
-            branches_output = repo.git.branch('--contains', git_hash)
+            branches_output = repo.git.branch("--contains", git_hash)
             branches = [
-                branch.strip().lstrip("* ")  # Remove leading "* " for the current branch
+                branch.strip().lstrip(
+                    "* "
+                )  # Remove leading "* " for the current branch
                 for branch in branches_output.split("\n")
                 if branch.strip()  # Exclude empty lines
             ]

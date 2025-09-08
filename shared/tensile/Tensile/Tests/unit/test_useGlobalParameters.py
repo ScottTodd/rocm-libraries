@@ -24,6 +24,7 @@
 
 from Tensile.Common import globalParameters
 
+
 def test_Simple(useGlobalParameters):
     with useGlobalParameters():
         assert not globalParameters["PinClocks"]
@@ -32,6 +33,7 @@ def test_Simple(useGlobalParameters):
 
     # outside the with statement, changes should be reverted.
     assert not globalParameters["PinClocks"]
+
 
 def test_Args(useGlobalParameters):
     with useGlobalParameters(PinClocks=True):

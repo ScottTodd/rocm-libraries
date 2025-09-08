@@ -39,29 +39,29 @@ import matplotlib.pyplot as plt
 import pylab
 from matplotlib.backends.backend_pdf import PdfPages
 
-os.system( "grep NT sgemm.txt > sgemm_NT.csv" )
-input = open ('sgemm_NT.csv', 'r')
+os.system("grep NT sgemm.txt > sgemm_NT.csv")
+input = open("sgemm_NT.csv", "r")
 x = []
 y = []
-shape = ''
+shape = ""
 for line in input:
     line = line.replace("(", ",")
     line = line.replace(")", ",")
-    value = line.split(',')
+    value = line.split(",")
     x.append(value[1])
     y.append(value[7])
     shape = value[0]
-    #print value
+    # print value
 
 
 f = plt.figure()
-plt.rcParams.update({'font.size':20})
-plt.xlabel('M=N=K')
+plt.rcParams.update({"font.size": 20})
+plt.xlabel("M=N=K")
 plt.ylabel("Gflop/s")
-plt.title('rocBLAS SGEMM '  + shape)
+plt.title("rocBLAS SGEMM " + shape)
 plt.yticks()
 plt.grid(True)
-plt.legend( loc = 2)
+plt.legend(loc=2)
 plot1 = plt.plot(x, y)
-f.savefig("sgemm.pdf", bbox_inches='tight')
+f.savefig("sgemm.pdf", bbox_inches="tight")
 input.close()

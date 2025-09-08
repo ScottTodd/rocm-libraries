@@ -44,15 +44,21 @@ struct unpack_nary_op
 {
     using result_type = typename ::rocprim::invoke_result<Function, Ts...>::type;
 
-    ROCPRIM_HOST_DEVICE inline unpack_nary_op() = default;
-
-    ROCPRIM_HOST_DEVICE inline unpack_nary_op(Function op) : op_(op) {}
-
-    ROCPRIM_HOST_DEVICE inline ~unpack_nary_op() = default;
+    ROCPRIM_HOST_DEVICE
+    inline unpack_nary_op()
+        = default;
 
     ROCPRIM_HOST_DEVICE
-    inline result_type
-        operator()(const ::rocprim::tuple<Ts...>& t) const
+    inline unpack_nary_op(Function op)
+        : op_(op)
+    {}
+
+    ROCPRIM_HOST_DEVICE
+    inline ~unpack_nary_op()
+        = default;
+
+    ROCPRIM_HOST_DEVICE
+    inline result_type operator()(const ::rocprim::tuple<Ts...>& t) const
     {
         return apply_impl(t, std::index_sequence_for<Ts...>{});
     }

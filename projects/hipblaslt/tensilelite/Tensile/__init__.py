@@ -33,7 +33,9 @@ ROOT_PATH: str = path.dirname(__file__)
 SOURCE_PATH: str = path.join(ROOT_PATH, "Source")
 CUSTOM_KERNEL_PATH: str = path.join(ROOT_PATH, "CustomKernels")
 
+
 def PrintTensileRoot():
-    print(ROOT_PATH, end='')
+    print(ROOT_PATH, end="")
+
 
 __all__ = ["__version__", "ROOT_PATH", "SOURCE_PATH", "CUSTOM_KERNEL_PATH"]

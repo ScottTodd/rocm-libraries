@@ -32,12 +32,12 @@
  * hipcub::BlockRadixRank provides operations for ranking unsigned integer types within a CUDA thread block
  */
 
- #ifndef HIPCUB_ROCPRIM_BLOCK_BLOCK_RADIX_RANK_HPP_
- #define HIPCUB_ROCPRIM_BLOCK_BLOCK_RADIX_RANK_HPP_
+#ifndef HIPCUB_ROCPRIM_BLOCK_BLOCK_RADIX_RANK_HPP_
+#define HIPCUB_ROCPRIM_BLOCK_BLOCK_RADIX_RANK_HPP_
 
 #include "../../../config.hpp"
-#include "../../../util_type.hpp"
 #include "../../../util_ptx.hpp"
+#include "../../../util_type.hpp"
 
 #include "../block/block_scan.hpp"
 #include "../block/radix_rank_sort_operations.hpp"
@@ -57,11 +57,13 @@ struct DigitExtractorAdopter
 {
     DigitExtractorT& digit_extractor_;
 
-    HIPCUB_DEVICE DigitExtractorAdopter(DigitExtractorT& digit_extractor)
+    HIPCUB_DEVICE
+    DigitExtractorAdopter(DigitExtractorT& digit_extractor)
         : digit_extractor_(digit_extractor)
     {}
 
-    HIPCUB_DEVICE inline UnsignedBits operator()(const UnsignedBits key)
+    HIPCUB_DEVICE
+    inline UnsignedBits operator()(const UnsignedBits key)
     {
         UnsignedBits digit = digit_extractor_.Digit(key);
         if(IS_DESCENDING)
@@ -142,11 +144,13 @@ public:
 
 private:
     // Reference to temporary storage (usually shared memory)
-    TempStorage& temp_storage_;
+    TempStorage&        temp_storage_;
 
-    HIPCUB_DEVICE inline TempStorage& PrivateStorage()
+    HIPCUB_DEVICE
+    inline TempStorage& PrivateStorage()
     {
-        HIPCUB_SHARED_MEMORY TempStorage private_storage;
+        HIPCUB_SHARED_MEMORY
+        TempStorage private_storage;
         return private_storage;
     }
 
@@ -157,7 +161,7 @@ public:
         BINS_TRACKED_PER_THREAD = base_type::digits_per_thread,
     };
 
-    /******************************************************************//**
+    /******************************************************************/ /**
      * \name Collective constructors
      *********************************************************************/
     //@{
@@ -165,12 +169,16 @@ public:
     /**
      * \brief Collective constructor using a private static allocation of shared memory as temporary storage.
      */
-    HIPCUB_DEVICE inline BlockRadixRank() : temp_storage_(PrivateStorage()) {}
+    HIPCUB_DEVICE
+    inline BlockRadixRank()
+        : temp_storage_(PrivateStorage())
+    {}
 
     /**
      * \brief Collective constructor using the specified memory allocation as temporary storage.
      */
-    HIPCUB_DEVICE inline BlockRadixRank(
+    HIPCUB_DEVICE
+    inline BlockRadixRank(
         TempStorage&
             temp_storage) ///< [in] Reference to memory allocation having layout type TempStorage
         : temp_storage_(temp_storage)
@@ -188,7 +196,8 @@ public:
     template<typename UnsignedBits,
              int KEYS_PER_THREAD,
              typename DigitExtractorT>
-    HIPCUB_DEVICE inline void RankKeys(
+    HIPCUB_DEVICE
+    inline void RankKeys(
         UnsignedBits (&keys)[KEYS_PER_THREAD], ///< [in] Keys for this tile
         int (&ranks)[KEYS_PER_THREAD], ///< [out] For each key, the local rank within the tile
         DigitExtractorT digit_extractor) ///< [in] The digit extractor
@@ -207,7 +216,8 @@ public:
     template<typename UnsignedBits,
              int KEYS_PER_THREAD,
              typename DigitExtractorT>
-    HIPCUB_DEVICE inline void RankKeys(
+    HIPCUB_DEVICE
+    inline void RankKeys(
         UnsignedBits (&keys)[KEYS_PER_THREAD], ///< [in] Keys for this tile
         int (&ranks)
             [KEYS_PER_THREAD], ///< [out] For each key, the local rank within the tile (out parameter)
@@ -259,11 +269,13 @@ public:
 
 private:
     // Reference to temporary storage (usually shared memory)
-    TempStorage& temp_storage_;
+    TempStorage&        temp_storage_;
 
-    HIPCUB_DEVICE inline TempStorage& PrivateStorage()
+    HIPCUB_DEVICE
+    inline TempStorage& PrivateStorage()
     {
-        HIPCUB_SHARED_MEMORY TempStorage private_storage;
+        HIPCUB_SHARED_MEMORY
+        TempStorage private_storage;
         return private_storage;
     }
 
@@ -274,7 +286,7 @@ public:
         BINS_TRACKED_PER_THREAD = base_type::digits_per_thread,
     };
 
-    /******************************************************************//**
+    /******************************************************************/ /**
      * \name Collective constructors
      *********************************************************************/
     //@{
@@ -282,19 +294,23 @@ public:
     /**
      * \brief Collective constructor using a private static allocation of shared memory as temporary storage.
      */
-    HIPCUB_DEVICE inline BlockRadixRankMatch() : temp_storage_(PrivateStorage()) {}
+    HIPCUB_DEVICE
+    inline BlockRadixRankMatch()
+        : temp_storage_(PrivateStorage())
+    {}
 
     /**
      * \brief Collective constructor using the specified memory allocation as temporary storage.
      */
-    HIPCUB_DEVICE inline BlockRadixRankMatch(
+    HIPCUB_DEVICE
+    inline BlockRadixRankMatch(
         TempStorage&
             temp_storage) ///< [in] Reference to memory allocation having layout type TempStorage
         : temp_storage_(temp_storage)
     {}
 
     //@}  end member group
-    /******************************************************************//**
+    /******************************************************************/ /**
      * \name Raking
      *********************************************************************/
     //@{
@@ -305,7 +321,8 @@ public:
     template<typename UnsignedBits,
              int KEYS_PER_THREAD,
              typename DigitExtractorT>
-    __device__ __forceinline__ void RankKeys(
+    __device__ __forceinline__
+    void RankKeys(
         UnsignedBits (&keys)[KEYS_PER_THREAD], ///< [in] Keys for this tile
         int (&ranks)[KEYS_PER_THREAD], ///< [out] For each key, the local rank within the tile
         DigitExtractorT digit_extractor) ///< [in] The digit extractor
@@ -324,7 +341,8 @@ public:
     template<typename UnsignedBits,
              int KEYS_PER_THREAD,
              typename DigitExtractorT>
-    __device__ __forceinline__ void RankKeys(
+    __device__ __forceinline__
+    void RankKeys(
         UnsignedBits (&keys)[KEYS_PER_THREAD], ///< [in] Keys for this tile
         int (&ranks)
             [KEYS_PER_THREAD], ///< [out] For each key, the local rank within the tile (out parameter)

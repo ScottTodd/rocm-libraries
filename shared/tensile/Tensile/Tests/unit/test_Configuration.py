@@ -29,12 +29,13 @@ from Tensile.Configuration import CallableParameter
 from Tensile.Configuration import ExpressionEvaluator
 from Tensile.Configuration import ProjectConfig
 
+
 def test_ReadWriteTransformDict():
     def readXForm(obj, key):
-        return obj.readNoTransform(key+"-Mod")
+        return obj.readNoTransform(key + "-Mod")
 
     def writeXForm(obj, key, value):
-        obj.writeNoTransform(key+"-Mod", value)
+        obj.writeNoTransform(key + "-Mod", value)
 
     test = ReadWriteTransformDict(readXForm, writeXForm)
 
@@ -57,6 +58,7 @@ def test_ReadWriteTransformDict():
     test["Key"] = -5
     assert test["Key"] == -5 and test.readNoTransform("Key") == -5
 
+
 def test_Parameter():
     name = "banana"
     initVal = 15
@@ -65,7 +67,7 @@ def test_Parameter():
     initType = type(initVal)
     b = Parameter(name, initVal, defaultVal, descr)
 
-    #attr
+    # attr
     assert b.value == initVal
     assert b.defaultValue == defaultVal
     assert b.name == name
@@ -88,7 +90,7 @@ def test_Parameter():
         raise Exception("Should not get here")
     except KeyError:
         pass
-    except :
+    except:
         assert 0, "Failed mutability test"
 
     try:
@@ -97,7 +99,7 @@ def test_Parameter():
         raise Exception("Should not get here")
     except AttributeError:
         pass
-    except :
+    except:
         assert 0, "Failed type mutability test"
 
     try:
@@ -107,13 +109,13 @@ def test_Parameter():
         raise Exception("Should not get here")
     except AttributeError:
         pass
-    except :
+    except:
         assert 0, "Failed type assignment test"
 
     try:
         # Writing same type should succeed
         b.value = 55
-    except :
+    except:
         assert 0, "Failed assignment test"
 
     b.resetToDefault()
@@ -158,7 +160,7 @@ def test_Parameter():
     assert (5 / b) == (5 / defaultVal)
     assert (5 // b) == (5 // defaultVal)
     assert (5 % b) == (5 % defaultVal)
-    assert (5 ** b) == (5 ** defaultVal)
+    assert (5**b) == (5**defaultVal)
     assert (5 >> b) == (5 >> defaultVal)
     assert (5 << b) == (5 << defaultVal)
     assert (5 & b) == (5 & defaultVal)
@@ -172,7 +174,7 @@ def test_Parameter():
     assert (b / 5) == (defaultVal / 5)
     assert (b // 5) == (defaultVal // 5)
     assert (b % 5) == (defaultVal % 5)
-    assert (b ** 5) == (defaultVal ** 5)
+    assert (b**5) == (defaultVal**5)
     assert (b >> 5) == (defaultVal >> 5)
     assert (b << 5) == (defaultVal << 5)
     assert (b & 5) == (defaultVal & 5)
@@ -186,7 +188,7 @@ def test_Parameter():
     assert (a / b) == (defaultVal2 / defaultVal)
     assert (a // b) == (defaultVal2 // defaultVal)
     assert (a % b) == (defaultVal2 % defaultVal)
-    assert (a ** b) == (defaultVal2 ** defaultVal)
+    assert (a**b) == (defaultVal2**defaultVal)
     assert (a >> b) == (defaultVal2 >> defaultVal)
     assert (a << b) == (defaultVal2 << defaultVal)
     assert (a & b) == (defaultVal2 & defaultVal)
@@ -200,7 +202,7 @@ def test_Parameter():
     assert (b / a) == (defaultVal / defaultVal2)
     assert (b // a) == (defaultVal // defaultVal2)
     assert (b % a) == (defaultVal % defaultVal2)
-    assert (b ** a) == (defaultVal ** defaultVal2)
+    assert (b**a) == (defaultVal**defaultVal2)
     assert (b >> a) == (defaultVal >> defaultVal2)
     assert (b << a) == (defaultVal << defaultVal2)
     assert (b & a) == (defaultVal & defaultVal2)
@@ -214,10 +216,12 @@ def test_Parameter():
     assert (+b) == (+defaultVal)
     assert bool(b) == bool(defaultVal)
 
+
 def test_CallableParameter():
     # Test with function
     def bananaFunc(obj):
         return obj.testVal
+
     b = CallableParameter("banana", bananaFunc, "I am a banana")
     b.createAttr("testVal", -99)
 
@@ -235,6 +239,7 @@ def test_CallableParameter():
     # Test write
     a.value = 55
     assert a.value == 101
+
 
 def test_BinaryOp():
     # Test 2 const
@@ -264,7 +269,7 @@ def test_BinaryOp():
     def customOp0(lhs, rhs):
         return rhs
 
-    customOp1 = lambda lhs, rhs : rhs
+    customOp1 = lambda lhs, rhs: rhs
 
     def badOp(lhs):
         return lhs
@@ -277,10 +282,10 @@ def test_BinaryOp():
 
     try:
         p21 = CallableParameter.createBinaryOp(lhs, rhs, badOp)
-        p21.value # Dummy to satisfy linter
+        p21.value  # Dummy to satisfy linter
     except CallableParameter.BadFunc:
         pass
-    except :
+    except:
         assert 0, "Failed bad binary op function handling"
 
     assert p0.value == (lhs and rhs)
@@ -292,7 +297,7 @@ def test_BinaryOp():
     assert p6.value == (lhs > rhs)
     assert p7.value == (lhs >= rhs)
     assert p8.value == (lhs * rhs)
-    assert p9.value == (lhs ** rhs)
+    assert p9.value == (lhs**rhs)
     assert p10.value == (lhs / rhs)
     assert p11.value == (lhs // rhs)
     assert p12.value == (lhs % rhs)
@@ -332,7 +337,7 @@ def test_BinaryOp():
     def customOp2(lhs, rhs):
         return lhs
 
-    customOp3 = lambda lhs, rhs : lhs
+    customOp3 = lambda lhs, rhs: lhs
 
     p19 = CallableParameter.createBinaryOp(lhs, rhs, customOp2)
     p20 = CallableParameter.createBinaryOp(lhs, rhs, customOp3)
@@ -346,7 +351,7 @@ def test_BinaryOp():
     assert p6.value == (lhs > rhs)
     assert p7.value == (lhs >= rhs)
     assert p8.value == (lhs * rhs)
-    assert p9.value == (lhs ** rhs)
+    assert p9.value == (lhs**rhs)
     assert p10.value == (lhs / rhs)
     assert p11.value == (lhs // rhs)
     assert p12.value == (lhs % rhs)
@@ -384,9 +389,9 @@ def test_BinaryOp():
     p18 = CallableParameter.createBinaryOp(lhs, rhs, "max")
 
     def customOp4(lhs, rhs):
-        return lhs+rhs*lhs
+        return lhs + rhs * lhs
 
-    customOp5 = lambda lhs, rhs : lhs+rhs*lhs
+    customOp5 = lambda lhs, rhs: lhs + rhs * lhs
 
     p19 = CallableParameter.createBinaryOp(lhs, rhs, customOp4)
     p20 = CallableParameter.createBinaryOp(lhs, rhs, customOp5)
@@ -400,7 +405,7 @@ def test_BinaryOp():
     assert p6.value == (lhs > rhs)
     assert p7.value == (lhs >= rhs)
     assert p8.value == (lhs * rhs)
-    assert p9.value == (lhs ** rhs)
+    assert p9.value == (lhs**rhs)
     assert p10.value == (lhs / rhs)
     assert p11.value == (lhs // rhs)
     assert p12.value == (lhs % rhs)
@@ -410,8 +415,8 @@ def test_BinaryOp():
     assert p16.value == (lhs | rhs)
     assert p17.value == min(lhs, rhs)
     assert p18.value == max(lhs, rhs)
-    assert p19.value == (lhs+lhs*rhs)
-    assert p20.value == (lhs+lhs*rhs)
+    assert p19.value == (lhs + lhs * rhs)
+    assert p20.value == (lhs + lhs * rhs)
 
     # Test lhs, rhs params
     lhs = Parameter("banana", -3, -3, "I am a banana")
@@ -438,9 +443,9 @@ def test_BinaryOp():
     p18 = CallableParameter.createBinaryOp(lhs, rhs, "max")
 
     def customOp6(lhs, rhs):
-        return lhs-rhs*lhs
+        return lhs - rhs * lhs
 
-    customOp7 = lambda lhs, rhs : lhs-rhs*lhs
+    customOp7 = lambda lhs, rhs: lhs - rhs * lhs
 
     p19 = CallableParameter.createBinaryOp(lhs, rhs, customOp6)
     p20 = CallableParameter.createBinaryOp(lhs, rhs, customOp7)
@@ -454,7 +459,7 @@ def test_BinaryOp():
     assert p6.value == (lhs > rhs)
     assert p7.value == (lhs >= rhs)
     assert p8.value == (lhs * rhs)
-    assert p9.value == (lhs ** rhs)
+    assert p9.value == (lhs**rhs)
     assert p10.value == (lhs / rhs)
     assert p11.value == (lhs // rhs)
     assert p12.value == (lhs % rhs)
@@ -464,8 +469,9 @@ def test_BinaryOp():
     assert p16.value == (lhs | rhs)
     assert p17.value == min(lhs, rhs)
     assert p18.value == max(lhs, rhs)
-    assert p19.value == (lhs-lhs*rhs)
-    assert p20.value == (lhs-lhs*rhs)
+    assert p19.value == (lhs - lhs * rhs)
+    assert p20.value == (lhs - lhs * rhs)
+
 
 def test_UnaryOp():
     # Test const
@@ -476,9 +482,9 @@ def test_UnaryOp():
     p2 = CallableParameter.createUnaryOp(rhs, "None")
 
     def customOp(rhs):
-        return rhs*5
+        return rhs * 5
 
-    customOp1 = lambda rhs : rhs*5
+    customOp1 = lambda rhs: rhs * 5
 
     def badOp(lhs, rhs):
         return lhs + rhs
@@ -491,17 +497,17 @@ def test_UnaryOp():
 
     try:
         p5 = CallableParameter.createUnaryOp(rhs, badOp)
-        p5.value # Dummy to satisfy linter
+        p5.value  # Dummy to satisfy linter
     except CallableParameter.BadFunc:
         pass
-    except :
+    except:
         assert 0, "Failed bad binary op function"
 
     assert p0.value == (not rhs)
     assert p1.value == ~rhs
     assert p2.value == rhs
-    assert p3.value == rhs*5
-    assert p4.value == rhs*5
+    assert p3.value == rhs * 5
+    assert p4.value == rhs * 5
 
     # Test param
     rhs = Parameter("banana", 5, 5, "I am a banana")
@@ -511,9 +517,9 @@ def test_UnaryOp():
     p2 = CallableParameter.createUnaryOp(rhs, "None")
 
     def customOp(rhs):
-        return rhs*5
+        return rhs * 5
 
-    customOp1 = lambda rhs : rhs*5
+    customOp1 = lambda rhs: rhs * 5
 
     p3 = CallableParameter.createUnaryOp(rhs, customOp)
     assert p3.name == "CustomUnaryOp"
@@ -524,8 +530,9 @@ def test_UnaryOp():
     assert p0.value == (not rhs)
     assert p1.value == ~rhs
     assert p2.value == rhs
-    assert p3.value == rhs*5
-    assert p4.value == rhs*5
+    assert p3.value == rhs * 5
+    assert p4.value == rhs * 5
+
 
 def test_ExpressionEvaluator():
     # Context
@@ -540,35 +547,44 @@ def test_ExpressionEvaluator():
 
     tree = ast.parse(expr)
     exprEval = ExpressionEvaluator().evaluate(tree, context)
-    assert  exprEval == (a + (b + (c*d) % a - 25)//d + 20)
+    assert exprEval == (a + (b + (c * d) % a - 25) // d + 20)
 
     # Mixed ops
     expr = "+a < (-b ^ d + ((c << 1) * (d >> 5)) > ~20 >= (not a & c | d) and c <= d or a == d)"
     tree = ast.parse(expr)
     exprEval = ExpressionEvaluator().evaluate(tree, context)
-    assert  exprEval == (+a < (-b ^ d + ((c << 1) * (d >> 5)) > ~20 >= (not a & c | d) and c <= d or a ==d))
+    assert exprEval == (
+        +a
+        < (-b ^ d + ((c << 1) * (d >> 5)) > ~20 >= (not a & c | d) and c <= d or a == d)
+    )
 
     # Assignment to value
     expr = "a=20"
     tree = ast.parse(expr)
     exprEval = ExpressionEvaluator().evaluate(tree, context)
-    assert(context["a"] == 20) and (exprEval == 20)
+    assert (context["a"] == 20) and (exprEval == 20)
 
     # Assignment to name
     expr = "a=b"
     tree = ast.parse(expr)
     exprEval = ExpressionEvaluator().evaluate(tree, context)
-    assert(context["a"] == context["b"]) and (exprEval == context["b"])
+    assert (context["a"] == context["b"]) and (exprEval == context["b"])
 
     # Multiple assignment
     expr = "a=b=c"
     tree = ast.parse(expr)
     exprEval = ExpressionEvaluator().evaluate(tree, context)
-    assert(context["a"] == context["c"]) and (context["b"] == context["c"]) and (exprEval == context["c"])
+    assert (
+        (context["a"] == context["c"])
+        and (context["b"] == context["c"])
+        and (exprEval == context["c"])
+    )
 
     # Assignment to expression
     expr = "b = max(5, 10)*10 / (2**4) - min(b, 4 % 2//1) if (1 != 2) else 0"
-    compareVal = max(5, 10)*10 / (2**4) - min(context["b"], 4 % 2//1) if (1 != 2) else 0
+    compareVal = (
+        max(5, 10) * 10 / (2**4) - min(context["b"], 4 % 2 // 1) if (1 != 2) else 0
+    )
     tree = ast.parse(expr)
     exprEval = ExpressionEvaluator().evaluate(tree, context)
     assert (context["b"] == compareVal) and (exprEval == compareVal)
@@ -596,7 +612,9 @@ def test_ProjectConfig():
     # Hard assignments for constraints
     proj.addConstraint("SubA.tVal = max(SubA.tMin, min(SubA.tMax, tVal))")
     proj.addConstraint("SubB.tVal = max(SubB.tMin, min(SubB.tMax, tVal))")
-    proj.addConstraint("SubB.SubC.tVal = max(SubB.SubC.tMin, min(SubB.SubC.tMax, tVal))")
+    proj.addConstraint(
+        "SubB.SubC.tVal = max(SubB.SubC.tMin, min(SubB.SubC.tMax, tVal))"
+    )
     proj.addConstraint("tVal = max(SubA.tVal, max(SubB.tVal, SubB.SubC.tVal))")
     proj.checkConstraints()
 

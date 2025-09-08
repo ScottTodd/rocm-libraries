@@ -60,7 +60,7 @@ namespace rocRoller
         public:
             DGEMM4x4x4Write() {}
             DGEMM4x4x4Write(ContextPtr context)
-                : WaitStateObserver<DGEMM4x4x4Write>(context){};
+                : WaitStateObserver<DGEMM4x4x4Write>(context) {};
 
             constexpr static bool required(GPUArchitectureTarget const& target)
             {

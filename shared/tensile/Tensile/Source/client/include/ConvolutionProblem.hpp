@@ -165,7 +165,7 @@ namespace Tensile
         struct TENSILE_API LoopCounts
         {
             LoopCounts()
-                : scount(MaxNumSpatialDims, 1){};
+                : scount(MaxNumSpatialDims, 1) {};
             void                    setupForData(ConvolutionProblem const& convProblem,
                                                  ContractionProblem const& problem);
             void                    setupFormat(ConvolutionProblem const& convProblem);

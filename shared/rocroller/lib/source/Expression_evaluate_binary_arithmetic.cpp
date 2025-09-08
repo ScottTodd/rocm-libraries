@@ -42,7 +42,7 @@ namespace rocRoller::Expression::EvaluateDetail
     struct OperationEvaluatorVisitor<Add> : public BinaryEvaluatorVisitor<Add>
     {
         template <CCommandArgumentValue LHS, CCommandArgumentValue RHS>
-        requires CCanAdd<LHS, RHS>
+            requires CCanAdd<LHS, RHS>
         auto evaluate(LHS const& lhs, RHS const& rhs) const
         {
             assertNonNullPointer(lhs);
@@ -61,7 +61,7 @@ namespace rocRoller::Expression::EvaluateDetail
     struct OperationEvaluatorVisitor<Subtract> : public BinaryEvaluatorVisitor<Subtract>
     {
         template <CCommandArgumentValue LHS, CCommandArgumentValue RHS>
-        requires CCanSubtract<LHS, RHS>
+            requires CCanSubtract<LHS, RHS>
         auto evaluate(LHS const& lhs, RHS const& rhs) const
         {
             assertNonNullPointer(lhs);

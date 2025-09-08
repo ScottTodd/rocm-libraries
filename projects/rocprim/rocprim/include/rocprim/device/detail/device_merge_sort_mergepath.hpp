@@ -42,7 +42,7 @@ namespace detail
 {
 // Load items from input1 and input2 from global memory
 template<unsigned int ItemsPerThread, class KeyT, class InputIterator>
-    ROCPRIM_DEVICE ROCPRIM_INLINE
+ROCPRIM_DEVICE ROCPRIM_INLINE
 void gmem_to_reg(KeyT (&output)[ItemsPerThread],
                  InputIterator input1,
                  InputIterator input2,
@@ -74,7 +74,7 @@ void gmem_to_reg(KeyT (&output)[ItemsPerThread],
 }
 
 template<unsigned int BlockSize, unsigned int ItemsPerThread, class KeyT, class OutputIterator>
-    ROCPRIM_DEVICE ROCPRIM_INLINE
+ROCPRIM_DEVICE ROCPRIM_INLINE
 void reg_to_shared(OutputIterator output, KeyT (&input)[ItemsPerThread])
 {
     ROCPRIM_UNROLL

@@ -1069,8 +1069,8 @@ THRUST_HIP_RUNTIME_FUNCTION pair<KeysOutputIt, ValuesOutputIt> set_operations(
   temp_storage_bytes = rocprim::detail::align_size(temp_storage_bytes);
 
   size_t storage_size = 0;
-  void* ptr       = nullptr;
-  void* temp_stor = nullptr;
+  void* ptr           = nullptr;
+  void* temp_stor     = nullptr;
   size_type* d_output_count;
 
   auto l_part =

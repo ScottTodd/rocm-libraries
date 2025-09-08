@@ -127,8 +127,9 @@ namespace TensileLite
             {
                 for(int idx = 0; idx < problems->gemms.size(); idx++)
                 {
-                    size_t ws      = solution.requiredWorkspaceSizeGroupedGemm(problems->gemms, *m_hardware);
-                    auto&  problem = problems->gemms[idx];
+                    size_t ws
+                        = solution.requiredWorkspaceSizeGroupedGemm(problems->gemms, *m_hardware);
+                    auto& problem = problems->gemms[idx];
                     problem.setWorkspaceSizeGroupedGemm(ws);
                     problem.setGroupedGemmCount(problems->gemms.size());
                     if(!checkSolution(solution, problem))

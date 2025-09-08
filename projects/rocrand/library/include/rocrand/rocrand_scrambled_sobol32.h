@@ -32,52 +32,62 @@ template<bool UseSharedVectors>
 class scrambled_sobol32_engine
 {
 public:
-    __forceinline__ __device__ __host__ scrambled_sobol32_engine() : scramble_constant() {}
+    __forceinline__ __device__ __host__
+    scrambled_sobol32_engine()
+        : scramble_constant()
+    {}
 
     __forceinline__ __device__ __host__
-        scrambled_sobol32_engine(const unsigned int* vectors,
-                                 const unsigned int  scramble_constant,
-                                 const unsigned int  offset)
+    scrambled_sobol32_engine(const unsigned int* vectors,
+                             const unsigned int  scramble_constant,
+                             const unsigned int  offset)
         : m_engine(vectors, 0), scramble_constant(scramble_constant)
     {
         discard(offset);
     }
 
     /// Advances the internal state to skip \p offset numbers.
-    __forceinline__ __device__ __host__ void discard(unsigned int offset)
+    __forceinline__ __device__ __host__
+    void discard(unsigned int offset)
     {
         m_engine.discard(offset);
     }
 
-    __forceinline__ __device__ __host__ void discard()
+    __forceinline__ __device__ __host__
+    void discard()
     {
         m_engine.discard();
     }
 
     /// Advances the internal state by stride times, where stride is power of 2
-    __forceinline__ __device__ __host__ void discard_stride(unsigned int stride)
+    __forceinline__ __device__ __host__
+    void discard_stride(unsigned int stride)
     {
         m_engine.discard_stride(stride);
     }
 
-    __forceinline__ __device__ __host__ unsigned int operator()()
+    __forceinline__ __device__ __host__
+    unsigned int operator()()
     {
         return this->next();
     }
 
-    __forceinline__ __device__ __host__ unsigned int next()
+    __forceinline__ __device__ __host__
+    unsigned int next()
     {
         unsigned int p = m_engine.next();
         return p ^ scramble_constant;
     }
 
-    __forceinline__ __device__ __host__ unsigned int current()
+    __forceinline__ __device__ __host__
+    unsigned int current()
     {
         unsigned int p = m_engine.current();
         return p ^ scramble_constant;
     }
 
-    __forceinline__ __device__ __host__ static constexpr bool uses_shared_vectors()
+    __forceinline__ __device__ __host__
+    static constexpr bool uses_shared_vectors()
     {
         return UseSharedVectors;
     }

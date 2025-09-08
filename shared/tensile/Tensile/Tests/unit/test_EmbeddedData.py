@@ -25,8 +25,7 @@
 from pathlib import Path
 from Tensile.EmbeddedData import generateLibrary
 
-referenceSource = \
-"""/*******************************************************************************
+referenceSource = """/*******************************************************************************
 * Copyright (C) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -76,25 +75,28 @@ namespace Tensile {
         EmbedData<SolutionAdapter> TENSILE_EMBED_SYMBOL_NAME("my-library-test", {
             0x37, 0x38, 0x39, 0x30});
     } // anonymous namespace
-} // namespace Tensile""".split("\n")
+} // namespace Tensile""".split(
+    "\n"
+)
+
 
 def test_generateLibrary():
-  name = Path.cwd() / "my-library"
-  key = "my-library-test"
+    name = Path.cwd() / "my-library"
+    key = "my-library-test"
 
-  masterLibrary = Path.cwd() / "myMasterLibrary"
-  with open(masterLibrary, "w") as f:
-    f.write("1234")
+    masterLibrary = Path.cwd() / "myMasterLibrary"
+    with open(masterLibrary, "w") as f:
+        f.write("1234")
 
-  coFiles = [ Path.cwd() / "mylib1.co", Path.cwd() / "mylib2.co" ]
-  data = ["5678", "7890"]
-  for t in zip(coFiles, data):
-    with open(t[0], "w") as f:
-      f.write(t[1])
+    coFiles = [Path.cwd() / "mylib1.co", Path.cwd() / "mylib2.co"]
+    data = ["5678", "7890"]
+    for t in zip(coFiles, data):
+        with open(t[0], "w") as f:
+            f.write(t[1])
 
-  generateLibrary(name, key, masterLibrary, "MyBase", coFiles)
+    generateLibrary(name, key, masterLibrary, "MyBase", coFiles)
 
-  with open(name.with_suffix(".cpp")) as f:
-    embedSource = f.readlines()
-    for e, r in zip(embedSource, referenceSource):
-      assert e.rstrip() == r, "Generated file does not match reference."
+    with open(name.with_suffix(".cpp")) as f:
+        embedSource = f.readlines()
+        for e, r in zip(embedSource, referenceSource):
+            assert e.rstrip() == r, "Generated file does not match reference."

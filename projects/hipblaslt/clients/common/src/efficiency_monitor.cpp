@@ -108,7 +108,7 @@ public:
     bool enabled()
     {
         static const char* env1_freq = getenv("HIPBLASLT_BENCH_FREQ");
-        static const char* env1_eff = getenv("HIPBLASLT_BENCH_EFF");
+        static const char* env1_eff  = getenv("HIPBLASLT_BENCH_EFF");
         static const char* env2      = getenv("HIPBLASLT_BENCH_FREQ_ALL");
         return env1_freq != nullptr || env1_eff != nullptr
                || (env2 != nullptr && m_isMultiXCDSupported);

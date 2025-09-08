@@ -44,7 +44,7 @@ namespace WMMAObserverTests
     {
     public:
         WMMAObserverTest(GPUArchitectureGFX gfx)
-            : TestContext(TestContext::ForTarget({gfx})){};
+            : TestContext(TestContext::ForTarget({gfx})) {};
         void peekAndSchedule(Instruction& inst, uint expectedNops = 0)
         {
             auto peeked = m_context->observer()->peek(inst);

@@ -195,10 +195,8 @@ rocblas_status rocblas_internal_dgmm_launcher(rocblas_handle handle,
         = std::is_same_v<TPtr, float*> || std::is_same_v<TPtr, float* const*>;
     static constexpr bool is_double
         = std::is_same_v<TPtr, double*> || std::is_same_v<TPtr, double* const*>;
-    static constexpr bool is_complex_float
-        = std::is_same_v<
-              TPtr,
-              rocblas_float_complex*> || std::is_same_v<TPtr, rocblas_float_complex* const*>;
+    static constexpr bool is_complex_float = std::is_same_v<TPtr, rocblas_float_complex*>
+                                             || std::is_same_v<TPtr, rocblas_float_complex* const*>;
 
 #define dgmm_KARGS                                                                            \
     dgmm_grid, dgmm_threads, 0, rocblas_stream, m, n, A, offset_A, lda, stride_A, x, shift_x, \

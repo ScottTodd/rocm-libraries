@@ -26,12 +26,14 @@ from rocisa.instruction import VMovB32, SCmpGeU32
 from ..Component import Component
 import abc
 
+
 class PersistentLoop(Component):
     """
     Persistent loop code.
     """
+
     def __call__(self):
-        assert(0)
+        assert 0
 
     @abc.abstractmethod
     def openPersistentLoop(self, writer, kernel):
@@ -87,22 +89,35 @@ class PersistentLoopOn(PersistentLoop):
 
         # TODO remove?
         # kStr += inst("s_add_u32", sgpr("PersistentLoopIter"), sgpr("PersistentLoopIter"), hex(1), "Inc PersistentLoop Iter")     # Back-up: not needed now
-        #kStr += str(Code.WaitCnt(self.version, 0,0,"wait for outstanding stores"))
+        # kStr += str(Code.WaitCnt(self.version, 0,0,"wait for outstanding stores"))
         return module
 
     def recalcLocalWriteAddresses(self, writer, kernel, tc):
         module = Module("PersistentLoop On recalcLocalWriteAddresses")
 
         if getattr(writer, "oriLwa%s" % tc) is None:
-            setattr(writer, "oriLwa%s" % tc, writer.vgprPool.checkOut(1, "OriLocalWriteddr%s" % tc))
-            module.add(VMovB32(dst=vgpr(getattr(writer, "oriLwa%s" % tc)), src=vgpr("LocalWriteAddr%s" % tc), comment="back up LWA for persistent kernel + wider local read"))
+            setattr(
+                writer,
+                "oriLwa%s" % tc,
+                writer.vgprPool.checkOut(1, "OriLocalWriteddr%s" % tc),
+            )
+            module.add(
+                VMovB32(
+                    dst=vgpr(getattr(writer, "oriLwa%s" % tc)),
+                    src=vgpr("LocalWriteAddr%s" % tc),
+                    comment="back up LWA for persistent kernel + wider local read",
+                )
+            )
 
         return module
 
     def recalcLocalReadAddressesAB(self, writer, kernel):
         module = Module("PersistentLoop On recalcLocalReadAddressesAB")
 
-        needRecalc = writer.states.numReadsIterCoalescedA > 1 or writer.states.numReadsIterCoalescedB > 1
+        needRecalc = (
+            writer.states.numReadsIterCoalescedA > 1
+            or writer.states.numReadsIterCoalescedB > 1
+        )
         # backup LocalReadAddr
         # LdsPad + LBSPP case, need to backup LocalReadAddr even if recalc is not done
 
@@ -128,6 +143,12 @@ class PersistentLoopOn(PersistentLoop):
         module = Module("PersistentLoop On closePersistentLoop")
         # endIter = "StreamKIterEnd" if kernel["StreamK"] == 1 else "TotalIters"
         endIter = "TotalIters" if kernel["StreamK"] == 2 else "StreamKIterEnd"
-        module.add(SCmpGeU32(src0=sgpr("StreamKIter"), src1=sgpr(endIter), comment="Check if done all StreamK iterations"))
+        module.add(
+            SCmpGeU32(
+                src0=sgpr("StreamKIter"),
+                src1=sgpr(endIter),
+                comment="Check if done all StreamK iterations",
+            )
+        )
         module.add(writer.longBranchScc0(Label("PersistentLoopStart", ""), posNeg=-1))
         return module

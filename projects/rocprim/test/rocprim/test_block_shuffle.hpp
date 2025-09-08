@@ -34,7 +34,7 @@
 
 block_reduce_test_suite_type_def(suite_name, name_suffix)
 
-typed_test_suite_def(suite_name, name_suffix, warp_params);
+    typed_test_suite_def(suite_name, name_suffix, warp_params);
 
 typed_test_def(suite_name, name_suffix, BlockOffset)
 {
@@ -42,14 +42,16 @@ typed_test_def(suite_name, name_suffix, BlockOffset)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using type = typename TestFixture::input_type;
+    using type                         = typename TestFixture::input_type;
     static constexpr size_t block_size = TestFixture::block_size;
-    static constexpr size_t size = block_size * 11;
-    static constexpr size_t grid_size = size / block_size;
+    static constexpr size_t size       = block_size * 11;
+    static constexpr size_t grid_size  = size / block_size;
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
-        int distance = (rand()%std::min<size_t>(10,block_size/2))-std::min<size_t>(10,block_size/2);
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
+        int distance = (rand() % std::min<size_t>(10, block_size / 2))
+                       - std::min<size_t>(10, block_size / 2);
         SCOPED_TRACE(testing::Message()
                      << "with seed = " << seed_value << ", distance = " << distance);
         // Generate data
@@ -77,17 +79,18 @@ typed_test_def(suite_name, name_suffix, BlockOffset)
         // Calculate expected results on host
         for(size_t block_index = 0; block_index < grid_size; block_index++)
         {
-          for(size_t thread_index = 0; thread_index < block_size; thread_index++)
-          {
-            int offset = thread_index + distance;
-            if((offset >= 0 ) && (offset < (int)block_size))
+            for(size_t thread_index = 0; thread_index < block_size; thread_index++)
             {
-              ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(input_data[block_index*block_size + offset],output_data[block_index*block_size + thread_index]));
+                int offset = thread_index + distance;
+                if((offset >= 0) && (offset < (int)block_size))
+                {
+                    ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(
+                        input_data[block_index * block_size + offset],
+                        output_data[block_index * block_size + thread_index]));
+                }
             }
-          }
         }
     }
-
 }
 
 typed_test_def(suite_name, name_suffix, BlockRotate)
@@ -96,14 +99,15 @@ typed_test_def(suite_name, name_suffix, BlockRotate)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using type = typename TestFixture::input_type;
+    using type                         = typename TestFixture::input_type;
     static constexpr size_t block_size = TestFixture::block_size;
-    static constexpr size_t size = block_size * 11;
-    static constexpr size_t grid_size = size / block_size;
+    static constexpr size_t size       = block_size * 11;
+    static constexpr size_t grid_size  = size / block_size;
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
-        int distance = (rand()%std::min<size_t>(5,block_size/2));
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
+        int distance = (rand() % std::min<size_t>(5, block_size / 2));
         SCOPED_TRACE(testing::Message()
                      << "with seed = " << seed_value << ", distance = " << distance);
         // Generate data
@@ -131,16 +135,17 @@ typed_test_def(suite_name, name_suffix, BlockRotate)
         // Calculate expected results on host
         for(size_t block_index = 0; block_index < grid_size; block_index++)
         {
-          for(size_t thread_index = 0; thread_index < block_size; thread_index++)
-          {
-            int offset = thread_index + distance;
-            if (offset >= (int)block_size)
-                offset -=      block_size;
-            ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(input_data[block_index*block_size + offset],output_data[block_index*block_size + thread_index]));
-          }
+            for(size_t thread_index = 0; thread_index < block_size; thread_index++)
+            {
+                int offset = thread_index + distance;
+                if(offset >= (int)block_size)
+                    offset -= block_size;
+                ASSERT_NO_FATAL_FAILURE(
+                    test_utils::assert_eq(input_data[block_index * block_size + offset],
+                                          output_data[block_index * block_size + thread_index]));
+            }
         }
     }
-
 }
 
 typed_test_def(suite_name, name_suffix, BlockUp)
@@ -149,14 +154,15 @@ typed_test_def(suite_name, name_suffix, BlockUp)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using type = typename TestFixture::input_type;
-    static constexpr size_t block_size = TestFixture::block_size;
-    static constexpr size_t size = block_size * 11;
-    static constexpr size_t grid_size = size / block_size;
+    using type                                   = typename TestFixture::input_type;
+    static constexpr size_t       block_size     = TestFixture::block_size;
+    static constexpr size_t       size           = block_size * 11;
+    static constexpr size_t       grid_size      = size / block_size;
     static constexpr unsigned int ItemsPerThread = 128;
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
         // Generate data
         std::vector<type> input_data
@@ -165,7 +171,7 @@ typed_test_def(suite_name, name_suffix, BlockUp)
                                                         100,
                                                         seed_value);
 
-        std::vector<type*>  arr_input(size);
+        std::vector<type*> arr_input(size);
         std::vector<type*> arr_output(size);
 
         // Preparing device
@@ -188,20 +194,21 @@ typed_test_def(suite_name, name_suffix, BlockUp)
         // Calculate expected results on host
         for(size_t block_index = 0; block_index < grid_size; block_index++)
         {
-          for(size_t thread_index = 0; thread_index < block_size; thread_index++)
-          {
-            size_t start_offset = (block_index*block_size + thread_index)*ItemsPerThread;
-            for(size_t item_index = 0; item_index < ItemsPerThread; item_index++)
+            for(size_t thread_index = 0; thread_index < block_size; thread_index++)
             {
-              if(thread_index + item_index>0)
-              {
-                  ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(input_data[start_offset + item_index-1],output_data[start_offset + item_index]));
-              }
+                size_t start_offset = (block_index * block_size + thread_index) * ItemsPerThread;
+                for(size_t item_index = 0; item_index < ItemsPerThread; item_index++)
+                {
+                    if(thread_index + item_index > 0)
+                    {
+                        ASSERT_NO_FATAL_FAILURE(
+                            test_utils::assert_eq(input_data[start_offset + item_index - 1],
+                                                  output_data[start_offset + item_index]));
+                    }
+                }
             }
-          }
         }
     }
-
 }
 
 typed_test_def(suite_name, name_suffix, BlockDown)
@@ -210,14 +217,15 @@ typed_test_def(suite_name, name_suffix, BlockDown)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using type = typename TestFixture::input_type;
-    static constexpr size_t block_size = TestFixture::block_size;
-    static constexpr size_t size = block_size * 11;
-    static constexpr size_t grid_size = size / block_size;
+    using type                                   = typename TestFixture::input_type;
+    static constexpr size_t       block_size     = TestFixture::block_size;
+    static constexpr size_t       size           = block_size * 11;
+    static constexpr size_t       grid_size      = size / block_size;
     static constexpr unsigned int ItemsPerThread = 128;
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
@@ -227,7 +235,7 @@ typed_test_def(suite_name, name_suffix, BlockDown)
                                                         100,
                                                         seed_value);
 
-        std::vector<type*>  arr_input(size);
+        std::vector<type*> arr_input(size);
         std::vector<type*> arr_output(size);
 
         // Preparing device
@@ -250,18 +258,19 @@ typed_test_def(suite_name, name_suffix, BlockDown)
         // Calculate expected results on host
         for(size_t block_index = 0; block_index < grid_size; block_index++)
         {
-          for(size_t thread_index = 0; thread_index < block_size; thread_index++)
-          {
-            size_t start_offset = (block_index*block_size + thread_index)*ItemsPerThread;
-            for(size_t item_index = 0; item_index < ItemsPerThread; item_index++)
+            for(size_t thread_index = 0; thread_index < block_size; thread_index++)
             {
-              if((thread_index!=block_size-1)&&(item_index!=ItemsPerThread-1))
-              {
-                  ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(input_data[start_offset + item_index+1],output_data[start_offset + item_index]));
-              }
+                size_t start_offset = (block_index * block_size + thread_index) * ItemsPerThread;
+                for(size_t item_index = 0; item_index < ItemsPerThread; item_index++)
+                {
+                    if((thread_index != block_size - 1) && (item_index != ItemsPerThread - 1))
+                    {
+                        ASSERT_NO_FATAL_FAILURE(
+                            test_utils::assert_eq(input_data[start_offset + item_index + 1],
+                                                  output_data[start_offset + item_index]));
+                    }
+                }
             }
-          }
         }
     }
-
 }

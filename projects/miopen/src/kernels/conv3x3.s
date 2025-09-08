@@ -498,7 +498,7 @@ __sgprs_allocated_after_filters = .SGPR_NEXT_FREE - __sgprs_ptr
         vals_to_load = full_input_chunks
     .endif
     vals_loaded = 0
-    
+
     .if tuple_alignment && ((\base+vals_loaded) % 2)
         .single_vload \base, \s_offset, \mbufs_inflight, 1
     .endif

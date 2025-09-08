@@ -26,12 +26,19 @@ import Tensile.SolutionLibrary as SolutionLibrary
 
 from pytest import raises
 
+
 def test_ArchitectureMap():
     msl = SolutionLibrary.MasterSolutionLibrary(None, None)
-    assert msl.ArchitectureIndexMap("gfx90a") == (int("90a", 16) << 18), "Incorrect index value."
-    assert msl.ArchitectureIndexMap("gfx900") == (int("900", 16) << 18), "Incorrect index value."
-    assert msl.ArchitectureIndexMap("gfx908") == (int("908", 16) << 18), "Incorrect index value."
-    assert msl.ArchitectureIndexMap("fallback") == (0), "Incorrect index value."    
+    assert msl.ArchitectureIndexMap("gfx90a") == (
+        int("90a", 16) << 18
+    ), "Incorrect index value."
+    assert msl.ArchitectureIndexMap("gfx900") == (
+        int("900", 16) << 18
+    ), "Incorrect index value."
+    assert msl.ArchitectureIndexMap("gfx908") == (
+        int("908", 16) << 18
+    ), "Incorrect index value."
+    assert msl.ArchitectureIndexMap("fallback") == (0), "Incorrect index value."
 
     # Should throw when computing index for previously computed architecture.
     with raises(RuntimeError, match="ERROR in architecture solution index mapping."):
@@ -41,18 +48,27 @@ def test_ArchitectureMap():
     with raises(RuntimeError, match="ERROR in architecture solution index mapping."):
         msl.ArchitectureIndexMap("test90a")
 
+
 class MockSolution:
     index = 0
+
     def __init__(self, name):
         self.name = name
+
 
 class MockLibrary:
     def remapSolutionIndices(self, indexMap):
         pass
 
+
 def test_remapSolutionIndexStartingFrom():
-    mockSolutions = { 0 : MockSolution("foo"), 1 : MockSolution("bar")}
-    SolutionLibrary.MasterSolutionLibrary(mockSolutions, MockLibrary()).remapSolutionIndicesStartingFrom(10)
-    assert mockSolutions[0].index == 10, "Zeroith entry should have a remapped index of 10"
-    assert mockSolutions[1].index == 11, "First entry should have a remapped index of 11"
-    
+    mockSolutions = {0: MockSolution("foo"), 1: MockSolution("bar")}
+    SolutionLibrary.MasterSolutionLibrary(
+        mockSolutions, MockLibrary()
+    ).remapSolutionIndicesStartingFrom(10)
+    assert (
+        mockSolutions[0].index == 10
+    ), "Zeroith entry should have a remapped index of 10"
+    assert (
+        mockSolutions[1].index == 11
+    ), "First entry should have a remapped index of 11"

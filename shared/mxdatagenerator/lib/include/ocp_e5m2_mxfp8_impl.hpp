@@ -30,8 +30,8 @@
 template <>
 inline bool isNaN<ocp_e5m2_mxfp8>(uint8_t const* scaleBytes,
                                   uint8_t const* dataBytes,
-                                  index_t         scaleIndex,
-                                  index_t         dataIndex)
+                                  index_t        scaleIndex,
+                                  index_t        dataIndex)
 {
     uint8_t data  = *(dataBytes + dataIndex);
     uint8_t scale = *(scaleBytes + scaleIndex);
@@ -49,8 +49,8 @@ inline bool isNaN<ocp_e5m2_mxfp8>(uint8_t const* scaleBytes,
 template <>
 inline bool isNaNPacked<ocp_e5m2_mxfp8>(uint8_t const* scaleBytes,
                                         uint8_t const* dataBytes,
-                                        index_t         scaleIndex,
-                                        index_t         dataIndex)
+                                        index_t        scaleIndex,
+                                        index_t        dataIndex)
 {
     return isNaN<ocp_e5m2_mxfp8>(scaleBytes, dataBytes, scaleIndex, dataIndex);
 }
@@ -58,8 +58,8 @@ inline bool isNaNPacked<ocp_e5m2_mxfp8>(uint8_t const* scaleBytes,
 template <>
 inline bool isInf<ocp_e5m2_mxfp8>(uint8_t const* scaleBytes [[maybe_unused]],
                                   uint8_t const* dataBytes,
-                                  index_t         scaleIndex [[maybe_unused]],
-                                  index_t         dataIndex)
+                                  index_t        scaleIndex [[maybe_unused]],
+                                  index_t        dataIndex)
 {
 
     // No need to check the scale since it does not have an inf representation
@@ -74,8 +74,8 @@ inline bool isInf<ocp_e5m2_mxfp8>(uint8_t const* scaleBytes [[maybe_unused]],
 template <>
 inline bool isInfPacked<ocp_e5m2_mxfp8>(uint8_t const* scaleBytes,
                                         uint8_t const* dataBytes,
-                                        index_t         scaleIndex,
-                                        index_t         dataIndex)
+                                        index_t        scaleIndex,
+                                        index_t        dataIndex)
 {
     return isInf<ocp_e5m2_mxfp8>(scaleBytes, dataBytes, scaleIndex, dataIndex);
 }
@@ -83,8 +83,8 @@ inline bool isInfPacked<ocp_e5m2_mxfp8>(uint8_t const* scaleBytes,
 template <>
 inline bool isZero<ocp_e5m2_mxfp8>(uint8_t const* scaleBytes,
                                    uint8_t const* dataBytes,
-                                   index_t         scaleIndex,
-                                   index_t         dataIndex)
+                                   index_t        scaleIndex,
+                                   index_t        dataIndex)
 {
 
     if(isNaN<ocp_e5m2_mxfp8>(scaleBytes, dataBytes, scaleIndex, dataIndex))
@@ -100,8 +100,8 @@ inline bool isZero<ocp_e5m2_mxfp8>(uint8_t const* scaleBytes,
 template <>
 inline bool isZeroPacked<ocp_e5m2_mxfp8>(uint8_t const* scaleBytes,
                                          uint8_t const* dataBytes,
-                                         index_t         scaleIndex,
-                                         index_t         dataIndex)
+                                         index_t        scaleIndex,
+                                         index_t        dataIndex)
 {
     return isZero<ocp_e5m2_mxfp8>(scaleBytes, dataBytes, scaleIndex, dataIndex);
 }
@@ -109,8 +109,8 @@ inline bool isZeroPacked<ocp_e5m2_mxfp8>(uint8_t const* scaleBytes,
 template <>
 inline double toDouble<ocp_e5m2_mxfp8>(uint8_t const* scaleBytes,
                                        uint8_t const* dataBytes,
-                                       index_t         scaleIndex,
-                                       index_t         dataIndex)
+                                       index_t        scaleIndex,
+                                       index_t        dataIndex)
 {
     if(isNaN<ocp_e5m2_mxfp8>(scaleBytes, dataBytes, scaleIndex, dataIndex))
         return std::numeric_limits<double>::quiet_NaN();
@@ -138,8 +138,8 @@ inline double toDouble<ocp_e5m2_mxfp8>(uint8_t const* scaleBytes,
 template <>
 inline double toDoublePacked<ocp_e5m2_mxfp8>(uint8_t const* scaleBytes,
                                              uint8_t const* dataBytes,
-                                             index_t         scaleIndex,
-                                             index_t         dataIndex)
+                                             index_t        scaleIndex,
+                                             index_t        dataIndex)
 {
     return toDouble<ocp_e5m2_mxfp8>(scaleBytes, dataBytes, scaleIndex, dataIndex);
 }
@@ -147,8 +147,8 @@ inline double toDoublePacked<ocp_e5m2_mxfp8>(uint8_t const* scaleBytes,
 template <>
 inline float toFloat<ocp_e5m2_mxfp8>(uint8_t const* scaleBytes,
                                      uint8_t const* dataBytes,
-                                     index_t         scaleIndex,
-                                     index_t         dataIndex)
+                                     index_t        scaleIndex,
+                                     index_t        dataIndex)
 {
     if(isNaN<ocp_e5m2_mxfp8>(scaleBytes, dataBytes, scaleIndex, dataIndex))
         return std::numeric_limits<float>::quiet_NaN();
@@ -176,8 +176,8 @@ inline float toFloat<ocp_e5m2_mxfp8>(uint8_t const* scaleBytes,
 template <>
 inline float toFloatPacked<ocp_e5m2_mxfp8>(uint8_t const* scaleBytes,
                                            uint8_t const* dataBytes,
-                                           index_t         scaleIndex,
-                                           index_t         dataIndex)
+                                           index_t        scaleIndex,
+                                           index_t        dataIndex)
 {
     return toFloat<ocp_e5m2_mxfp8>(scaleBytes, dataBytes, scaleIndex, dataIndex);
 }
@@ -208,8 +208,8 @@ inline void setOne<ocp_e5m2_mxfp8>(
 template <>
 inline void setZero<ocp_e5m2_mxfp8>(uint8_t* scaleBytes [[maybe_unused]],
                                     uint8_t* dataBytes,
-                                    index_t   scaleIndex [[maybe_unused]],
-                                    index_t   dataIndex)
+                                    index_t  scaleIndex [[maybe_unused]],
+                                    index_t  dataIndex)
 {
     *(dataBytes + dataIndex) = ocp_e5m2_mxfp8::positiveZeroMask;
 }
@@ -217,8 +217,8 @@ inline void setZero<ocp_e5m2_mxfp8>(uint8_t* scaleBytes [[maybe_unused]],
 template <>
 inline void setNaN<ocp_e5m2_mxfp8>(uint8_t* scaleBytes [[maybe_unused]],
                                    uint8_t* dataBytes,
-                                   index_t   scaleIndex [[maybe_unused]],
-                                   index_t   dataIndex)
+                                   index_t  scaleIndex [[maybe_unused]],
+                                   index_t  dataIndex)
 {
     *(dataBytes + dataIndex) = ocp_e5m2_mxfp8::dataNaNMasks[0];
 }
@@ -226,8 +226,8 @@ inline void setNaN<ocp_e5m2_mxfp8>(uint8_t* scaleBytes [[maybe_unused]],
 template <>
 inline void setInf<ocp_e5m2_mxfp8>(uint8_t* scaleBytes [[maybe_unused]],
                                    uint8_t* dataBytes,
-                                   index_t   scaleIndex [[maybe_unused]],
-                                   index_t   dataIndex)
+                                   index_t  scaleIndex [[maybe_unused]],
+                                   index_t  dataIndex)
 {
     *(dataBytes + dataIndex) = ocp_e5m2_mxfp8::positiveInfMask;
 }
@@ -248,7 +248,7 @@ template <>
 inline uint64_t satConvertToType<ocp_e5m2_mxfp8>(float value)
 {
     cvt t;
-    t.num      = value;
+    t.num     = value;
     uint sign = t.bRep >> 31;
 
     if(std::isnan(value))
@@ -278,7 +278,7 @@ template <>
 inline uint64_t nonSatConvertToType<ocp_e5m2_mxfp8>(float value)
 {
     cvt t;
-    t.num      = value;
+    t.num     = value;
     uint sign = t.bRep >> 31;
 
     if(std::isnan(value))
@@ -306,7 +306,7 @@ template <>
 inline uint64_t satConvertToTypeSR<ocp_e5m2_mxfp8>(float value, uint seed)
 {
     cvt t;
-    t.num      = value;
+    t.num     = value;
     uint sign = t.bRep >> 31;
     if(std::isnan(value))
         return sign << 15 | ocp_e5m2_mxfp8::dataNaNMasks[0];
@@ -337,7 +337,7 @@ inline uint64_t nonSatConvertToTypeSR<ocp_e5m2_mxfp8>(float value, uint seed)
 {
     cvt t;
 
-    t.num      = value;
+    t.num     = value;
     uint sign = t.bRep >> 31;
 
     if(std::isnan(value))

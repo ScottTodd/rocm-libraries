@@ -78,8 +78,7 @@ using Params = ::testing::Types<
 TYPED_TEST_SUITE(HipcubBlockMergeSort, Params);
 
 template<unsigned int BlockSize, unsigned int ItemsPerThread, class key_type, typename CompareOp>
-__global__
-__launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void sort_key_kernel(key_type* device_keys_output, CompareOp compare_op)
 {
     constexpr unsigned int items_per_block = BlockSize * ItemsPerThread;
@@ -301,8 +300,7 @@ template<unsigned int BlockSize,
          class key_type,
          class value_type,
          class CompareOp>
-__global__
-    __launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void sort_key_value_kernel(key_type*   device_keys_output,
                            value_type* device_values_output,
                            CompareOp   compare_op)
@@ -538,8 +536,7 @@ template<unsigned int BlockSize,
          class key_type,
          class value_type,
          class CompareOp>
-__global__
-    __launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void stable_sort_key_value_kernel(key_type*   device_keys_output,
                                   value_type* device_values_output,
                                   CompareOp   compare_op)

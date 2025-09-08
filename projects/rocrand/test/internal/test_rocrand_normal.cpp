@@ -360,7 +360,7 @@ TEST(NormalDistributionRocRandNumericTest, rocrand_host_numeric_uint_in_float_ou
     using InputType             = unsigned int;
     constexpr size_t OutputSize = 1;
 
-    auto mean_func = [](OutputType x) { return x; };
+    auto mean_func    = [](OutputType x) { return x; };
     auto std_dev_func = [](OutputType x, double actual_mean) { return POWF(x - actual_mean, 2); };
 
     run_host_numeric_test<OutputType, InputType, OutputSize>(
@@ -376,7 +376,7 @@ TEST(NormalDistributionRocRandNumericTest, rocrand_host_numeric_ullint_in_float_
     using InputType             = unsigned long long int;
     constexpr size_t OutputSize = 1;
 
-    auto mean_func = [](OutputType x) { return x; };
+    auto mean_func    = [](OutputType x) { return x; };
     auto std_dev_func = [](OutputType x, double actual_mean) { return POWF(x - actual_mean, 2); };
 
     run_host_numeric_test<OutputType, InputType, OutputSize>(
@@ -414,9 +414,8 @@ TEST(NormalDistributionRocRandNumericTest, rocrand_host_numeric_uint2_in_float2_
     { return POWF(x.x - actual_mean, 2) + POWF(x.y - actual_mean, 2); };
 
     run_host_numeric_test<OutputType, InputType, OutputSize>(
-        [=](std::uniform_int_distribution<InputType>& dis, std::mt19937& gen) {
-            return rocrand_device::detail::normal_distribution2(uint2{dis(gen), dis(gen)});
-        },
+        [=](std::uniform_int_distribution<InputType>& dis, std::mt19937& gen)
+        { return rocrand_device::detail::normal_distribution2(uint2{dis(gen), dis(gen)}); },
         mean_func,
         std_dev_func);
 }
@@ -475,9 +474,8 @@ TEST(NormalDistributionRocRandNumericTest, rocrand_host_numeric_longlong2_in_flo
     };
 
     run_host_numeric_test<OutputType, InputType, OutputSize>(
-        [=](std::uniform_int_distribution<InputType>& dis, std::mt19937& gen) {
-            return rocrand_device::detail::normal_distribution4(longlong2{dis(gen), dis(gen)});
-        },
+        [=](std::uniform_int_distribution<InputType>& dis, std::mt19937& gen)
+        { return rocrand_device::detail::normal_distribution4(longlong2{dis(gen), dis(gen)}); },
         mean_func,
         std_dev_func);
 }

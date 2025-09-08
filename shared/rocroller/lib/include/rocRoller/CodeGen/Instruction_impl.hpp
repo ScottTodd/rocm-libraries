@@ -56,7 +56,7 @@ namespace rocRoller
             if(comment[idx] == '\n')
             {
                 auto n = (idx + 1) - beginIndex;
-                co_yield(prefix + comment.substr(beginIndex, n));
+                co_yield (prefix + comment.substr(beginIndex, n));
                 beginIndex = idx + 1;
             }
         }
@@ -64,7 +64,7 @@ namespace rocRoller
         if(beginIndex < comment.size())
         {
             auto n = comment.size() - beginIndex;
-            co_yield(prefix + comment.substr(beginIndex, n));
+            co_yield (prefix + comment.substr(beginIndex, n));
         }
     }
 

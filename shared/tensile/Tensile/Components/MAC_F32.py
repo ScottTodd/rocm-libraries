@@ -25,14 +25,17 @@
 from ..Component import Component, MAC
 from ..DataType import DataType
 
+
 class MAC_F32_Plain(MAC):
     """
     Plain MAC instruction implementation
     """
+
     @staticmethod
     def asmCaps(caps):
         return caps["v_mac_f32"] or caps["v_fma_f32"]
-    #archCaps = {}
+
+    # archCaps = {}
     kernel = {"ProblemType": {"DataType": DataType(DataType.single)}}
 
     def __call__(self, writer, m, innerUnroll):
@@ -45,10 +48,18 @@ class MAC_F32_Plain(MAC):
             elif writer.asmCaps["v_fma_f32"]:
                 instruction = "v_fma_f32"
             else:
-                raise RuntimeError("FMA instruction specified but not supported on {}".format(kernel["ISA"]))
+                raise RuntimeError(
+                    "FMA instruction specified but not supported on {}".format(
+                        kernel["ISA"]
+                    )
+                )
 
         if not writer.asmCaps[instruction]:
-            raise RuntimeError("{} instruction specified but not supported on {}".format(instruction, kernel["ISA"]))
+            raise RuntimeError(
+                "{} instruction specified but not supported on {}".format(
+                    instruction, kernel["ISA"]
+                )
+            )
 
         kStr = self.commentHeader()
 
@@ -76,21 +87,33 @@ class MAC_F32_Plain(MAC):
                     vars["b"] = idx1 if writer.tPB["tile01Idx"] else idx0
                     vars["iui"] = iui
 
-                    vars["cStr"] = "v[vgprValuC + {idx0} + {idx1}*{ThreadTile0}]".format_map(vars)
+                    vars[
+                        "cStr"
+                    ] = "v[vgprValuC + {idx0} + {idx1}*{ThreadTile0}]".format_map(vars)
                     vars["aStr"] = "v[vgprValuA_X{m}_I{iui} + {a}]".format_map(vars)
                     vars["bStr"] = "v[vgprValuB_X{m}_I{iui} + {b}]".format_map(vars)
 
                     if instruction == "v_fma_f32":
-                        kStr += "v_fma_f32 {cStr}, {aStr}, {bStr}, {cStr}{endLine}".format_map(vars)
+                        kStr += "v_fma_f32 {cStr}, {aStr}, {bStr}, {cStr}{endLine}".format_map(
+                            vars
+                        )
                     else:
-                        kStr += "{instruction} {cStr}, {aStr}, {bStr}{endLine}".format_map(vars)
+                        kStr += (
+                            "{instruction} {cStr}, {aStr}, {bStr}{endLine}".format_map(
+                                vars
+                            )
+                        )
 
                     kStr += priority(writer, 1, "Raise priority while processing macs")
 
                     if macIdx == kernel["PerformanceWaitLocation"]:
-                        kStr += "s_waitcnt lgkmcnt({PerformanceWaitCount}) // extra wait for performance{endLine}".format_map(vars)
+                        kStr += "s_waitcnt lgkmcnt({PerformanceWaitCount}) // extra wait for performance{endLine}".format_map(
+                            vars
+                        )
                     if macIdx == kernel["PerformanceSyncLocation"]:
-                        kStr += "s_barrier // extra barrier for performance{endLine}".format_map(vars)
+                        kStr += "s_barrier // extra barrier for performance{endLine}".format_map(
+                            vars
+                        )
                     macIdx += 1
 
         kStr += priority(writer, 0, "Reset priority after macs")

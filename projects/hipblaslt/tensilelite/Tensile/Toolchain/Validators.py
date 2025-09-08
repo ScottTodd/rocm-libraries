@@ -55,7 +55,9 @@ def _windowsLatestRocmBin(path: Union[Path, str]) -> Path:
     """
     path = Path(path)
     pattern = re.compile(r"^\d+\.\d+$")
-    versions = list(filter(lambda d: d.is_dir() and pattern.match(d.name), path.iterdir()))
+    versions = list(
+        filter(lambda d: d.is_dir() and pattern.match(d.name), path.iterdir())
+    )
     if len(versions) == 0:
         return None
     latest = max(versions, key=lambda d: tuple(map(int, d.name.split("."))))
@@ -116,8 +118,12 @@ def _posixSearchPaths() -> List[Path]:
 class ToolchainDefaults(NamedTuple):
     CXX_COMPILER = osSelect(linux="amdclang++", windows="clang++.exe")
     C_COMPILER = osSelect(linux="amdclang", windows="clang.exe")
-    OFFLOAD_BUNDLER = osSelect(linux="clang-offload-bundler", windows="clang-offload-bundler.exe")
-    DEVICE_ENUMERATOR = osSelect(linux="rocm_agent_enumerator" if isRhel8() else "amdgpu-arch", windows="hipinfo")
+    OFFLOAD_BUNDLER = osSelect(
+        linux="clang-offload-bundler", windows="clang-offload-bundler.exe"
+    )
+    DEVICE_ENUMERATOR = osSelect(
+        linux="rocm_agent_enumerator" if isRhel8() else "amdgpu-arch", windows="hipinfo"
+    )
     ASSEMBLER = osSelect(linux="amdclang++", windows="clang++.exe")
     HIP_CONFIG = osSelect(linux="hipconfig", windows="hipconfig.exe")
 
@@ -125,7 +131,9 @@ class ToolchainDefaults(NamedTuple):
 def _supportedComponent(component: str, targets: List[str]) -> bool:
     if os.name == "nt":
         targets = [tExt for t in targets for tExt in _windowsWithExtensions(t)]
-    isSupported = any([component == t for t in targets]) or any([Path(component).name == t for t in targets])
+    isSupported = any([component == t for t in targets]) or any(
+        [Path(component).name == t for t in targets]
+    )
     return isSupported
 
 
@@ -220,14 +228,18 @@ def _validateExecutable(file: str, searchPaths: List[Path]) -> str:
     Returns:
         The validated executable with an absolute path.
     """
-    if not any((
-        supportedCxxCompiler(file),
-        supportedCCompiler(file),
-        supportedOffloadBundler(file),
-        supportedHip(file),
-        supportedDeviceEnumerator(file)
-    )):
-        raise ValueError(f"`{file}` is not a supported toolchain component on {'Windows' if os.name == 'nt' else 'Linux'}")
+    if not any(
+        (
+            supportedCxxCompiler(file),
+            supportedCCompiler(file),
+            supportedOffloadBundler(file),
+            supportedHip(file),
+            supportedDeviceEnumerator(file),
+        )
+    ):
+        raise ValueError(
+            f"`{file}` is not a supported toolchain component on {'Windows' if os.name == 'nt' else 'Linux'}"
+        )
 
     # Check if the file is an absolute path and executable
     if _exeExists(Path(file)):
@@ -240,10 +252,12 @@ def _validateExecutable(file: str, searchPaths: List[Path]) -> str:
             p = path / f
             if _exeExists(p):
                 return str(p)
-    raise FileNotFoundError(f"`{file}` either not found or not executable in any search path: {':'.join(map(str, searchPaths))}")
+    raise FileNotFoundError(
+        f"`{file}` either not found or not executable in any search path: {':'.join(map(str, searchPaths))}"
+    )
 
 
-def validateToolchain(*args: str) :
+def validateToolchain(*args: str):
     """
     Validate that the given toolchain components are in the PATH and executable,
     returning the absolute path to each.
@@ -259,7 +273,9 @@ def validateToolchain(*args: str) :
         FileNotFoundError: If a toolchain component is not found in the PATH.
     """
     if not args:
-        raise ValueError("No toolchain components to validate, at least one argument is required")
+        raise ValueError(
+            "No toolchain components to validate, at least one argument is required"
+        )
 
     searchPaths = _windowsSearchPaths() if os.name == "nt" else _posixSearchPaths()
 

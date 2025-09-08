@@ -147,9 +147,9 @@ struct verify_forward_train_3d_bn_spatial
                             // iterating through the stack of images in the mini_batch
                             mean_accum += input(bidx, cidx, didx, row, column);
                         } // end for (column)
-                    }     // end for (row)
-                }         // end for (depth)
-            }             // end for (n)
+                    } // end for (row)
+                } // end for (depth)
+            } // end for (n)
 #else
             for(std::size_t didx = 0; didx < depth; ++didx)
             { // via depth
@@ -183,10 +183,10 @@ struct verify_forward_train_3d_bn_spatial
                             out(bidx, cidx, didx, row, column) = elemStd =
                                 (input(bidx, cidx, didx, row, column) - mean_accum); // (x_i - mean)
                             variance_accum += (elemStd * elemStd); // sum{ (x_i - mean)^2 }
-                        }                                          // end for (column)
-                    }                                              // end for (row)
-                }                                                  // for (depth)
-            }                                                      // end for(n)
+                        } // end for (column)
+                    } // end for (row)
+                } // for (depth)
+            } // end for(n)
 
 #else
             for(std::size_t didx = 0; didx < depth; ++didx) // via depth
@@ -223,7 +223,7 @@ struct verify_forward_train_3d_bn_spatial
                                     (invVar * out(bidx, cidx, didx, row, column)) +
                                 shift(0, cidx, 0, 0, 0);
                         } // for (column)
-                    }     // for (row)
+                    } // for (row)
                 }
             } // end for(n_batchs)
 
@@ -428,8 +428,8 @@ struct verify_forward_infer_3d_bn_spatial_recalc
                             // iterating through the stack of images in the mini_batch
                             mean_accum += input(bidx, cidx, didx, row, column);
                         } // end for (n)
-                    }     // end for (column)
-                }         // end for (row)
+                    } // end for (column)
+                } // end for (row)
             }
             mean_accum /= ndhw;
 
@@ -449,11 +449,11 @@ struct verify_forward_infer_3d_bn_spatial_recalc
                             out(bidx, cidx, didx, row, column) = elemStd =
                                 (input(bidx, cidx, didx, row, column) - mean_accum); // (x_i - mean)
                             variance_accum += (elemStd * elemStd); // sum{ (x_i - mean)^2 }
-                        }                                          // end for(n)
-                    }                                              // end for (column)
-                }                                                  // end for (row)
-            }                                                      // end for (depth)
-            variance_accum /= ndhw;                                // (1/N)*sum{ (x_i - mean)^2 }
+                        } // end for(n)
+                    } // end for (column)
+                } // end for (row)
+            } // end for (depth)
+            variance_accum /= ndhw; // (1/N)*sum{ (x_i - mean)^2 }
 
             // #3 add epsilon for numeric stability, sqr_root, and invert
             invVar = 1.0 / sqrt(variance_accum + epsilon);
@@ -478,9 +478,9 @@ struct verify_forward_infer_3d_bn_spatial_recalc
                             out(bidx, cidx, didx, row, column) =
                                 scale(0, cidx, 0, 0, 0) * inhat + shift(0, cidx, 0, 0, 0);
                         } // end for(n_batchs)
-                    }     // for (column)
-                }         // for (row)
-            }             // for (depth)
+                    } // for (column)
+                } // for (row)
+            } // for (depth)
         });
 
 #if(MIO_BN_TIME_EVERYTHING == 1)
@@ -744,8 +744,8 @@ struct verify_backward_3d_bn_spatial_recalc
                             mean += x_input(bidx, cidx, didx, row, column);
                         }
                     } // for (column)
-                }     // for (row)
-            }         // for (depth)
+                } // for (row)
+            } // for (depth)
 #else
             for(std::size_t didx = 0; didx < depth; ++didx)
             { // via depth
@@ -777,9 +777,9 @@ struct verify_backward_3d_bn_spatial_recalc
                             // per (x-dims) channel load a block of data into LDS
                             elemStd = x_input(bidx, cidx, didx, row, column) - mean; // (x_i - mean)
                             variance += elemStd * elemStd; // sum{ (x_i - mean)^2 }
-                        }                                  // end for(n)
-                    }                                      // for (column)
-                }                                          // for (row)
+                        } // end for(n)
+                    } // for (column)
+                } // for (row)
             }
 #else
             for(std::size_t didx = 0; didx < depth; ++didx)
@@ -818,8 +818,8 @@ struct verify_backward_3d_bn_spatial_recalc
                             dshift(0, cidx, 0, 0, 0) += dyelem;
                             dscale(0, cidx, 0, 0, 0) += xhat[xhat_index] * dyelem;
                         } // end for(n_batch)
-                    }     // for (column)
-                }         // for (row)
+                    } // for (column)
+                } // for (row)
             }
 #else
             for(std::size_t didx = 0; didx < depth; ++didx)
@@ -862,8 +862,8 @@ struct verify_backward_3d_bn_spatial_recalc
                             double tmp3 = (scale(0, cidx, 0, 0, 0) * invVar) / ndhw;
                             dx_out(bidx, cidx, didx, row, column) = tmp3 * (tmp2 + tmp1);
                         } // end for(n_batchs)
-                    }     // for (column)
-                }         // for (row)
+                    } // for (column)
+                } // for (row)
             }
         }); // for (channel)
 
@@ -1047,8 +1047,8 @@ struct verify_backward_3d_bn_spatial_use_saved
                             dshift(0, cidx, 0, 0, 0) += dyelem;
                             dscale(0, cidx, 0, 0, 0) += xhat[xhat_index] * dyelem;
                         } // end for(n_batch)
-                    }     // for (column)
-                }         // for (row)
+                    } // for (column)
+                } // for (row)
             }
 #else
             for(std::size_t didx = 0; didx < depth; ++didx)
@@ -1092,8 +1092,8 @@ struct verify_backward_3d_bn_spatial_use_saved
                             double tmp3 = (scale(0, cidx, 0, 0, 0) * invVar) / ndhw;
                             dx_out(bidx, cidx, didx, row, column) = tmp3 * (tmp2 + tmp1);
                         } // end for(n_batchs)
-                    }     // for (column)
-                }         // for (row)
+                    } // for (column)
+                } // for (row)
             }
         }); // for (channel)
 #if(MIO_BN_TIME_EVERYTHING == 1)

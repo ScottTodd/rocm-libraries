@@ -28,70 +28,88 @@ from pathlib import Path
 import pytest
 import os
 
+
 def test_splitDelimitedString():
     archs = "all"
     expected = {"all"}
     result = splitDelimitedString(archs, {";", "_"})
-    assert result == expected, f"arch `{archs}` should parse to {expected} but instead maps to {result}"
+    assert (
+        result == expected
+    ), f"arch `{archs}` should parse to {expected} but instead maps to {result}"
 
     archs = "gfx000;gfx803;gfx900:xnack-"
-    expected = {'gfx000', 'gfx803', 'gfx900:xnack-'}
+    expected = {"gfx000", "gfx803", "gfx900:xnack-"}
     result = splitDelimitedString(archs, {";", "_"})
-    assert result == expected, f"arch `{archs}` should map to {expected} but instead maps to {result}"
+    assert (
+        result == expected
+    ), f"arch `{archs}` should map to {expected} but instead maps to {result}"
 
     archs = "gfx000_gfx803_gfx900:xnack-"
-    expected = {'gfx000', 'gfx803', 'gfx900:xnack-'}
+    expected = {"gfx000", "gfx803", "gfx900:xnack-"}
     result = splitDelimitedString(archs, {";", "_"})
-    assert result == expected, f"arch `{archs}` should map to {expected} but instead maps to {result}"
+    assert (
+        result == expected
+    ), f"arch `{archs}` should map to {expected} but instead maps to {result}"
 
     archs = "gfx803,    gfx906_gfx942:gfx1102"
     expected = {"gfx803,    gfx906", "gfx942:gfx1102"}
     result = splitDelimitedString(archs, {";", "_"})
-    assert result == expected, f"arch `{archs}` should map to {expected} but instead maps to {result}"
+    assert (
+        result == expected
+    ), f"arch `{archs}` should map to {expected} but instead maps to {result}"
 
     archs = "gfx900;gfx90a:xnack+-gfx1010"
     expected = {"gfx900", "gfx90a:xnack+-gfx1010"}
     result = splitDelimitedString(archs, {";", "_"})
-    assert result == expected, f"arch `{archs}` should map to {expected} but instead maps to {result}"
+    assert (
+        result == expected
+    ), f"arch `{archs}` should map to {expected} but instead maps to {result}"
 
     archs = ";gfx803;gfx906;"
     expected = {"", "gfx803", "gfx906", ""}
     result = splitDelimitedString(archs, {";", "_"})
-    assert result == expected, f"arch `{archs}` should map to {expected} but instead maps to {result}"
+    assert (
+        result == expected
+    ), f"arch `{archs}` should map to {expected} but instead maps to {result}"
 
     archs = "_gfx803_gfx906_"
     expected = {"", "gfx803", "gfx906", ""}
     result = splitDelimitedString(archs, {";", "_"})
-    assert result == expected, f"arch `{archs}` should map to {expected} but instead maps to {result}"
+    assert (
+        result == expected
+    ), f"arch `{archs}` should map to {expected} but instead maps to {result}"
 
     archs = "abc;gfx90Z;all"
     expected = {"abc", "gfx90Z", "all"}
     result = splitDelimitedString(archs, {";", "_"})
-    assert result == expected, f"arch `{archs}` should map to {expected} but instead maps to {result}"
+    assert (
+        result == expected
+    ), f"arch `{archs}` should map to {expected} but instead maps to {result}"
+
 
 def test_toFile():
-    
+
     manifest: Path = Path.cwd() / "my-manifest.txt"
     metaData = ["mylib.yaml"]
     codeObjectFiles = ["library/foo.co", "library/bar.co"]
     sourceCodeObjectFiles = ["library/foo.hsaco", "library/bar.hsaco"]
-    
+
     if manifest.is_file():
         os.remove(manifest)
 
-    with pytest.raises(AssertionError, match="contents must be a list."):     
-        toFile(manifest, (1,2,3))        
+    with pytest.raises(AssertionError, match="contents must be a list."):
+        toFile(manifest, (1, 2, 3))
 
-    with pytest.raises(AssertionError, match="contents elements must be a str."):     
-        toFile(manifest, [1,2,3])        
+    with pytest.raises(AssertionError, match="contents elements must be a str."):
+        toFile(manifest, [1, 2, 3])
 
     toFile(manifest, metaData + codeObjectFiles + sourceCodeObjectFiles)
 
     assert manifest.is_file(), "{manifest} was not generated"
     with open(manifest, "r") as f:
         result = f.readlines()
-        
+
     assert len(result) == 5, "Expected five entries in manifest file."
-        
+
     if manifest.is_file():
-        os.remove(manifest)        
+        os.remove(manifest)

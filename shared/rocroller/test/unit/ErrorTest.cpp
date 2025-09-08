@@ -111,8 +111,8 @@ namespace rocRollerTest
         std::string message = "RecoverableError Test";
 
         EXPECT_NO_THROW({ AssertRecoverable(StrA != StrB, ShowValue(StrA), message); });
-        EXPECT_THROW({ AssertRecoverable(StrA == StrB, ShowValue(StrB), message); },
-                     RecoverableError);
+        EXPECT_THROW(
+            { AssertRecoverable(StrA == StrB, ShowValue(StrB), message); }, RecoverableError);
 
         std::string expected = R"(
             shared/rocroller/test/unit/ErrorTest.cpp:125: RecoverableError(StrA == StrB)

@@ -21,9 +21,9 @@
 // SOFTWARE.
 
 block_reduce_test_suite_type_def(suite_name_single, name_suffix)
-block_reduce_test_suite_type_def(suite_name_array, name_suffix)
+    block_reduce_test_suite_type_def(suite_name_array, name_suffix)
 
-typed_test_suite_def(suite_name_single, name_suffix, block_params);
+        typed_test_suite_def(suite_name_single, name_suffix, block_params);
 typed_test_suite_def(suite_name_array, name_suffix, block_params);
 
 typed_test_def(suite_name_single, name_suffix, Reduce)
@@ -32,7 +32,7 @@ typed_test_def(suite_name_single, name_suffix, Reduce)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using T = typename TestFixture::input_type;
+    using T              = typename TestFixture::input_type;
     using binary_op_type = rocprim::plus<T>;
     // for bfloat16 and half we use double for host-side accumulation
     using binary_op_type_host = typename test_utils::select_plus_operator_host<T>::type;
@@ -47,12 +47,13 @@ typed_test_def(suite_name_single, name_suffix, Reduce)
         return;
     }
 
-    const size_t size = block_size * 58;
+    const size_t size      = block_size * 58;
     const size_t grid_size = size / block_size;
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
@@ -68,7 +69,7 @@ typed_test_def(suite_name_single, name_suffix, Reduce)
             for(size_t j = 0; j < block_size; j++)
             {
                 auto idx = i * block_size + j;
-                value = binary_op_host(value, output[idx]);
+                value    = binary_op_host(value, output[idx]);
             }
             expected_reductions[i] = static_cast<T>(value);
         }
@@ -207,12 +208,13 @@ typed_test_def(suite_name_single, name_suffix, ReduceMultipliesExact)
         return;
     }
 
-    const size_t size = block_size * 58;
+    const size_t size      = block_size * 58;
     const size_t grid_size = size / block_size;
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
@@ -234,7 +236,7 @@ typed_test_def(suite_name_single, name_suffix, ReduceMultipliesExact)
             for(size_t j = 0; j < block_size; j++)
             {
                 auto idx = i * block_size + j;
-                value = binary_op(value, output[idx]);
+                value    = binary_op(value, output[idx]);
             }
             expected_reductions[i] = value;
         }
@@ -283,7 +285,7 @@ typed_test_def(suite_name_single, name_suffix, ReduceValid)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using T = typename TestFixture::input_type;
+    using T              = typename TestFixture::input_type;
     using binary_op_type = rocprim::plus<T>;
     // for bfloat16 and half we use double for host-side accumulation
     using binary_op_type_host = typename test_utils::select_plus_operator_host<T>::type;
@@ -294,10 +296,12 @@ typed_test_def(suite_name_single, name_suffix, ReduceValid)
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
-        const size_t valid_items = test_utils::get_random_value<size_t>(block_size - 10, block_size, seed_value);
+        const size_t valid_items
+            = test_utils::get_random_value<size_t>(block_size - 10, block_size, seed_value);
 
         // Given block size not supported
         if(block_size > test_utils::get_max_block_size())
@@ -305,7 +309,7 @@ typed_test_def(suite_name_single, name_suffix, ReduceValid)
             return;
         }
 
-        const size_t size = block_size * 58;
+        const size_t size      = block_size * 58;
         const size_t grid_size = size / block_size;
 
         // Generate data
@@ -320,7 +324,7 @@ typed_test_def(suite_name_single, name_suffix, ReduceValid)
             for(size_t j = 0; j < valid_items; j++)
             {
                 auto idx = i * block_size + j;
-                value = binary_op_host(value, output[idx]);
+                value    = binary_op_host(value, output[idx]);
             }
             expected_reductions[i] = static_cast<T>(value);
         }
@@ -368,7 +372,7 @@ typed_test_def(suite_name_array, name_suffix, Reduce)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using T = typename TestFixture::input_type;
+    using T                     = typename TestFixture::input_type;
     constexpr size_t block_size = TestFixture::block_size;
 
     using bra = rocprim::block_reduce_algorithm;

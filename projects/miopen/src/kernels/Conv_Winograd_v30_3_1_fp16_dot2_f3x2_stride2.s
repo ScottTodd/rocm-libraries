@@ -50,4 +50,3 @@
 .else
     .error "Unsupported gfx generation"
 .endif
-

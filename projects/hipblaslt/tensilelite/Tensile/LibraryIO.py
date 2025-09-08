@@ -26,8 +26,7 @@ from .CustomKernels import getCustomKernelConfig
 from . import SolutionLibrary
 from .CustomYamlLoader import load_yaml_stream
 from Tensile import __version__
-from Tensile.Common import printExit, printWarning, print2, \
-                           versionIsCompatible, IsaInfo
+from Tensile.Common import printExit, printWarning, print2, versionIsCompatible, IsaInfo
 from Tensile.Common.Architectures import gfxToIsa
 from Tensile.SolutionStructs import Solution, ProblemSizes
 from Tensile.SolutionStructs.Problem import ProblemType, problemTypeToEnum
@@ -43,13 +42,16 @@ try:
 except ImportError:
     try:
         import ujson as json
+
         print2("orjson not installed. Fallback to ujson.")
     except ImportError:
         try:
             import simplejson as json
+
             print2("orjson, ujson not installed. Fallback to simplejson.")
         except ImportError:
             import json
+
             print2("orjson, ujson, simplejson not installed. Fallback to json.")
 
 try:
@@ -63,6 +65,7 @@ try:
     from yaml import CSafeLoader as yamlLoader
 except ImportError:
     from yaml import SafeLoader as yamlLoader
+
     printWarning("CSafeLoader not installed. Fallback to SafeLoader.")
 
 try:
@@ -99,18 +102,27 @@ def writeYAML(filename, data, **kwargs):
     with open(filename, "w") as f:
         yaml.dump(data, f, **kwargs)
 
+
 def writeJson(filename, data):
     """Writes data to file in json format."""
     with open(filename, "w") as f:
-        json_object = json.dumps(data, option=json.OPT_INDENT_2).decode("utf-8") if 'orjson' in sys.modules else json.dumps(data, indent=2)
+        json_object = (
+            json.dumps(data, option=json.OPT_INDENT_2).decode("utf-8")
+            if "orjson" in sys.modules
+            else json.dumps(data, indent=2)
+        )
         f.write(json_object)
+
 
 def writeMsgPack(filename, data):
     """Writes data to file in Message Pack format."""
     with open(filename, "wb") as f:
         msgpack.pack(data, f)
 
-def writeSolutions(filename, problemSizes, biasTypeArgs, activationArgs, solutions, cache=False):
+
+def writeSolutions(
+    filename, problemSizes, biasTypeArgs, activationArgs, solutions, cache=False
+):
     """Writes solution YAML file."""
 
     # convert objects to nested dictionaries
@@ -140,14 +152,18 @@ def writeSolutions(filename, problemSizes, biasTypeArgs, activationArgs, solutio
             for sizeRange in problemSizes.ranges:
                 f.write("  - Range: {}\n".format(sizeRange))
             for problemExact in problemSizes.exacts:
-                #FIXME-problem, this ignores strides:
+                # FIXME-problem, this ignores strides:
                 f.write("  - Exact: {}\n".format(problemExact))
         if biasTypeArgs:
-            f.write("- BiasTypeArgs: [{}]\n".format([btype.value for btype in biasTypeArgs.biasTypes]))
+            f.write(
+                "- BiasTypeArgs: [{}]\n".format(
+                    [btype.value for btype in biasTypeArgs.biasTypes]
+                )
+            )
         if activationArgs:
             f.write("- ActivationArgs:\n")
             for setting in activationArgs.settingList:
-                f.write("  - [Enum: %s]\n"%(setting.activationEnum))
+                f.write("  - [Enum: %s]\n" % (setting.activationEnum))
         yaml.dump(solutionStates, f, default_flow_style=None)
 
 
@@ -157,7 +173,11 @@ def writeSolutions(filename, problemSizes, biasTypeArgs, activationArgs, solutio
 def read(filename, customizedLoader=False):
     name, extension = os.path.splitext(filename)
     if extension == ".yaml":
-        return load_yaml_stream(filename, yamlLoader) if customizedLoader else readYAML(filename)
+        return (
+            load_yaml_stream(filename, yamlLoader)
+            if customizedLoader
+            else readYAML(filename)
+        )
     if extension == ".json":
         return readJson(filename)
     else:
@@ -179,52 +199,62 @@ def readJson(filename):
 
 
 def parseSolutionsFile(
-        filename,
-        assembler,
-        splitGSU: bool,
-        printSolutionRejectionReason: bool,
-        printIndexAssignmentInfo: bool,
-        isaInfoMap
-    ):
+    filename,
+    assembler,
+    splitGSU: bool,
+    printSolutionRejectionReason: bool,
+    printIndexAssignmentInfo: bool,
+    isaInfoMap,
+):
     """Wrapper function to read and parse a solutions file."""
     return parseSolutionsData(
-               read(filename),
-               filename,
-               assembler,
-               splitGSU,
-               printSolutionRejectionReason,
-               printIndexAssignmentInfo,
-               isaInfoMap
-            )
+        read(filename),
+        filename,
+        assembler,
+        splitGSU,
+        printSolutionRejectionReason,
+        printIndexAssignmentInfo,
+        isaInfoMap,
+    )
 
 
 def parseSolutionsData(
-        data,
-        srcFile,
-        assembler,
-        splitGSU: bool,
-        printSolutionRejectionReason: bool,
-        printIndexAssignmentInfo: bool,
-        isaInfoMap
-    ):
+    data,
+    srcFile,
+    assembler,
+    splitGSU: bool,
+    printSolutionRejectionReason: bool,
+    printIndexAssignmentInfo: bool,
+    isaInfoMap,
+):
     """Parses problem sizes and solutions from the data of a solutions file."""
     if len(data) < 3:
-        printExit("Solution file {} is missing required fields (len = {} < 3" \
-                .format(srcFile, len(data)))
+        printExit(
+            "Solution file {} is missing required fields (len = {} < 3".format(
+                srcFile, len(data)
+            )
+        )
 
     versionString = data[0]["MinimumRequiredVersion"]
     if not versionIsCompatible(versionString):
-        printWarning("Version = {} in solution file {} does not match Tensile version = {}" \
-                .format(srcFile, versionString, __version__) )
+        printWarning(
+            "Version = {} in solution file {} does not match Tensile version = {}".format(
+                srcFile, versionString, __version__
+            )
+        )
 
     if "ProblemSizes" not in data[1]:
         printExit("Solution file {} doesn't begin with ProblemSizes".format(srcFile))
 
     problemSizesConfig = data[1]["ProblemSizes"]
     solutionStartIdxInData = 2
-    if (len(data) > solutionStartIdxInData) and "BiasTypeArgs" in data[solutionStartIdxInData]:
+    if (len(data) > solutionStartIdxInData) and "BiasTypeArgs" in data[
+        solutionStartIdxInData
+    ]:
         solutionStartIdxInData += 1
-    if (len(data) > solutionStartIdxInData) and "ActivationArgs" in data[solutionStartIdxInData]:
+    if (len(data) > solutionStartIdxInData) and "ActivationArgs" in data[
+        solutionStartIdxInData
+    ]:
         solutionStartIdxInData += 1
 
     solutions = []
@@ -234,14 +264,14 @@ def parseSolutionsData(
         solutionState["AssignedProblemIndependentDerivedParameters"] = False
         solutionState["AssignedDerivedParameters"] = False
         solutionObject = Solution(
-                             solutionState,
-                             splitGSU,
-                             printSolutionRejectionReason,
-                             printIndexAssignmentInfo,
-                             assembler,
-                             isaInfoMap,
-                             srcFile
-                         )
+            solutionState,
+            splitGSU,
+            printSolutionRejectionReason,
+            printIndexAssignmentInfo,
+            assembler,
+            isaInfoMap,
+            srcFile,
+        )
         solutions.append(solutionObject)
     problemType = solutions[0]["ProblemType"]
     problemSizes = ProblemSizes(problemType, problemSizesConfig)
@@ -250,6 +280,7 @@ def parseSolutionsData(
 
 class LibraryLogic(NamedTuple):
     """Return tuple for parseLibraryLogicData()"""
+
     schedule: str
     architecture: str
     problemType: ProblemType
@@ -257,38 +288,39 @@ class LibraryLogic(NamedTuple):
     exactLogic: list
     library: SolutionLibrary.MasterSolutionLibrary
 
+
 def parseLibraryLogicFile(
-        filename,
-        assembler,
-        splitGSU: bool,
-        printSolutionRejectionReason: bool,
-        printIndexAssignmentInfo: bool,
-        isaInfoMap: Dict[str, IsaInfo],
-        lazyLibraryLoading: bool
-    ):
+    filename,
+    assembler,
+    splitGSU: bool,
+    printSolutionRejectionReason: bool,
+    printIndexAssignmentInfo: bool,
+    isaInfoMap: Dict[str, IsaInfo],
+    lazyLibraryLoading: bool,
+):
     """Wrapper function to read and parse a library logic file."""
     return parseLibraryLogicData(
-               read(filename, True),
-               filename,
-               assembler,
-               splitGSU,
-               printSolutionRejectionReason,
-               printIndexAssignmentInfo,
-               isaInfoMap,
-               lazyLibraryLoading
-           )
+        read(filename, True),
+        filename,
+        assembler,
+        splitGSU,
+        printSolutionRejectionReason,
+        printIndexAssignmentInfo,
+        isaInfoMap,
+        lazyLibraryLoading,
+    )
 
 
 def parseLibraryLogicData(
-        data,
-        srcFile,
-        assembler,
-        splitGSU: bool,
-        printSolutionRejectionReason: bool,
-        printIndexAssignmentInfo: bool,
-        isaInfoMap: Dict[str, IsaInfo],
-        lazyLibraryLoading: bool
-    ):
+    data,
+    srcFile,
+    assembler,
+    splitGSU: bool,
+    printSolutionRejectionReason: bool,
+    printIndexAssignmentInfo: bool,
+    isaInfoMap: Dict[str, IsaInfo],
+    lazyLibraryLoading: bool,
+):
     """Parses the data of a library logic file."""
     if isinstance(data, List):
         data = parseLibraryLogicList(data, srcFile)
@@ -297,8 +329,11 @@ def parseLibraryLogicData(
         data["CUCount"] = None
 
     if not versionIsCompatible(data["MinimumRequiredVersion"]):
-        printWarning("Version = {} in library logic file {} does not match Tensile version = {}" \
-                .format(srcFile, data["MinimumRequiredVersion"], __version__) )
+        printWarning(
+            "Version = {} in library logic file {} does not match Tensile version = {}".format(
+                srcFile, data["MinimumRequiredVersion"], __version__
+            )
+        )
 
     # unpack problemType
     problemType = ProblemType(data["ProblemType"], printIndexAssignmentInfo)
@@ -319,22 +354,30 @@ def parseLibraryLogicData(
             for key, value in customConfig.items():
                 solutionState[key] = value
 
-            if "MatrixInstruction" in customConfig and len(customConfig["MatrixInstruction"]) != 4:
-                raise ValueError(f"Custom kernel MatrixInstruction can only be of length 4, found {customConfig['MatrixInstruction']}")
+            if (
+                "MatrixInstruction" in customConfig
+                and len(customConfig["MatrixInstruction"]) != 4
+            ):
+                raise ValueError(
+                    f"Custom kernel MatrixInstruction can only be of length 4, found {customConfig['MatrixInstruction']}"
+                )
         # overwrite problemType if any
         solutionState["ProblemType"] = problemType
         solutionObject = Solution(
-                             solutionState,
-                             splitGSU,
-                             printSolutionRejectionReason,
-                             printIndexAssignmentInfo,
-                             assembler,
-                             isaInfoMap,
-                             srcFile
-                         )
+            solutionState,
+            splitGSU,
+            printSolutionRejectionReason,
+            printIndexAssignmentInfo,
+            assembler,
+            isaInfoMap,
+            srcFile,
+        )
         return solutionObject
 
-    solutions = [solutionStateToSolution(solutionState, assembler, isaInfoMap) for solutionState in data["Solutions"]]
+    solutions = [
+        solutionStateToSolution(solutionState, assembler, isaInfoMap)
+        for solutionState in data["Solutions"]
+    ]
 
     newLibrary, _ = SolutionLibrary.MasterSolutionLibrary.FromOriginalState(
         data,
@@ -344,18 +387,27 @@ def parseLibraryLogicData(
         printIndexAssignmentInfo,
         assembler,
         isaInfoMap,
-        lazyLibraryLoading
+        lazyLibraryLoading,
     )
 
-    return LibraryLogic(data["ScheduleName"], data["ArchitectureName"], problemType, solutions, \
-            data.get("ExactLogic"), newLibrary)
+    return LibraryLogic(
+        data["ScheduleName"],
+        data["ArchitectureName"],
+        problemType,
+        solutions,
+        data.get("ExactLogic"),
+        newLibrary,
+    )
 
 
 def parseLibraryLogicList(data, srcFile="?"):
     """Parses the data of a matching table style library logic file."""
     if len(data) < 9:
-        printExit("Library logic file {} is missing required fields (len = {} < 9)" \
-                .format(srcFile, len(data)))
+        printExit(
+            "Library logic file {} is missing required fields (len = {} < 9)".format(
+                srcFile, len(data)
+            )
+        )
 
     rv = {}
     rv["MinimumRequiredVersion"] = data[0]["MinimumRequiredVersion"]
@@ -384,8 +436,11 @@ def parseLibraryLogicList(data, srcFile="?"):
     if len(data) > 11 and data[11]:
         libraryType = data[11]
     else:
-        printExit("Library logic file {} is missing required field matching property." \
-                .format(srcFile))
+        printExit(
+            "Library logic file {} is missing required field matching property.".format(
+                srcFile
+            )
+        )
     if libraryType == "FreeSize":
         rv["LibraryType"] = "FreeSize"
         rv["Library"] = {}
@@ -426,8 +481,18 @@ def rawLibraryLogic(data):
         for idx in range(9, dataLength):
             otherFields.append(data[idx])
 
-    return (versionString, scheduleName, architectureName, deviceNames,\
-            problemTypeState, solutionStates, indexOrder, exactLogic, rangeLogic, otherFields)
+    return (
+        versionString,
+        scheduleName,
+        architectureName,
+        deviceNames,
+        problemTypeState,
+        solutionStates,
+        indexOrder,
+        exactLogic,
+        rangeLogic,
+        otherFields,
+    )
 
 
 #################
@@ -437,14 +502,22 @@ def getCUCount() -> int:
     """Return the number of CU Count in current Hardware."""
     CU = os.environ.get("CU", None)
     if CU is None:
-        res = subprocess.run("rocminfo | grep Compute", stdout=subprocess.PIPE, shell=True, env={"ROCR_VISIBLE_DEVICES":"0"})
+        res = subprocess.run(
+            "rocminfo | grep Compute",
+            stdout=subprocess.PIPE,
+            shell=True,
+            env={"ROCR_VISIBLE_DEVICES": "0"},
+        )
         CU_RE = r"Compute Unit:(?P<COMPUTE_UNIT>[\w ]+)"
-        match = re.search(CU_RE, res.stdout.decode("utf-8").split('\n')[-2])
+        match = re.search(CU_RE, res.stdout.decode("utf-8").split("\n")[-2])
         if match:
-            CU = int(match.group('COMPUTE_UNIT').strip())
+            CU = int(match.group("COMPUTE_UNIT").strip())
     return CU
 
-def createLibraryLogic(schedulePrefix, architectureName, deviceNames, libraryType, logicTuple):
+
+def createLibraryLogic(
+    schedulePrefix, architectureName, deviceNames, libraryType, logicTuple
+):
     """Creates the data for a library logic file suitable for writing to YAML."""
     problemType = logicTuple[0]
     solutions = logicTuple[1]
@@ -462,37 +535,35 @@ def createLibraryLogic(schedulePrefix, architectureName, deviceNames, libraryTyp
     # schedule name
     data.append(schedulePrefix)  # change from Tensile to vega10
     # schedule architecture name and get CU count
-    CUCount=getCUCount()
-    data.append({"Architecture": architectureName, "CUCount": CUCount} if architectureName=="gfx942" and CUCount and CUCount!=304 else architectureName)
+    CUCount = getCUCount()
+    data.append(
+        {"Architecture": architectureName, "CUCount": CUCount}
+        if architectureName == "gfx942" and CUCount and CUCount != 304
+        else architectureName
+    )
     # schedule device names
     data.append(deviceNames)
     # problem type
     problemTypeState = problemType.state
-    problemTypeState["DataType"] = \
-            problemTypeState["DataType"].value
-    problemTypeState["DataTypeA"] = \
-            problemTypeState["DataTypeA"].value
-    problemTypeState["DataTypeB"] = \
-            problemTypeState["DataTypeB"].value
-    problemTypeState["DataTypeE"] = \
-            problemTypeState["DataTypeE"].value
-    problemTypeState["DataTypeAmaxD"] = \
-            problemTypeState["DataTypeAmaxD"].value
-    problemTypeState["DestDataType"] = \
-            problemTypeState["DestDataType"].value
-    problemTypeState["ComputeDataType"] = \
-            problemTypeState["ComputeDataType"].value
-    problemTypeState["BiasDataTypeList"] = \
-            [btype.value for btype in problemTypeState["BiasDataTypeList"]]
-    problemTypeState["ActivationComputeDataType"] = \
-            problemTypeState["ActivationComputeDataType"].value
-    problemTypeState["ActivationType"] = \
-            problemTypeState["ActivationType"].value
-    problemTypeState["F32XdlMathOp"] = \
-            problemTypeState["F32XdlMathOp"].value
+    problemTypeState["DataType"] = problemTypeState["DataType"].value
+    problemTypeState["DataTypeA"] = problemTypeState["DataTypeA"].value
+    problemTypeState["DataTypeB"] = problemTypeState["DataTypeB"].value
+    problemTypeState["DataTypeE"] = problemTypeState["DataTypeE"].value
+    problemTypeState["DataTypeAmaxD"] = problemTypeState["DataTypeAmaxD"].value
+    problemTypeState["DestDataType"] = problemTypeState["DestDataType"].value
+    problemTypeState["ComputeDataType"] = problemTypeState["ComputeDataType"].value
+    problemTypeState["BiasDataTypeList"] = [
+        btype.value for btype in problemTypeState["BiasDataTypeList"]
+    ]
+    problemTypeState["ActivationComputeDataType"] = problemTypeState[
+        "ActivationComputeDataType"
+    ].value
+    problemTypeState["ActivationType"] = problemTypeState["ActivationType"].value
+    problemTypeState["F32XdlMathOp"] = problemTypeState["F32XdlMathOp"].value
     if "DataTypeMetadata" in problemTypeState:
-        problemTypeState["DataTypeMetadata"] = \
-                problemTypeState["DataTypeMetadata"].value
+        problemTypeState["DataTypeMetadata"] = problemTypeState[
+            "DataTypeMetadata"
+        ].value
     data.append(problemTypeState)
     # solutions
     solutionList = []
@@ -534,6 +605,6 @@ def createLibraryLogic(schedulePrefix, architectureName, deviceNames, libraryTyp
     else:
         data.append(None)
 
-    data.append(logicTuple[7]) # PerfMetric
-    data.append(libraryType) # LibraryType
+    data.append(logicTuple[7])  # PerfMetric
+    data.append(libraryType)  # LibraryType
     return data

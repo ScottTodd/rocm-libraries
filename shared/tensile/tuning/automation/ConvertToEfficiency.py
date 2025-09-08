@@ -26,29 +26,39 @@ import argparse
 import os
 import yaml
 import sys
-sys.path.append(os.path.join(os.path.dirname(sys.path[0]),'..','Tensile'))
+
+sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "..", "Tensile"))
 from DataType import DataType
 from yaml import SafeDumper as yamlDumper
 from yaml import SafeLoader as yamlLoader
 
+
 def parseArgs():
     argParser = argparse.ArgumentParser()
 
-    h = {"inDir"   : "Directory containing input logic files", \
-         "outDir"  : "Output directory for modified logic files", \
-         "sclk"    : "SCLK frequency in MHz tuning was done at", \
-         "specs"   : ".yaml file containing hardware specifications", \
-         "per-cu"  : "If tuning was done per CU", \
-         "name"    : "Name substring to filter which files are modified", \
-         "mfma"    : "If MFMA instructions were used for tuning", \
-         "x"       : "to select A (default), or X node", \
-         "mi50"    : "For vega20, if tuning was done on mi50"
+    h = {
+        "inDir": "Directory containing input logic files",
+        "outDir": "Output directory for modified logic files",
+        "sclk": "SCLK frequency in MHz tuning was done at",
+        "specs": ".yaml file containing hardware specifications",
+        "per-cu": "If tuning was done per CU",
+        "name": "Name substring to filter which files are modified",
+        "mfma": "If MFMA instructions were used for tuning",
+        "x": "to select A (default), or X node",
+        "mi50": "For vega20, if tuning was done on mi50",
     }
 
     argParser.add_argument("inDir", metavar="input-dir", type=str, help=h["inDir"])
     argParser.add_argument("outDir", metavar="output-dir", type=str, help=h["outDir"])
     argParser.add_argument("sclk", type=int, help=h["sclk"])
-    argParser.add_argument("specs", metavar="hardware-specs", nargs="?", type=str, default="default_specs.yaml", help=h["specs"])
+    argParser.add_argument(
+        "specs",
+        metavar="hardware-specs",
+        nargs="?",
+        type=str,
+        default="default_specs.yaml",
+        help=h["specs"],
+    )
     argParser.add_argument("-p", "--per-cu", action="store_true", help=h["per-cu"])
     argParser.add_argument("-n", "--name", type=str, help=h["name"])
     argParser.add_argument("-m", "--mfma", action="store_true", help=h["mfma"])
@@ -56,6 +66,7 @@ def parseArgs():
     argParser.add_argument("--mi50", action="store_true", help=h["mi50"])
 
     return argParser.parse_args()
+
 
 def allFiles(startDir):
     current = os.listdir(startDir)
@@ -68,10 +79,12 @@ def allFiles(startDir):
             files.append(fullPath)
     return files
 
+
 # sclk: MHz
 # alu: flops/cycle/CU
 def peakGFlops(sclk, alu, numCUs):
     return (sclk / 1000) * alu * numCUs
+
 
 def main():
     args = parseArgs()
@@ -95,16 +108,20 @@ def main():
 
                 sched = data[1]
                 if args.x:
-                    sched+="X"
+                    sched += "X"
 
                 type = DataType(data[4]["DataType"]).toChar()
-                if type=="S" and data[4]["F32XdlMathOp"]==9:
-                    type="X"
+                if type == "S" and data[4]["F32XdlMathOp"] == 9:
+                    type = "X"
                 if type in specs[sched][mfmaKey]:
-                  alu = specs[sched][mfmaKey][type]
+                    alu = specs[sched][mfmaKey][type]
                 else:
-                  print("error: {} data type does not exist in the spec file. Modify the spec file.".format(type))
-                  return
+                    print(
+                        "error: {} data type does not exist in the spec file. Modify the spec file.".format(
+                            type
+                        )
+                    )
+                    return
 
                 # get CU count
                 if args.per_cu:
@@ -121,7 +138,7 @@ def main():
                 for entry in data[7]:
                     print("Size: ", entry[0])
                     eff = entry[1][1] / peak
-                    entry[1][1] = round (100 * eff, 3)
+                    entry[1][1] = round(100 * eff, 3)
                     print("Efficiency: ", entry[1][1])
                     print()
 
@@ -130,6 +147,7 @@ def main():
 
             with open(outFile, "w") as y:
                 yaml.dump(data, y, yamlDumper, default_flow_style=None)
+
 
 if __name__ == "__main__":
     main()

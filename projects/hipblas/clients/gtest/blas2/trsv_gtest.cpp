@@ -102,12 +102,10 @@ namespace
     // When the condition in the second argument is satisfied, the type combination
     // is valid. When the condition is false, this specialization does not apply.
     template <typename T>
-    struct trsv_testing<
-        T,
-        std::enable_if_t<
-            std::is_same_v<
-                T,
-                float> || std::is_same_v<T, double> || std::is_same_v<T, std::complex<float>> || std::is_same_v<T, std::complex<double>>>>
+    struct trsv_testing<T,
+                        std::enable_if_t<std::is_same_v<T, float> || std::is_same_v<T, double>
+                                         || std::is_same_v<T, std::complex<float>>
+                                         || std::is_same_v<T, std::complex<double>>>>
         : hipblas_test_valid
     {
         void operator()(const Arguments& arg)

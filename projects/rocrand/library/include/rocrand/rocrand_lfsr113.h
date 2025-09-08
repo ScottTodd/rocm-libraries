@@ -48,7 +48,8 @@ namespace rocrand_device
 namespace detail
 {
 
-__forceinline__ __device__ __host__ void mul_mat_vec_inplace(const unsigned int* m, uint4* z)
+__forceinline__ __device__ __host__
+void mul_mat_vec_inplace(const unsigned int* m, uint4* z)
 {
     unsigned int v[4]         = {z->x, z->y, z->z, z->w};
     unsigned int r[LFSR113_N] = {0};
@@ -84,13 +85,13 @@ public:
     /// and skips \p offset random numbers.
     ///
     /// A subsequence is 2^55 numbers long.
-    __forceinline__ __device__ __host__ lfsr113_engine(const uint4 seed
-                                                       = {ROCRAND_LFSR113_DEFAULT_SEED_X,
-                                                          ROCRAND_LFSR113_DEFAULT_SEED_Y,
-                                                          ROCRAND_LFSR113_DEFAULT_SEED_Z,
-                                                          ROCRAND_LFSR113_DEFAULT_SEED_W},
-                                                       const unsigned int       subsequence = 0,
-                                                       const unsigned long long offset      = 0)
+    __forceinline__ __device__ __host__
+    lfsr113_engine(const uint4              seed        = {ROCRAND_LFSR113_DEFAULT_SEED_X,
+                                                           ROCRAND_LFSR113_DEFAULT_SEED_Y,
+                                                           ROCRAND_LFSR113_DEFAULT_SEED_Z,
+                                                           ROCRAND_LFSR113_DEFAULT_SEED_W},
+                   const unsigned int       subsequence = 0,
+                   const unsigned long long offset      = 0)
     {
         this->seed(seed, subsequence, offset);
     }
@@ -100,9 +101,10 @@ public:
     /// and skips \p offset random numbers.
     ///
     /// A subsequence is 2^55 numbers long.
-    __forceinline__ __device__ __host__ void seed(uint4                    seed_value,
-                                                  const unsigned long long subsequence,
-                                                  const unsigned long long offset = 0)
+    __forceinline__ __device__ __host__
+    void seed(uint4                    seed_value,
+              const unsigned long long subsequence,
+              const unsigned long long offset = 0)
     {
         m_state.subsequence = seed_value;
 
@@ -112,13 +114,15 @@ public:
     }
 
     /// Advances the internal state to skip one number.
-    __forceinline__ __device__ __host__ void discard()
+    __forceinline__ __device__ __host__
+    void discard()
     {
         discard_state();
     }
 
     /// Advances the internal state to skip \p offset numbers.
-    __forceinline__ __device__ __host__ void discard(unsigned long long offset)
+    __forceinline__ __device__ __host__
+    void discard(unsigned long long offset)
     {
 #ifdef __HIP_DEVICE_COMPILE__
         jump(offset, d_lfsr113_jump_matrices);
@@ -129,7 +133,8 @@ public:
 
     /// Advances the internal state to skip \p subsequence subsequences.
     /// A subsequence is 2^55 numbers long.
-    __forceinline__ __device__ __host__ void discard_subsequence(unsigned int subsequence)
+    __forceinline__ __device__ __host__
+    void discard_subsequence(unsigned int subsequence)
     {
 // Discard n * 2^55 samples
 #ifdef __HIP_DEVICE_COMPILE__
@@ -139,12 +144,14 @@ public:
 #endif
     }
 
-    __forceinline__ __device__ __host__ unsigned int operator()()
+    __forceinline__ __device__ __host__
+    unsigned int operator()()
     {
         return next();
     }
 
-    __forceinline__ __device__ __host__ unsigned int next()
+    __forceinline__ __device__ __host__
+    unsigned int next()
     {
         unsigned int b;
 
@@ -165,7 +172,8 @@ public:
 
 protected:
     /// Resets the state to the start of the current subsequence.
-    __forceinline__ __device__ __host__ void reset_start_subsequence()
+    __forceinline__ __device__ __host__
+    void reset_start_subsequence()
     {
         m_state.z.x = m_state.subsequence.x;
         m_state.z.y = m_state.subsequence.y;
@@ -174,14 +182,15 @@ protected:
     }
 
     // Advances the internal state to the next state.
-    __forceinline__ __device__ __host__ void discard_state()
+    __forceinline__ __device__ __host__
+    void discard_state()
     {
         this->next();
     }
 
-    __forceinline__ __device__ __host__ void
-        jump(unsigned long long v,
-             const unsigned int (&jump_matrices)[LFSR113_JUMP_MATRICES][LFSR113_SIZE])
+    __forceinline__ __device__ __host__
+    void jump(unsigned long long v,
+              const unsigned int (&jump_matrices)[LFSR113_JUMP_MATRICES][LFSR113_SIZE])
     {
         // x~(n + v) = (A^v mod m)x~n mod m
         // The matrix (A^v mod m) can be precomputed for selected values of v.

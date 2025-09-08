@@ -499,7 +499,7 @@ namespace TensileLite
 
             ReturnValue nullValue;
 
-            mutable KDTree<int32_t, 2>                                  kdTree;
+            mutable KDTree<int32_t, 2>                                   kdTree;
             std::map<std::tuple<int32_t, int32_t>, std::vector<KBEntry>> kSolutionMap;
         };
 
@@ -976,12 +976,12 @@ namespace TensileLite
                 if(Debug::Instance().gridBasedKDTree())
                 {
                     // roctxRangePush("KDTree");
-                    auto compK = [](KBEntry<Value> const& e, int const N) { return e.k < N; };
+                    auto compK  = [](KBEntry<Value> const& e, int const N) { return e.k < N; };
                     auto lowerB = [](KBEntry<Value> const& e, int const N) { return e.b < N; };
                     auto upperB = [](int const N, KBEntry<Value> const& e) { return N < e.b; };
-kd_tree_batch_1_again:
-                    auto k     = key.size() > 3 ? key[3] : key[2];
-                    auto                b     = key.size() > 3 ? key[2] : 1;
+                kd_tree_batch_1_again:
+                    auto                k = key.size() > 3 ? key[3] : key[2];
+                    auto                b = key.size() > 3 ? key[2] : 1;
                     PointND<int32_t, 2> target;
                     target.coord[0] = key[0];
                     target.coord[1] = key[1];
@@ -1256,7 +1256,7 @@ kd_tree_batch_1_again:
 
                         count++;
 
-                        auto myDistance = distance(key, iter->key);
+                        auto myDistance      = distance(key, iter->key);
                         auto preBestDistance = bestDistance;
 
                         if(myDistance <= bestDistance)
@@ -1296,8 +1296,6 @@ kd_tree_batch_1_again:
 
                             std::cout << std::endl << std::endl;
                         }
-
-
                     }
 
                     if(!Debug::Instance().gridBasedBatchExp() && firstFind)
@@ -1315,8 +1313,8 @@ kd_tree_batch_1_again:
 
                                 if(T_Debug)
                                 {
-                                    std::cout << "New Size for batch grid: ["
-                                              << key[0] << "," << key[1] << "," << key[2] << "," << key[3] << "]";
+                                    std::cout << "New Size for batch grid: [" << key[0] << ","
+                                              << key[1] << "," << key[2] << "," << key[3] << "]";
                                     std::cout << std::endl << std::endl;
                                 }
 
@@ -1333,7 +1331,9 @@ kd_tree_batch_1_again:
                                     stepN            = 0;
                                     if(T_Debug)
                                     {
-                                        std::cout << "Not found batch in grid, restart search with new size" << std::endl;
+                                        std::cout << "Not found batch in grid, restart search with "
+                                                     "new size"
+                                                  << std::endl;
                                     }
                                     continue;
                                 }
@@ -1365,7 +1365,8 @@ kd_tree_batch_1_again:
                     if(T_Debug)
                     {
                         std::cout << std::endl
-                                  << "Foward Search end but number of solutions not enough" << std::endl;
+                                  << "Foward Search end but number of solutions not enough"
+                                  << std::endl;
                         std::cout << "Start to backward search..." << std::endl;
                     }
 

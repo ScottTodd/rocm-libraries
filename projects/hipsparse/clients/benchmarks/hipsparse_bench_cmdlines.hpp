@@ -118,7 +118,7 @@ private:
             }
         }
 
-        val(){};
+        val() {};
         val(const val& v) = delete;
         explicit val(int n)
             : argc(n)
@@ -524,7 +524,7 @@ private:
         {
             char* name{};
             explicit cmdline_arg(char* name_)
-                : name(name_){};
+                : name(name_) {};
         };
 
         //
@@ -535,7 +535,7 @@ private:
             char*                    name{};
             std::vector<cmdline_arg> args{};
             explicit cmdline_option(char* name_)
-                : name(name_){};
+                : name(name_) {};
         };
 
         static inline bool is_option(const char* arg)

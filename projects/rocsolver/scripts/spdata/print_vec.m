@@ -1,10 +1,13 @@
 % ********************************************************************
-% Copyright (C) 2023 Advanced Micro Devices, Inc. All rights reserved.
-% ********************************************************************
+    % Copyright(C) 2023 Advanced Micro Devices,
+    Inc.All rights reserved.
+    % ********************************************************************
 
-function isok = print_vec( vecname, v )
+    function isok
+    = print_vec(vecname, v)
 
-%{
+    %
+{
 -----------------------------------------------------------
   This function prints into file the contents of full vector v.
 
@@ -23,40 +26,38 @@ function isok = print_vec( vecname, v )
   rocSOLVER library interface and could change or be removed
   without any notice)
 -----------------------------------------------------------
-%}
+%
+}
 
-
-
-[vec,msg] = fopen( vecname , 'w');
+[ vec, msg ] = fopen(vecname, 'w');
 isok = (vec >= 0);
-if (!isok),
-  error( sprintf('print_vec: fopen returns %s', msg));
-  return;
+if (!isok)
+    , error(sprintf('print_vec: fopen returns %s', msg));
+return;
 end;
 
-n = max(size(v,1),size(v,2));
-for i=1:n-1,
-  istat = fprintf(vec,'%d ',v(i)-1);
-  isok = (istat >= 0);
-  if (!isok),
-    error(sprintf('print_vec: fprintf returns istat=%d',istat));
-    return;
-  end;
-end;
-
-istat = fprintf(vec,'%d',v(n)-1);
+n = max(size(v, 1), size(v, 2));
+for
+    i = 1 : n - 1, istat = fprintf(vec, '%d ', v(i) - 1);
 isok = (istat >= 0);
-if (!isok),
-  error(sprintf('print_vec: fprintf returns istat=%d',istat));
-  return;
+if (!isok)
+    , error(sprintf('print_vec: fprintf returns istat=%d', istat));
+return;
+end;
+end;
+
+istat = fprintf(vec, '%d', v(n) - 1);
+isok = (istat >= 0);
+if (!isok)
+    , error(sprintf('print_vec: fprintf returns istat=%d', istat));
+return;
 end;
 
 istat = fclose(vec);
 isok = (istat == 0);
-if (!isok),
-  error(sprintf('print_vec: fclose returns istat=%d',istat));
-  return;
+if (!isok)
+    , error(sprintf('print_vec: fclose returns istat=%d', istat));
+return;
 end;
 
 end
-

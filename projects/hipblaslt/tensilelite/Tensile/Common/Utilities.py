@@ -41,21 +41,26 @@ from rocisa import rocIsa
 
 import pickle
 
+
 def fastdeepcopy(x):
     # Note: Some object can't be pickled
     return pickle.loads(pickle.dumps(x))
+
 
 # Global
 _global_ti = rocIsa.getInstance()
 
 _verbosity = 1
 
+
 def setVerbosity(v: int):
     global _verbosity
     _verbosity = v
 
+
 def getVerbosity():
     return _verbosity
+
 
 ################################################################################
 # Printing
@@ -84,6 +89,7 @@ def printExit(message):
     print("Tensile::FATAL: %s" % message)
     sys.stdout.flush()
     sys.exit(-1)
+
 
 # get param values from structures.
 def hasParam(name, structure):
@@ -192,7 +198,8 @@ class ProgressBar:
     def printStatus(self):
         sys.stdout.write("\r")
         sys.stdout.write(
-            "[%-*s] %3d%%" % (self.maxTicks, self.char * self.numTicks, self.fraction * 100)
+            "[%-*s] %3d%%"
+            % (self.maxTicks, self.char * self.numTicks, self.fraction * 100)
         )
         if self.numTicks == self.maxTicks:
             stopTime = time.time()
@@ -318,7 +325,9 @@ def ClientExecutionLock(lockPath: str):
     return filelock.FileLock(lockPath)
 
 
-def assignParameterWithDefault(destinationDictionary, key, sourceDictionary, defaultDictionary):
+def assignParameterWithDefault(
+    destinationDictionary, key, sourceDictionary, defaultDictionary
+):
     if key in sourceDictionary:
         destinationDictionary[key] = deepcopy(sourceDictionary[key])
     else:
@@ -340,16 +349,21 @@ def isRhel8() -> bool:
         content = f.read()
     match = re.search(pattern, content, re.DOTALL)
     if match:
-        printWarning("Rhel8 environments may not support all tools for system queries such as rocm-smi.")
+        printWarning(
+            "Rhel8 environments may not support all tools for system queries such as rocm-smi."
+        )
         return True
     return False
+
 
 ########################################
 # Math
 ########################################
 
+
 def log2(x):
     return int(log(x, 2) + 0.5)
+
 
 def ceilDivide(numerator, denominator):
     # import pdb
@@ -361,11 +375,12 @@ def ceilDivide(numerator, denominator):
         print("ERROR: Can't have a negative register value")
         return 0
     try:
-        div = int((numerator+denominator-1) // denominator)
+        div = int((numerator + denominator - 1) // denominator)
     except ZeroDivisionError:
         print("ERROR: Divide by 0")
         return 0
     return div
 
+
 def roundUpToNearestMultiple(numerator, denominator):
-    return ceilDivide(numerator,denominator)*int(denominator)
+    return ceilDivide(numerator, denominator) * int(denominator)

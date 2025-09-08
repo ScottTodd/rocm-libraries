@@ -186,14 +186,10 @@ static json_file& operator<<(json_file&                                         
 {
     out << "{" << std::endl;
     out.increase_prefix();
-    out << " "
-        << "\"name\": \"" << test_result.get_name() << "\"," << std::endl;
-    out << " "
-        << "\"hash\": \"" << test_result.get_hash() << "\"," << std::endl;
-    out << " "
-        << "\"status\": \"" << test_result.get_status() << "\"," << std::endl;
-    out << " "
-        << "\"description\": \"" << test_result.get_description() << "\"" << std::endl;
+    out << " " << "\"name\": \"" << test_result.get_name() << "\"," << std::endl;
+    out << " " << "\"hash\": \"" << test_result.get_hash() << "\"," << std::endl;
+    out << " " << "\"status\": \"" << test_result.get_status() << "\"," << std::endl;
+    out << " " << "\"description\": \"" << test_result.get_description() << "\"" << std::endl;
     out.decrease_prefix();
     out << "}";
     return out;

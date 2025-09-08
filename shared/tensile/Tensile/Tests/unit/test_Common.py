@@ -28,18 +28,20 @@ import Tensile.Common as Common
 
 import os
 
+
 def test_gfxArch():
-    assert Common.gfxArch('gfx9') is None
+    assert Common.gfxArch("gfx9") is None
 
-    assert Common.gfxArch('gfx803') == (8,0,3)
-    assert Common.gfxArch('gfx900') == (9,0,0)
-    assert Common.gfxArch('gfx906') == (9,0,6)
+    assert Common.gfxArch("gfx803") == (8, 0, 3)
+    assert Common.gfxArch("gfx900") == (9, 0, 0)
+    assert Common.gfxArch("gfx906") == (9, 0, 6)
 
-    assert Common.gfxArch('gfx1010') == (10,1,0)
+    assert Common.gfxArch("gfx1010") == (10, 1, 0)
 
-    assert Common.gfxArch('gfx90015') == (900,1,5)
+    assert Common.gfxArch("gfx90015") == (900, 1, 5)
 
-    assert Common.gfxArch('blah gfx900 stuff') == (9,0,0)
+    assert Common.gfxArch("blah gfx900 stuff") == (9, 0, 0)
+
 
 def test_paths():
     workingPathName = os.path.join("working", "path")
@@ -49,17 +51,14 @@ def test_paths():
 
     recursiveWorkingPath = "next1"
     expectedRecurrsiveWorkingPath = os.path.join("working", "path", "next1")
-    Common.pushWorkingPath (recursiveWorkingPath)
+    Common.pushWorkingPath(recursiveWorkingPath)
     assert Common.globalParameters["WorkingPath"] == expectedRecurrsiveWorkingPath
     Common.popWorkingPath()
     assert Common.globalParameters["WorkingPath"] == expectedWorkingPath
 
     set1WorkingPath = os.path.join("working", "path", "set1")
     expectedSet1WorkingPath = os.path.join("working", "path", "set1")
-    Common.setWorkingPath (set1WorkingPath)
+    Common.setWorkingPath(set1WorkingPath)
     assert Common.globalParameters["WorkingPath"] == expectedSet1WorkingPath
     Common.popWorkingPath()
     assert Common.globalParameters["WorkingPath"] == expectedWorkingPath
-
-
-

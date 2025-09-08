@@ -158,7 +158,8 @@ public:
     void blocked_to_striped(const T (&input)[ItemsPerThread],
                             U (&output)[ItemsPerThread])
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         blocked_to_striped(input, output, storage);
     }
 
@@ -225,7 +226,8 @@ public:
     void striped_to_blocked(const T (&input)[ItemsPerThread],
                             U (&output)[ItemsPerThread])
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         striped_to_blocked(input, output, storage);
     }
 
@@ -292,7 +294,8 @@ public:
     void blocked_to_warp_striped(const T (&input)[ItemsPerThread],
                                  U (&output)[ItemsPerThread])
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         blocked_to_warp_striped(input, output, storage);
     }
 
@@ -332,9 +335,9 @@ public:
                                  storage_type& storage)
     {
         constexpr unsigned int items_per_warp = warp_size * ItemsPerThread;
-        const unsigned int lane_id = ::rocprim::lane_id();
-        const unsigned int warp_id = ::rocprim::warp_id<BlockSizeX, BlockSizeY, BlockSizeZ>();
-        const unsigned int current_warp_size = get_current_warp_size();
+        const unsigned int     lane_id        = ::rocprim::lane_id();
+        const unsigned int     warp_id = ::rocprim::warp_id<BlockSizeX, BlockSizeY, BlockSizeZ>();
+        const unsigned int     current_warp_size = get_current_warp_size();
         const unsigned int     offset            = warp_id * items_per_warp;
 
         for(unsigned int i = 0; i < ItemsPerThread; i++)
@@ -363,7 +366,8 @@ public:
     void warp_striped_to_blocked(const T (&input)[ItemsPerThread],
                                  U (&output)[ItemsPerThread])
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         warp_striped_to_blocked(input, output, storage);
     }
 
@@ -403,9 +407,9 @@ public:
                                  storage_type& storage)
     {
         constexpr unsigned int items_per_warp = warp_size * ItemsPerThread;
-        const unsigned int lane_id = ::rocprim::lane_id();
-        const unsigned int warp_id = ::rocprim::warp_id<BlockSizeX, BlockSizeY, BlockSizeZ>();
-        const unsigned int current_warp_size = get_current_warp_size();
+        const unsigned int     lane_id        = ::rocprim::lane_id();
+        const unsigned int     warp_id = ::rocprim::warp_id<BlockSizeX, BlockSizeY, BlockSizeZ>();
+        const unsigned int     current_warp_size = get_current_warp_size();
         const unsigned int     offset            = warp_id * items_per_warp;
 
         for(unsigned int i = 0; i < ItemsPerThread; i++)
@@ -437,7 +441,8 @@ public:
                             U (&output)[ItemsPerThread],
                             const Offset (&ranks)[ItemsPerThread])
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         scatter_to_blocked(input, output, ranks, storage);
     }
 
@@ -456,7 +461,8 @@ public:
                                    U (&output)[ItemsPerThread],
                                    const Offset (&ranks)[ItemsPerThread])
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         gather_from_striped(input, output, ranks, storage);
     }
 
@@ -526,7 +532,7 @@ public:
     /// \param [out] output array that data is loaded to.
     /// \param [out] ranks array that has rank of data.
     /// \param [in] storage reference to a temporary storage object of type storage_type.
-    template <class U, class Offset>
+    template<class U, class Offset>
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void gather_from_striped(const T (&input)[ItemsPerThread],
                              U (&output)[ItemsPerThread],
@@ -565,7 +571,8 @@ public:
                             U (&output)[ItemsPerThread],
                             const Offset (&ranks)[ItemsPerThread])
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         scatter_to_striped(input, output, ranks, storage);
     }
 
@@ -715,7 +722,8 @@ public:
                                     U (&output)[ItemsPerThread],
                                     const Offset (&ranks)[ItemsPerThread])
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         scatter_to_striped_guarded(input, output, ranks, storage);
     }
 
@@ -799,7 +807,8 @@ public:
                                     const Offset (&ranks)[ItemsPerThread],
                                     const ValidFlag (&is_valid)[ItemsPerThread])
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         scatter_to_striped_flagged(input, output, ranks, is_valid, storage);
     }
 
@@ -868,14 +877,13 @@ public:
     }
 
 private:
-
     ROCPRIM_DEVICE ROCPRIM_INLINE
     unsigned int get_current_warp_size() const
     {
         const unsigned int warp_id = ::rocprim::warp_id<BlockSizeX, BlockSizeY, BlockSizeZ>();
         return (warp_id == warps_no - 1)
-            ? (BlockSize % warp_size > 0 ? BlockSize % warp_size : warp_size)
-            : warp_size;
+                   ? (BlockSize % warp_size > 0 ? BlockSize % warp_size : warp_size)
+                   : warp_size;
     }
 
     // Change index to minimize LDS bank conflicts if necessary

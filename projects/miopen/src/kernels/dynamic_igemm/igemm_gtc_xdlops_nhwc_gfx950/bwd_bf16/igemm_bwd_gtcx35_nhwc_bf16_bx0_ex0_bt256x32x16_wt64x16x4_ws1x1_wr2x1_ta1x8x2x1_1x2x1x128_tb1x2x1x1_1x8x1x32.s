@@ -49,11 +49,11 @@
 ; nxb                        : 0
 ; nxe                        : 0
 ; vector_c                   : 1
-; 
+;
 ; block_size                 : 256
 ; lds_total                  : 16384
 ; lds_buffer_num             : 1
-; 
+;
 .set k_p_in, 0
 .set k_p_wei, 8
 .set k_p_out, 16
@@ -333,8 +333,8 @@ igemm_bwd_gtcx35_nhwc_bf16_bx0_ex0_bt256x32x16_wt64x16x4_ws1x1_wr2x1_ta1x8x2x1_1
 
     v_mov_b32 v[v_tmp+5], v0
     ; xdlops mapping, get source matrix gemm index, k_pack:8, v_pack:1, k_pack_per_thread:2
-    v_and_b32 v[v_gemm_in], 15, v[v_tmp+5]           ; block_n index 
-    v_and_b32 v[v_gemm_im], 15, v[v_tmp+5]           ; block_m index 
+    v_and_b32 v[v_gemm_in], 15, v[v_tmp+5]           ; block_n index
+    v_and_b32 v[v_gemm_im], 15, v[v_tmp+5]           ; block_m index
     v_lshlrev_b32 v[v_gemm_in], 3, v[v_gemm_in]   ; shift left k_pack:8
     v_lshlrev_b32 v[v_gemm_im], 3, v[v_gemm_im]   ; shift left k_pack:8
     v_lshrrev_b32 v[v_tmp+5], 4, v[v_tmp+5]
@@ -436,10 +436,10 @@ igemm_bwd_gtcx35_nhwc_bf16_bx0_ex0_bt256x32x16_wt64x16x4_ws1x1_wr2x1_ta1x8x2x1_1
     ; start MFMA loop, 64x16 wave tile with 2x1 repeat, 1x1 step, k_pack:8
     s_waitcnt vmcnt(2)
     v_pack_b32_f16 v[v_pack_k_tmp], v[v_gld_b], v[v_gld_b+1]
-    ds_write_b32 v[v_sst_b_os], v[v_pack_k_tmp] 
+    ds_write_b32 v[v_sst_b_os], v[v_pack_k_tmp]
 
     s_waitcnt vmcnt(0)
-    ds_write_b128 v[v_sst_a_os], v[v_gld_a+0:v_gld_a+0+3] 
+    ds_write_b128 v[v_sst_a_os], v[v_gld_a+0:v_gld_a+0+3]
     ds_write_b128 v[v_sst_a_os], v[v_gld_a+4:v_gld_a+4+3] offset:2048
 
     .v_clear_nc a_c, 32
@@ -451,7 +451,7 @@ igemm_bwd_gtcx35_nhwc_bf16_bx0_ex0_bt256x32x16_wt64x16x4_ws1x1_wr2x1_ta1x8x2x1_1
     s_add_u32 s[s_out_offset],  s[s_move_slice_out_stride_k], s[s_out_offset]
     v_add_u32 v[v_wei_os], s[s_move_slice_wei_stride_k], v[v_wei_os]
 
-    
+
     s_waitcnt lgkmcnt(0)
     s_barrier
 L_igemm_bwd_gtcx35_nhwc_bf16_bx0_ex0_bt256x32x16_wt64x16x4_ws1x1_wr2x1_ta1x8x2x1_1x2x1x128_tb1x2x1x1_1x8x1x32_mfma_body:
@@ -489,7 +489,7 @@ L_igemm_bwd_gtcx35_nhwc_bf16_bx0_ex0_bt256x32x16_wt64x16x4_ws1x1_wr2x1_ta1x8x2x1
     v_add_u32 v[v_wei_os], s[s_move_slice_wei_stride_k], v[v_wei_os]
     ds_read_b64 v[v_b+2:v_b+2+1], v[v_sld_b_os] offset:520 ; load i_k:3 into local buffer 1, repeat 0
     ds_read_b64 v[v_a+6:v_a+6+1], v[v_sld_a_os] offset:6152 ; load i_k:3 into local buffer 1, repeat 1
-    
+
     s_waitcnt lgkmcnt(0)
     s_barrier
     s_waitcnt vmcnt(2)

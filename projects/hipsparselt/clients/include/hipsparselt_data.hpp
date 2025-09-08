@@ -49,7 +49,6 @@ namespace fs = std::experimental::filesystem;
 #error no fs found
 #endif
 
-
 // Class used to read Arguments data into the tests
 class HipSparseLt_TestData
 {

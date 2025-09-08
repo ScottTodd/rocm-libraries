@@ -188,7 +188,11 @@ def test_findFreeRange_noOverflowPastPoolLength2():
 # Helper functions
 # ----------------
 def findFreeRange_oldLogic(
-    regPool, size, alignment, preventOverflow=-1, wantedStatus=RegisterPool.Status.Available
+    regPool,
+    size,
+    alignment,
+    preventOverflow=-1,
+    wantedStatus=RegisterPool.Status.Available,
 ):
     if preventOverflow == -1:
         preventOverflow = regPool.defaultPreventOverflow

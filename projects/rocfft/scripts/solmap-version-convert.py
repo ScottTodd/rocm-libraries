@@ -55,15 +55,14 @@ def version_check(arguments):
         output_folder = Path(arguments.outfolder)
         output_folder.mkdir(parents=True, exist_ok=True)
     else:
-        print(
-            "output folder is not set. use -outfolder=/subfolder/of/outputfolder"
-        )
+        print("output folder is not set. use -outfolder=/subfolder/of/outputfolder")
         return
 
     # pick files that are solution maps
     map_filenames = [
-        f for f in listdir(input_folder)
-        if isfile(join(input_folder, f)) and '_rocfft_solution_map.dat' in f
+        f
+        for f in listdir(input_folder)
+        if isfile(join(input_folder, f)) and "_rocfft_solution_map.dat" in f
     ]
 
     # we'll do this in the cpp
@@ -72,10 +71,10 @@ def version_check(arguments):
     for filename in map_filenames:
         print("checking file format version: " + str(filename))
         cmd = [pathlib.Path(arguments.converter).resolve()]
-        cmd += ['--input_file', str(input_folder / filename)]
-        cmd += ['--output_file', str(output_folder / filename)]
+        cmd += ["--input_file", str(input_folder / filename)]
+        cmd += ["--output_file", str(output_folder / filename)]
         cmd = [str(x) for x in cmd]
-        logging.info('checking file format version: ' + ' '.join(cmd))
+        logging.info("checking file format version: " + " ".join(cmd))
 
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
         try:
@@ -84,38 +83,39 @@ def version_check(arguments):
             logging.info("killed")
             proc.kill()
         if proc.returncode != 0:
-            print('Failed on checking version: ' + ' '.join(cmd))
+            print("Failed on checking version: " + " ".join(cmd))
 
         for line in proc.stdout:
-            line = line.decode('utf-8').rstrip('\n')
-            print(line + '\n')
+            line = line.decode("utf-8").rstrip("\n")
+            print(line + "\n")
 
 
 #
 # Main
 #
 def main():
-    parser = argparse.ArgumentParser(prog='solmap-version-convert')
+    parser = argparse.ArgumentParser(prog="solmap-version-convert")
 
     parser.add_argument(
-        '--converter',
+        "--converter",
         type=str,
-        help='converter executable path',
-        default='./build/release/library/src/rocfft_solmap_convert')
+        help="converter executable path",
+        default="./build/release/library/src/rocfft_solmap_convert",
+    )
 
     parser.add_argument(
-        '--infolder',
+        "--infolder",
         type=str,
-        help=
-        'folder of the original solution map data, default is [repo_folder]/solution_map/',
-        default='./solution_map')
+        help="folder of the original solution map data, default is [repo_folder]/solution_map/",
+        default="./solution_map",
+    )
 
     parser.add_argument(
-        '--outfolder',
+        "--outfolder",
         type=str,
-        help=
-        'folder of the version-coverted solution map data, default is [repo_folder]/solution_map/converted/',
-        default='./solution_map/converted')
+        help="folder of the version-coverted solution map data, default is [repo_folder]/solution_map/converted/",
+        default="./solution_map/converted",
+    )
 
     arguments = parser.parse_args()
 
@@ -124,13 +124,15 @@ def main():
     sys.exit(0)
 
 
-if __name__ == '__main__':
-    logging.basicConfig(filename='solmap-version-convert.log',
-                        format='%(asctime)s %(levelname)s: %(message)s',
-                        level=logging.DEBUG)
+if __name__ == "__main__":
+    logging.basicConfig(
+        filename="solmap-version-convert.log",
+        format="%(asctime)s %(levelname)s: %(message)s",
+        level=logging.DEBUG,
+    )
 
     console.setLevel(logging.WARNING)
-    console.setFormatter(logging.Formatter('%(levelname)-8s: %(message)s'))
-    logging.getLogger('').addHandler(console)
+    console.setFormatter(logging.Formatter("%(levelname)-8s: %(message)s"))
+    logging.getLogger("").addHandler(console)
 
     main()

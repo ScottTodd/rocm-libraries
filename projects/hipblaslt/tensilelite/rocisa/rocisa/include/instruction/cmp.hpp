@@ -36,7 +36,7 @@ namespace rocisa
                         std::optional<SDWAModifiers>      sdwa    = std::nullopt,
                         const std::string                 comment = "")
             : CommonInstruction(
-                instType, dst, {src0, src1}, std::nullopt, sdwa, std::nullopt, comment)
+                  instType, dst, {src0, src1}, std::nullopt, sdwa, std::nullopt, comment)
         {
         }
 
@@ -61,7 +61,7 @@ namespace rocisa
                          std::optional<SDWAModifiers>      sdwa    = std::nullopt,
                          std::string                       comment = "")
             : CommonInstruction(
-                instType, dst, {src0, src1}, std::nullopt, sdwa, std::nullopt, comment)
+                  instType, dst, {src0, src1}, std::nullopt, sdwa, std::nullopt, comment)
         {
         }
 

@@ -132,8 +132,8 @@ namespace rocRollerTest
         //       Address calculation expressions before fastMath applied
         //       probably don't contain shift operations either.
         template <Expression::CBinary Expr>
-        requires(Expression::CArithmetic<Expr>) Expression::ExpressionPtr
-            operator()(Expr const& expr) const
+            requires(Expression::CArithmetic<Expr>)
+        Expression::ExpressionPtr operator()(Expr const& expr) const
         {
             if constexpr(std::same_as<Expr, Expression::Subtract>)
             {
@@ -159,16 +159,16 @@ namespace rocRollerTest
         // Even with catch-all operator()(Expression::ExpressionPtr) without following,
         // compilation fails.
         template <typename Expr>
-        requires(Expression::CBinary<Expr>) Expression::ExpressionPtr
-            operator()(Expr const& expr) const
+            requires(Expression::CBinary<Expr>)
+        Expression::ExpressionPtr operator()(Expr const& expr) const
         {
             AssertFatal(false, "Not expected expr : ", ShowValue(expr));
             return nullptr;
         }
 
         template <Expression::CTernary Expr>
-        requires(Expression::CArithmetic<Expr>) Expression::ExpressionPtr
-            operator()(Expr const& expr) const
+            requires(Expression::CArithmetic<Expr>)
+        Expression::ExpressionPtr operator()(Expr const& expr) const
         {
             Expr cpy = expr;
             if(expr.lhs)
@@ -182,8 +182,8 @@ namespace rocRollerTest
         }
 
         template <typename Expr>
-        requires(Expression::CTernary<Expr>) Expression::ExpressionPtr
-            operator()(Expr const& expr) const
+            requires(Expression::CTernary<Expr>)
+        Expression::ExpressionPtr operator()(Expr const& expr) const
         {
             AssertFatal(false, "Not expected expr : ", ShowValue(expr));
             return nullptr;

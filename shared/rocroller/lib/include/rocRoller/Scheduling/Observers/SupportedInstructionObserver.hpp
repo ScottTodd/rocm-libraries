@@ -47,7 +47,7 @@ namespace rocRoller
         public:
             SupportedInstructionObserver() {}
             SupportedInstructionObserver(ContextPtr context)
-                : m_context(context){};
+                : m_context(context) {};
 
             InstructionStatus peek(Instruction const& inst) const;
             void              modify(Instruction& inst) const;

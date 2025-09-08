@@ -120,7 +120,7 @@ public:
 #ifdef GOOGLE_TEST
         if(m_guard_len > 0)
         {
-            T* host = (T*)malloc(sizeof(T)*m_pad);
+            T* host = (T*)malloc(sizeof(T) * m_pad);
             // Copy device memory after allocated memory to host
             EXPECT_EQ(hipMemcpy(host, d + this->m_size, m_guard_len, hipMemcpyDeviceToHost),
                       hipSuccess);
@@ -148,7 +148,7 @@ public:
 #ifdef GOOGLE_TEST
             if(m_pad > 0)
             {
-                T* host = (T*)malloc(sizeof(T)*m_pad);
+                T* host = (T*)malloc(sizeof(T) * m_pad);
 
                 // Copy device memory after allocated memory to host
                 EXPECT_EQ(hipMemcpy(host, d + this->m_size, m_guard_len, hipMemcpyDeviceToHost),

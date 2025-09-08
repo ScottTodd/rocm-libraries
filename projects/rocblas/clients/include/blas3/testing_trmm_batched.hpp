@@ -478,9 +478,8 @@ void testing_trmm_batched(const Arguments& arg)
     bool inplace = !arg.outofplace;
 
     bool nantest = rocblas_isnan(arg.alpha) || rocblas_isnan(arg.alphai);
-    if(!std::is_same_v<
-           T,
-           float> && !std::is_same_v<T, double> && !std::is_same_v<T, rocblas_half> && !rocblas_is_complex<T> && nantest)
+    if(!std::is_same_v<T, float> && !std::is_same_v<T, double> && !std::is_same_v<T, rocblas_half>
+       && !rocblas_is_complex<T> && nantest)
         return; // Exclude integers or other types which don't support NaN
 
     rocblas_local_handle handle{arg};

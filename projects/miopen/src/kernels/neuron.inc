@@ -175,7 +175,7 @@ EPSILON_half = 0x00100010
         v_cndmask_b32 v[\base], 0, v[\base], vcc
     .elseif \activ_mode == MIOPEN_NEURON_CLIPPED_RELU //min(\alpha, max(0, x))
         v_max_f32 v[\base], v[\base], 0
-        v_min_f32 v[\base], s[\alpha], v[\base] 
+        v_min_f32 v[\base], s[\alpha], v[\base]
     .elseif \activ_mode == MIOPEN_NEURON_LEAKY_RELU //\alpha * x | x <= 0; x | x > 0
         v_cmp_lt_f32 vcc, 0, v[\base]
         v_mov_b32 v[\vtmp0], s[\alpha]

@@ -89,10 +89,10 @@ void Arguments::init()
     // bytes
     devices = 0;
 
-    norm_check = 0;
-    unit_check = 1;
+    norm_check        = 0;
+    unit_check        = 1;
     norm_check_assert = true;
-    timing     = 0;
+    timing            = 0;
 
     transA = '*';
     transB = '*';
@@ -105,8 +105,8 @@ void Arguments::init()
     search          = false;
     search_iters    = 10;
 
-    inEqualOut      = false;
-    logging         = -1;
+    inEqualOut = false;
+    logging    = -1;
 }
 
 // Function to print Arguments out to stream in YAML format

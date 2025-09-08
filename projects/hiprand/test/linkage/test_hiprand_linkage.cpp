@@ -18,14 +18,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include <stdio.h>
 #include <gtest/gtest.h>
+#include <stdio.h>
 
 #include <hip/hip_runtime.h>
 
 #include <hiprand/hiprand.h>
-#include <hiprand/hiprand_kernel.h>
 #include <hiprand/hiprand.hpp>
+#include <hiprand/hiprand_kernel.h>
 
 #include "get_hiprand_version.hpp"
 

@@ -310,8 +310,8 @@ void run_benchmarks(const cli::Parser& parser,
         {
             if(format.compare("console") == 0)
             {
-                std::cout << "    "
-                          << "lambda " << std::fixed << std::setprecision(1) << lambda << std::endl;
+                std::cout << "    " << "lambda " << std::fixed << std::setprecision(1) << lambda
+                          << std::endl;
             }
             run_benchmark<unsigned int>(
                 parser,

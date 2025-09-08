@@ -134,7 +134,7 @@ int main(int argc, char* argv[])
     // Matrix C (m x n) in column-major
     rocsparse_int ldc        = m;
     double        hC[4 * 10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+                                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
     // Scalar alpha and beta
     double alpha = 1.0;

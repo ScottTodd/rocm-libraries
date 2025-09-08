@@ -72,8 +72,8 @@ TEST(RocprimDeviceMergeInplaceTests, Basic)
         h_data[left_size + i] = i * 2 + 1;
     }
 
-    common::device_ptr<value_type>     d_data(h_data);
-    std::vector<value_type>            h_expected(h_data);
+    common::device_ptr<value_type> d_data(h_data);
+    std::vector<value_type>        h_expected(h_data);
 
     // get temporary storage
     HIP_CHECK(rocprim::merge_inplace(nullptr, storage_size, d_data.get(), left_size, right_size));

@@ -903,9 +903,9 @@ class FFTOperationList
 {
 public:
     std::vector<FFTOperation> operations;
-    FFTOperationList(){};
+    FFTOperationList() {};
     FFTOperationList(std::initializer_list<FFTOperation> il)
-        : operations(il){};
+        : operations(il) {};
 
     StatementList lower()
     {

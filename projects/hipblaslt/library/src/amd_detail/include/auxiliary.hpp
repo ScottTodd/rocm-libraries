@@ -151,15 +151,14 @@ constexpr const char* hip_datatype_to_string(hipDataType type)
 HIPBLASLT_EXPORT
 constexpr const char* hipblas_computetype_to_string(hipblasComputeType_t type)
 {
-    return 
-        type == HIPBLAS_COMPUTE_16F ? "f16_r" :
-        type == HIPBLAS_COMPUTE_32F ? "f32_r" :
-        type == HIPBLAS_COMPUTE_32F_FAST_TF32 ? "xf32_r" :
-        type == HIPBLAS_COMPUTE_64F ? "f64_r" :
-        type == HIPBLAS_COMPUTE_32I ? "i32_r" :
-        type == HIPBLAS_COMPUTE_32F_FAST_16F ? "f32_f16_r" :
-        type == HIPBLAS_COMPUTE_32F_FAST_16BF ? "f32_bf16_r" :
-        "non-supported compute type";
+    return type == HIPBLAS_COMPUTE_16F             ? "f16_r"
+           : type == HIPBLAS_COMPUTE_32F           ? "f32_r"
+           : type == HIPBLAS_COMPUTE_32F_FAST_TF32 ? "xf32_r"
+           : type == HIPBLAS_COMPUTE_64F           ? "f64_r"
+           : type == HIPBLAS_COMPUTE_32I           ? "i32_r"
+           : type == HIPBLAS_COMPUTE_32F_FAST_16F  ? "f32_f16_r"
+           : type == HIPBLAS_COMPUTE_32F_FAST_16BF ? "f32_bf16_r"
+                                                   : "non-supported compute type";
 }
 
 // clang-format off
@@ -320,7 +319,6 @@ __host__ __device__ inline bool hipblaslt_isnan(hipblaslt_bf8_fnuz arg)
 {
     return arg.is_nan();
 }
-
 
 __host__ __device__ inline bool hipblaslt_isnan(hipblaslt_f8 arg)
 {

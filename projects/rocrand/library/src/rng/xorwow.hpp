@@ -44,15 +44,16 @@ namespace rocrand_impl::host
 
 typedef ::rocrand_device::xorwow_engine xorwow_device_engine;
 
-__host__ __device__ inline void init_xorwow_engines(dim3 block_idx,
-                                                    dim3 thread_idx,
-                                                    dim3 /*grid_dim*/,
-                                                    dim3                  block_dim,
-                                                    xorwow_device_engine* engines,
-                                                    const unsigned int    start_engine_id,
-                                                    const unsigned int    engines_size,
-                                                    unsigned long long    seed,
-                                                    unsigned long long    offset)
+__host__ __device__
+inline void                             init_xorwow_engines(dim3 block_idx,
+                                                            dim3 thread_idx,
+                                                            dim3 /*grid_dim*/,
+                                                            dim3                  block_dim,
+                                                            xorwow_device_engine* engines,
+                                                            const unsigned int    start_engine_id,
+                                                            const unsigned int    engines_size,
+                                                            unsigned long long    seed,
+                                                            unsigned long long    offset)
 {
     const unsigned int engine_id = block_idx.x * block_dim.x + thread_idx.x;
     if(engine_id < engines_size)
@@ -63,15 +64,16 @@ __host__ __device__ inline void init_xorwow_engines(dim3 block_idx,
 }
 
 template<class ConfigProvider, bool IsDynamic, class T, class Distribution>
-__host__ __device__ __forceinline__ void generate_xorwow(dim3 block_idx,
-                                         dim3 thread_idx,
-                                         dim3 grid_dim,
-                                         dim3 /*block_dim*/,
-                                         xorwow_device_engine* engines,
-                                         const unsigned int    start_engine_id,
-                                         T*                    data,
-                                         const size_t          n,
-                                         Distribution          distribution)
+__host__ __device__ __forceinline__
+void generate_xorwow(dim3 block_idx,
+                     dim3 thread_idx,
+                     dim3 grid_dim,
+                     dim3 /*block_dim*/,
+                     xorwow_device_engine* engines,
+                     const unsigned int    start_engine_id,
+                     T*                    data,
+                     const size_t          n,
+                     Distribution          distribution)
 {
     static_assert(is_single_tile_config<ConfigProvider, T>(IsDynamic),
                   "This kernel should only be used with single tile configs");
@@ -81,10 +83,10 @@ __host__ __device__ __forceinline__ void generate_xorwow(dim3 block_idx,
 
     using vec_type = aligned_vec_type<T, output_width>;
 
-    const unsigned int thread_id    = block_idx.x * BlockSize + thread_idx.x;
-    const uintptr_t uintptr   = reinterpret_cast<uintptr_t>(data);
+    const unsigned int thread_id = block_idx.x * BlockSize + thread_idx.x;
+    const uintptr_t    uintptr   = reinterpret_cast<uintptr_t>(data);
     const size_t misalignment = (output_width - uintptr / sizeof(T) % output_width) % output_width;
-    const unsigned int head_size    = cpp_utils::min(n, misalignment);
+    const unsigned int head_size = cpp_utils::min(n, misalignment);
     const unsigned int tail_size = (n - head_size) % output_width;
     const size_t       vec_n     = (n - head_size) / output_width;
 
@@ -282,7 +284,7 @@ public:
 
     rocrand_status init()
     {
-        if (m_engines_initialized)
+        if(m_engines_initialized)
         {
             return ROCRAND_STATUS_SUCCESS;
         }
@@ -335,12 +337,11 @@ public:
         return ROCRAND_STATUS_SUCCESS;
     }
 
-    template<class T, class Distribution = uniform_distribution<T> >
-    rocrand_status generate(T * data, size_t data_size,
-                            Distribution distribution = Distribution())
+    template<class T, class Distribution = uniform_distribution<T>>
+    rocrand_status generate(T* data, size_t data_size, Distribution distribution = Distribution())
     {
         rocrand_status status = init();
-        if (status != ROCRAND_STATUS_SUCCESS)
+        if(status != ROCRAND_STATUS_SUCCESS)
         {
             return status;
         }
@@ -384,9 +385,8 @@ public:
         }
 
         // Generating data_size values will use this many distributions
-        const auto touched_engines =
-            (data_size + Distribution::output_width - 1) /
-            Distribution::output_width;
+        const auto touched_engines
+            = (data_size + Distribution::output_width - 1) / Distribution::output_width;
 
         m_start_engine_id = (m_start_engine_id + touched_engines) % m_engines_size;
 
@@ -412,27 +412,27 @@ public:
     }
 
     template<class T>
-    rocrand_status generate_uniform(T * data, size_t data_size)
+    rocrand_status generate_uniform(T* data, size_t data_size)
     {
         uniform_distribution<T> distribution;
         return generate(data, data_size, distribution);
     }
 
     template<class T>
-    rocrand_status generate_normal(T * data, size_t data_size, T mean, T stddev)
+    rocrand_status generate_normal(T* data, size_t data_size, T mean, T stddev)
     {
         normal_distribution<T> distribution(mean, stddev);
         return generate(data, data_size, distribution);
     }
 
     template<class T>
-    rocrand_status generate_log_normal(T * data, size_t data_size, T mean, T stddev)
+    rocrand_status generate_log_normal(T* data, size_t data_size, T mean, T stddev)
     {
         log_normal_distribution<T> distribution(mean, stddev);
         return generate(data, data_size, distribution);
     }
 
-    rocrand_status generate_poisson(unsigned int * data, size_t data_size, double lambda)
+    rocrand_status generate_poisson(unsigned int* data, size_t data_size, double lambda)
     {
         auto result = m_poisson.get_distribution(lambda);
         if(auto* dis = std::get_if<poisson_distribution_t>(&result))

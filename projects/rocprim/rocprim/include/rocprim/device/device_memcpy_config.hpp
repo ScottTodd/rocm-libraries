@@ -63,9 +63,9 @@ struct wrapped_batch_memcpy_config<default_config, Value, IsMemCpy>
     {
         static constexpr batch_memcpy_config_params params
             = IsMemCpy ? (batch_memcpy_config_params)
-                      default_batch_memcpy_config<static_cast<unsigned int>(Arch), Value>{}
+                             default_batch_memcpy_config<static_cast<unsigned int>(Arch), Value>{}
                        : (batch_memcpy_config_params)
-                           default_batch_copy_config<static_cast<unsigned int>(Arch), Value>{};
+                             default_batch_copy_config<static_cast<unsigned int>(Arch), Value>{};
     };
 };
 

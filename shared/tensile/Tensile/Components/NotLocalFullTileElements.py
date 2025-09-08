@@ -24,6 +24,7 @@
 
 from ..Component import NotLocalFullTileElements
 
+
 class NotLocalFullTileElementsVALU(NotLocalFullTileElements):
     kernel = {"EnableMatrixInstruction": False}
 
@@ -32,23 +33,30 @@ class NotLocalFullTileElementsVALU(NotLocalFullTileElements):
     This function creates the writeElement mapping for full tiles
     (ie non-edge cases)
     """
+
     def __call__(self, writer, kernel, edge):
-        elements        = []
+        elements = []
         vectorwidth = 0
 
         if edge:
             vectorwidth = kernel["VectorWidth"] if kernel["_VectorStore"] else 1
-            vectorwidth = min(vectorwidth, writer.maxGwvw(kernel), kernel["AssertFree0ElementMultiple"])
-            assert(kernel["VectorWidth"] % vectorwidth == 0)
+            vectorwidth = min(
+                vectorwidth,
+                writer.maxGwvw(kernel),
+                kernel["AssertFree0ElementMultiple"],
+            )
+            assert kernel["VectorWidth"] % vectorwidth == 0
         else:
             vectorwidth = kernel["VectorWidth"] if kernel["_VectorStore"] else 1
             vectorwidth = min(vectorwidth, writer.maxGwvw(kernel))
 
         # Full tile loop:
-        for tt1 in range(0, kernel["ThreadTile1"]//kernel["VectorWidth"]):
+        for tt1 in range(0, kernel["ThreadTile1"] // kernel["VectorWidth"]):
             for vc1 in range(0, kernel["VectorWidth"]):
-                for tt0 in range(0, kernel["ThreadTile0"]//kernel["VectorWidth"]):
-                    for vc0 in range(0, kernel["VectorWidth"], vectorwidth): # note step by fullVw
+                for tt0 in range(0, kernel["ThreadTile0"] // kernel["VectorWidth"]):
+                    for vc0 in range(
+                        0, kernel["VectorWidth"], vectorwidth
+                    ):  # note step by fullVw
                         element = (tt1, tt0, vc1, vc0)
                         elements.append(element)
 
@@ -63,38 +71,65 @@ class NotLocalFullTileElementsMFMA(NotLocalFullTileElements):
     This function creates the writeElement mapping for full tiles
     (ie non-edge cases)
     """
+
     def __call__(self, writer, kernel, edge):
-        elements        = []
+        elements = []
         storeVectorWidth = 0
 
         if edge:
-            storeVectorWidth = kernel["StoreVectorWidth"] if kernel["_VectorStore"] else 1
-            storeVectorWidth = min(storeVectorWidth, writer.maxGwvw(kernel), kernel["AssertFree0ElementMultiple"])
+            storeVectorWidth = (
+                kernel["StoreVectorWidth"] if kernel["_VectorStore"] else 1
+            )
+            storeVectorWidth = min(
+                storeVectorWidth,
+                writer.maxGwvw(kernel),
+                kernel["AssertFree0ElementMultiple"],
+            )
         else:
-            storeVectorWidth = kernel["StoreVectorWidth"] if kernel["_VectorStore"] else 1
+            storeVectorWidth = (
+                kernel["StoreVectorWidth"] if kernel["_VectorStore"] else 1
+            )
             storeVectorWidth = min(storeVectorWidth, writer.maxGwvw(kernel))
 
         # handle mfma 4x4 instruction
-        matrixInstM  = kernel["MatrixInstM"] * kernel["MatrixInstBM"] if (kernel["MatrixInstM"] == 4) else kernel["MatrixInstM"]
-        matrixInstN  = kernel["MatrixInstN"] * kernel["MatrixInstBN"] if (kernel["MatrixInstN"] == 4) else kernel["MatrixInstN"]
-        matrixInstBM = 1                                              if (kernel["MatrixInstM"] == 4) else kernel["MatrixInstBM"]
-        matrixInstBN = 1                                              if (kernel["MatrixInstN"] == 4) else kernel["MatrixInstBN"]
+        matrixInstM = (
+            kernel["MatrixInstM"] * kernel["MatrixInstBM"]
+            if (kernel["MatrixInstM"] == 4)
+            else kernel["MatrixInstM"]
+        )
+        matrixInstN = (
+            kernel["MatrixInstN"] * kernel["MatrixInstBN"]
+            if (kernel["MatrixInstN"] == 4)
+            else kernel["MatrixInstN"]
+        )
+        matrixInstBM = 1 if (kernel["MatrixInstM"] == 4) else kernel["MatrixInstBM"]
+        matrixInstBN = 1 if (kernel["MatrixInstN"] == 4) else kernel["MatrixInstBN"]
 
         outputsPerThread = matrixInstM * matrixInstN // kernel["WavefrontSize"]
 
         # handle SourceSwap
-        totalTT0     = matrixInstBM * kernel["MIWaveTile"][0]
-        totalTT1     = matrixInstBN * kernel["MIWaveTile"][1]
+        totalTT0 = matrixInstBM * kernel["MIWaveTile"][0]
+        totalTT1 = matrixInstBN * kernel["MIWaveTile"][1]
 
-        totalTT0     = totalTT0                      if kernel["SourceSwap"] else (totalTT0 * outputsPerThread)
-        totalTT1     = (totalTT1 * outputsPerThread) if kernel["SourceSwap"] else totalTT1
-        vectorWidth0 = kernel["VectorWidthA"]        if kernel["SourceSwap"] else kernel["VectorWidthA"] * kernel["MIOutputVectorWidth"]
-        vectorWidth1 = kernel["VectorWidthB"] * kernel["MIOutputVectorWidth"] if kernel["SourceSwap"] else kernel["VectorWidthB"]
+        totalTT0 = totalTT0 if kernel["SourceSwap"] else (totalTT0 * outputsPerThread)
+        totalTT1 = (totalTT1 * outputsPerThread) if kernel["SourceSwap"] else totalTT1
+        vectorWidth0 = (
+            kernel["VectorWidthA"]
+            if kernel["SourceSwap"]
+            else kernel["VectorWidthA"] * kernel["MIOutputVectorWidth"]
+        )
+        vectorWidth1 = (
+            kernel["VectorWidthB"] * kernel["MIOutputVectorWidth"]
+            if kernel["SourceSwap"]
+            else kernel["VectorWidthB"]
+        )
 
-        for tt1 in range(0, totalTT1//vectorWidth1):
+        for tt1 in range(0, totalTT1 // vectorWidth1):
             for vc1 in range(0, vectorWidth1):
-                for tt0 in range(0, totalTT0//vectorWidth0):
-                    for vc0 in range(0, vectorWidth0, storeVectorWidth): # note step by storeVectorWidth
+                for tt0 in range(0, totalTT0 // vectorWidth0):
+                    for vc0 in range(
+                        0, vectorWidth0, storeVectorWidth
+                    ):  # note step by storeVectorWidth
                         element = (tt1, tt0, vc1, vc0)
                         elements.append(element)
 

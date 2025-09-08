@@ -32,10 +32,10 @@
  * Thread utilities for sequential prefix scan over statically-sized array types
  */
 
- #ifndef HIPCUB_THREAD_THREAD_SCAN_HPP_
- #define HIPCUB_THREAD_THREAD_SCAN_HPP_
+#ifndef HIPCUB_THREAD_THREAD_SCAN_HPP_
+#define HIPCUB_THREAD_THREAD_SCAN_HPP_
 
- #ifdef __HIP_PLATFORM_AMD__
+#ifdef __HIP_PLATFORM_AMD__
     #include "../backend/rocprim/thread/thread_scan.hpp" // IWYU pragma: export
 #elif defined(__HIP_PLATFORM_NVIDIA__)
     #include "../config.hpp"

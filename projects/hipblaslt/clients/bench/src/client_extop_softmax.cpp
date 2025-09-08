@@ -74,7 +74,8 @@ int parseArgs(int argc, char** argv, size_t* m, size_t* n, hipblaslt_initializat
             {
                 const std::string initStr{argv[++i]};
 
-                if(initStr != "rand_int" && initStr != "trig_float" && initStr != "hpl" && initStr != "special" && initStr != "zero")
+                if(initStr != "rand_int" && initStr != "trig_float" && initStr != "hpl"
+                   && initStr != "special" && initStr != "zero")
                 {
                     std::cerr << "Invalid initialization type: " << initStr << '\n';
                     return EXIT_FAILURE;

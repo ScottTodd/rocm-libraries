@@ -48,7 +48,8 @@ template<
     std::enable_if_t<(ItemsPerThread == 1u && is_buildable(BlockSize, ItemsPerThread, algorithm)),
                      int>
     = 0>
-__global__ __launch_bounds__(BlockSize) void sort_keys_kernel(KeyIterator keys, OffsetT size)
+__global__ __launch_bounds__(BlockSize)
+void sort_keys_kernel(KeyIterator keys, OffsetT size)
 {
     using key_type = typename std::iterator_traits<KeyIterator>::value_type;
     using bsort_type
@@ -70,7 +71,8 @@ __global__ __launch_bounds__(BlockSize) void sort_keys_kernel(KeyIterator keys, 
     }
     else
     {
-        ROCPRIM_SHARED_MEMORY typename bsort_type::storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        typename bsort_type::storage_type storage;
         bsort_type().sort(thread_key,
                           storage,
                           std::min(static_cast<size_t>(ItemsPerBlock), size - block_offset),
@@ -93,7 +95,8 @@ template<
     std::enable_if_t<(ItemsPerThread > 1u && is_buildable(BlockSize, ItemsPerThread, algorithm)),
                      int>
     = 0>
-__global__ __launch_bounds__(BlockSize) void sort_keys_kernel(KeyIterator keys, OffsetT size)
+__global__ __launch_bounds__(BlockSize)
+void sort_keys_kernel(KeyIterator keys, OffsetT size)
 {
     using key_type = typename std::iterator_traits<KeyIterator>::value_type;
     using bsort_type
@@ -113,7 +116,8 @@ __global__ __launch_bounds__(BlockSize) void sort_keys_kernel(KeyIterator keys, 
     }
     else
     {
-        ROCPRIM_SHARED_MEMORY typename bsort_type::storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        typename bsort_type::storage_type storage;
         bsort_type().sort(thread_keys, storage, valid, BinaryOp());
     }
 
@@ -127,8 +131,8 @@ template<unsigned int BlockSize,
          class BinaryOp = rocprim::less<typename std::iterator_traits<KeyIterator>::value_type>,
          class OffsetT,
          std::enable_if_t<!is_buildable(BlockSize, ItemsPerThread, algorithm), int> = 0>
-__global__ __launch_bounds__(BlockSize) void sort_keys_kernel(KeyIterator /*keys*/,
-                                                              OffsetT /*size*/)
+__global__ __launch_bounds__(BlockSize)
+void sort_keys_kernel(KeyIterator /*keys*/, OffsetT /*size*/)
 {}
 
 template<
@@ -142,9 +146,8 @@ template<
     std::enable_if_t<(ItemsPerThread == 1u && is_buildable(BlockSize, ItemsPerThread, algorithm)),
                      int>
     = 0>
-__global__ __launch_bounds__(BlockSize) void sort_pairs_kernel(key_type*   keys,
-                                                               value_type* values,
-                                                               OffsetT     size)
+__global__ __launch_bounds__(BlockSize)
+void sort_pairs_kernel(key_type* keys, value_type* values, OffsetT size)
 {
     using bsort_type
         = rocprim::block_sort<key_type, BlockSize, ItemsPerThread, value_type, algorithm>;
@@ -167,7 +170,8 @@ __global__ __launch_bounds__(BlockSize) void sort_pairs_kernel(key_type*   keys,
     }
     else
     {
-        ROCPRIM_SHARED_MEMORY typename bsort_type::storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        typename bsort_type::storage_type storage;
         bsort_type().sort(thread_key,
                           thread_value,
                           storage,
@@ -193,9 +197,8 @@ template<
     std::enable_if_t<(ItemsPerThread > 1u && is_buildable(BlockSize, ItemsPerThread, algorithm)),
                      int>
     = 0>
-__global__ __launch_bounds__(BlockSize) void sort_pairs_kernel(key_type*   keys,
-                                                               value_type* values,
-                                                               OffsetT     size)
+__global__ __launch_bounds__(BlockSize)
+void sort_pairs_kernel(key_type* keys, value_type* values, OffsetT size)
 {
     using bsort_type
         = rocprim::block_sort<key_type, BlockSize, ItemsPerThread, value_type, algorithm>;
@@ -216,7 +219,8 @@ __global__ __launch_bounds__(BlockSize) void sort_pairs_kernel(key_type*   keys,
     }
     else
     {
-        ROCPRIM_SHARED_MEMORY typename bsort_type::storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        typename bsort_type::storage_type storage;
         bsort_type().sort(thread_keys, thread_values, storage, valid, BinaryOp());
     }
 
@@ -232,9 +236,8 @@ template<unsigned int BlockSize,
          class BinaryOp = rocprim::less<key_type>,
          class OffsetT,
          std::enable_if_t<!is_buildable(BlockSize, ItemsPerThread, algorithm), int> = 0>
-__global__ __launch_bounds__(BlockSize) void sort_pairs_kernel(key_type* /*keys*/,
-                                                               value_type* /*values*/,
-                                                               OffsetT /*size*/)
+__global__ __launch_bounds__(BlockSize)
+void sort_pairs_kernel(key_type* /*keys*/, value_type* /*values*/, OffsetT /*size*/)
 {}
 
 #endif // TEST_BLOCK_SORT_KERNELS_HPP_

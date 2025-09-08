@@ -110,7 +110,7 @@ namespace DGen
         static constexpr int biasedEMin   = 0;
         static constexpr int biasedEMax   = 254;
     };
-    
+
     union cvt
     {
         float num;
@@ -208,8 +208,8 @@ namespace DGen
     template <typename DTYPE>
     inline bool isOne(uint8_t const* scaleBytes,
                       uint8_t const* dataBytes,
-                      index_t         scaleIndex,
-                      index_t         dataIndex);
+                      index_t        scaleIndex,
+                      index_t        dataIndex);
 
     /**
      * Check if the product of the scale and data
@@ -237,8 +237,8 @@ namespace DGen
     template <typename DTYPE>
     inline bool isZero(uint8_t const* scaleBytes,
                        uint8_t const* dataBytes,
-                       index_t         scaleIndex,
-                       index_t         dataIndex);
+                       index_t        scaleIndex,
+                       index_t        dataIndex);
 
     /**
      * Check if the product of the scale and data
@@ -266,8 +266,8 @@ namespace DGen
     template <typename DTYPE>
     inline bool isNaN(uint8_t const* scaleBytes,
                       uint8_t const* dataBytes,
-                      index_t         scaleIndex,
-                      index_t         dataIndex);
+                      index_t        scaleIndex,
+                      index_t        dataIndex);
 
     /**
      * Check if the product of the scale and data
@@ -295,8 +295,8 @@ namespace DGen
     template <typename DTYPE>
     inline bool isInf(uint8_t const* scaleBytes,
                       uint8_t const* dataBytes,
-                      index_t         scaleIndex,
-                      index_t         dataIndex);
+                      index_t        scaleIndex,
+                      index_t        dataIndex);
 
     /**
      * XXX
@@ -341,8 +341,8 @@ namespace DGen
     inline bool isLess(double         val,
                        uint8_t const* scaleBytes,
                        uint8_t const* dataBytes,
-                       index_t         scaleIndex,
-                       index_t         dataIndex);
+                       index_t        scaleIndex,
+                       index_t        dataIndex);
 
     /**
      * Check if the product of the scale and data
@@ -375,8 +375,8 @@ namespace DGen
     inline bool isGreater(double         val,
                           uint8_t const* scaleBytes,
                           uint8_t const* dataBytes,
-                          index_t         scaleIndex,
-                          index_t         dataIndex);
+                          index_t        scaleIndex,
+                          index_t        dataIndex);
 
     /**
      * Convert the product of the scale and data
@@ -405,8 +405,8 @@ namespace DGen
     template <typename DTYPE>
     inline double toDouble(uint8_t const* scaleBytes,
                            uint8_t const* dataBytes,
-                           index_t         scaleIndex,
-                           index_t         dataIndex);
+                           index_t        scaleIndex,
+                           index_t        dataIndex);
 
     /**
      * Convert the product of the scale and data
@@ -435,8 +435,8 @@ namespace DGen
     template <typename DTYPE>
     inline float toFloat(uint8_t const* scaleBytes,
                          uint8_t const* dataBytes,
-                         index_t         scaleIndex,
-                         index_t         dataIndex);
+                         index_t        scaleIndex,
+                         index_t        dataIndex);
 
     /**
      * Check if the product of the scale and data
@@ -465,8 +465,8 @@ namespace DGen
     template <typename DTYPE>
     inline bool isOnePacked(uint8_t const* scaleBytes,
                             uint8_t const* dataBytes,
-                            index_t         scaleIndex,
-                            index_t         dataIndex);
+                            index_t        scaleIndex,
+                            index_t        dataIndex);
 
     /**
      * Check if the product of the scale and data
@@ -494,8 +494,8 @@ namespace DGen
     template <typename DTYPE>
     inline bool isZeroPacked(uint8_t const* scaleBytes,
                              uint8_t const* dataBytes,
-                             index_t         scaleIndex,
-                             index_t         dataIndex);
+                             index_t        scaleIndex,
+                             index_t        dataIndex);
 
     /**
      * Check if the product of the scale and data
@@ -523,8 +523,8 @@ namespace DGen
     template <typename DTYPE>
     inline bool isNaNPacked(uint8_t const* scaleBytes,
                             uint8_t const* dataBytes,
-                            index_t         scaleIndex,
-                            index_t         dataIndex);
+                            index_t        scaleIndex,
+                            index_t        dataIndex);
 
     /**
      * Check if the product of the scale and data
@@ -552,8 +552,8 @@ namespace DGen
     template <typename DTYPE>
     inline bool isInfPacked(uint8_t const* scaleBytes,
                             uint8_t const* dataBytes,
-                            index_t         scaleIndex,
-                            index_t         dataIndex);
+                            index_t        scaleIndex,
+                            index_t        dataIndex);
 
     /**
      * Check if the product of the scale and data
@@ -586,8 +586,8 @@ namespace DGen
     inline bool isLessPacked(double         val,
                              uint8_t const* scaleBytes,
                              uint8_t const* dataBytes,
-                             index_t         scaleIndex,
-                             index_t         dataIndex);
+                             index_t        scaleIndex,
+                             index_t        dataIndex);
 
     /**
      * Check if the product of the scale and data
@@ -620,8 +620,8 @@ namespace DGen
     inline bool isGreaterPacked(double         val,
                                 uint8_t const* scaleBytes,
                                 uint8_t const* dataBytes,
-                                index_t         scaleIndex,
-                                index_t         dataIndex);
+                                index_t        scaleIndex,
+                                index_t        dataIndex);
 
     /**
      * Convert the product of the scale and data
@@ -650,8 +650,8 @@ namespace DGen
     template <typename DTYPE>
     inline double toDoublePacked(uint8_t const* scaleBytes,
                                  uint8_t const* dataBytes,
-                                 index_t         scaleIndex,
-                                 index_t         dataIndex);
+                                 index_t        scaleIndex,
+                                 index_t        dataIndex);
 
     /**
      * Convert the product of the scale and data
@@ -680,8 +680,8 @@ namespace DGen
     template <typename DTYPE>
     inline float toFloatPacked(uint8_t const* scaleBytes,
                                uint8_t const* dataBytes,
-                               index_t         scaleIndex,
-                               index_t         dataIndex);
+                               index_t        scaleIndex,
+                               index_t        dataIndex);
 
     /**
      * Set the product of the scale and data to be 1
@@ -709,8 +709,8 @@ namespace DGen
     template <typename DTYPE>
     void setOne(uint8_t* scaleBytes,
                 uint8_t* dataBytes,
-                index_t   scaleIndex,
-                index_t   dataIndex,
+                index_t  scaleIndex,
+                index_t  dataIndex,
                 bool     subNormal = false);
 
     /**
@@ -803,7 +803,7 @@ namespace DGen
      */
     template <typename DTYPE>
     void setDataMax(uint8_t* dataBytes,
-                    index_t   dataIndex,
+                    index_t  dataIndex,
                     bool     subNormal = false,
                     bool     positive  = true);
 
@@ -833,8 +833,8 @@ namespace DGen
     template <typename DTYPE>
     void setOnePacked(uint8_t* scaleBytes,
                       uint8_t* dataBytes,
-                      index_t   scaleIndex,
-                      index_t   dataIndex,
+                      index_t  scaleIndex,
+                      index_t  dataIndex,
                       bool     subNormal = false);
 
     /**
@@ -857,8 +857,10 @@ namespace DGen
      *      The index to the data bit representation
      */
     template <typename DTYPE>
-    void
-        setZeroPacked(uint8_t* scaleBytes, uint8_t* dataBytes, index_t scaleIndex, index_t dataIndex);
+    void setZeroPacked(uint8_t* scaleBytes,
+                       uint8_t* dataBytes,
+                       index_t  scaleIndex,
+                       index_t  dataIndex);
 
     /**
      * Set the product of the scale and data to be NaN,
@@ -880,7 +882,10 @@ namespace DGen
      *      The index to the data bit representation
      */
     template <typename DTYPE>
-    void setNaNPacked(uint8_t* scaleBytes, uint8_t* dataBytes, index_t scaleIndex, index_t dataIndex);
+    void setNaNPacked(uint8_t* scaleBytes,
+                      uint8_t* dataBytes,
+                      index_t  scaleIndex,
+                      index_t  dataIndex);
 
     /**
      * Set the product of the scale and data to be Inf,
@@ -902,7 +907,10 @@ namespace DGen
      *      The index to the data bit representation
      */
     template <typename DTYPE>
-    void setInfPacked(uint8_t* scaleBytes, uint8_t* dataBytes, index_t scaleIndex, index_t dataIndex);
+    void setInfPacked(uint8_t* scaleBytes,
+                      uint8_t* dataBytes,
+                      index_t  scaleIndex,
+                      index_t  dataIndex);
 
     /**
      * Set the element at the specified index
@@ -928,7 +936,7 @@ namespace DGen
      */
     template <typename DTYPE>
     void setDataMaxPacked(uint8_t* dataBytes,
-                          index_t   dataIndex,
+                          index_t  dataIndex,
                           bool     subNormal = false,
                           bool     positive  = true);
 
@@ -967,10 +975,10 @@ namespace DGen
      *
      * @param value
      *      The value to convert to the bit representation
-     * 
+     *
      * @param seed
      *      The seed used for rounding
-     * 
+     *
      * @return
      *      The bit representation of the value.
      *      If the datatype is less than 8 bit
@@ -985,10 +993,10 @@ namespace DGen
      *
      * @param value
      *      The value to convert to the bit representation
-     * 
+     *
      * @param seed
      *      The seed used for rounding
-     * 
+     *
      * @return
      *      The bit representation of the value.
      *      If the datatype is less than 8 bit
@@ -1010,14 +1018,14 @@ namespace DGen
     T convertToType(float value);
 
     /**
-     * Performs stochastic rounding on a float32 value to 
+     * Performs stochastic rounding on a float32 value to
      * type T representation
      * DOES NOT CHECK FOR OUT OF RANGE/NAN/INF
      *      Should be done before calling this method
-     * 
+     *
      * @param value
      *      The float32 value to be converted to type T
-     * 
+     *
      * @param seed
      *      The seed used for rounding
      */

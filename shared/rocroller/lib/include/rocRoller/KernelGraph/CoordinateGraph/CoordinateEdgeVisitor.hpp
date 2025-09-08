@@ -38,8 +38,9 @@ namespace rocRoller
     namespace KernelGraph::CoordinateGraph
     {
         template <typename T>
-        concept CTUndefinedEdge = std::is_same<ConstructMacroTile, T>::value || std::
-            is_same<DestructMacroTile, T>::value || std::is_same<Forget, T>::value;
+        concept CTUndefinedEdge
+            = std::is_same<ConstructMacroTile, T>::value
+              || std::is_same<DestructMacroTile, T>::value || std::is_same<Forget, T>::value;
 
         struct BaseEdgeVisitor
         {

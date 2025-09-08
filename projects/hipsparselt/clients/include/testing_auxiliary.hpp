@@ -39,7 +39,7 @@
 
 void testing_aux_get_version(const Arguments& arg)
 {
-    static int version;
+    static int               version;
     hipsparselt_local_handle handle;
     hipsparseLtGetVersion(handle, &version);
 
@@ -52,7 +52,7 @@ void testing_aux_get_version(const Arguments& arg)
     int version_ = major * 100000 + minor * 100 + patch;
     ASSERT_EQ(version, version_);
 
-    char *rev = nullptr;
+    char* rev = nullptr;
     EXPECT_HIPSPARSE_STATUS(hipsparseLtGetGitRevision(handle, rev), HIPSPARSE_STATUS_INVALID_VALUE);
 }
 
@@ -295,7 +295,7 @@ void testing_aux_mat_init_structured_bad_arg(const Arguments& arg)
                                                                 HIP_R_64F,
                                                                 HIPSPARSE_ORDER_COL,
                                                                 HIPSPARSELT_SPARSITY_50_PERCENT),
-                            HIPSPARSE_STATUS_NOT_SUPPORTED);     
+                            HIPSPARSE_STATUS_NOT_SUPPORTED);
 }
 
 void testing_aux_mat_dense_init(const Arguments& arg)
@@ -879,8 +879,11 @@ void testing_aux_matmul_set_attr_bad_arg(const Arguments& arg)
     {
         int dataSigmoid = 1;
         EXPECT_HIPSPARSE_STATUS(
-            hipsparseLtMatmulDescSetAttribute(
-                handle, matmul, HIPSPARSELT_MATMUL_ACTIVATION_SIGMOID, &dataSigmoid, sizeof(dataSigmoid)),
+            hipsparseLtMatmulDescSetAttribute(handle,
+                                              matmul,
+                                              HIPSPARSELT_MATMUL_ACTIVATION_SIGMOID,
+                                              &dataSigmoid,
+                                              sizeof(dataSigmoid)),
             HIPSPARSE_STATUS_NOT_SUPPORTED);
     }
 #endif
@@ -898,11 +901,11 @@ void testing_aux_matmul_set_attr_bad_arg(const Arguments& arg)
         HIPSPARSE_STATUS_INVALID_VALUE);
 
 #ifdef __HIP_PLATFORM_AMD__
-        char bias_type;
-        EXPECT_HIPSPARSE_STATUS(
-            hipsparseLtMatmulDescSetAttribute(
-                handle, matmul, HIPSPARSELT_MATMUL_BIAS_TYPE, &bias_type, sizeof(char)),
-            HIPSPARSE_STATUS_INVALID_VALUE);
+    char bias_type;
+    EXPECT_HIPSPARSE_STATUS(
+        hipsparseLtMatmulDescSetAttribute(
+            handle, matmul, HIPSPARSELT_MATMUL_BIAS_TYPE, &bias_type, sizeof(char)),
+        HIPSPARSE_STATUS_INVALID_VALUE);
 #endif
 }
 
@@ -1021,21 +1024,21 @@ void testing_aux_matmul_get_attr_bad_arg(const Arguments& arg)
         HIPSPARSE_STATUS_INVALID_VALUE);
 
     size_t bad_ptr_size = sizeof(void*) - 1;
-    void* dBias;
+    void*  dBias;
     CHECK_HIP_ERROR(hipMalloc((void**)&dBias, (M) * sizeof(float)));
-    EXPECT_HIPSPARSE_STATUS(hipsparseLtMatmulDescGetAttribute(
-                                handle, matmul, HIPSPARSELT_MATMUL_BIAS_POINTER, &dBias, bad_ptr_size),
-                            HIPSPARSE_STATUS_INVALID_VALUE);
+    EXPECT_HIPSPARSE_STATUS(
+        hipsparseLtMatmulDescGetAttribute(
+            handle, matmul, HIPSPARSELT_MATMUL_BIAS_POINTER, &dBias, bad_ptr_size),
+        HIPSPARSE_STATUS_INVALID_VALUE);
     CHECK_HIP_ERROR(hipFree(dBias));
 
     EXPECT_HIPSPARSE_STATUS(
         hipsparseLtMatmulDescGetAttribute(
             handle, matmul, HIPSPARSELT_MATMUL_BIAS_STRIDE, nullptr, sizeof(data64)),
         HIPSPARSE_STATUS_INVALID_VALUE);
-    EXPECT_HIPSPARSE_STATUS(
-        hipsparseLtMatmulDescGetAttribute(
-            handle, matmul, HIPSPARSELT_MATMUL_BIAS_STRIDE, &data64, 1),
-        HIPSPARSE_STATUS_INVALID_VALUE);
+    EXPECT_HIPSPARSE_STATUS(hipsparseLtMatmulDescGetAttribute(
+                                handle, matmul, HIPSPARSELT_MATMUL_BIAS_STRIDE, &data64, 1),
+                            HIPSPARSE_STATUS_INVALID_VALUE);
 
 #ifdef __HIP_PLATFORM_AMD__
     hipDataType biasType;
@@ -1043,20 +1046,18 @@ void testing_aux_matmul_get_attr_bad_arg(const Arguments& arg)
         hipsparseLtMatmulDescGetAttribute(
             handle, matmul, HIPSPARSELT_MATMUL_BIAS_STRIDE, nullptr, sizeof(biasType)),
         HIPSPARSE_STATUS_INVALID_VALUE);
-    EXPECT_HIPSPARSE_STATUS(
-        hipsparseLtMatmulDescGetAttribute(
-            handle, matmul, HIPSPARSELT_MATMUL_BIAS_STRIDE, &biasType, 1),
-        HIPSPARSE_STATUS_INVALID_VALUE);
+    EXPECT_HIPSPARSE_STATUS(hipsparseLtMatmulDescGetAttribute(
+                                handle, matmul, HIPSPARSELT_MATMUL_BIAS_STRIDE, &biasType, 1),
+                            HIPSPARSE_STATUS_INVALID_VALUE);
 #endif
 
     EXPECT_HIPSPARSE_STATUS(
         hipsparseLtMatmulDescGetAttribute(
             handle, matmul, HIPSPARSELT_MATMUL_ALPHA_VECTOR_SCALING, nullptr, sizeof(data)),
         HIPSPARSE_STATUS_INVALID_VALUE);
-    EXPECT_HIPSPARSE_STATUS(
-        hipsparseLtMatmulDescGetAttribute(
-            handle, matmul, HIPSPARSELT_MATMUL_ALPHA_VECTOR_SCALING, &data, 1),
-        HIPSPARSE_STATUS_INVALID_VALUE);
+    EXPECT_HIPSPARSE_STATUS(hipsparseLtMatmulDescGetAttribute(
+                                handle, matmul, HIPSPARSELT_MATMUL_ALPHA_VECTOR_SCALING, &data, 1),
+                            HIPSPARSE_STATUS_INVALID_VALUE);
 
 #ifdef __HIP_PLATFORM_AMD__
     EXPECT_HIPSPARSE_STATUS(
@@ -1516,15 +1517,14 @@ void testing_aux_matmul_alg_set_attr_bad_arg(const Arguments& arg)
             handle, alg_sel, HIPSPARSELT_MATMUL_ALG_CONFIG_MAX_ID, &data, sizeof(data)),
         HIPSPARSE_STATUS_INVALID_VALUE);
 
-    EXPECT_HIPSPARSE_STATUS(
-        hipsparseLtMatmulAlgSetAttribute(
-            handle, alg_sel, HIPSPARSELT_MATMUL_SEARCH_ITERATIONS, &data, 1),
-            HIPSPARSE_STATUS_INVALID_VALUE);
+    EXPECT_HIPSPARSE_STATUS(hipsparseLtMatmulAlgSetAttribute(
+                                handle, alg_sel, HIPSPARSELT_MATMUL_SEARCH_ITERATIONS, &data, 1),
+                            HIPSPARSE_STATUS_INVALID_VALUE);
     data = 0;
     EXPECT_HIPSPARSE_STATUS(
         hipsparseLtMatmulAlgSetAttribute(
             handle, alg_sel, HIPSPARSELT_MATMUL_SEARCH_ITERATIONS, &data, sizeof(data)),
-            HIPSPARSE_STATUS_INVALID_VALUE);
+        HIPSPARSE_STATUS_INVALID_VALUE);
 }
 
 void testing_aux_matmul_alg_get_attr_bad_arg(const Arguments& arg)
@@ -1660,14 +1660,16 @@ void testing_aux_matmul_plan_init_bad_arg(const Arguments& arg)
     // check the A and B matrices has the same value of num_batches.
     int num_batches_a = 2;
     int num_batches_b = 3;
-    EXPECT_HIPSPARSE_STATUS(hipsparseLtMatDescSetAttribute(
+    EXPECT_HIPSPARSE_STATUS(
+        hipsparseLtMatDescSetAttribute(
             handle, matA, HIPSPARSELT_MAT_NUM_BATCHES, &num_batches_a, sizeof(num_batches_a)),
         HIPSPARSE_STATUS_SUCCESS);
-    EXPECT_HIPSPARSE_STATUS(hipsparseLtMatDescSetAttribute(
+    EXPECT_HIPSPARSE_STATUS(
+        hipsparseLtMatDescSetAttribute(
             handle, matB, HIPSPARSELT_MAT_NUM_BATCHES, &num_batches_b, sizeof(num_batches_b)),
         HIPSPARSE_STATUS_SUCCESS);
     EXPECT_HIPSPARSE_STATUS(hipsparseLtMatmulPlanInit(handle, &plan, matmul, alg_sel),
-        HIPSPARSE_STATUS_INVALID_VALUE);
+                            HIPSPARSE_STATUS_INVALID_VALUE);
 }
 
 void testing_aux_matmul_plan_destroy_bad_arg(const Arguments& arg)

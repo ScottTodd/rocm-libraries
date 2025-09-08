@@ -90,10 +90,9 @@ namespace Tensile
                             std::cout << "Index:  Device | Reference" << std::endl;
                         }
 
-                        std::cout << "[" << (m_printed) << "] "
-                                  << " elem=" << elemNumber << " idx=" << elemIndex << ": "
-                                  << resultValue << (match ? "==" : "!=") << referenceValue
-                                  << std::endl;
+                        std::cout << "[" << (m_printed) << "] " << " elem=" << elemNumber
+                                  << " idx=" << elemIndex << ": " << resultValue
+                                  << (match ? "==" : "!=") << referenceValue << std::endl;
 
                         m_printed++;
 

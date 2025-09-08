@@ -107,8 +107,8 @@ THRUST_HOST_DEVICE integral_constant<bool, true> allows_nondeterminism(execution
 }
 
 template <class Derived>
-THRUST_HOST_DEVICE auto nondeterministic(execution_policy<Derived>& policy)
-  -> decltype(allows_nondeterminism(derived_cast(policy)))
+THRUST_HOST_DEVICE auto
+nondeterministic(execution_policy<Derived>& policy) -> decltype(allows_nondeterminism(derived_cast(policy)))
 {
   return {};
 }

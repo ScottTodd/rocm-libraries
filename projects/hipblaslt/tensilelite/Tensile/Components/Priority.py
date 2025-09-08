@@ -25,10 +25,12 @@
 from ..Component import Component
 from rocisa.instruction import SSetPrior
 
+
 class Priority(Component):
     """
     Raise/lower workgroup priority.
     """
+
 
 class AggressivePriority(Priority):
     """

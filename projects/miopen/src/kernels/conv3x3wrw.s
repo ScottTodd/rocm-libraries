@@ -919,7 +919,7 @@ last_wave:
             buffer_store_dwordx3 v[acc_base+1:acc_base+3], v[voffset_wei], s[desc_wei:desc_wei+3], s[soffset_wei] offen offset:0+4
          .else
             buffer_store_dwordx4 v[acc_base:acc_base+3], v[voffset_wei], s[desc_wei:desc_wei+3], s[soffset_wei] offen offset:0
-         .endif   
+         .endif
          v_cvt_f16_f32 v[acc_base+8], v[acc_base+8]
          buffer_store_short v[acc_base+8], v[voffset_wei], s[desc_wei:desc_wei+3], s[soffset_wei] offen offset:0+4*4
       .else

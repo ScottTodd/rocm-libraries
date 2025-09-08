@@ -164,10 +164,9 @@ namespace
     };
 
     template <typename T>
-    struct complex_operators_testing<
-        T,
-        std::enable_if_t<
-            std::is_same_v<T, rocblas_float_complex> || std::is_same_v<T, rocblas_double_complex>>>
+    struct complex_operators_testing<T,
+                                     std::enable_if_t<std::is_same_v<T, rocblas_float_complex>
+                                                      || std::is_same_v<T, rocblas_double_complex>>>
         : rocblas_test_valid
     {
         void operator()(const Arguments& arg)
@@ -245,11 +244,10 @@ namespace
     template <typename T>
     struct helper_utilities_testing<
         T,
-        std::enable_if_t<
-            std::is_same_v<
-                T,
-                rocblas_half> || std::is_same_v<T, rocblas_bfloat16> || std::is_same_v<T, rocblas_float_complex> || std::is_same_v<T, rocblas_double_complex> || std::is_same_v<T, float> || std::is_same_v<T, double>>>
-        : rocblas_test_valid
+        std::enable_if_t<std::is_same_v<T, rocblas_half> || std::is_same_v<T, rocblas_bfloat16>
+                         || std::is_same_v<T, rocblas_float_complex>
+                         || std::is_same_v<T, rocblas_double_complex> || std::is_same_v<T, float>
+                         || std::is_same_v<T, double>>> : rocblas_test_valid
     {
         void operator()(const Arguments& arg)
         {
@@ -582,11 +580,10 @@ namespace
     template <typename T>
     struct check_numerics_vector_testing<
         T,
-        std::enable_if_t<
-            std::is_same_v<
-                T,
-                rocblas_half> || std::is_same_v<T, rocblas_bfloat16> || std::is_same_v<T, rocblas_float_complex> || std::is_same_v<T, rocblas_double_complex> || std::is_same_v<T, float> || std::is_same_v<T, double>>>
-        : rocblas_test_valid
+        std::enable_if_t<std::is_same_v<T, rocblas_half> || std::is_same_v<T, rocblas_bfloat16>
+                         || std::is_same_v<T, rocblas_float_complex>
+                         || std::is_same_v<T, rocblas_double_complex> || std::is_same_v<T, float>
+                         || std::is_same_v<T, double>>> : rocblas_test_valid
     {
         void operator()(const Arguments& arg)
         {
@@ -1264,11 +1261,10 @@ namespace
     template <typename T>
     struct check_numerics_matrix_testing<
         T,
-        std::enable_if_t<
-            std::is_same_v<
-                T,
-                rocblas_half> || std::is_same_v<T, rocblas_bfloat16> || std::is_same_v<T, rocblas_float_complex> || std::is_same_v<T, rocblas_double_complex> || std::is_same_v<T, float> || std::is_same_v<T, double>>>
-        : rocblas_test_valid
+        std::enable_if_t<std::is_same_v<T, rocblas_half> || std::is_same_v<T, rocblas_bfloat16>
+                         || std::is_same_v<T, rocblas_float_complex>
+                         || std::is_same_v<T, rocblas_double_complex> || std::is_same_v<T, float>
+                         || std::is_same_v<T, double>>> : rocblas_test_valid
     {
         void operator()(const Arguments& arg)
         {

@@ -63,7 +63,7 @@ typedef rocrand_discrete_distribution hiprandDiscreteDistribution_t;
 /// \endcond
 
 /// \brief Opaque MTGP32 PRNG state parameters in the device format
-typedef mtgp32_params      mtgp32_kernel_params_t;
+typedef mtgp32_params mtgp32_kernel_params_t;
 
 #ifdef HIPRAND_DOXYGEN
 /// \brief Opaque MTGP32 PRNG state parameters in the host format
@@ -701,7 +701,7 @@ QUALIFIERS uint4 hiprand_poisson4(hiprandStatePhilox4_32_10_t* state, double lam
 /// See also: hiprandCreatePoissonDistribution()
 template<class StateType>
 QUALIFIERS unsigned int hiprand_discrete(StateType*                    state,
-                                 hiprandDiscreteDistribution_t discrete_distribution)
+                                         hiprandDiscreteDistribution_t discrete_distribution)
 {
     check_state_type<StateType>();
     return rocrand_discrete(state, discrete_distribution);

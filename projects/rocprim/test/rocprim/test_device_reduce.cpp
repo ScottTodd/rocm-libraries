@@ -69,12 +69,12 @@ template<class InputType,
 struct DeviceReduceParams
 {
     static constexpr bra algo = Algo;
-    using input_type = InputType;
-    using output_type = OutputType;
+    using input_type          = InputType;
+    using output_type         = OutputType;
     // Tests output iterator with void value_type (OutputIterator concept)
-    static constexpr bool use_identity_iterator = UseIdentityIterator;
-    static constexpr size_t size_limit = SizeLimit;
-    static constexpr bool use_graphs = UseGraphs;
+    static constexpr bool   use_identity_iterator = UseIdentityIterator;
+    static constexpr size_t size_limit            = SizeLimit;
+    static constexpr bool   use_graphs            = UseGraphs;
 };
 
 // clang-format off
@@ -90,12 +90,13 @@ struct size_limit_config
     using type = rocprim::reduce_config<256, 16, algo, SizeLimit>;
 };
 
-template <>
-struct size_limit_config<ROCPRIM_GRID_SIZE_LIMIT> {
+template<>
+struct size_limit_config<ROCPRIM_GRID_SIZE_LIMIT>
+{
     using type = rocprim::default_config;
 };
 
-template <unsigned int SizeLimit>
+template<unsigned int SizeLimit>
 using size_limit_config_t = typename size_limit_config<SizeLimit>::type;
 
 // ---------------------------------------------------------
@@ -106,16 +107,17 @@ template<class Params>
 class RocprimDeviceReduceTests : public ::testing::Test
 {
 public:
-    using input_type = typename Params::input_type;
-    using output_type = typename Params::output_type;
-    const bool debug_synchronous = false;
-    static constexpr bool use_identity_iterator = Params::use_identity_iterator;
-    static constexpr size_t size_limit = Params::size_limit;
-    const bool use_graphs = Params::use_graphs;
+    using input_type                              = typename Params::input_type;
+    using output_type                             = typename Params::output_type;
+    const bool              debug_synchronous     = false;
+    static constexpr bool   use_identity_iterator = Params::use_identity_iterator;
+    static constexpr size_t size_limit            = Params::size_limit;
+    const bool              use_graphs            = Params::use_graphs;
 };
 
 template<class Params>
-class RocprimDeviceReducePrecisionTests : public RocprimDeviceReduceTests<Params>{};
+class RocprimDeviceReducePrecisionTests : public RocprimDeviceReduceTests<Params>
+{};
 
 using RocprimDeviceReduceTestsParams = ::testing::Types<
     DeviceReduceParams<unsigned int>,
@@ -181,13 +183,13 @@ TYPED_TEST(RocprimDeviceReduceTests, ReduceEmptyInput)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using T = typename TestFixture::input_type;
-    using U = typename TestFixture::output_type;
+    using T                      = typename TestFixture::input_type;
+    using U                      = typename TestFixture::output_type;
     const bool debug_synchronous = TestFixture::debug_synchronous;
-    using Config = size_limit_config_t<TestFixture::size_limit>;
+    using Config                 = size_limit_config_t<TestFixture::size_limit>;
 
     hipStream_t stream = 0; // default stream
-    if (TestFixture::use_graphs)
+    if(TestFixture::use_graphs)
     {
         // Default stream does not support hipGraph stream capture, so create one
         HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -239,7 +241,7 @@ TYPED_TEST(RocprimDeviceReduceTests, ReduceEmptyInput)
 
     ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(output, initial_value));
 
-    if (TestFixture::use_graphs)
+    if(TestFixture::use_graphs)
     {
         gHelper.cleanupGraphHelper();
         HIP_CHECK(hipStreamDestroy(stream));
@@ -255,13 +257,14 @@ TYPED_TEST(RocprimDeviceReduceTests, ReduceSum)
     using T = typename TestFixture::input_type;
     using U = typename TestFixture::output_type;
 
-    const bool debug_synchronous = TestFixture::debug_synchronous;
+    const bool            debug_synchronous     = TestFixture::debug_synchronous;
     static constexpr bool use_identity_iterator = TestFixture::use_identity_iterator;
-    using Config = size_limit_config_t<TestFixture::size_limit>;
+    using Config                                = size_limit_config_t<TestFixture::size_limit>;
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         for(auto size : test_utils::get_sizes(seed_value))
@@ -276,7 +279,7 @@ TYPED_TEST(RocprimDeviceReduceTests, ReduceSum)
             }
 
             hipStream_t stream = 0; // default
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
             {
                 // Default stream does not support hipGraph stream capture, so create one
                 HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -357,7 +360,7 @@ TYPED_TEST(RocprimDeviceReduceTests, ReduceSum)
                 }
             }
 
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
             {
                 gHelper.cleanupGraphHelper();
                 HIP_CHECK(hipStreamDestroy(stream));
@@ -372,21 +375,22 @@ TYPED_TEST(RocprimDeviceReduceTests, ReduceArgMinimum)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using T = typename TestFixture::input_type;
-    using key_value = rocprim::key_value_pair<int, T>;
-    const bool debug_synchronous = TestFixture::debug_synchronous;
+    using T                                     = typename TestFixture::input_type;
+    using key_value                             = rocprim::key_value_pair<int, T>;
+    const bool            debug_synchronous     = TestFixture::debug_synchronous;
     static constexpr bool use_identity_iterator = TestFixture::use_identity_iterator;
-    using Config = size_limit_config_t<TestFixture::size_limit>;
+    using Config                                = size_limit_config_t<TestFixture::size_limit>;
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         for(auto size : test_utils::get_sizes(seed_value))
         {
             hipStream_t stream = 0; // default
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
             {
                 // Default stream does not support hipGraph stream capture, so create one
                 HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -396,9 +400,9 @@ TYPED_TEST(RocprimDeviceReduceTests, ReduceArgMinimum)
 
             // Generate data
             std::vector<key_value> input(size);
-            for (size_t i = 0; i < size; i++)
+            for(size_t i = 0; i < size; i++)
             {
-                input[i].key = (int)i;
+                input[i].key   = (int)i;
                 input[i].value = test_utils::get_random_data<T>(1, 1, 100, seed_value)[0];
             }
 
@@ -467,7 +471,7 @@ TYPED_TEST(RocprimDeviceReduceTests, ReduceArgMinimum)
             ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(output[0].key, expected.key));
             ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(output[0].value, expected.value));
 
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
             {
                 gHelper.cleanupGraphHelper();
                 HIP_CHECK(hipStreamDestroy(stream));
@@ -488,7 +492,7 @@ void testLargeIndices()
     const bool debug_synchronous = false;
 
     hipStream_t stream = 0; // default
-    if (use_graphs)
+    if(use_graphs)
     {
         // Default stream does not support hipGraph stream capture, so create one
         HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -504,7 +508,7 @@ void testLargeIndices()
         {
             SCOPED_TRACE(testing::Message() << "with size = " << size);
 
-            const Iterator input {0};
+            const Iterator input{0};
 
             common::device_ptr<T> d_output(1);
 
@@ -607,7 +611,7 @@ TYPED_TEST(RocprimDeviceReducePrecisionTests, ReduceSumInputEqualExponentFunctio
         }
 
         hipStream_t stream = 0; // default
-        if (TestFixture::use_graphs)
+        if(TestFixture::use_graphs)
         {
             // Default stream does not support hipGraph stream capture, so create one
             HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -695,7 +699,7 @@ TYPED_TEST(RocprimDeviceReducePrecisionTests, ReduceSumInputEqualExponentFunctio
                         * std::max(0.0, test_utils::precision<U> / 2.0 * (size - 1 - i) - 1.0)));
             }
         }
-        if (TestFixture::use_graphs)
+        if(TestFixture::use_graphs)
         {
             gHelper.cleanupGraphHelper();
             HIP_CHECK(hipStreamDestroy(stream));
@@ -715,17 +719,18 @@ TYPED_TEST(RocprimDeviceReduceTests, ReduceMinimum)
     using binary_op_type = rocprim::minimum<U>;
 
     static constexpr bool use_identity_iterator = TestFixture::use_identity_iterator;
-    using Config = size_limit_config_t<TestFixture::size_limit>;
+    using Config                                = size_limit_config_t<TestFixture::size_limit>;
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         for(auto size : test_utils::get_sizes(seed_value))
         {
             hipStream_t stream = 0; // default
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
             {
                 // Default stream does not support hipGraph stream capture, so create one
                 HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -809,7 +814,7 @@ TYPED_TEST(RocprimDeviceReduceTests, ReduceMinimum)
                     ? 0
                     : std::max(test_utils::precision<T>, test_utils::precision<U>)));
 
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
             {
                 gHelper.cleanupGraphHelper();
                 HIP_CHECK(hipStreamDestroy(stream));

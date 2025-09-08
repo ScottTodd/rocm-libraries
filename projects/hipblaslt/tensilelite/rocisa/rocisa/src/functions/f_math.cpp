@@ -94,34 +94,38 @@ namespace rocisa
     // template of scalarStaticRemainder
     template std::shared_ptr<Module> scalarStaticRemainder<int, int>(
         int, int, int, int, std::optional<ContinuousRegister>, const std::string&);
-    // template of scalarUInt32DivideAndRemainder
-    #define ExplicitInstantiation(QREG, DREG, DIVREG, RREG) \
-        template std::shared_ptr<Module> scalarUInt32DivideAndRemainder<QREG, DREG, DIVREG, RREG>( \
+// template of scalarUInt32DivideAndRemainder
+#define ExplicitInstantiation(QREG, DREG, DIVREG, RREG)                                        \
+    template std::shared_ptr<Module> scalarUInt32DivideAndRemainder<QREG, DREG, DIVREG, RREG>( \
         QREG, DREG, DIVREG, RREG, ContinuousRegister&, int, bool, const std::string&);
     ExplicitInstantiation(std::string, std::string, std::string, std::string)
-    ExplicitInstantiation(std::string, std::string, std::string, int)
-    ExplicitInstantiation(std::string, std::string, int,         std::string)
-    ExplicitInstantiation(std::string, std::string, int,         int)
-    ExplicitInstantiation(std::string, int,         std::string, std::string)
-    ExplicitInstantiation(std::string, int,         std::string, int)
-    ExplicitInstantiation(std::string, int,         int,         std::string)
-    ExplicitInstantiation(std::string, int,         int,         int)
-    ExplicitInstantiation(int,         std::string, std::string, std::string)
-    ExplicitInstantiation(int,         std::string, std::string, int)
-    ExplicitInstantiation(int,         std::string, int,         std::string)
-    ExplicitInstantiation(int,         std::string, int,         int)
-    ExplicitInstantiation(int,         int,         std::string, std::string)
-    ExplicitInstantiation(int,         int,         std::string, int)
-    ExplicitInstantiation(int,         int,         int,         std::string)
-    ExplicitInstantiation(int,         int,         int,         int)
-    #undef ExplicitInstantiation
-    // template of sMagicDiv
-    template std::shared_ptr<Module> sMagicDiv<int>(int                 dest,
-                                                    bool                hasSMulHi,
-                                                    int                 dividend,
-                                                    int                 magicNumber,
-                                                    int                 magicShift,
-                                                    ContinuousRegister& tmpVgpr);
+        ExplicitInstantiation(std::string,
+                              std::string,
+                              std::string,
+                              int) ExplicitInstantiation(std::string, std::string, int, std::string)
+            ExplicitInstantiation(std::string, std::string, int, int)
+                ExplicitInstantiation(std::string, int, std::string, std::string)
+                    ExplicitInstantiation(std::string, int, std::string, int) ExplicitInstantiation(
+                        std::string, int, int, std::string) ExplicitInstantiation(std::string,
+                                                                                  int,
+                                                                                  int,
+                                                                                  int)
+                        ExplicitInstantiation(int, std::string, std::string, std::string)
+                            ExplicitInstantiation(int, std::string, std::string, int)
+                                ExplicitInstantiation(int, std::string, int, std::string)
+                                    ExplicitInstantiation(int, std::string, int, int)
+                                        ExplicitInstantiation(int, int, std::string, std::string)
+                                            ExplicitInstantiation(int, int, std::string, int)
+                                                ExplicitInstantiation(int, int, int, std::string)
+                                                    ExplicitInstantiation(int, int, int, int)
+#undef ExplicitInstantiation
+        // template of sMagicDiv
+        template std::shared_ptr<Module> sMagicDiv<int>(int                 dest,
+                                                        bool                hasSMulHi,
+                                                        int                 dividend,
+                                                        int                 magicNumber,
+                                                        int                 magicShift,
+                                                        ContinuousRegister& tmpVgpr);
 
     std::shared_ptr<Module>
         vectorStaticMultiply(const std::shared_ptr<RegisterContainer>& product,
@@ -489,51 +493,79 @@ void math_func(nb::module_ m)
           nb::arg("divisor"),
           nb::arg("tmpSgprRes") = std::nullopt,
           nb::arg("comment")    = "");
-    #define ExplicitInstantiation(QREG, DREG, DIVREG, RREG) \
-    m.def("scalarUInt32DivideAndRemainder", \
-          nb::overload_cast<QREG, \
-                            DREG, \
-                            DIVREG, \
-                            RREG, \
-                            rocisa::ContinuousRegister&, \
-                            int, \
-                            bool, \
-                            const std::string&>( \
+#define ExplicitInstantiation(QREG, DREG, DIVREG, RREG)                           \
+    m.def("scalarUInt32DivideAndRemainder",                                       \
+          nb::overload_cast<QREG,                                                 \
+                            DREG,                                                 \
+                            DIVREG,                                               \
+                            RREG,                                                 \
+                            rocisa::ContinuousRegister&,                          \
+                            int,                                                  \
+                            bool,                                                 \
+                            const std::string&>(                                  \
               &rocisa::scalarUInt32DivideAndRemainder<QREG, DREG, DIVREG, RREG>), \
-          nb::arg("qReg"), \
-          nb::arg("dReg"), \
-          nb::arg("divReg"), \
-          nb::arg("rReg"), \
-          nb::arg("tmpVgprRes"), \
-          nb::arg("wavewidth"), \
-          nb::arg("doRemainder") = true, \
+          nb::arg("qReg"),                                                        \
+          nb::arg("dReg"),                                                        \
+          nb::arg("divReg"),                                                      \
+          nb::arg("rReg"),                                                        \
+          nb::arg("tmpVgprRes"),                                                  \
+          nb::arg("wavewidth"),                                                   \
+          nb::arg("doRemainder") = true,                                          \
           nb::arg("comment")     = "");
-    ExplicitInstantiation(std::string, std::string, std::string, std::string)
-    ExplicitInstantiation(std::string, std::string, std::string, int)
-    ExplicitInstantiation(std::string, std::string, int,         std::string)
-    ExplicitInstantiation(std::string, std::string, int,         int)
-    ExplicitInstantiation(std::string, int,         std::string, std::string)
-    ExplicitInstantiation(std::string, int,         std::string, int)
-    ExplicitInstantiation(std::string, int,         int,         std::string)
-    ExplicitInstantiation(std::string, int,         int,         int)
-    ExplicitInstantiation(int,         std::string, std::string, std::string)
-    ExplicitInstantiation(int,         std::string, std::string, int)
-    ExplicitInstantiation(int,         std::string, int,         std::string)
-    ExplicitInstantiation(int,         std::string, int,         int)
-    ExplicitInstantiation(int,         int,         std::string, std::string)
-    ExplicitInstantiation(int,         int,         std::string, int)
-    ExplicitInstantiation(int,         int,         int,         std::string)
-    ExplicitInstantiation(int,         int,         int,         int)
-    #undef ExplicitInstantiation
-    m.def("sMagicDiv",
-          nb::overload_cast<int, bool, int, int, int, rocisa::ContinuousRegister&>(
-              &rocisa::sMagicDiv<int>),
-          nb::arg("dest"),
-          nb::arg("hasSMulHi"),
-          nb::arg("dividend"),
-          nb::arg("magicNumber"),
-          nb::arg("magicShift"),
-          nb::arg("tmpVgprRes"));
+    ExplicitInstantiation(std::string, std::string, std::string, std::string) ExplicitInstantiation(
+        std::string,
+        std::string,
+        std::string,
+        int) ExplicitInstantiation(std::string,
+                                   std::string,
+                                   int,
+                                   std::string) ExplicitInstantiation(std::string,
+                                                                      std::string,
+                                                                      int,
+                                                                      int)
+        ExplicitInstantiation(std::string, int, std::string, std::string) ExplicitInstantiation(
+            std::string,
+            int,
+            std::string,
+            int) ExplicitInstantiation(std::string,
+                                       int,
+                                       int,
+                                       std::string) ExplicitInstantiation(std::string,
+                                                                          int,
+                                                                          int,
+                                                                          int)
+            ExplicitInstantiation(int, std::string, std::string, std::string) ExplicitInstantiation(
+                int,
+                std::string,
+                std::string,
+                int) ExplicitInstantiation(int,
+                                           std::string,
+                                           int,
+                                           std::string) ExplicitInstantiation(int,
+                                                                              std::string,
+                                                                              int,
+                                                                              int)
+                ExplicitInstantiation(int, int, std::string, std::string) ExplicitInstantiation(
+                    int,
+                    int,
+                    std::string,
+                    int) ExplicitInstantiation(int,
+                                               int,
+                                               int,
+                                               std::string) ExplicitInstantiation(int,
+                                                                                  int,
+                                                                                  int,
+                                                                                  int)
+#undef ExplicitInstantiation
+                    m.def("sMagicDiv",
+                          nb::overload_cast<int, bool, int, int, int, rocisa::ContinuousRegister&>(
+                              &rocisa::sMagicDiv<int>),
+                          nb::arg("dest"),
+                          nb::arg("hasSMulHi"),
+                          nb::arg("dividend"),
+                          nb::arg("magicNumber"),
+                          nb::arg("magicShift"),
+                          nb::arg("tmpVgprRes"));
     m.def("sMagicDiv2",
           &rocisa::sMagicDiv2,
           nb::arg("dst"),

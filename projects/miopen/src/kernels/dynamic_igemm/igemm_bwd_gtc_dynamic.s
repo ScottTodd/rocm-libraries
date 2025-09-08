@@ -231,7 +231,7 @@
 
     v_sub_i32 v[\v_out_dslice_iy], v[\v_out_dslice_iy],  s[\s_move_slice_idslice_y]
     v_cmpx_ge_i32 vcc, s[\s_dslice_y], v[\v_out_dslice_iy]
-    
+
     v_sub_i32 v[\v_out_dslice_iy], v[\v_out_dslice_iy], s[\s_dslice_y]
     v_add_u32 v[\v_out_ik], s[\s_out_stride_k], v[\v_out_ik]
     s_mov_b64 exec, -1
@@ -588,25 +588,25 @@
 .endm
 
 .macro .v_sst_so0_1x2_b32_v2 v_src, v_sst_os
-    ds_write_b64 v[\v_sst_os], v[\v_src+0:\v_src+0+1] 
+    ds_write_b64 v[\v_sst_os], v[\v_src+0:\v_src+0+1]
 .endm
 
 .macro .v_sst_so0_1x4_b32_v4 v_src, v_sst_os
-    ds_write_b128 v[\v_sst_os], v[\v_src+0:\v_src+0+3] 
+    ds_write_b128 v[\v_sst_os], v[\v_src+0:\v_src+0+3]
 .endm
 
 .macro .v_sst_so0_2x4_b32_v4_st16 v_src, v_sst_os
-    ds_write_b128 v[\v_sst_os], v[\v_src+0:\v_src+0+3] 
+    ds_write_b128 v[\v_sst_os], v[\v_src+0:\v_src+0+3]
     ds_write_b128 v[\v_sst_os], v[\v_src+4:\v_src+4+3] offset:16
 .endm
 
 .macro .v_sst_so0_2x4_b32_v4_st256 v_src, v_sst_os
-    ds_write_b128 v[\v_sst_os], v[\v_src+0:\v_src+0+3] 
+    ds_write_b128 v[\v_sst_os], v[\v_src+0:\v_src+0+3]
     ds_write_b128 v[\v_sst_os], v[\v_src+4:\v_src+4+3] offset:256
 .endm
 
 .macro .v_sst_so0_2x4_b32_v4_st512 v_src, v_sst_os
-    ds_write_b128 v[\v_sst_os], v[\v_src+0:\v_src+0+3] 
+    ds_write_b128 v[\v_sst_os], v[\v_src+0:\v_src+0+3]
     ds_write_b128 v[\v_sst_os], v[\v_src+4:\v_src+4+3] offset:512
 .endm
 
@@ -678,12 +678,12 @@
 ; starting of kernel igemm_bwd_gtc
 ; block_size                       : 256
 ; thread_tile                      : 8x8
-; 
+;
 ; GemmMPerBlock                     : 128
 ; GemmNPerBlock                     : 128
 ; GemmKPerBlock                     : 16
-; GemmMPerThread                    : 4 (x2) 
-; GemmNPerThread                    : 4 (x2) 
+; GemmMPerThread                    : 4 (x2)
+; GemmNPerThread                    : 4 (x2)
 ; GemmKPerThread,                   : 1
 ; GemmMLevel0Cluster,               ; 4
 ; GemmNLevel0Cluster,               ; 4
@@ -1248,11 +1248,11 @@ L_igemm_v4r1_bwd_dynamic_end:
 ; direction                  : bwd
 ; precision                  : fp32
 ; opt_1x1                    : 0
-; 
+;
 ; block_size                 : 256
 ; thread_tile                : 8x8
 ; lds_total                  : 32768
-; 
+;
 .set k_p_in, 0
 .set k_p_wei, 8
 .set k_p_out, 16
@@ -1514,7 +1514,7 @@ igemm_bwd_gtc_bt128x128x16_tt8x8_gm2x4x4_gn2x4x4_ta1x1x1x2x4_16x1x1x16x1_tb1x1x1
     ; load weight
     .v_gld_2x4_b32_v1 v_gld_a, s_p_wei, v_wei_os, s_wei_stride_c0, s_wei_stride_c, s_tmp
 
-    ; c thread mapping 
+    ; c thread mapping
     ; ->            MR x  NR x ML1 x NL1 x ML0 x NL0
     ;  cluster       1 x   1 x  4  x  4  x  4  x  4
     ;  perthrd       2 x   2 x  1  x  1  x  4  x  4
@@ -1650,8 +1650,8 @@ igemm_bwd_gtc_bt128x128x16_tt8x8_gm2x4x4_gn2x4x4_ta1x1x1x2x4_16x1x1x16x1_tb1x1x1
 
 L_igemm_bwd_gtc_bt128x128x16_tt8x8_gm2x4x4_gn2x4x4_ta1x1x1x2x4_16x1x1x16x1_tb1x1x1x2x4x1x1_16x1x1x16x1x1x1_fma_body:
     ; do fma accumulate with unroll 16
-    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os] 
-    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] 
+    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os]
+    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os]
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:256
     ds_read_b128 v[v_a+4:v_a+4+3], v[v_sld_a_os] offset:256
     .itr_k = 0
@@ -1714,8 +1714,8 @@ L_igemm_bwd_gtc_bt128x128x16_tt8x8_gm2x4x4_gn2x4x4_ta1x1x1x2x4_16x1x1x16x1_tb1x1
 L_igemm_bwd_gtc_bt128x128x16_tt8x8_gm2x4x4_gn2x4x4_ta1x1x1x2x4_16x1x1x16x1_tb1x1x1x2x4x1x1_16x1x1x16x1x1x1_end:
     s_waitcnt lgkmcnt(0)
     s_barrier
-    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os] 
-    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] 
+    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os]
+    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os]
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:256
     ds_read_b128 v[v_a+4:v_a+4+3], v[v_sld_a_os] offset:256
     .itr_k = 0
@@ -1786,11 +1786,11 @@ L_igemm_bwd_gtc_bt128x128x16_tt8x8_gm2x4x4_gn2x4x4_ta1x1x1x2x4_16x1x1x16x1_tb1x1
 ; direction                  : bwd
 ; precision                  : fp32
 ; opt_1x1                    : 0
-; 
+;
 ; block_size                 : 64
 ; thread_tile                : 8x8
 ; lds_total                  : 8192
-; 
+;
 .set k_p_in, 0
 .set k_p_wei, 8
 .set k_p_out, 16
@@ -2048,7 +2048,7 @@ igemm_bwd_gtc_bt64x64x8_tt8x8_gm2x4x2_gn2x4x2_ta1x2x1x1x4_4x1x1x16x1_tb1x2x1x1x4
     ; load weight
     .v_gld_2x4_b32_v1 v_gld_a, s_p_wei, v_wei_os, s_wei_stride_k, s_wei_stride_c, s_tmp
 
-    ; c thread mapping 
+    ; c thread mapping
     ; ->            MR x  NR x ML1 x NL1 x ML0 x NL0
     ;  cluster       1 x   1 x  2  x  2  x  4  x  4
     ;  perthrd       2 x   2 x  1  x  1  x  4  x  4
@@ -2184,8 +2184,8 @@ igemm_bwd_gtc_bt64x64x8_tt8x8_gm2x4x2_gn2x4x2_ta1x2x1x1x4_4x1x1x16x1_tb1x2x1x1x4
 
 L_igemm_bwd_gtc_bt64x64x8_tt8x8_gm2x4x2_gn2x4x2_ta1x2x1x1x4_4x1x1x16x1_tb1x2x1x1x4x1x1_4x1x1x16x1x1x1_fma_body:
     ; do fma accumulate with unroll 8
-    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os] 
-    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] 
+    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os]
+    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os]
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:128
     ds_read_b128 v[v_a+4:v_a+4+3], v[v_sld_a_os] offset:128
     .itr_k = 0
@@ -2248,8 +2248,8 @@ L_igemm_bwd_gtc_bt64x64x8_tt8x8_gm2x4x2_gn2x4x2_ta1x2x1x1x4_4x1x1x16x1_tb1x2x1x1
 L_igemm_bwd_gtc_bt64x64x8_tt8x8_gm2x4x2_gn2x4x2_ta1x2x1x1x4_4x1x1x16x1_tb1x2x1x1x4x1x1_4x1x1x16x1x1x1_end:
     s_waitcnt lgkmcnt(0)
     s_barrier
-    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os] 
-    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] 
+    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os]
+    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os]
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:128
     ds_read_b128 v[v_a+4:v_a+4+3], v[v_sld_a_os] offset:128
     .itr_k = 0
@@ -2320,11 +2320,11 @@ L_igemm_bwd_gtc_bt64x64x8_tt8x8_gm2x4x2_gn2x4x2_ta1x2x1x1x4_4x1x1x16x1_tb1x2x1x1
 ; direction                  : bwd
 ; precision                  : fp32
 ; opt_1x1                    : 0
-; 
+;
 ; block_size                 : 256
 ; thread_tile                : 8x8
 ; lds_total                  : 32768
-; 
+;
 .set k_p_in, 0
 .set k_p_wei, 8
 .set k_p_out, 16
@@ -2583,7 +2583,7 @@ igemm_bwd_gtc_bt128x128x16_tt8x8_gm2x4x4_gn2x4x4_ta1x2x1x1x4_8x1x1x32x1_tb1x2x1x
     ; load weight
     .v_gld_2x4_b32_v1 v_gld_a, s_p_wei, v_wei_os, s_wei_stride_k, s_wei_stride_c, s_tmp
 
-    ; c thread mapping 
+    ; c thread mapping
     ; ->            MR x  NR x ML1 x NL1 x ML0 x NL0
     ;  cluster       1 x   1 x  4  x  4  x  4  x  4
     ;  perthrd       2 x   2 x  1  x  1  x  4  x  4
@@ -2720,8 +2720,8 @@ igemm_bwd_gtc_bt128x128x16_tt8x8_gm2x4x4_gn2x4x4_ta1x2x1x1x4_8x1x1x32x1_tb1x2x1x
 
 L_igemm_bwd_gtc_bt128x128x16_tt8x8_gm2x4x4_gn2x4x4_ta1x2x1x1x4_8x1x1x32x1_tb1x2x1x1x4x1x1_8x1x1x2x1x1x16_fma_body:
     ; do fma accumulate with unroll 16
-    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os] 
-    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] 
+    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os]
+    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os]
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:256
     ds_read_b128 v[v_a+4:v_a+4+3], v[v_sld_a_os] offset:256
     .itr_k = 0
@@ -2784,8 +2784,8 @@ L_igemm_bwd_gtc_bt128x128x16_tt8x8_gm2x4x4_gn2x4x4_ta1x2x1x1x4_8x1x1x32x1_tb1x2x
 L_igemm_bwd_gtc_bt128x128x16_tt8x8_gm2x4x4_gn2x4x4_ta1x2x1x1x4_8x1x1x32x1_tb1x2x1x1x4x1x1_8x1x1x2x1x1x16_end:
     s_waitcnt lgkmcnt(0)
     s_barrier
-    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os] 
-    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] 
+    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os]
+    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os]
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:256
     ds_read_b128 v[v_a+4:v_a+4+3], v[v_sld_a_os] offset:256
     .itr_k = 0
@@ -2856,11 +2856,11 @@ L_igemm_bwd_gtc_bt128x128x16_tt8x8_gm2x4x4_gn2x4x4_ta1x2x1x1x4_8x1x1x32x1_tb1x2x
 ; direction                  : bwd
 ; precision                  : fp32
 ; opt_1x1                    : 0
-; 
+;
 ; block_size                 : 256
 ; thread_tile                : 8x8
 ; lds_total                  : 16384
-; 
+;
 .set k_p_in, 0
 .set k_p_wei, 8
 .set k_p_out, 16
@@ -3117,7 +3117,7 @@ igemm_bwd_gtc_bt128x128x8_tt8x8_gm2x4x4_gn2x4x4_ta1x1x1x1x4_8x1x1x32x1_tb1x1x1x1
     ; load weight
     .v_gld_1x4_b32_v1 v_gld_a, s_p_wei, v_wei_os, 0, s_wei_stride_c, s_tmp
 
-    ; c thread mapping 
+    ; c thread mapping
     ; ->            MR x  NR x ML1 x NL1 x ML0 x NL0
     ;  cluster       1 x   1 x  4  x  4  x  4  x  4
     ;  perthrd       2 x   2 x  1  x  1  x  4  x  4
@@ -3254,8 +3254,8 @@ igemm_bwd_gtc_bt128x128x8_tt8x8_gm2x4x4_gn2x4x4_ta1x1x1x1x4_8x1x1x32x1_tb1x1x1x1
 
 L_igemm_bwd_gtc_bt128x128x8_tt8x8_gm2x4x4_gn2x4x4_ta1x1x1x1x4_8x1x1x32x1_tb1x1x1x1x4x1x1_8x1x1x2x1x1x16_fma_body:
     ; do fma accumulate with unroll 8
-    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os] 
-    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] 
+    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os]
+    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os]
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:256
     ds_read_b128 v[v_a+4:v_a+4+3], v[v_sld_a_os] offset:256
     .itr_k = 0
@@ -3318,8 +3318,8 @@ L_igemm_bwd_gtc_bt128x128x8_tt8x8_gm2x4x4_gn2x4x4_ta1x1x1x1x4_8x1x1x32x1_tb1x1x1
 L_igemm_bwd_gtc_bt128x128x8_tt8x8_gm2x4x4_gn2x4x4_ta1x1x1x1x4_8x1x1x32x1_tb1x1x1x1x4x1x1_8x1x1x2x1x1x16_end:
     s_waitcnt lgkmcnt(0)
     s_barrier
-    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os] 
-    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] 
+    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os]
+    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os]
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:256
     ds_read_b128 v[v_a+4:v_a+4+3], v[v_sld_a_os] offset:256
     .itr_k = 0
@@ -3390,11 +3390,11 @@ L_igemm_bwd_gtc_bt128x128x8_tt8x8_gm2x4x4_gn2x4x4_ta1x1x1x1x4_8x1x1x32x1_tb1x1x1
 ; direction                  : bwd
 ; precision                  : fp32
 ; opt_1x1                    : 0
-; 
+;
 ; block_size                 : 256
 ; thread_tile                : 4x8
 ; lds_total                  : 16384
-; 
+;
 .set k_p_in, 0
 .set k_p_wei, 8
 .set k_p_out, 16
@@ -3651,7 +3651,7 @@ igemm_bwd_gtc_bt64x128x8_tt4x8_gm2x4x4_gn2x4x4_ta1x1x1x1x2_8x1x1x32x1_tb1x1x1x1x
     ; load weight
     .v_gld_1x2_b32_v1 v_gld_a, s_p_wei, v_wei_os, 0, s_wei_stride_c, s_tmp
 
-    ; c thread mapping 
+    ; c thread mapping
     ; ->            MR x  NR x ML1 x NL1 x ML0 x NL0
     ;  cluster       1 x   1 x  4  x  4  x  4  x  4
     ;  perthrd       2 x   2 x  1  x  1  x  2  x  4
@@ -3788,8 +3788,8 @@ igemm_bwd_gtc_bt64x128x8_tt4x8_gm2x4x4_gn2x4x4_ta1x1x1x1x2_8x1x1x32x1_tb1x1x1x1x
 
 L_igemm_bwd_gtc_bt64x128x8_tt4x8_gm2x4x4_gn2x4x4_ta1x1x1x1x2_8x1x1x32x1_tb1x1x1x1x4x1x1_8x1x1x2x1x1x16_fma_body:
     ; do fma accumulate with unroll 8
-    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os] 
-    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] 
+    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os]
+    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os]
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:256
     ds_read_b64 v[v_a+2:v_a+2+1], v[v_sld_a_os] offset:128
     .itr_k = 0
@@ -3852,8 +3852,8 @@ L_igemm_bwd_gtc_bt64x128x8_tt4x8_gm2x4x4_gn2x4x4_ta1x1x1x1x2_8x1x1x32x1_tb1x1x1x
 L_igemm_bwd_gtc_bt64x128x8_tt4x8_gm2x4x4_gn2x4x4_ta1x1x1x1x2_8x1x1x32x1_tb1x1x1x1x4x1x1_8x1x1x2x1x1x16_end:
     s_waitcnt lgkmcnt(0)
     s_barrier
-    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os] 
-    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] 
+    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os]
+    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os]
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:256
     ds_read_b64 v[v_a+2:v_a+2+1], v[v_sld_a_os] offset:128
     .itr_k = 0
@@ -3924,11 +3924,11 @@ L_igemm_bwd_gtc_bt64x128x8_tt4x8_gm2x4x4_gn2x4x4_ta1x1x1x1x2_8x1x1x32x1_tb1x1x1x
 ; direction                  : bwd
 ; precision                  : fp32
 ; opt_1x1                    : 0
-; 
+;
 ; block_size                 : 256
 ; thread_tile                : 4x8
 ; lds_total                  : 16384
-; 
+;
 .set k_p_in, 0
 .set k_p_wei, 8
 .set k_p_out, 16
@@ -4183,7 +4183,7 @@ igemm_bwd_gtc_bt64x128x8_tt4x8_gm2x4x4_gn2x4x4_ta1x1x1x1x2_8x1x1x32x1_tb1x1x1x1x
     ; load weight
     .v_gld_1x2_b32_v1 v_gld_a, s_p_wei, v_wei_os, 0, s_wei_stride_c, s_tmp
 
-    ; c thread mapping 
+    ; c thread mapping
     ; ->            MR x  NR x ML1 x NL1 x ML0 x NL0
     ;  cluster       1 x   1 x  4  x  4  x  4  x  4
     ;  perthrd       2 x   2 x  1  x  1  x  2  x  4
@@ -4319,8 +4319,8 @@ igemm_bwd_gtc_bt64x128x8_tt4x8_gm2x4x4_gn2x4x4_ta1x1x1x1x2_8x1x1x32x1_tb1x1x1x1x
 
 L_igemm_bwd_gtc_bt64x128x8_tt4x8_gm2x4x4_gn2x4x4_ta1x1x1x1x2_8x1x1x32x1_tb1x1x1x1x4x1x1_8x1x1x1x1x1x32_fma_body:
     ; do fma accumulate with unroll 8
-    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os] 
-    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] 
+    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os]
+    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os]
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:256
     ds_read_b64 v[v_a+2:v_a+2+1], v[v_sld_a_os] offset:128
     .itr_k = 0
@@ -4383,8 +4383,8 @@ L_igemm_bwd_gtc_bt64x128x8_tt4x8_gm2x4x4_gn2x4x4_ta1x1x1x1x2_8x1x1x32x1_tb1x1x1x
 L_igemm_bwd_gtc_bt64x128x8_tt4x8_gm2x4x4_gn2x4x4_ta1x1x1x1x2_8x1x1x32x1_tb1x1x1x1x4x1x1_8x1x1x1x1x1x32_end:
     s_waitcnt lgkmcnt(0)
     s_barrier
-    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os] 
-    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] 
+    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os]
+    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os]
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:256
     ds_read_b64 v[v_a+2:v_a+2+1], v[v_sld_a_os] offset:128
     .itr_k = 0

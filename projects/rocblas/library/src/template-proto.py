@@ -27,21 +27,23 @@ import re
 # Template to prototype translator
 ###############################################################################
 
-gPattern = re.compile(r'\{[^\{\}]*\}')
+gPattern = re.compile(r"\{[^\{\}]*\}")
 
 
 def translateToProto(templateCode):
     global gPattern
-    proto = ''.join(templateCode)
+    proto = "".join(templateCode)
     if re.search("ROCBLAS_INTERNAL_EXPORT_NOINLINE", proto) is None:
         return
     # keep warning in proto
-    proto = re.sub("ROCBLAS_INTERNAL_EXPORT_NOINLINE", "ROCBLAS_INTERNAL_DEPRECATION", proto)
+    proto = re.sub(
+        "ROCBLAS_INTERNAL_EXPORT_NOINLINE", "ROCBLAS_INTERNAL_DEPRECATION", proto
+    )
     n = 1
     while n:
-        proto, n = re.subn(gPattern, '', proto)
+        proto, n = re.subn(gPattern, "", proto)
 
-    if (proto.rstrip()).endswith(';'):
+    if (proto.rstrip()).endswith(";"):
         print(proto.rstrip() + "\n")
     else:
         print(proto.rstrip() + ";\n")
@@ -52,11 +54,11 @@ def parseForExportedFunctions(inputFileName):
         haveFunction = False
         lines = f.readlines()
         for line in lines:
-            if(not haveFunction):
-                start = re.match(r'^template|^ROCBLAS_INTERNAL_EXPORT_NOINLINE', line)
-                if(start):
-                    end = re.match(r'.*\)', line)
-                    if(end):
+            if not haveFunction:
+                start = re.match(r"^template|^ROCBLAS_INTERNAL_EXPORT_NOINLINE", line)
+                if start:
+                    end = re.match(r".*\)", line)
+                    if end:
                         translateToProto(line)
                     else:
                         body = []
@@ -64,15 +66,15 @@ def parseForExportedFunctions(inputFileName):
                         haveFunction = True
             else:
                 body.append(line)
-                end = re.match(r'.*\)', line)
-                if(end):
+                end = re.match(r".*\)", line)
+                if end:
                     translateToProto(body)
                     haveFunction = False
 
 
-
 def RunExporter():
-    print("""
+    print(
+        """
 // Copyright (C) 2020-2021 Advanced Micro Devices, Inc. All rights reserved.
 
 // Script-generated file -- do not edit
@@ -83,12 +85,12 @@ def RunExporter():
 
 #include "rocblas/internal/rocblas-types.h"
 
-""")
+"""
+    )
 
     # Parse Command Line Arguments
     argParser = argparse.ArgumentParser()
-    argParser.add_argument('path', nargs='+',
-                           help='Path of a files or directory')
+    argParser.add_argument("path", nargs="+", help="Path of a files or directory")
     args = argParser.parse_args()
 
     # Parse paths
@@ -98,7 +100,7 @@ def RunExporter():
         if os.path.isfile(path):
             files.add(path)
         else:
-            files.update(glob.glob(path+'*.h*'))
+            files.update(glob.glob(path + "*.h*"))
 
     headerFiles = sorted(files)
     for f in headerFiles:

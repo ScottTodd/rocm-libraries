@@ -58,7 +58,8 @@ enum class target_arch : unsigned int
 };
 
 /// @brief Returns the detected processor architecture of the device that is currently compiled against.
-__host__ __device__ constexpr target_arch get_device_arch()
+__host__ __device__
+constexpr target_arch get_device_arch()
 {
 #if !defined(USE_DEVICE_DISPATCH)
     return target_arch::unknown;
@@ -251,12 +252,14 @@ struct generator_config_defaults
 template<rocrand_rng_type GeneratorType, class T>
 struct generator_config_selector
 {
-    __host__ __device__ static constexpr unsigned int get_threads(const target_arch /*arch*/)
+    __host__ __device__
+    static constexpr unsigned int get_threads(const target_arch /*arch*/)
     {
         return generator_config_defaults<GeneratorType, T>::threads;
     }
 
-    __host__ __device__ static constexpr unsigned int get_blocks(const target_arch /*arch*/)
+    __host__ __device__
+    static constexpr unsigned int get_blocks(const target_arch /*arch*/)
     {
         return generator_config_defaults<GeneratorType, T>::blocks;
     }
@@ -270,7 +273,8 @@ struct generator_config
     unsigned int blocks;
     // When adding a new member variable, consider updating the operator< with that.
 
-    __host__ __device__ constexpr bool operator<(const generator_config& other) const
+    __host__ __device__
+    constexpr bool operator<(const generator_config& other) const
     {
         // In order to store the configs in a \ref std::map, we must define an ordering.
         return (blocks != other.blocks) ? (blocks < other.blocks) : (threads < other.threads);
@@ -279,20 +283,23 @@ struct generator_config
 
 /// @brief Returns whether the provided ordering allows the architecture-dependent
 /// selection of kernel launch parameters.
-__host__ __device__ constexpr bool is_ordering_dynamic(const rocrand_ordering ordering)
+__host__ __device__
+constexpr bool is_ordering_dynamic(const rocrand_ordering ordering)
 {
     return ordering == ROCRAND_ORDERING_PSEUDO_DYNAMIC
            || ordering == ROCRAND_ORDERING_QUASI_DEFAULT;
 }
 
 /// @brief Returns whether this ordering is applicable to pseudo-random number generators.
-__host__ __device__ constexpr bool is_ordering_pseudo(const rocrand_ordering ordering)
+__host__ __device__
+constexpr bool is_ordering_pseudo(const rocrand_ordering ordering)
 {
     return ordering != ROCRAND_ORDERING_QUASI_DEFAULT;
 }
 
 /// @brief Returns whether this ordering is applicable to quasi-random number generators.
-__host__ __device__ constexpr bool is_ordering_quasi(const rocrand_ordering ordering)
+__host__ __device__
+constexpr bool is_ordering_quasi(const rocrand_ordering ordering)
 {
     return ordering == ROCRAND_ORDERING_QUASI_DEFAULT;
 }
@@ -347,7 +354,8 @@ hipError_t get_generator_config(const hipStream_t      stream,
 /// @param dynamic_config Whether architecture-specific launch config can be selected or not.
 /// @return The selected launch config.
 template<rocrand_rng_type GeneratorType, class T>
-__host__ __device__ constexpr generator_config get_generator_config_device(bool dynamic_config)
+__host__ __device__
+constexpr generator_config get_generator_config_device(bool dynamic_config)
 {
     return generator_config{generator_config_selector<GeneratorType, T>::get_threads(
                                 dynamic_config ? get_device_arch() : target_arch::unknown),
@@ -370,7 +378,8 @@ struct default_config_provider
     /// @param is_dynamic Controls if the returned config belongs to the static or the dynamic ordering.
     /// @return The kernel config struct.
     template<class T>
-    __host__ __device__ static constexpr generator_config device_config(const bool is_dynamic)
+    __host__ __device__
+    static constexpr generator_config device_config(const bool is_dynamic)
     {
         return get_generator_config_device<GeneratorType, T>(is_dynamic);
     }
@@ -401,7 +410,8 @@ struct static_config_provider
     static constexpr inline generator_config static_config = {Threads, Blocks};
 
     template<class>
-    __host__ __device__ static constexpr generator_config device_config(const bool /*is_dynamic*/)
+    __host__ __device__
+    static constexpr generator_config device_config(const bool /*is_dynamic*/)
     {
         return static_config;
     }
@@ -435,8 +445,8 @@ struct static_block_size_config_provider
     static constexpr inline block_size_generator_config static_config = {Threads};
 
     template<class>
-    __host__ __device__ static constexpr block_size_generator_config
-        device_config(const bool /*is_dynamic*/)
+    __host__ __device__
+    static constexpr block_size_generator_config device_config(const bool /*is_dynamic*/)
     {
         return static_config;
     }
@@ -504,7 +514,8 @@ hipError_t get_least_common_grid_size(const hipStream_t      stream,
 /// @return The least common multiple of all grid sizes across configurations.
 /// @tparam ConfigProvider Provider of the kernel launch configs.
 template<class ConfigProvider>
-__host__ __device__ constexpr unsigned int get_least_common_grid_size(const bool is_dynamic)
+__host__ __device__
+constexpr unsigned int get_least_common_grid_size(const bool is_dynamic)
 {
     generator_config type_configs[6]{};
     type_configs[0] = ConfigProvider::template device_config<unsigned int>(is_dynamic);
@@ -531,7 +542,8 @@ __host__ __device__ constexpr unsigned int get_least_common_grid_size(const bool
 /// @tparam ConfigProvider Provider of the kernel launch configs.
 /// @tparam T The generated value type to load the config for.
 template<class ConfigProvider, class T>
-__host__ __device__ constexpr bool is_single_tile_config(const bool is_dynamic)
+__host__ __device__
+constexpr bool is_single_tile_config(const bool is_dynamic)
 {
     const auto         config        = ConfigProvider::template device_config<T>(is_dynamic);
     const unsigned int grid_size     = config.blocks * config.threads;
@@ -549,7 +561,8 @@ __host__ __device__ constexpr bool is_single_tile_config(const bool is_dynamic)
 /// @param is_dynamic Whether the current kernel uses dynamic ordering or not.
 /// @returns The number of threads per block for the current config.
 template<class ConfigProvider, class T>
-__host__ __device__ constexpr unsigned int get_block_size(const bool is_dynamic)
+__host__ __device__
+constexpr unsigned int get_block_size(const bool is_dynamic)
 {
     return ConfigProvider::template device_config<T>(is_dynamic).threads;
 }

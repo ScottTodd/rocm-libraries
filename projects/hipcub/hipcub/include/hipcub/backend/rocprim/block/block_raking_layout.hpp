@@ -31,7 +31,6 @@
  * cub::BlockRakingLayout provides a conflict-free shared memory layout abstraction for warp-raking across thread block data.
  */
 
-
 #ifndef HIPCUB_ROCPRIM_BLOCK_BLOCK_RAKING_LAYOUT_HPP_
 #define HIPCUB_ROCPRIM_BLOCK_BLOCK_RAKING_LAYOUT_HPP_
 
@@ -91,7 +90,7 @@ struct BlockRakingLayout
         UNGUARDED = (SHARED_ELEMENTS % RAKING_THREADS == 0),
     };
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS    // Do not document
+#ifndef DOXYGEN_SHOULD_SKIP_THIS // Do not document
     /**
      * \brief Shared memory storage type
      */
@@ -103,20 +102,20 @@ struct BlockRakingLayout
 #endif
 
     /// Alias wrapper allowing storage to be unioned
-    struct TempStorage : Uninitialized<_TempStorage> {};
+    struct TempStorage : Uninitialized<_TempStorage>
+    {};
 
     /**
      * \brief Returns the location for the calling thread to place data into the grid
      */
-    static HIPCUB_DEVICE inline T* PlacementPtr(
-        TempStorage &temp_storage,
-        unsigned int linear_tid)
+    static HIPCUB_DEVICE
+    inline T* PlacementPtr(TempStorage& temp_storage, unsigned int linear_tid)
     {
         // Offset for partial
         unsigned int offset = linear_tid;
 
         // Add in one padding element for every segment
-        if (USE_SEGMENT_PADDING > 0)
+        if(USE_SEGMENT_PADDING > 0)
         {
             offset += offset / SEGMENT_LENGTH;
         }
@@ -128,9 +127,8 @@ struct BlockRakingLayout
     /**
      * \brief Returns the location for the calling thread to begin sequential raking
      */
-    static HIPCUB_DEVICE inline T* RakingPtr(
-        TempStorage &temp_storage,
-        unsigned int linear_tid)
+    static HIPCUB_DEVICE
+    inline T* RakingPtr(TempStorage& temp_storage, unsigned int linear_tid)
     {
         return temp_storage.Alias().buff + (linear_tid * (SEGMENT_LENGTH + USE_SEGMENT_PADDING));
     }

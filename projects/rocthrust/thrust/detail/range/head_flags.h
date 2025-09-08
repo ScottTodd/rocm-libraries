@@ -73,8 +73,8 @@ public:
   using iterator = thrust::transform_iterator<head_flag_functor, thrust::counting_iterator<IndexType>>;
 
   THRUST_HOST_DEVICE head_flags(RandomAccessIterator first, RandomAccessIterator last, BinaryPredicate binary_pred = {})
-      : m_begin(
-        thrust::make_transform_iterator(thrust::counting_iterator<IndexType>(0), head_flag_functor(first, binary_pred)))
+      : m_begin(thrust::make_transform_iterator(
+          thrust::counting_iterator<IndexType>(0), head_flag_functor(first, binary_pred)))
       , m_count(last - first)
   {}
 

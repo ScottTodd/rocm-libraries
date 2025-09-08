@@ -72,10 +72,10 @@ public:
     /// and skips \p offset random numbers.
     ///
     /// A subsequence is 2 ^ 130 numbers long.
-    __forceinline__ __device__ __host__ threefry4x64_20_engine(const unsigned long long seed = 0,
-                                                               const unsigned long long subsequence
-                                                               = 0,
-                                                               const unsigned long long offset = 0)
+    __forceinline__ __device__ __host__
+    threefry4x64_20_engine(const unsigned long long seed        = 0,
+                           const unsigned long long subsequence = 0,
+                           const unsigned long long offset      = 0)
     {
         this->seed(seed, subsequence, offset);
     }
@@ -85,9 +85,10 @@ public:
     /// and \p offset random numbers.
     ///
     /// A subsequence is 2 ^ 130 numbers long.
-    __forceinline__ __device__ __host__ void seed(const unsigned long long seed        = 0,
-                                                  const unsigned long long subsequence = 0,
-                                                  const unsigned long long offset      = 0)
+    __forceinline__ __device__ __host__
+    void seed(const unsigned long long seed        = 0,
+              const unsigned long long subsequence = 0,
+              const unsigned long long offset      = 0)
     {
         m_state.counter  = {0ULL, 0ULL, 0ULL, 0ULL};
         m_state.key      = {seed, seed >> 16, seed >> 32, seed >> 48};

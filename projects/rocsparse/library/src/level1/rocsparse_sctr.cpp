@@ -77,8 +77,8 @@ namespace rocsparse
         else
         {
 #ifndef NDEBUG
-            std::cout << "invalid precision configuration: "
-                      << "t_type: " << rocsparse::enum_utils::to_string(t_type_) << std::endl
+            std::cout << "invalid precision configuration: " << "t_type: "
+                      << rocsparse::enum_utils::to_string(t_type_) << std::endl
                       << ", i_type: " << rocsparse::enum_utils::to_string(i_type_) << std::endl;
 
             std::cout << "available configuration are: " << std::endl;
@@ -95,8 +95,8 @@ namespace rocsparse
 #endif
 
             std::stringstream sstr;
-            sstr << "invalid precision configuration: "
-                 << "t_type: " << rocsparse::enum_utils::to_string(t_type_)
+            sstr << "invalid precision configuration: " << "t_type: "
+                 << rocsparse::enum_utils::to_string(t_type_)
                  << ", i_type: " << rocsparse::enum_utils::to_string(i_type_);
 
             RETURN_WITH_MESSAGE_IF_ROCSPARSE_ERROR(rocsparse_status_invalid_value,

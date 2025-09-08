@@ -29,10 +29,12 @@ from rocisa.instruction import VMacF32, SSetPrior
 from ..Common.DataType import DataType
 from ..Component import MAC
 
+
 class MAC_F32_Plain(MAC):
     """
     Plain MAC instruction implementation
     """
+
     @staticmethod
     def asmCaps(caps):
         return caps["v_mac_f32"] or caps["v_fma_f32"]
@@ -60,13 +62,22 @@ class MAC_F32_Plain(MAC):
                     vars["b"] = idx1 if tPB["tile01Idx"] else idx0
                     vars["iui"] = iui
 
-                    cStr = "ValuC+%d+%d"%(vars["idx0"], vars["idx1"]*vars["ThreadTile0"])
+                    cStr = "ValuC+%d+%d" % (
+                        vars["idx0"],
+                        vars["idx1"] * vars["ThreadTile0"],
+                    )
                     aStr = "ValuA_X{m}_I{iui}+{a}".format_map(vars)
                     bStr = "ValuB_X{m}_I{iui}+{b}".format_map(vars)
 
-                    module.add(VMacF32(dst=vgpr(cStr), src0=vgpr(aStr), src1=vgpr(bStr)))
+                    module.add(
+                        VMacF32(dst=vgpr(cStr), src0=vgpr(aStr), src1=vgpr(bStr))
+                    )
                     if (idx1 == 0) and (idx0 == 0) and (iui == 0):
-                        module.add(SSetPrior(prior=1, comment="Raise priority while processing macs"))
+                        module.add(
+                            SSetPrior(
+                                prior=1, comment="Raise priority while processing macs"
+                            )
+                        )
 
         module.add(SSetPrior(prior=0, comment="Reset priority after macs"))
 

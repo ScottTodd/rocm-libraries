@@ -49,9 +49,8 @@ namespace rocRoller
     }
 
     template <typename T>
-    requires(!std::is_pointer_v<T>)
-        CommandArgumentValue CommandArgument::getValue(RuntimeArguments const& args)
-    const
+        requires(!std::is_pointer_v<T>)
+    CommandArgumentValue CommandArgument::getValue(RuntimeArguments const& args) const
     {
         if(m_variableType.pointerType == PointerType::Value)
         {
@@ -219,15 +218,15 @@ namespace rocRoller
     struct CommandArgumentValueVariableTypeVisitor
     {
         template <CCommandArgumentValue Value>
-        requires(!std::is_pointer<Value>::value) VariableType value()
-        const
+            requires(!std::is_pointer<Value>::value)
+        VariableType value() const
         {
             return TypeInfo<Value>::Var;
         }
 
         template <CCommandArgumentValue Value>
-        requires(std::is_pointer<Value>::value) VariableType value()
-        const
+            requires(std::is_pointer<Value>::value)
+        VariableType value() const
         {
             using Pointed = typename std::remove_pointer<Value>::type;
             // no pointers-to-pointer (yet)
@@ -258,15 +257,15 @@ namespace rocRoller
     struct CommandArgumentValueNameVisitor
     {
         template <CCommandArgumentValue Value>
-        requires(!std::is_pointer<Value>::value) std::string value()
-        const
+            requires(!std::is_pointer<Value>::value)
+        std::string value() const
         {
             return TypeInfo<Value>::Name();
         }
 
         template <CCommandArgumentValue Value>
-        requires(std::is_pointer<Value>::value) std::string value()
-        const
+            requires(std::is_pointer<Value>::value)
+        std::string value() const
         {
             using Pointed = typename std::remove_pointer<Value>::type;
             static_assert(!std::is_same<Value, Pointed>::value);

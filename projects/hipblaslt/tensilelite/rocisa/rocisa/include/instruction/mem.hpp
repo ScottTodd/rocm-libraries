@@ -775,7 +775,7 @@ namespace rocisa
                           std::optional<MUBUFModifiers>             mubuf   = std::nullopt,
                           const std::string&                        comment = "")
             : MUBUFReadInstruction(
-                InstType::INST_D16_HI_U8, dst, vaddr, saddr, soffset, mubuf, comment)
+                  InstType::INST_D16_HI_U8, dst, vaddr, saddr, soffset, mubuf, comment)
         {
         }
 
@@ -799,7 +799,7 @@ namespace rocisa
                         std::optional<MUBUFModifiers>             mubuf   = std::nullopt,
                         const std::string&                        comment = "")
             : MUBUFReadInstruction(
-                InstType::INST_D16_U8, dst, vaddr, saddr, soffset, mubuf, comment)
+                  InstType::INST_D16_U8, dst, vaddr, saddr, soffset, mubuf, comment)
         {
         }
 
@@ -823,7 +823,7 @@ namespace rocisa
                            std::optional<MUBUFModifiers>             mubuf   = std::nullopt,
                            const std::string&                        comment = "")
             : MUBUFReadInstruction(
-                InstType::INST_D16_HI_B16, dst, vaddr, saddr, soffset, mubuf, comment)
+                  InstType::INST_D16_HI_B16, dst, vaddr, saddr, soffset, mubuf, comment)
         {
         }
 
@@ -847,7 +847,7 @@ namespace rocisa
                          std::optional<MUBUFModifiers>             mubuf   = std::nullopt,
                          const std::string&                        comment = "")
             : MUBUFReadInstruction(
-                InstType::INST_D16_B16, dst, vaddr, saddr, soffset, mubuf, comment)
+                  InstType::INST_D16_B16, dst, vaddr, saddr, soffset, mubuf, comment)
         {
         }
 
@@ -1110,7 +1110,7 @@ namespace rocisa
                            std::optional<MUBUFModifiers>             mubuf   = std::nullopt,
                            const std::string&                        comment = "")
             : MUBUFStoreInstruction(
-                InstType::INST_D16_HI_U8, src, vaddr, saddr, soffset, mubuf, comment)
+                  InstType::INST_D16_HI_U8, src, vaddr, saddr, soffset, mubuf, comment)
         {
         }
 
@@ -1134,7 +1134,7 @@ namespace rocisa
                          std::optional<MUBUFModifiers>             mubuf   = std::nullopt,
                          const std::string&                        comment = "")
             : MUBUFStoreInstruction(
-                InstType::INST_D16_U8, src, vaddr, saddr, soffset, mubuf, comment)
+                  InstType::INST_D16_U8, src, vaddr, saddr, soffset, mubuf, comment)
         {
         }
 
@@ -1158,7 +1158,7 @@ namespace rocisa
                             std::optional<MUBUFModifiers>             mubuf   = std::nullopt,
                             const std::string&                        comment = "")
             : MUBUFStoreInstruction(
-                InstType::INST_D16_HI_B16, src, vaddr, saddr, soffset, mubuf, comment)
+                  InstType::INST_D16_HI_B16, src, vaddr, saddr, soffset, mubuf, comment)
         {
         }
 
@@ -1182,7 +1182,7 @@ namespace rocisa
                           std::optional<MUBUFModifiers>             mubuf   = std::nullopt,
                           const std::string&                        comment = "")
             : MUBUFStoreInstruction(
-                InstType::INST_D16_B16, src, vaddr, saddr, soffset, mubuf, comment)
+                  InstType::INST_D16_B16, src, vaddr, saddr, soffset, mubuf, comment)
         {
         }
 

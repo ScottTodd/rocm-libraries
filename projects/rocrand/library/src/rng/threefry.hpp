@@ -58,15 +58,19 @@ struct threefry_device_engine : public BaseType
     static inline constexpr unsigned int vector_dim
         = static_cast<unsigned int>(cpp_utils::vector_size_v<vector_type>);
 
-    __forceinline__ __device__ __host__ threefry_device_engine() {}
+    __forceinline__ __device__ __host__
+    threefry_device_engine()
+    {}
 
-    __forceinline__ __device__ __host__ threefry_device_engine(const unsigned long long seed,
-                                                               const unsigned long long subsequence,
-                                                               const unsigned long long offset)
+    __forceinline__ __device__ __host__
+    threefry_device_engine(const unsigned long long seed,
+                           const unsigned long long subsequence,
+                           const unsigned long long offset)
         : base_type(seed, subsequence, offset)
     {}
 
-    __forceinline__ __device__ __host__ vector_type next_leap(unsigned int leap)
+    __forceinline__ __device__ __host__
+    vector_type next_leap(unsigned int leap)
     {
         vector_type ret = this->m_state.result;
         if(this->m_state.substate > 0)
@@ -85,14 +89,15 @@ struct threefry_device_engine : public BaseType
 };
 
 template<class Engine, class T, class Distribution>
-__host__ __device__ __forceinline__ void generate_threefry(dim3         block_idx,
-                                                           dim3         thread_idx,
-                                                           dim3         grid_dim,
-                                                           dim3         block_dim,
-                                                           Engine       engine,
-                                                           T*           data,
-                                                           const size_t n,
-                                                           Distribution distribution)
+__host__ __device__ __forceinline__
+void generate_threefry(dim3         block_idx,
+                       dim3         thread_idx,
+                       dim3         grid_dim,
+                       dim3         block_dim,
+                       Engine       engine,
+                       T*           data,
+                       const size_t n,
+                       Distribution distribution)
 {
     using engine_scalar_type = typename Engine::scalar_type;
 
@@ -331,8 +336,8 @@ public:
                 return status;
             }
 
-            generator_config                       config;
-            const hipError_t                       error
+            generator_config config;
+            const hipError_t error
                 = ConfigProvider::template host_config<T>(m_stream, m_order, config);
             if(error != hipSuccess)
             {

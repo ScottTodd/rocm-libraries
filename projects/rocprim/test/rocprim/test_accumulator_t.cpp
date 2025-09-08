@@ -36,8 +36,7 @@ template<typename T>
 struct const_ref_op
 {
     ROCPRIM_INLINE ROCPRIM_HOST_DEVICE
-    constexpr const T&
-        operator()([[maybe_unused]] T a, [[maybe_unused]] T b)
+    constexpr const T& operator()([[maybe_unused]] T a, [[maybe_unused]] T b)
     {
         return value;
     }
@@ -144,6 +143,8 @@ TYPED_TEST(RocprimAccumulatorTests, PointerToAccType)
     using T  = typename TestFixture::input_type;
     using Op = typename TestFixture::op_type;
 
-    using acc_type                    = ::rocprim::accumulator_t<Op, T>;
-    [[maybe_unused]] acc_type* unused = nullptr;
+    using acc_type = ::rocprim::accumulator_t<Op, T>;
+    [[maybe_unused]]
+    acc_type* unused
+        = nullptr;
 }

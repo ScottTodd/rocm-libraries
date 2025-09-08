@@ -22,7 +22,12 @@
 #
 ################################################################################
 
-from Tensile.Utilities.merge import cmpHelper, fixSizeInconsistencies, removeUnusedKernels, mergeLogic
+from Tensile.Utilities.merge import (
+    cmpHelper,
+    fixSizeInconsistencies,
+    removeUnusedKernels,
+    mergeLogic,
+)
 from Tensile.Utilities.ConditionalImports import yamlLoader
 
 import yaml, pytest
@@ -38,7 +43,9 @@ logicPrefix = r"""
 - DummyProblemType
 """
 
-baseLogic=logicPrefix + r"""
+baseLogic = (
+    logicPrefix
+    + r"""
 -
   - SolutionIndex: 2
     SolutionNameMin: InUseForSize256
@@ -58,8 +65,11 @@ baseLogic=logicPrefix + r"""
   - - [64, 64, 1, 64]
     - [0, 88.8]
 """
+)
 
-incLogic=logicPrefix + r"""
+incLogic = (
+    logicPrefix
+    + r"""
 -
   - SolutionIndex: 39
     SolutionNameMin: InUseForSize256or1024xxx
@@ -76,8 +86,11 @@ incLogic=logicPrefix + r"""
   - - [1024, 1024, 1, 1024]
     - [39, 999.9]
 """
+)
 
-notUniqueSolution=logicPrefix+r"""
+notUniqueSolution = (
+    logicPrefix
+    + r"""
 -
   - SolutionIndex: 0
     SolutionNameMin: Kernel0
@@ -86,8 +99,11 @@ notUniqueSolution=logicPrefix+r"""
     SolutionNameMin: Kernel0
     DummyParam: Kernel0
 """
+)
 
-uniqueSolution=logicPrefix+r"""
+uniqueSolution = (
+    logicPrefix
+    + r"""
 -
   - SolutionIndex: 0
     SolutionNameMin: Kernel0
@@ -96,8 +112,9 @@ uniqueSolution=logicPrefix+r"""
     SolutionNameMin: Kernel1
     DummyParam: Kernel1
 """
+)
 
-notTrimmedSize=r"""
+notTrimmedSize = r"""
 -
   - - [128, 128, 1, 128, 128, 128, 128, 128]
     - [1, 999.9]
@@ -111,7 +128,7 @@ notTrimmedSize=r"""
     - [39, 999.9]
 """
 
-trimmedSize=r"""
+trimmedSize = r"""
 -
   - - [128, 128, 1, 128]
     - [1, 999.9]
@@ -121,7 +138,9 @@ trimmedSize=r"""
     - [42, 999.9]
 """
 
-mfmaMergeBaseLogic=logicPrefix+r"""
+mfmaMergeBaseLogic = (
+    logicPrefix
+    + r"""
 -
   - SolutionIndex: 0
     SolutionNameMin: MFMA_base
@@ -135,8 +154,11 @@ mfmaMergeBaseLogic=logicPrefix+r"""
     MatrixInstruction: []
 - DummyIndexAssignment
 """
+)
 
-mfmaMergeIncLogic=logicPrefix+r"""
+mfmaMergeIncLogic = (
+    logicPrefix
+    + r"""
 -
   - SolutionIndex: 0
     SolutionNameMin: MFMA_inc
@@ -150,8 +172,9 @@ mfmaMergeIncLogic=logicPrefix+r"""
     MatrixInstruction: []
 - DummyIndexAssignment
 """
+)
 
-mfmaMergeBaseSizes=r"""
+mfmaMergeBaseSizes = r"""
 -
   - - [128, 128, 1, 128]
     - [0, 3.0]
@@ -163,7 +186,7 @@ mfmaMergeBaseSizes=r"""
     - [0, 12.0]
 """
 
-mfmaMergeIncFasterSizes=r"""
+mfmaMergeIncFasterSizes = r"""
 -
   - - [128, 128, 1, 128]
     - [0, 4.0]
@@ -175,7 +198,7 @@ mfmaMergeIncFasterSizes=r"""
     - [1, 10.0]
 """
 
-mfmaMergeIncSlowerSizes=r"""
+mfmaMergeIncSlowerSizes = r"""
 -
   - - [128, 128, 1, 128]
     - [0, 2.0]
@@ -187,7 +210,7 @@ mfmaMergeIncSlowerSizes=r"""
     - [1, 8.0]
 """
 
-mfmaMergeIncNotMatchingMFMA=r"""
+mfmaMergeIncNotMatchingMFMA = r"""
 -
   - - [130, 128, 1, 128]
     - [0, 7.0]
@@ -195,7 +218,7 @@ mfmaMergeIncNotMatchingMFMA=r"""
     - [1, 12.0]
 """
 
-mfmaMergeResNotMatchingMFMA=r"""
+mfmaMergeResNotMatchingMFMA = r"""
 -
   - - [128, 128, 1, 128]
     - [0, 3.0]
@@ -211,124 +234,195 @@ mfmaMergeResNotMatchingMFMA=r"""
     - [3, 12.0]
 """
 
+
 def checkUniqueSolution(solutionPool):
-  uniq = set()
-  # note: any([False or None, True or None]) -> True
-  return not any(frozenset(cmpHelper(i).items()) in uniq or uniq.add(frozenset(cmpHelper(i).items()))
-                 for i in solutionPool)
+    uniq = set()
+    # note: any([False or None, True or None]) -> True
+    return not any(
+        frozenset(cmpHelper(i).items()) in uniq
+        or uniq.add(frozenset(cmpHelper(i).items()))
+        for i in solutionPool
+    )
 
-@pytest.mark.parametrize("sizes, expected", [
-  (   trimmedSize, [[128,128,1,128],[512,512,1,512],[1024,1024,1,1024]]),
-  (notTrimmedSize, [[1024,1024,1,1024],[128,128,1,128]])
-  ])
+
+@pytest.mark.parametrize(
+    "sizes, expected",
+    [
+        (trimmedSize, [[128, 128, 1, 128], [512, 512, 1, 512], [1024, 1024, 1, 1024]]),
+        (notTrimmedSize, [[1024, 1024, 1, 1024], [128, 128, 1, 128]]),
+    ],
+)
 def test_fixSizeInconsistencies(sizes, expected):
-  data = yaml.load(sizes, yamlLoader)
-  data_ = fixSizeInconsistencies(data[0], "dummy")
+    data = yaml.load(sizes, yamlLoader)
+    data_ = fixSizeInconsistencies(data[0], "dummy")
 
-  for [size, [_,_]], expected_ in zip(data_[0], expected):
-    assert size == expected_
+    for [size, [_, _]], expected_ in zip(data_[0], expected):
+        assert size == expected_
 
-@pytest.mark.parametrize("input,expectedNumKernelRemoved", [(baseLogic, 1),
-                                                            (incLogic, 0)])
+
+@pytest.mark.parametrize(
+    "input,expectedNumKernelRemoved", [(baseLogic, 1), (incLogic, 0)]
+)
 def test_removeUnusedKernels(input, expectedNumKernelRemoved):
-  data = yaml.load(input, yamlLoader)
-  dataFiltered, numKernelRemoved = removeUnusedKernels(data)
+    data = yaml.load(input, yamlLoader)
+    dataFiltered, numKernelRemoved = removeUnusedKernels(data)
 
-  # test if number of solution removed is correct
-  assert numKernelRemoved == expectedNumKernelRemoved
+    # test if number of solution removed is correct
+    assert numKernelRemoved == expectedNumKernelRemoved
 
-  # test if solution is re-indexed
-  for index, s in enumerate(dataFiltered[5]):
-    assert index == s["SolutionIndex"]
+    # test if solution is re-indexed
+    for index, s in enumerate(dataFiltered[5]):
+        assert index == s["SolutionIndex"]
 
-  # check if size-kernel mapping is not compromised
-  solutionMapBefore = {}
-  solutionMapAfter = {}
-  for [size, [index, _]] in data[7]:
-    solutionMapBefore[tuple(size)] = [s["SolutionNameMin"] for s in data[5] if s["SolutionIndex"]==index][0]
-  for [size, [index, _]] in dataFiltered[7]:
-    solutionMapAfter[tuple(size)] = [s["SolutionNameMin"] for s in dataFiltered[5] if s["SolutionIndex"]==index][0]
+    # check if size-kernel mapping is not compromised
+    solutionMapBefore = {}
+    solutionMapAfter = {}
+    for [size, [index, _]] in data[7]:
+        solutionMapBefore[tuple(size)] = [
+            s["SolutionNameMin"] for s in data[5] if s["SolutionIndex"] == index
+        ][0]
+    for [size, [index, _]] in dataFiltered[7]:
+        solutionMapAfter[tuple(size)] = [
+            s["SolutionNameMin"] for s in dataFiltered[5] if s["SolutionIndex"] == index
+        ][0]
 
-  assert solutionMapBefore == solutionMapAfter
+    assert solutionMapBefore == solutionMapAfter
 
-  # print final yaml for visual inspection
-  # stream = io.StringIO("")
-  # yaml.safe_dump(dataFiltered, stream, default_flow_style=None)
-  # print(stream.getvalue())
+    # print final yaml for visual inspection
+    # stream = io.StringIO("")
+    # yaml.safe_dump(dataFiltered, stream, default_flow_style=None)
+    # print(stream.getvalue())
 
-@pytest.mark.parametrize("baseLogic, incLogic, expectedStats, expectedSizes, expectedSolutions", [
-# test case #1: merge incLogic into baseLogic
-  (baseLogic, incLogic, [1,2,2], # 1 sizes added, 2 kernels added, 2 kernels removed/replaced
-  [(1024,1024,1,1024), (256,256,1,256), (128,128,1,128), (64,64,1,64)],
-  ["InUseForSize256or1024xxx", "InUseForSize256or1024xxx", "InUseForSize128xxx", "InUseForSize128or64"]),
-# test case #2: merge baseLogic into itself
-  (baseLogic, baseLogic, [0,0,1], # 0 sizes added, 0 kernels added, 1 kernel removed because it's unused
-  [(256,256,1,256), (128,128,1,128), (64,64,1,64)],
-  ["InUseForSize256", "InUseForSize128or64", "InUseForSize128or64"]),
-])
-def test_mergeLogic(baseLogic, incLogic, expectedStats, expectedSizes, expectedSolutions):
-  baseData = yaml.load(baseLogic, yamlLoader)
-  incData = yaml.load(incLogic, yamlLoader)
 
-  mergedData, *stats = mergeLogic(baseData, incData, False)
+@pytest.mark.parametrize(
+    "baseLogic, incLogic, expectedStats, expectedSizes, expectedSolutions",
+    [
+        # test case #1: merge incLogic into baseLogic
+        (
+            baseLogic,
+            incLogic,
+            [1, 2, 2],  # 1 sizes added, 2 kernels added, 2 kernels removed/replaced
+            [
+                (1024, 1024, 1, 1024),
+                (256, 256, 1, 256),
+                (128, 128, 1, 128),
+                (64, 64, 1, 64),
+            ],
+            [
+                "InUseForSize256or1024xxx",
+                "InUseForSize256or1024xxx",
+                "InUseForSize128xxx",
+                "InUseForSize128or64",
+            ],
+        ),
+        # test case #2: merge baseLogic into itself
+        (
+            baseLogic,
+            baseLogic,
+            [
+                0,
+                0,
+                1,
+            ],  # 0 sizes added, 0 kernels added, 1 kernel removed because it's unused
+            [(256, 256, 1, 256), (128, 128, 1, 128), (64, 64, 1, 64)],
+            ["InUseForSize256", "InUseForSize128or64", "InUseForSize128or64"],
+        ),
+    ],
+)
+def test_mergeLogic(
+    baseLogic, incLogic, expectedStats, expectedSizes, expectedSolutions
+):
+    baseData = yaml.load(baseLogic, yamlLoader)
+    incData = yaml.load(incLogic, yamlLoader)
 
-  # check if stats are as expected
-  assert stats == expectedStats
+    mergedData, *stats = mergeLogic(baseData, incData, False)
 
-  # check if solution matches expected. assumes SolutionNameMin is uniqueSolution
-  # (which is satisfied by the test data given here)
-  solutionMap = {} # size -> solutionName
-  for size, [index, _] in mergedData[7]:
-    solutionMap[tuple(size)] = [s["SolutionNameMin"] for s in mergedData[5] if s["SolutionIndex"]==index][0]
+    # check if stats are as expected
+    assert stats == expectedStats
 
-  for size, expected in zip(expectedSizes, expectedSolutions):
-    assert solutionMap[size] == expected
+    # check if solution matches expected. assumes SolutionNameMin is uniqueSolution
+    # (which is satisfied by the test data given here)
+    solutionMap = {}  # size -> solutionName
+    for size, [index, _] in mergedData[7]:
+        solutionMap[tuple(size)] = [
+            s["SolutionNameMin"] for s in mergedData[5] if s["SolutionIndex"] == index
+        ][0]
 
-  # check if each solution in merged data is uniqueSolution
-  assert checkUniqueSolution(mergedData[5])
+    for size, expected in zip(expectedSizes, expectedSolutions):
+        assert solutionMap[size] == expected
 
-@pytest.mark.parametrize("input,expected", [(uniqueSolution, True), (notUniqueSolution, False)])
+    # check if each solution in merged data is uniqueSolution
+    assert checkUniqueSolution(mergedData[5])
+
+
+@pytest.mark.parametrize(
+    "input,expected", [(uniqueSolution, True), (notUniqueSolution, False)]
+)
 def test_checkUniqueSolution(input, expected):
-  data = yaml.load(input, yamlLoader)
-  assert checkUniqueSolution(data[5]) == expected
+    data = yaml.load(input, yamlLoader)
+    assert checkUniqueSolution(data[5]) == expected
 
-@pytest.mark.parametrize("baseLogic, incLogic, expectedSizesYaml, expectedSolutions", [
-# test case #1: Slower sizes in incremental logic file
-  (mfmaMergeBaseLogic+mfmaMergeBaseSizes, mfmaMergeIncLogic+mfmaMergeIncSlowerSizes,
-   mfmaMergeBaseSizes, ["MFMA_base", "VALU_base"]),
-# test case #2: Faster sizes in incremental logic file
-  (mfmaMergeBaseLogic+mfmaMergeBaseSizes, mfmaMergeIncLogic+mfmaMergeIncFasterSizes,
-   mfmaMergeIncFasterSizes, ["MFMA_inc", "VALU_inc"]),
-# test case #3: Test that VALU size is included alongside MFMA size, and vice versa (regardless of efficiency)
-  (mfmaMergeBaseLogic+mfmaMergeBaseSizes, mfmaMergeIncLogic+mfmaMergeIncNotMatchingMFMA,
-   mfmaMergeResNotMatchingMFMA, ["MFMA_base", "VALU_base", "MFMA_inc", "VALU_inc"])
-])
+
+@pytest.mark.parametrize(
+    "baseLogic, incLogic, expectedSizesYaml, expectedSolutions",
+    [
+        # test case #1: Slower sizes in incremental logic file
+        (
+            mfmaMergeBaseLogic + mfmaMergeBaseSizes,
+            mfmaMergeIncLogic + mfmaMergeIncSlowerSizes,
+            mfmaMergeBaseSizes,
+            ["MFMA_base", "VALU_base"],
+        ),
+        # test case #2: Faster sizes in incremental logic file
+        (
+            mfmaMergeBaseLogic + mfmaMergeBaseSizes,
+            mfmaMergeIncLogic + mfmaMergeIncFasterSizes,
+            mfmaMergeIncFasterSizes,
+            ["MFMA_inc", "VALU_inc"],
+        ),
+        # test case #3: Test that VALU size is included alongside MFMA size, and vice versa (regardless of efficiency)
+        (
+            mfmaMergeBaseLogic + mfmaMergeBaseSizes,
+            mfmaMergeIncLogic + mfmaMergeIncNotMatchingMFMA,
+            mfmaMergeResNotMatchingMFMA,
+            ["MFMA_base", "VALU_base", "MFMA_inc", "VALU_inc"],
+        ),
+    ],
+)
 def test_mfmaMergeLogic(baseLogic, incLogic, expectedSizesYaml, expectedSolutions):
-  baseData      = yaml.load(baseLogic, yamlLoader)
-  incData       = yaml.load(incLogic,  yamlLoader)
-  expectedSizes = yaml.load(expectedSizesYaml, yamlLoader)[0]
+    baseData = yaml.load(baseLogic, yamlLoader)
+    incData = yaml.load(incLogic, yamlLoader)
+    expectedSizes = yaml.load(expectedSizesYaml, yamlLoader)[0]
 
-  mergedData, _, _, _ = mergeLogic(baseData, incData, False, True, True)
+    mergedData, _, _, _ = mergeLogic(baseData, incData, False, True, True)
 
-  solutionIndices = {s['SolutionNameMin']: s['SolutionIndex'] for s in mergedData[5]} # size -> solutionName
+    solutionIndices = {
+        s["SolutionNameMin"]: s["SolutionIndex"] for s in mergedData[5]
+    }  # size -> solutionName
 
-  #Ensure all correct solutions are present in merged data
-  for solution in expectedSolutions:
-    assert solution in solutionIndices.keys()
+    # Ensure all correct solutions are present in merged data
+    for solution in expectedSolutions:
+        assert solution in solutionIndices.keys()
 
-  assert len(expectedSolutions) == len(mergedData[5])
+    assert len(expectedSolutions) == len(mergedData[5])
 
-  #Convert expected sizes to use mergedData's solution indices
-  expectedSizes = [ [size, [solutionIndices[expectedSolutions[solIndex]], eff]] for size, [solIndex, eff] in expectedSizes ]
+    # Convert expected sizes to use mergedData's solution indices
+    expectedSizes = [
+        [size, [solutionIndices[expectedSolutions[solIndex]], eff]]
+        for size, [solIndex, eff] in expectedSizes
+    ]
 
-  #Ensure all expected sizes are present in merged data
-  for item in expectedSizes:
-    assert item in mergedData[7]
+    # Ensure all expected sizes are present in merged data
+    for item in expectedSizes:
+        assert item in mergedData[7]
 
-  assert len(expectedSizes) == len(mergedData[7])
+    assert len(expectedSizes) == len(mergedData[7])
+
 
 if __name__ == "__main__":
     # test_mergeLogic(baseLogic, incLogic, [1,2,2], [(1024, 1024, 1, 1024), (256, 256, 1, 256), (128, 128, 1, 128), (64, 64, 1, 64)], [ "InUseForSize256or1024xxx", "InUseForSize256or1024xxx", "InUseForSize128xxx", "InUseForSize128or64"])
     # test_checkUniqueSolution(uniqueSolution, True)
     # test_fixSizeInconsistencies(trimmedSize, [[128,128,1,128],[512,512,1,512],[1024,1024,1,1024]])
-    test_fixSizeInconsistencies(notTrimmedSize, [[1024,1024,1,1024],[128,128,1,128]])
+    test_fixSizeInconsistencies(
+        notTrimmedSize, [[1024, 1024, 1, 1024], [128, 128, 1, 128]]
+    )

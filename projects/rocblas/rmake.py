@@ -28,10 +28,11 @@ import argparse
 import pathlib
 
 try:
-  import psutil
-  psutil_imported = True
+    import psutil
+
+    psutil_imported = True
 except ImportError:
-  psutil_imported = False
+    psutil_imported = False
 
 args = {}
 OS_info = {}
@@ -181,24 +182,27 @@ def parse_args():
     return parser.parse_args()
 # yapf: enable
 
+
 def get_ram_GB():
     """
     Total amount of GB RAM available or zero if unknown
     """
     gb = 0
-    env_limit = os.getenv('ROCM_CI_RAM_GB_LIMIT', "")
+    env_limit = os.getenv("ROCM_CI_RAM_GB_LIMIT", "")
     if len(env_limit):
         gb = int(env_limit)
     if gb == 0:
         if psutil_imported:
             gb = round(psutil.virtual_memory().total / pow(1024, 3))
-            print( "psutil: virtual_memory ", str(gb), " GB" )
+            print("psutil: virtual_memory ", str(gb), " GB")
         else:
-            print( "psutil: not installed so can't estimate RAM limit" )
+            print("psutil: not installed so can't estimate RAM limit")
     return gb
 
+
 def strip_ECC(token):
-    return token.replace(':sramecc+', '').replace(':sramecc-', '').strip()
+    return token.replace(":sramecc+", "").replace(":sramecc-", "").strip()
+
 
 def gpu_detect():
     global OS_info
@@ -210,13 +214,14 @@ def gpu_detect():
     process = subprocess.run([cmd], stdout=subprocess.PIPE)
     for line_in in process.stdout.decode().splitlines():
         if os.name == "nt":
-            if 'gcnArchName' in line_in:
-                OS_info["GPU"] = strip_ECC( line_in.split(":")[1] )
+            if "gcnArchName" in line_in:
+                OS_info["GPU"] = strip_ECC(line_in.split(":")[1])
                 break
         else:
-            if 'amdgcn-amd-amdhsa' in line_in:
-                OS_info["GPU"] = strip_ECC( line_in.split("--")[1] )
+            if "amdgcn-amd-amdhsa" in line_in:
+                OS_info["GPU"] = strip_ECC(line_in.split("--")[1])
                 break
+
 
 def os_detect():
     global OS_info
@@ -229,44 +234,47 @@ def os_detect():
                 for line in f:
                     if "=" in line:
                         k, v = line.strip().split("=")
-                        OS_info[k] = v.replace('"', '')
+                        OS_info[k] = v.replace('"', "")
     OS_info["NUM_PROC"] = os.cpu_count()
     OS_info["RAM_GB"] = get_ram_GB()
 
+
 def get_arch_parallelism() -> int:
     global args
-    if (args.gpu_architecture == "all"):
+    if args.gpu_architecture == "all":
         num_parallel = 4
     else:
-        num_parallel = min( 4, len(args.gpu_architecture.split(';')) )
+        num_parallel = min(4, len(args.gpu_architecture.split(";")))
     return num_parallel
 
+
 def get_compiler_jobs(env_var: str) -> int:
-        cjobs = 1
-        pjstr = env_var.split("parallel-jobs=")
-        if len(pjstr) > 1:
-            arg = pjstr[1].split(" ")
-            if len(arg[0]):
-                cjobs = int(arg[0])
-        return cjobs
+    cjobs = 1
+    pjstr = env_var.split("parallel-jobs=")
+    if len(pjstr) > 1:
+        arg = pjstr[1].split(" ")
+        if len(arg[0]):
+            cjobs = int(arg[0])
+    return cjobs
+
 
 def get_env_compiler_parallelism() -> int:
     # disable for now due to windows compiler issue and linux ignored warning
     return 1
 
     # new and legacy env
-    hip_clang_job_env = os.getenv('HIP_CLANG_NUM_PARALLEL_JOBS', "0")
+    hip_clang_job_env = os.getenv("HIP_CLANG_NUM_PARALLEL_JOBS", "0")
 
     if len(hip_clang_job_env) and int(hip_clang_job_env) > 0:
         return int(hip_clang_job_env)
     else:
-        clang_flags = os.getenv('CCC_OVERRIDE_OPTIONS', "")
-        hipcc_flags = os.getenv('HIPCC_COMPILE_FLAGS_APPEND', "")
+        clang_flags = os.getenv("CCC_OVERRIDE_OPTIONS", "")
+        hipcc_flags = os.getenv("HIPCC_COMPILE_FLAGS_APPEND", "")
         cjobs = 1
         if len(clang_flags) > 1:
-            cjobs = get_compiler_jobs( clang_flags )
+            cjobs = get_compiler_jobs(clang_flags)
         elif len(hipcc_flags) > 1:
-            cjobs = get_compiler_jobs( hipcc_flags )
+            cjobs = get_compiler_jobs(hipcc_flags)
         if (cjobs == 1 and len(clang_flags) < 1) and len(hipcc_flags) < 1:
             cjobs = get_arch_parallelism()
             # use HIP_ define to capture to makefiles, as env override would be compile time
@@ -275,19 +283,21 @@ def get_env_compiler_parallelism() -> int:
         cjobs = min(8, cjobs)
         return cjobs
 
+
 def jobs_heuristic() -> int:
     # auto jobs heuristics
-    nprocs = min(OS_info["NUM_PROC"], 128) # disk limiter
+    nprocs = min(OS_info["NUM_PROC"], 128)  # disk limiter
     ram = OS_info["RAM_GB"]
     jobs = nprocs
-    if (ram >= 16): # don't apply if below minimum RAM
-        jobs = min(round(ram/2), jobs) # RAM limiter
+    if ram >= 16:  # don't apply if below minimum RAM
+        jobs = min(round(ram / 2), jobs)  # RAM limiter
     pjobs = get_env_compiler_parallelism()
-    if (pjobs > 1 and pjobs < jobs):
+    if pjobs > 1 and pjobs < jobs:
         jobs = round(jobs / pjobs)
     if os.name == "nt":
-        jobs = min(61, jobs) # multiprocessing limit (used by tensile)
+        jobs = min(61, jobs)  # multiprocessing limit (used by tensile)
     return int(jobs)
+
 
 def create_dir(dir_path):
     full_path = ""
@@ -300,7 +310,7 @@ def create_dir(dir_path):
 
 
 def delete_dir(dir_path):
-    if (not os.path.exists(dir_path)):
+    if not os.path.exists(dir_path):
         return
     if os.name == "nt":
         run_cmd("RMDIR", f"/S /Q {dir_path}")
@@ -326,9 +336,9 @@ def deps_cmd():
         stripped_args = ""
     else:
         exe = f"./install.sh --rmake_invoked -d "
-        all_args = ' '.join(sys.argv[1:])
-        stripped_args = all_args.split('--ci_labels')[0] # last args in CI
-        stripped_args = stripped_args.split('-a ')[0]
+        all_args = " ".join(sys.argv[1:])
+        stripped_args = all_args.split("--ci_labels")[0]  # last args in CI
+        stripped_args = stripped_args.split("-a ")[0]
     return exe, stripped_args
 
 
@@ -348,18 +358,20 @@ def config_cmd():
         cmake_options.append(generator)
 
         # CMAKE_PREFIX_PATH set to rocm_path and HIP_PATH set BY SDK Installer
-        raw_rocm_path = cmake_path(os.getenv('HIP_PATH', "C:/hip"))
-        rocm_path = f'"{raw_rocm_path}"' # guard against spaces in path
+        raw_rocm_path = cmake_path(os.getenv("HIP_PATH", "C:/hip"))
+        rocm_path = f'"{raw_rocm_path}"'  # guard against spaces in path
         # CPACK_PACKAGING_INSTALL_PREFIX= defined as blank as it is appended to end of path for archive creation
         cmake_platform_opts.append(f"-DCPACK_PACKAGING_INSTALL_PREFIX=")
         cmake_platform_opts.append(f'-DCMAKE_INSTALL_PREFIX="C:/hipSDK"')
         toolchain = os.path.join(src_path, "toolchain-windows.cmake")
     else:
-        rocm_raw_path = os.getenv('ROCM_PATH', "/opt/rocm")
+        rocm_raw_path = os.getenv("ROCM_PATH", "/opt/rocm")
         rocm_path = rocm_raw_path
-        if (args.ninja):
+        if args.ninja:
             cmake_platform_opts.append(f"-G Ninja")
-        cmake_platform_opts.append(f"-DROCM_DIR:PATH={rocm_path} -DCPACK_PACKAGING_INSTALL_PREFIX={rocm_path}")
+        cmake_platform_opts.append(
+            f"-DROCM_DIR:PATH={rocm_path} -DCPACK_PACKAGING_INSTALL_PREFIX={rocm_path}"
+        )
         cmake_platform_opts.append(f'-DCMAKE_INSTALL_PREFIX="rocblas-install"')
         toolchain = "toolchain-linux.cmake"
 
@@ -385,8 +397,10 @@ def config_cmd():
     cmake_pack_options = f"-DCPACK_SET_DESTDIR=OFF"
     cmake_options.append(cmake_pack_options)
 
-    if os.getenv('CMAKE_CXX_COMPILER_LAUNCHER'):
-        cmake_options.append(f'-DCMAKE_CXX_COMPILER_LAUNCHER={os.getenv("CMAKE_CXX_COMPILER_LAUNCHER")}')
+    if os.getenv("CMAKE_CXX_COMPILER_LAUNCHER"):
+        cmake_options.append(
+            f'-DCMAKE_CXX_COMPILER_LAUNCHER={os.getenv("CMAKE_CXX_COMPILER_LAUNCHER")}'
+        )
 
     # build type
     cmake_config = ""
@@ -425,14 +439,16 @@ def config_cmd():
         cmake_options.append(f"-DBUILD_SHARED_LIBS=OFF")
 
     if args.relocatable:
-        rocm_rpath = os.getenv('ROCM_RPATH', "/opt/rocm/lib:/opt/rocm/lib64")
-        cmake_options.append(f'-DCMAKE_SHARED_LINKER_FLAGS=" -Wl,--enable-new-dtags -Wl,--rpath,{rocm_rpath}"')
+        rocm_rpath = os.getenv("ROCM_RPATH", "/opt/rocm/lib:/opt/rocm/lib64")
+        cmake_options.append(
+            f'-DCMAKE_SHARED_LINKER_FLAGS=" -Wl,--enable-new-dtags -Wl,--rpath,{rocm_rpath}"'
+        )
 
     if args.skip_ld_conf_entry or args.relocatable:
         cmake_options.append(f"-DROCM_DISABLE_LDCONFIG=ON")
 
     if args.clients_only:
-        args.build_clients = True # Implied
+        args.build_clients = True  # Implied
         if args.library_dir_installed:
             library_dir = args.library_dir_installed
         else:
@@ -455,7 +471,7 @@ def config_cmd():
         else:
             fatal("Could not detect GPU as requested. Not continuing.")
     # not just for tensile
-    cmake_options.append(f'-DGPU_TARGETS=\"{args.gpu_architecture}\"')
+    cmake_options.append(f'-DGPU_TARGETS="{args.gpu_architecture}"')
 
     if not args.build_tensile:
         cmake_options.append(f"-DBUILD_WITH_TENSILE=OFF")
@@ -468,7 +484,9 @@ def config_cmd():
         if args.tensile_tag:
             cmake_options.append(f"-Dtensile_tag={args.tensile_tag}")
         if args.tensile_test_local_path:
-            cmake_options.append(f"-DTensile_TEST_LOCAL_PATH={args.tensile_test_local_path}")
+            cmake_options.append(
+                f"-DTensile_TEST_LOCAL_PATH={args.tensile_test_local_path}"
+            )
         if args.tensile_version:
             cmake_options.append(f"-DTENSILE_VERSION={args.tensile_version}")
         if args.upgrade_tensile_venv_pip:
@@ -537,9 +555,11 @@ def make_cmd():
 
     return make_executable, cmd_opts
 
+
 def arg_into_list(arg) -> list:
-    arg = re.sub(r"['\"]|['\']",'', arg)
-    return arg.split(';')
+    arg = re.sub(r"['\"]|['\']", "", arg)
+    return arg.split(";")
+
 
 def label_modifiers(labels):
     global args
@@ -552,13 +572,15 @@ def label_modifiers(labels):
         # if "dependencies" in overlap and os.name != "nt":
         #     args.dependencies = True
 
+
 def gfx_modifiers(ci_gfx_list):
     global args
     if len(ci_gfx_list):
-        gfx = arg_into_list( args.gpu_architecture )
+        gfx = arg_into_list(args.gpu_architecture)
         overlap = [v for v in ci_gfx_list if (v in gfx or "all" in gfx)]
         if len(overlap):
-            args.gpu_architecture = ';'.join(overlap)
+            args.gpu_architecture = ";".join(overlap)
+
 
 def run_cmd(exe, opts):
     program = f"{exe} {opts}"
@@ -566,20 +588,23 @@ def run_cmd(exe, opts):
     proc = subprocess.run(program, check=True, stderr=subprocess.STDOUT, shell=True)
     return proc.returncode
 
+
 def main():
     global args
     os_detect()
     args = parse_args()
 
     if args.ci_labels != "":
-        label_modifiers( arg_into_list(args.ci_labels) )
+        label_modifiers(arg_into_list(args.ci_labels))
     if args.ci_gfx != "":
-        gfx_modifiers( arg_into_list(args.ci_gfx) )
+        gfx_modifiers(arg_into_list(args.ci_gfx))
 
     if args.jobs == 0:
         args.jobs = jobs_heuristic()
     if os.name == "nt" and args.jobs > 61:
-        print( f"WARNING: jobs > 61 may fail on windows python multiprocessing (jobs = {args.jobs}).")
+        print(
+            f"WARNING: jobs > 61 may fail on windows python multiprocessing (jobs = {args.jobs})."
+        )
 
     if args.install_invoked:
         # ignore any install handled options
@@ -592,7 +617,7 @@ def main():
     root_dir = os.curdir
 
     # depdendency install
-    if (args.dependencies):
+    if args.dependencies:
         exe, opts = deps_cmd()
         if run_cmd(exe, opts):
             fatal("Dependency install failed. Not continuing.")
@@ -610,5 +635,5 @@ def main():
     # Linux install and cleanup not supported from rmake yet
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

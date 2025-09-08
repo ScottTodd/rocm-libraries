@@ -59,7 +59,7 @@ namespace TensileLite
         struct MappingTraits<MLPClassification::MLPNet, IO>
         {
             using MLPNet = MLPClassification::MLPNet;
-            using iot     = IOTraits<IO>;
+            using iot    = IOTraits<IO>;
 
             static void mapping(IO& io, MLPNet& mlp)
             {
@@ -108,7 +108,7 @@ namespace TensileLite
         struct MappingTraits<MLPClassificationLibrary<MyProblem, MySolution>, IO>
         {
             using Library = MLPClassificationLibrary<MyProblem, MySolution>;
-            using iot = IOTraits<IO>;
+            using iot     = IOTraits<IO>;
 
             static void mapping(IO& io, Library& lib)
             {

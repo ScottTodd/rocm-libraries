@@ -39,15 +39,14 @@
 #include <ostream>
 
 #if defined(__HIP_PLATFORM_NVIDIA__)
-#include <cuda_bf16.h>
+    #include <cuda_bf16.h>
 #endif
 
 #ifdef __GNUC__
-// There's a ton of type-punning going on in this file.
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wstrict-aliasing"
+    // There's a ton of type-punning going on in this file.
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif
-
 
 /******************************************************************************
  * bfloat16_t
@@ -64,7 +63,7 @@ struct bfloat16_t
 
     /// Constructor from hip_bfloat16
     __host__ __device__ __forceinline__
-    bfloat16_t(const hip_bfloat16  &other)
+    bfloat16_t(const hip_bfloat16& other)
     {
         __x = reinterpret_cast<const uint16_t&>(other);
     }
@@ -73,7 +72,7 @@ struct bfloat16_t
 
     /// Constructor from __nv_bfloat16
     __host__ __device__ __forceinline__
-    bfloat16_t(const __nv_bfloat16 &other)
+    bfloat16_t(const __nv_bfloat16& other)
     {
         __x = reinterpret_cast<const uint16_t&>(other);
     }
@@ -81,13 +80,15 @@ struct bfloat16_t
 #endif
 
     /// Constructor from integer
-    __host__ __device__ __forceinline__ bfloat16_t(int a)
+    __host__ __device__ __forceinline__
+    bfloat16_t(int a)
     {
         *this = bfloat16_t(float(a));
     }
 
     /// Constructor from std::size_t
-    __host__ __device__ __forceinline__ bfloat16_t(std::size_t a)
+    __host__ __device__ __forceinline__
+    bfloat16_t(std::size_t a)
     {
         *this = bfloat16_t(float(a));
     }
@@ -97,7 +98,8 @@ struct bfloat16_t
              typename = typename std::enable_if<
                  std::is_same<T, unsigned long long int>::value
                  && (!std::is_same<std::size_t, unsigned long long int>::value)>::type>
-    __host__ __device__ __forceinline__ bfloat16_t(T a)
+    __host__ __device__ __forceinline__
+    bfloat16_t(T a)
     {
         *this = bfloat16_t(float(a));
     }
@@ -112,17 +114,21 @@ struct bfloat16_t
         // Reference:
         // https://github.com/pytorch/pytorch/blob/44cc873fba5e5ffc4d4d4eef3bd370b653ce1ce1/c10/util/BFloat16.h#L51
         uint16_t ir;
-        if (a != a) {
+        if(a != a)
+        {
             ir = UINT16_C(0x7FFF);
-        } else {
-            union {
+        }
+        else
+        {
+            union
+            {
                 uint32_t U32;
-                float F32;
+                float    F32;
             };
 
-            F32 = a;
+            F32                    = a;
             uint32_t rounding_bias = ((U32 >> 16) & 1) + UINT32_C(0x7FFF);
-            ir = static_cast<uint16_t>((U32 + rounding_bias) >> 16);
+            ir                     = static_cast<uint16_t>((U32 + rounding_bias) >> 16);
         }
         this->__x = ir;
     }
@@ -130,17 +136,15 @@ struct bfloat16_t
 #ifdef __HIP_PLATFORM_AMD__
 
     /// Cast to hip_bfloat16
-    __host__ __device__ __forceinline__
-    operator hip_bfloat16 () const
+    __host__ __device__ __forceinline__ operator hip_bfloat16() const
     {
-        return reinterpret_cast<const hip_bfloat16 &>(__x);
+        return reinterpret_cast<const hip_bfloat16&>(__x);
     }
 
 #elif defined(__HIP_PLATFORM_NVIDIA__)
 
     /// Cast to __nv_bfloat16
-    __host__ __device__ __forceinline__
-    operator __nv_bfloat16() const
+    __host__ __device__ __forceinline__ operator __nv_bfloat16() const
     {
         return reinterpret_cast<const __nv_bfloat16&>(__x);
     }
@@ -148,12 +152,11 @@ struct bfloat16_t
 #endif
 
     /// Cast to float
-    __host__ __device__ __forceinline__
-    operator float() const
+    __host__ __device__ __forceinline__ operator float() const
     {
-        float f = 0;
-        uint32_t *p = reinterpret_cast<uint32_t *>(&f);
-        *p = uint32_t(__x) << 16;
+        float     f = 0;
+        uint32_t* p = reinterpret_cast<uint32_t*>(&f);
+        *p          = uint32_t(__x) << 16;
         return f;
     }
 
@@ -166,20 +169,21 @@ struct bfloat16_t
 
     /// Equality
     __host__ __device__ __forceinline__
-    friend bool operator ==(const bfloat16_t &a, const bfloat16_t &b){
+    friend bool operator==(const bfloat16_t& a, const bfloat16_t& b)
+    {
         return (a.__x == b.__x);
     }
 
     /// Inequality
     __host__ __device__ __forceinline__
-    bool operator !=(const bfloat16_t &other) const
+    bool operator!=(const bfloat16_t& other) const
     {
         return (this->__x != other.__x);
     }
 
     /// Assignment by sum
     __host__ __device__ __forceinline__
-    bfloat16_t& operator +=(const bfloat16_t &rhs)
+    bfloat16_t& operator+=(const bfloat16_t& rhs)
     {
         *this = bfloat16_t(float(*this) + float(rhs));
         return *this;
@@ -187,75 +191,76 @@ struct bfloat16_t
 
     /// Multiply
     __host__ __device__ __forceinline__
-    bfloat16_t operator*(const bfloat16_t &other)
+    bfloat16_t operator*(const bfloat16_t& other)
     {
         return bfloat16_t(float(*this) * float(other));
     }
 
     /// Add
     __host__ __device__ __forceinline__
-    bfloat16_t operator+(const bfloat16_t &other)
+    bfloat16_t operator+(const bfloat16_t& other)
     {
         return bfloat16_t(float(*this) + float(other));
     }
 
     /// Subtract
     __host__ __device__ __forceinline__
-    bfloat16_t operator-(const bfloat16_t &other)
+    bfloat16_t operator-(const bfloat16_t& other)
     {
         return bfloat16_t(float(*this) - float(other));
     }
 
     /// Less-than
     __host__ __device__ __forceinline__
-    bool operator<(const bfloat16_t &other) const
+    bool operator<(const bfloat16_t& other) const
     {
         return float(*this) < float(other);
     }
 
     /// Less-than-equal
     __host__ __device__ __forceinline__
-    bool operator<=(const bfloat16_t &other) const
+    bool operator<=(const bfloat16_t& other) const
     {
         return float(*this) <= float(other);
     }
 
     /// Greater-than
     __host__ __device__ __forceinline__
-    bool operator>(const bfloat16_t &other) const
+    bool operator>(const bfloat16_t& other) const
     {
         return float(*this) > float(other);
     }
 
     /// Greater-than-equal
     __host__ __device__ __forceinline__
-    bool operator>=(const bfloat16_t &other) const
+    bool operator>=(const bfloat16_t& other) const
     {
         return float(*this) >= float(other);
     }
 
     /// numeric_traits<bfloat16_t>::max
     __host__ __device__ __forceinline__
-    static bfloat16_t max() {
+    static bfloat16_t max()
+    {
         uint16_t max_word = 0x7F7F;
         return reinterpret_cast<bfloat16_t&>(max_word);
     }
 
     /// numeric_traits<bfloat16_t>::lowest
     __host__ __device__ __forceinline__
-    static bfloat16_t lowest() {
+    static bfloat16_t lowest()
+    {
         uint16_t lowest_word = 0xFF7F;
         return reinterpret_cast<bfloat16_t&>(lowest_word);
     }
 };
-
 
 /******************************************************************************
  * I/O stream overloads
  ******************************************************************************/
 
 /// Insert formatted \p bfloat16_t into the output stream
-inline std::ostream& operator<<(std::ostream &out, const bfloat16_t &x)
+inline std::ostream& operator<<(std::ostream& out, const bfloat16_t& x)
 {
     out << (float)x;
     return out;
@@ -263,27 +268,32 @@ inline std::ostream& operator<<(std::ostream &out, const bfloat16_t &x)
 
 #if defined(__HIP_PLATFORM_NVIDIA__)
 
-    /// Insert formatted \p __nv_bfloat16 into the output stream
-    inline std::ostream& operator<<(std::ostream &out, const __nv_bfloat16 &x)
-    {
-        return out << bfloat16_t(x);
-    }
+/// Insert formatted \p __nv_bfloat16 into the output stream
+inline std::ostream& operator<<(std::ostream& out, const __nv_bfloat16& x)
+{
+    return out << bfloat16_t(x);
+}
 
 #endif
-
-
-
 
 /******************************************************************************
  * Traits overloads
  ******************************************************************************/
 
-template <>
+template<>
 struct hipcub::FpLimits<bfloat16_t>
 {
-    static __host__ __device__ __forceinline__ bfloat16_t Max() { return bfloat16_t::max(); }
+    static __host__ __device__ __forceinline__
+    bfloat16_t Max()
+    {
+        return bfloat16_t::max();
+    }
 
-    static __host__ __device__ __forceinline__ bfloat16_t Lowest() { return bfloat16_t::lowest(); }
+    static __host__ __device__ __forceinline__
+    bfloat16_t Lowest()
+    {
+        return bfloat16_t::lowest();
+    }
 };
 
 #if defined(__HIP_PLATFORM_NVIDIA__)
@@ -291,7 +301,10 @@ _CCCL_SUPPRESS_DEPRECATED_PUSH
 #else
 HIPCUB_CLANG_SUPPRESS_DEPRECATED_PUSH
 #endif
-template <> struct hipcub::NumericTraits<bfloat16_t> : hipcub::BaseTraits<FLOATING_POINT, true, false, unsigned short, bfloat16_t> {};
+template<>
+struct hipcub::NumericTraits<bfloat16_t>
+    : hipcub::BaseTraits<FLOATING_POINT, true, false, unsigned short, bfloat16_t>
+{};
 #if defined(__HIP_PLATFORM_NVIDIA__)
 _CCCL_SUPPRESS_DEPRECATED_POP
 #else
@@ -299,5 +312,5 @@ HIPCUB_CLANG_SUPPRESS_DEPRECATED_POP
 #endif
 
 #ifdef __GNUC__
-#pragma GCC diagnostic pop
+    #pragma GCC diagnostic pop
 #endif

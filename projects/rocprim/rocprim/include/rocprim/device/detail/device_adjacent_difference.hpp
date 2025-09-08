@@ -42,28 +42,29 @@ BEGIN_ROCPRIM_NAMESPACE
 namespace detail
 {
 
-template <typename T, unsigned int BlockSize>
+template<typename T, unsigned int BlockSize>
 struct adjacent_diff_helper
 {
     using adjacent_diff_type = ::rocprim::block_adjacent_difference<T, BlockSize>;
     using storage_type       = typename adjacent_diff_type::storage_type;
 
-    template <unsigned int ItemsPerThread,
-              typename Output,
-              typename BinaryFunction,
-              typename InputIt,
-              bool InPlace>
-    ROCPRIM_DEVICE void dispatch(const T (&input)[ItemsPerThread],
-                                 Output (&output)[ItemsPerThread],
-                                 const BinaryFunction op,
-                                 const InputIt        previous_values,
-                                 const unsigned int   block_id,
-                                 const std::size_t    starting_block,
-                                 const std::size_t    num_blocks,
-                                 const std::size_t    size,
-                                 storage_type&        storage,
-                                 bool_constant<InPlace> /*in_place*/,
-                                 std::false_type /*right*/)
+    template<unsigned int ItemsPerThread,
+             typename Output,
+             typename BinaryFunction,
+             typename InputIt,
+             bool InPlace>
+    ROCPRIM_DEVICE
+    void dispatch(const T (&input)[ItemsPerThread],
+                  Output (&output)[ItemsPerThread],
+                  const BinaryFunction op,
+                  const InputIt        previous_values,
+                  const unsigned int   block_id,
+                  const std::size_t    starting_block,
+                  const std::size_t    num_blocks,
+                  const std::size_t    size,
+                  storage_type&        storage,
+                  bool_constant<InPlace> /*in_place*/,
+                  std::false_type /*right*/)
     {
         static constexpr unsigned int items_per_block = BlockSize * ItemsPerThread;
 
@@ -79,14 +80,18 @@ struct adjacent_diff_helper
             // Not the last (i.e. full block)
             if(starting_block + block_id != num_blocks - 1)
             {
-                adjacent_diff_type {}.subtract_left(input, output, op, tile_predecessor, storage);
+                adjacent_diff_type{}.subtract_left(input, output, op, tile_predecessor, storage);
             }
             else
             {
                 const unsigned int valid_items
                     = static_cast<unsigned int>(size - (num_blocks - 1) * items_per_block);
-                adjacent_diff_type {}.subtract_left_partial(
-                    input, output, op, tile_predecessor, valid_items, storage);
+                adjacent_diff_type{}.subtract_left_partial(input,
+                                                           output,
+                                                           op,
+                                                           tile_predecessor,
+                                                           valid_items,
+                                                           storage);
             }
         }
         else
@@ -94,34 +99,34 @@ struct adjacent_diff_helper
             // Not the last (i.e. full block)
             if(starting_block + block_id != num_blocks - 1)
             {
-                adjacent_diff_type {}.subtract_left(input, output, op, storage);
+                adjacent_diff_type{}.subtract_left(input, output, op, storage);
             }
             else
             {
                 const unsigned int valid_items
                     = static_cast<unsigned int>(size - (num_blocks - 1) * items_per_block);
-                adjacent_diff_type {}.subtract_left_partial(
-                    input, output, op, valid_items, storage);
+                adjacent_diff_type{}.subtract_left_partial(input, output, op, valid_items, storage);
             }
         }
     }
 
-    template <unsigned int ItemsPerThread,
-              typename Output,
-              typename BinaryFunction,
-              typename InputIt,
-              bool InPlace>
-    ROCPRIM_DEVICE void dispatch(const T (&input)[ItemsPerThread],
-                                 Output (&output)[ItemsPerThread],
-                                 const BinaryFunction op,
-                                 const InputIt        previous_values,
-                                 const unsigned int   block_id,
-                                 const std::size_t    starting_block,
-                                 const std::size_t    num_blocks,
-                                 const std::size_t    size,
-                                 storage_type&        storage,
-                                 bool_constant<InPlace> /*in_place*/,
-                                 std::true_type /*right*/)
+    template<unsigned int ItemsPerThread,
+             typename Output,
+             typename BinaryFunction,
+             typename InputIt,
+             bool InPlace>
+    ROCPRIM_DEVICE
+    void dispatch(const T (&input)[ItemsPerThread],
+                  Output (&output)[ItemsPerThread],
+                  const BinaryFunction op,
+                  const InputIt        previous_values,
+                  const unsigned int   block_id,
+                  const std::size_t    starting_block,
+                  const std::size_t    num_blocks,
+                  const std::size_t    size,
+                  storage_type&        storage,
+                  bool_constant<InPlace> /*in_place*/,
+                  std::true_type /*right*/)
     {
         static constexpr unsigned int items_per_block = BlockSize * ItemsPerThread;
 
@@ -138,29 +143,31 @@ struct adjacent_diff_helper
             const InputIt next_block_values = previous_values + block_offset;
             const T       tile_successor    = *next_block_values;
 
-            adjacent_diff_type {}.subtract_right(input, output, op, tile_successor, storage);
+            adjacent_diff_type{}.subtract_right(input, output, op, tile_successor, storage);
         }
         else
         {
             const unsigned int valid_items
                 = static_cast<unsigned int>(size - (num_blocks - 1) * items_per_block);
-            adjacent_diff_type {}.subtract_right_partial(input, output, op, valid_items, storage);
+            adjacent_diff_type{}.subtract_right_partial(input, output, op, valid_items, storage);
         }
     }
 };
 
-template <typename T, typename InputIterator>
-ROCPRIM_DEVICE ROCPRIM_INLINE auto select_previous_values_iterator(T* previous_values,
-                                                                   InputIterator /*input*/,
-                                                                   std::true_type /*in_place*/)
+template<typename T, typename InputIterator>
+ROCPRIM_DEVICE ROCPRIM_INLINE
+auto select_previous_values_iterator(T* previous_values,
+                                     InputIterator /*input*/,
+                                     std::true_type /*in_place*/)
 {
     return previous_values;
 }
 
-template <typename T, typename InputIterator>
-ROCPRIM_DEVICE ROCPRIM_INLINE auto select_previous_values_iterator(T* /*previous_values*/,
-                                                                   InputIterator input,
-                                                                   std::false_type /*in_place*/)
+template<typename T, typename InputIterator>
+ROCPRIM_DEVICE ROCPRIM_INLINE
+auto select_previous_values_iterator(T* /*previous_values*/,
+                                     InputIterator input,
+                                     std::false_type /*in_place*/)
 {
     return input;
 }
@@ -210,19 +217,19 @@ ROCPRIM_DEVICE ROCPRIM_FORCE_INLINE void adjacent_difference_kernel_impl(
     input_type thread_input[items_per_thread];
     if(starting_block + block_id < num_blocks - 1)
     {
-        block_load_type {}.load(input + block_offset, thread_input, storage.load);
+        block_load_type{}.load(input + block_offset, thread_input, storage.load);
     }
     else
     {
         const unsigned int valid_items
             = static_cast<unsigned int>(size - (num_blocks - 1) * items_per_block);
-        block_load_type {}.load(input + block_offset, thread_input, valid_items, storage.load);
+        block_load_type{}.load(input + block_offset, thread_input, valid_items, storage.load);
     }
     ::rocprim::syncthreads();
 
     // Type tags for tag dispatch.
-    static constexpr auto in_place = bool_constant<InPlace> {};
-    static constexpr auto right    = bool_constant<Right> {};
+    static constexpr auto in_place = bool_constant<InPlace>{};
+    static constexpr auto right    = bool_constant<Right>{};
 
     // When doing the operation in-place the last/first items of each block have been copied out
     // in advance and written to the contiguos locations, since accessing them would be a data race
@@ -236,28 +243,28 @@ ROCPRIM_DEVICE ROCPRIM_FORCE_INLINE void adjacent_difference_kernel_impl(
     output_type thread_output[items_per_thread];
     // Do tag dispatch on `right` to select either `subtract_right` or `subtract_left`.
     // Note that the function is overloaded on its last parameter.
-    adjacent_helper {}.dispatch(thread_input,
-                                thread_output,
-                                op,
-                                previous_values_it,
-                                block_id,
-                                starting_block,
-                                num_blocks,
-                                size,
-                                storage.adjacent_diff,
-                                in_place,
-                                right);
+    adjacent_helper{}.dispatch(thread_input,
+                               thread_output,
+                               op,
+                               previous_values_it,
+                               block_id,
+                               starting_block,
+                               num_blocks,
+                               size,
+                               storage.adjacent_diff,
+                               in_place,
+                               right);
     ::rocprim::syncthreads();
 
     if(starting_block + block_id < num_blocks - 1)
     {
-        block_store_type {}.store(output + block_offset, thread_output, storage.store);
+        block_store_type{}.store(output + block_offset, thread_output, storage.store);
     }
     else
     {
         const unsigned int valid_items
             = static_cast<unsigned int>(size - (num_blocks - 1) * items_per_block);
-        block_store_type {}.store(output + block_offset, thread_output, valid_items, storage.store);
+        block_store_type{}.store(output + block_offset, thread_output, valid_items, storage.store);
     }
 }
 

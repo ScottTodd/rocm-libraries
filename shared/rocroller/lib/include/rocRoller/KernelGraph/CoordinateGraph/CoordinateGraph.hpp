@@ -154,9 +154,8 @@ namespace rocRoller
              * @param tag Graph tag/index.
              */
             template <typename T>
-            requires(std::constructible_from<CoordinateGraph::Element, T>) std::optional<T> get(
-                int tag)
-            const;
+                requires(std::constructible_from<CoordinateGraph::Element, T>)
+            std::optional<T> get(int tag) const;
 
             /**
              *  Check if modifying an element (index) is allowed or not. This

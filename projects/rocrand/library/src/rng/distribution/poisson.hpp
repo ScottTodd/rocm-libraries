@@ -62,8 +62,7 @@ public:
 
     template<class T>
     __forceinline__ __host__ __device__
-    unsigned int
-        operator()(T x) const
+    unsigned int operator()(T x) const
     {
         return base_t::operator()(x);
     }
@@ -89,8 +88,7 @@ public:
 
     template<class T>
     __forceinline__ __host__ __device__
-    unsigned int
-        operator()(T x) const
+    unsigned int operator()(T x) const
     {
         const double normal_d = rocrand_device::detail::normal_distribution_double(x);
         return static_cast<unsigned int>(round(m_sqrt_lambda * normal_d + m_lambda));

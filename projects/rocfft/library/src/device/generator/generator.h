@@ -170,7 +170,7 @@ public:
     explicit OptionalExpression(const Expression& expr);
     OptionalExpression& operator=(const Expression& in_expr);
     Expression          operator*() const;
-                        operator bool() const;
+    operator bool() const;
 };
 
 class Literal
@@ -196,9 +196,9 @@ public:
         : value(val)
     {
     }
-    Literal(Literal&&)      = default;
-    Literal(const Literal&) = default;
-    Literal& operator=(Literal&&) = default;
+    Literal(Literal&&)                 = default;
+    Literal(const Literal&)            = default;
+    Literal& operator=(Literal&&)      = default;
     Literal& operator=(const Literal&) = default;
 
     std::string value;
@@ -236,7 +236,7 @@ public:
     Variable(const Variable& v, const Expression& _index, const Expression& _index2D);
 
     Variable& operator=(const Variable&) = default;
-    Variable& operator=(Variable&&) = default;
+    Variable& operator=(Variable&&)      = default;
     Variable  operator[](const Expression& index) const;
     // do a 2D array access
     Variable at(const Expression& index, const Expression& index2D) const;
@@ -252,24 +252,24 @@ public:
 class ArgumentList
 {
 public:
-    ArgumentList(){};
+    ArgumentList() {};
     ArgumentList(const std::initializer_list<Variable>& il)
-        : arguments(il){};
+        : arguments(il) {};
     ArgumentList(const std::vector<Variable>& arguments)
-        : arguments(arguments){};
+        : arguments(arguments) {};
     ArgumentList(std::vector<Variable>&& arguments)
-        : arguments(std::move(arguments)){};
-    ArgumentList(const ArgumentList&) = default;
-    ArgumentList(ArgumentList&&)      = default;
+        : arguments(std::move(arguments)) {};
+    ArgumentList(const ArgumentList&)            = default;
+    ArgumentList(ArgumentList&&)                 = default;
     ArgumentList& operator=(const ArgumentList&) = default;
-    ArgumentList& operator=(ArgumentList&&) = default;
+    ArgumentList& operator=(ArgumentList&&)      = default;
 
     std::vector<Variable> arguments;
     std::string           render() const;
     std::string           render_decl() const;
-                          operator bool() const;
-    void                  append(Variable&&);
-    void                  append(const Variable&);
+    operator bool() const;
+    void append(Variable&&);
+    void append(const Variable&);
 
     // find an argument with the specified name and set it to the
     // supplied value
@@ -300,9 +300,9 @@ public:
     CallExpr(const std::string&             name,
              const TemplateList&            templates,
              const std::vector<Expression>& arguments);
-    CallExpr(CallExpr&&)      = default;
-    CallExpr(const CallExpr&) = default;
-    CallExpr& operator=(CallExpr&&) = default;
+    CallExpr(CallExpr&&)                 = default;
+    CallExpr(const CallExpr&)            = default;
+    CallExpr& operator=(CallExpr&&)      = default;
     CallExpr& operator=(const CallExpr&) = default;
 
     std::string render() const;
@@ -314,9 +314,9 @@ public:
     static const unsigned int precedence = 16;
     Ternary(Expression&& cond, Expression&& true_result, Expression&& false_result);
     explicit Ternary(std::vector<Expression>&& args);
-    Ternary(Ternary&&)      = default;
-    Ternary(const Ternary&) = default;
-    Ternary&    operator=(Ternary&&) = default;
+    Ternary(Ternary&&)                    = default;
+    Ternary(const Ternary&)               = default;
+    Ternary&    operator=(Ternary&&)      = default;
     Ternary&    operator=(const Ternary&) = default;
     std::string render() const;
 
@@ -329,9 +329,9 @@ public:
     static const unsigned int precedence = 18;
     LoadGlobal(const Expression& ptr, const Expression& index);
     explicit LoadGlobal(const std::vector<Expression>& args);
-    LoadGlobal(LoadGlobal&&)      = default;
-    LoadGlobal(const LoadGlobal&) = default;
-    LoadGlobal& operator=(LoadGlobal&&) = default;
+    LoadGlobal(LoadGlobal&&)                 = default;
+    LoadGlobal(const LoadGlobal&)            = default;
+    LoadGlobal& operator=(LoadGlobal&&)      = default;
     LoadGlobal& operator=(const LoadGlobal&) = default;
 
     std::string render() const;
@@ -344,9 +344,9 @@ class LoadGlobalPlanar
 public:
     static const unsigned int precedence = 18;
     explicit LoadGlobalPlanar(const std::vector<Expression>& args);
-    LoadGlobalPlanar(LoadGlobalPlanar&&)      = default;
-    LoadGlobalPlanar(const LoadGlobalPlanar&) = default;
-    LoadGlobalPlanar& operator=(LoadGlobalPlanar&&) = default;
+    LoadGlobalPlanar(LoadGlobalPlanar&&)                 = default;
+    LoadGlobalPlanar(const LoadGlobalPlanar&)            = default;
+    LoadGlobalPlanar& operator=(LoadGlobalPlanar&&)      = default;
     LoadGlobalPlanar& operator=(const LoadGlobalPlanar&) = default;
 
     std::string render() const;
@@ -362,9 +362,9 @@ public:
         : vars({a, b})
     {
     }
-    TwiddleMultiply(TwiddleMultiply&&)      = default;
-    TwiddleMultiply(const TwiddleMultiply&) = default;
-    TwiddleMultiply&      operator=(TwiddleMultiply&&) = default;
+    TwiddleMultiply(TwiddleMultiply&&)                      = default;
+    TwiddleMultiply(const TwiddleMultiply&)                 = default;
+    TwiddleMultiply&      operator=(TwiddleMultiply&&)      = default;
     TwiddleMultiply&      operator=(const TwiddleMultiply&) = default;
     std::vector<Variable> vars;
     std::string           render() const;
@@ -378,9 +378,9 @@ public:
         : vars({a, b})
     {
     }
-    TwiddleMultiplyConjugate(TwiddleMultiplyConjugate&&)      = default;
-    TwiddleMultiplyConjugate(const TwiddleMultiplyConjugate&) = default;
-    TwiddleMultiplyConjugate& operator=(TwiddleMultiplyConjugate&&) = default;
+    TwiddleMultiplyConjugate(TwiddleMultiplyConjugate&&)                 = default;
+    TwiddleMultiplyConjugate(const TwiddleMultiplyConjugate&)            = default;
+    TwiddleMultiplyConjugate& operator=(TwiddleMultiplyConjugate&&)      = default;
     TwiddleMultiplyConjugate& operator=(const TwiddleMultiplyConjugate&) = default;
     std::vector<Variable>     vars;
     std::string               render() const;
@@ -392,9 +392,9 @@ public:
     static const unsigned int precedence = 0;
     explicit Parens(Expression&& inside);
     explicit Parens(std::vector<Expression>&& args);
-    Parens(Parens&&)      = default;
-    Parens(const Parens&) = default;
-    Parens& operator=(Parens&&) = default;
+    Parens(Parens&&)                 = default;
+    Parens(const Parens&)            = default;
+    Parens& operator=(Parens&&)      = default;
     Parens& operator=(const Parens&) = default;
 
     std::vector<Expression> args;
@@ -406,9 +406,9 @@ class IntrinsicLoad
 public:
     static const unsigned int precedence = 18;
     explicit IntrinsicLoad(const std::vector<Expression>& args);
-    IntrinsicLoad(IntrinsicLoad&&)      = default;
-    IntrinsicLoad(const IntrinsicLoad&) = default;
-    IntrinsicLoad& operator=(IntrinsicLoad&&) = default;
+    IntrinsicLoad(IntrinsicLoad&&)                 = default;
+    IntrinsicLoad(const IntrinsicLoad&)            = default;
+    IntrinsicLoad& operator=(IntrinsicLoad&&)      = default;
     IntrinsicLoad& operator=(const IntrinsicLoad&) = default;
 
     // data, voffset, soffset, rw
@@ -421,9 +421,9 @@ class IntrinsicLoadPlanar
 public:
     static const unsigned int precedence = 18;
     explicit IntrinsicLoadPlanar(const std::vector<Expression>& args);
-    IntrinsicLoadPlanar(IntrinsicLoadPlanar&&)      = default;
-    IntrinsicLoadPlanar(const IntrinsicLoadPlanar&) = default;
-    IntrinsicLoadPlanar& operator=(IntrinsicLoadPlanar&&) = default;
+    IntrinsicLoadPlanar(IntrinsicLoadPlanar&&)                 = default;
+    IntrinsicLoadPlanar(const IntrinsicLoadPlanar&)            = default;
+    IntrinsicLoadPlanar& operator=(IntrinsicLoadPlanar&&)      = default;
     IntrinsicLoadPlanar& operator=(const IntrinsicLoadPlanar&) = default;
 
     // data, voffset, soffset, rw
@@ -441,9 +441,9 @@ public:
         std::vector<Expression>   args;                             \
         explicit NAME(const std::initializer_list<Expression>& il); \
         explicit NAME(const std::vector<Expression>& il);           \
-        NAME(NAME&&)        = default;                              \
-        NAME(const NAME&)   = default;                              \
-        NAME&       operator=(NAME&&) = default;                    \
+        NAME(NAME&&)                       = default;               \
+        NAME(const NAME&)                  = default;               \
+        NAME&       operator=(NAME&&)      = default;               \
         NAME&       operator=(const NAME&) = default;               \
         std::string render() const;                                 \
     };
@@ -652,7 +652,7 @@ struct CommentLines
         return s;
     }
     explicit CommentLines(std::initializer_list<std::string> il)
-        : comments(il){};
+        : comments(il) {};
 };
 
 using Statement = std::variant<Assign,
@@ -689,7 +689,7 @@ public:
     Assign(const Variable& lhs, const Expression& rhs, const std::string& oper = "=")
         : lhs(lhs)
         , rhs(rhs)
-        , oper(oper){};
+        , oper(oper) {};
 
     std::string render() const
     {
@@ -725,13 +725,13 @@ public:
     Variable                  var;
     std::optional<Expression> value;
     explicit Declaration(const Variable& v)
-        : var(v){};
+        : var(v) {};
     Declaration(const Variable& v, Expression&& val)
         : var(v)
-        , value(std::move(val)){};
+        , value(std::move(val)) {};
     Declaration(const Variable& v, const Expression& val)
         : var(v)
-        , value(val){};
+        , value(val) {};
     std::string render() const;
 };
 
@@ -739,7 +739,7 @@ class LDSDeclaration
 {
 public:
     explicit LDSDeclaration(const std::string& scalar_type)
-        : scalar_type(scalar_type){};
+        : scalar_type(scalar_type) {};
     std::string scalar_type;
     std::string render() const
     {
@@ -770,7 +770,7 @@ class CallbackLoadDeclaration
 public:
     CallbackLoadDeclaration(const std::string& scalar_type, const std::string& cbtype)
         : scalar_type(scalar_type)
-        , cbtype(cbtype){};
+        , cbtype(cbtype) {};
     std::string scalar_type;
     std::string cbtype;
     // true if loading complex data through a real-valued callback
@@ -801,7 +801,7 @@ class CallbackStoreDeclaration
 public:
     CallbackStoreDeclaration(const std::string& scalar_type, const std::string& cbtype)
         : scalar_type(scalar_type)
-        , cbtype(cbtype){};
+        , cbtype(cbtype) {};
     std::string scalar_type;
     std::string cbtype;
     // true if storing complex data through a real-valued callback
@@ -1049,7 +1049,7 @@ public:
 
     Printf(const char* format, const std::vector<Expression>& arguments)
         : fmt(format)
-        , args(arguments){};
+        , args(arguments) {};
 
     std::string render() const
     {
@@ -1109,7 +1109,7 @@ public:
     unsigned int  launch_bounds = 0;
 
     explicit Function(const std::string& name)
-        : name(name){};
+        : name(name) {};
 
     std::string render() const;
 };

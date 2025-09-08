@@ -91,7 +91,8 @@ public:
                 T& output,
                 BinaryFunction reduce_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->reduce(input, output, storage, reduce_op);
     }
 
@@ -125,7 +126,8 @@ public:
                 T& output,
                 BinaryFunction reduce_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->reduce(input, output, storage, reduce_op);
     }
 
@@ -152,7 +154,8 @@ public:
                 unsigned int valid_items,
                 BinaryFunction reduce_op)
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->reduce(input, output, valid_items, storage, reduce_op);
     }
 
@@ -202,16 +205,18 @@ private:
 
     template<bool UseValid, class WarpReduce, class BinaryFunction>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    auto warp_reduce(T input, T& output, const unsigned int valid_items, BinaryFunction reduce_op)
-        -> typename std::enable_if<UseValid>::type
+    auto
+        warp_reduce(T input, T& output, const unsigned int valid_items, BinaryFunction reduce_op) ->
+        typename std::enable_if<UseValid>::type
     {
         WarpReduce().reduce(input, output, valid_items, reduce_op);
     }
 
     template<bool UseValid, class WarpReduce, class BinaryFunction>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    auto warp_reduce(T input, T& output, const unsigned int valid_items, BinaryFunction reduce_op)
-        -> typename std::enable_if<!UseValid>::type
+    auto
+        warp_reduce(T input, T& output, const unsigned int valid_items, BinaryFunction reduce_op) ->
+        typename std::enable_if<!UseValid>::type
     {
         (void)valid_items;
         WarpReduce().reduce(input, output, reduce_op);

@@ -35,7 +35,8 @@
 #include "test_block_load_store.kernels.hpp"
 
 template<class Params>
-class RocprimVectorizationTests : public ::testing::Test {
+class RocprimVectorizationTests : public ::testing::Test
+{
 public:
     using params = Params;
 };
@@ -44,10 +45,10 @@ TYPED_TEST_SUITE(RocprimVectorizationTests, VectorParams);
 
 TYPED_TEST(RocprimVectorizationTests, IsVectorizable)
 {
-    using T = typename TestFixture::params::type;
-    constexpr size_t items_per_thread = TestFixture::params::items_per_thread;
-    constexpr bool should_be_vectorized = TestFixture::params::should_be_vectorized;
-    bool input = rocprim::detail::is_vectorizable<T, items_per_thread>();
+    using T                               = typename TestFixture::params::type;
+    constexpr size_t items_per_thread     = TestFixture::params::items_per_thread;
+    constexpr bool   should_be_vectorized = TestFixture::params::should_be_vectorized;
+    bool             input                = rocprim::detail::is_vectorizable<T, items_per_thread>();
     ASSERT_EQ(input, should_be_vectorized);
 }
 

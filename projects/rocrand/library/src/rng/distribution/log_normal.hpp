@@ -321,8 +321,7 @@ struct sobol_log_normal_distribution<float>
 
     template<class DirectionVectorType>
     __forceinline__ __host__ __device__
-    float
-        operator()(const DirectionVectorType x) const
+    float operator()(const DirectionVectorType x) const
     {
         float v = rocrand_device::detail::normal_distribution(x);
         return expf(mean + (stddev * v));
@@ -339,8 +338,7 @@ struct sobol_log_normal_distribution<double>
 
     template<class DirectionVectorType>
     __forceinline__ __host__ __device__
-    double
-        operator()(const DirectionVectorType x) const
+    double operator()(const DirectionVectorType x) const
     {
         double v = rocrand_device::detail::normal_distribution_double(x);
         return exp(mean + (stddev * v));
@@ -357,8 +355,7 @@ struct sobol_log_normal_distribution<__half>
 
     template<class DirectionVectorType>
     __forceinline__ __host__ __device__
-    __half
-        operator()(const DirectionVectorType x) const
+    __half operator()(const DirectionVectorType x) const
     {
         float v = rocrand_device::detail::normal_distribution(x);
 #if defined(ROCRAND_HALF_MATH_SUPPORTED)

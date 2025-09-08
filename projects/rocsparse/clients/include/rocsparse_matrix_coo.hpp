@@ -45,8 +45,8 @@ struct coo_matrix
     array_t<I>             col_ind{};
     array_t<T>             val{};
 
-    coo_matrix(){};
-    ~coo_matrix(){};
+    coo_matrix() {};
+    ~coo_matrix() {};
 
     coo_matrix(I m_, I n_, int64_t nnz_, rocsparse_index_base base_)
         : m(m_)
@@ -55,7 +55,7 @@ struct coo_matrix
         , base(base_)
         , row_ind(nnz_)
         , col_ind(nnz_)
-        , val(nnz_){};
+        , val(nnz_) {};
 
     explicit coo_matrix(const coo_matrix<MODE, T, I>& that_, bool transfer = true)
         : coo_matrix<MODE, T, I>(that_.m, that_.n, that_.nnz, that_.base)

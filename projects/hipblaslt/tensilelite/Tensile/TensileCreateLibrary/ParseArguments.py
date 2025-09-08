@@ -61,9 +61,14 @@ def parseArguments(input: Optional[List[str]] = None) -> Dict[str, Any]:
         help=f"Default: {ToolchainDefaults.CXX_COMPILER}",
     )
     argParser.add_argument(
-        "--c-compiler", dest="CCompiler", action="store", default=ToolchainDefaults.C_COMPILER
+        "--c-compiler",
+        dest="CCompiler",
+        action="store",
+        default=ToolchainDefaults.C_COMPILER,
     )
-    argParser.add_argument("--cmake-cxx-compiler", dest="CmakeCxxCompiler", action="store")
+    argParser.add_argument(
+        "--cmake-cxx-compiler", dest="CmakeCxxCompiler", action="store"
+    )
     argParser.add_argument(
         "--offload-bundler",
         dest="OffloadBundler",
@@ -71,7 +76,10 @@ def parseArguments(input: Optional[List[str]] = None) -> Dict[str, Any]:
         default=ToolchainDefaults.OFFLOAD_BUNDLER,
     )
     argParser.add_argument(
-        "--assembler", dest="Assembler", action="store", default=ToolchainDefaults.ASSEMBLER
+        "--assembler",
+        dest="Assembler",
+        action="store",
+        default=ToolchainDefaults.ASSEMBLER,
     )
     argParser.add_argument(
         "--code-object-version",
@@ -103,7 +111,9 @@ def parseArguments(input: Optional[List[str]] = None) -> Dict[str, Any]:
     argParser.add_argument(
         "--no-enumerate", action="store_true", help="Do not run rocm_agent_enumerator."
     )
-    argParser.add_argument("--version", help="Version string to embed into library file.")
+    argParser.add_argument(
+        "--version", help="Version string to embed into library file."
+    )
     argParser.add_argument(
         "--logic-format",
         dest="LogicFormat",
@@ -164,7 +174,9 @@ def parseArguments(input: Optional[List[str]] = None) -> Dict[str, Any]:
         default=False,
         help="Keep debug information for built code objects",
     )
-    argParser.add_argument("--build-id", dest="BuildIdKind", action="store", default="sha1")
+    argParser.add_argument(
+        "--build-id", dest="BuildIdKind", action="store", default="sha1"
+    )
     argParser.add_argument(
         "--address-sanitizer",
         dest="AsanBuild",

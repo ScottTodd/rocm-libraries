@@ -29,10 +29,12 @@ from rocisa.instruction import VFmaF64, SSetPrior
 from ..Common.DataType import DataType
 from ..Component import MAC
 
+
 class FMA_F64_Plain(MAC):
     """
     Plain MAC instruction implementation
     """
+
     asmCaps = {"v_fma_f64": True}
     kernel = {"ProblemType": {"DataType": DataType(DataTypeEnum.Double)}}
 
@@ -53,14 +55,26 @@ class FMA_F64_Plain(MAC):
                 for iui in range(0, innerUnroll):
                     vars["iui"] = iui
 
-                    cStr = "ValuC+%d" % ((vars["a"]+vars["b"]*vars["ThreadTile0"])*2)
-                    aStr = "ValuA_X%d_I%d+%d" % (vars["m"], vars["iui"], vars["a"]*2)
-                    bStr = "ValuB_X%d_I%d+%d" % (vars["m"], vars["iui"], vars["b"]*2)
+                    cStr = "ValuC+%d" % (
+                        (vars["a"] + vars["b"] * vars["ThreadTile0"]) * 2
+                    )
+                    aStr = "ValuA_X%d_I%d+%d" % (vars["m"], vars["iui"], vars["a"] * 2)
+                    bStr = "ValuB_X%d_I%d+%d" % (vars["m"], vars["iui"], vars["b"] * 2)
 
-                    module.add(VFmaF64(dst=vgpr(cStr, 2), src0=vgpr(aStr, 2),
-                                       src1=vgpr(bStr, 2), src2=vgpr(cStr, 2)))
+                    module.add(
+                        VFmaF64(
+                            dst=vgpr(cStr, 2),
+                            src0=vgpr(aStr, 2),
+                            src1=vgpr(bStr, 2),
+                            src2=vgpr(cStr, 2),
+                        )
+                    )
                     if (b == 0) and (a == 0) and (iui == 0):
-                        module.add(SSetPrior(prior=1, comment="Raise priority while processing macs"))
+                        module.add(
+                            SSetPrior(
+                                prior=1, comment="Raise priority while processing macs"
+                            )
+                        )
 
         module.add(SSetPrior(prior=0, comment="Reset priority after macs"))
 

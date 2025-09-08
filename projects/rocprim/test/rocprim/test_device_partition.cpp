@@ -65,25 +65,25 @@ template<class InputType,
          bool UseGraphs           = false>
 struct DevicePartitionParams
 {
-    using input_type = InputType;
-    using output_type = OutputType;
-    using flag_type = FlagType;
+    using input_type                            = InputType;
+    using output_type                           = OutputType;
+    using flag_type                             = FlagType;
     using config                                = Config;
     static constexpr bool use_identity_iterator = UseIdentityIterator;
-    static constexpr bool use_graphs = UseGraphs;
+    static constexpr bool use_graphs            = UseGraphs;
 };
 
 template<class Params>
 class RocprimDevicePartitionTests : public ::testing::Test
 {
 public:
-    using input_type = typename Params::input_type;
-    using output_type = typename Params::output_type;
-    using flag_type = typename Params::flag_type;
+    using input_type                            = typename Params::input_type;
+    using output_type                           = typename Params::output_type;
+    using flag_type                             = typename Params::flag_type;
     using config                                = typename Params::config;
-    const bool debug_synchronous = false;
+    const bool            debug_synchronous     = false;
     static constexpr bool use_identity_iterator = Params::use_identity_iterator;
-    static constexpr bool use_graphs = Params::use_graphs;
+    static constexpr bool use_graphs            = Params::use_graphs;
 };
 
 using config = rocprim::select_config<512,
@@ -115,15 +115,15 @@ TYPED_TEST(RocprimDevicePartitionTests, Flagged)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using T = typename TestFixture::input_type;
-    using U = typename TestFixture::output_type;
-    using F = typename TestFixture::flag_type;
+    using T                                     = typename TestFixture::input_type;
+    using U                                     = typename TestFixture::output_type;
+    using F                                     = typename TestFixture::flag_type;
     using config                                = typename TestFixture::config;
     static constexpr bool use_identity_iterator = TestFixture::use_identity_iterator;
-    const bool debug_synchronous = TestFixture::debug_synchronous;
+    const bool            debug_synchronous     = TestFixture::debug_synchronous;
 
     hipStream_t stream = 0; // default stream
-    if (TestFixture::use_graphs)
+    if(TestFixture::use_graphs)
     {
         // Default stream does not support hipGraph stream capture, so create one
         HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -131,7 +131,8 @@ TYPED_TEST(RocprimDevicePartitionTests, Flagged)
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         for(auto size : test_utils::get_sizes(seed_value))
@@ -239,8 +240,11 @@ TYPED_TEST(RocprimDevicePartitionTests, Flagged)
                 auto j = i + expected_selected.size();
                 output_rejected.push_back(output[j]);
             }
-            ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(output, expected_selected, expected_selected.size()));
-            ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(output_rejected, expected_rejected, expected_rejected.size()));
+            ASSERT_NO_FATAL_FAILURE(
+                test_utils::assert_eq(output, expected_selected, expected_selected.size()));
+            ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(output_rejected,
+                                                          expected_rejected,
+                                                          expected_rejected.size()));
 
             if(TestFixture::use_graphs)
             {
@@ -275,13 +279,13 @@ TYPED_TEST(RocprimDevicePartitionTests, PredicateEmptyInput)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using T = typename TestFixture::input_type;
-    using U = typename TestFixture::output_type;
+    using T                      = typename TestFixture::input_type;
+    using U                      = typename TestFixture::output_type;
     using config                 = typename TestFixture::config;
     const bool debug_synchronous = TestFixture::debug_synchronous;
 
     hipStream_t stream = 0; // default stream
-    if (TestFixture::use_graphs)
+    if(TestFixture::use_graphs)
     {
         // Default stream does not support hipGraph stream capture, so create one
         HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -289,11 +293,11 @@ TYPED_TEST(RocprimDevicePartitionTests, PredicateEmptyInput)
 
     auto select_op = select_op_t<T>{};
 
-    unsigned int selected_count_output = 123;
+    unsigned int                     selected_count_output = 123;
     common::device_ptr<U>            d_output(1);
     common::device_ptr<unsigned int> d_selected_count_output(selected_count_output);
 
-    test_utils::out_of_bounds_flag out_of_bounds;
+    test_utils::out_of_bounds_flag          out_of_bounds;
     test_utils::bounds_checking_iterator<U> d_checking_output(d_output.get(),
                                                               out_of_bounds.device_pointer(),
                                                               0);
@@ -320,7 +324,7 @@ TYPED_TEST(RocprimDevicePartitionTests, PredicateEmptyInput)
     selected_count_output = d_selected_count_output.load()[0];
     ASSERT_EQ(selected_count_output, 0);
 
-    if (TestFixture::use_graphs)
+    if(TestFixture::use_graphs)
     {
         HIP_CHECK(hipStreamDestroy(stream));
     }
@@ -332,14 +336,14 @@ TYPED_TEST(RocprimDevicePartitionTests, Predicate)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using T = typename TestFixture::input_type;
-    using U = typename TestFixture::output_type;
+    using T                                     = typename TestFixture::input_type;
+    using U                                     = typename TestFixture::output_type;
     using config                                = typename TestFixture::config;
     static constexpr bool use_identity_iterator = TestFixture::use_identity_iterator;
-    const bool debug_synchronous = TestFixture::debug_synchronous;
+    const bool            debug_synchronous     = TestFixture::debug_synchronous;
 
     hipStream_t stream = 0; // default stream
-    if (TestFixture::use_graphs)
+    if(TestFixture::use_graphs)
     {
         // Default stream does not support hipGraph stream capture, so create one
         HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -349,7 +353,8 @@ TYPED_TEST(RocprimDevicePartitionTests, Predicate)
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         for(auto size : test_utils::get_sizes(seed_value))
@@ -375,8 +380,8 @@ TYPED_TEST(RocprimDevicePartitionTests, Predicate)
             // Calculate expected_selected and expected_rejected results on host
             std::vector<U> expected_selected;
             std::vector<U> expected_rejected;
-            expected_selected.reserve(input.size()/2);
-            expected_rejected.reserve(input.size()/2);
+            expected_selected.reserve(input.size() / 2);
+            expected_rejected.reserve(input.size() / 2);
             for(size_t i = 0; i < input.size(); i++)
             {
                 if(select_op(input[i]))
@@ -454,8 +459,11 @@ TYPED_TEST(RocprimDevicePartitionTests, Predicate)
                 auto j = i + expected_selected.size();
                 output_rejected.push_back(output[j]);
             }
-            ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(output, expected_selected, expected_selected.size()));
-            ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(output_rejected, expected_rejected, expected_rejected.size()));
+            ASSERT_NO_FATAL_FAILURE(
+                test_utils::assert_eq(output, expected_selected, expected_selected.size()));
+            ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(output_rejected,
+                                                          expected_rejected,
+                                                          expected_rejected.size()));
 
             if(TestFixture::use_graphs)
             {
@@ -483,7 +491,7 @@ TYPED_TEST(RocprimDevicePartitionTests, PartitionTwoWayPredicate)
     const bool            debug_synchronous     = TestFixture::debug_synchronous;
 
     hipStream_t stream = 0; // default stream
-    if (TestFixture::use_graphs)
+    if(TestFixture::use_graphs)
     {
         // Default stream does not support hipGraph stream capture, so create one
         HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -764,48 +772,54 @@ TYPED_TEST(RocprimDevicePartitionTests, PartitionTwoWayFlag)
     }
 }
 
-namespace {
-template <typename T>
-struct LessOp {
-    ROCPRIM_HOST_DEVICE LessOp(const T& pivot)
+namespace
+{
+template<typename T>
+struct LessOp
+{
+    ROCPRIM_HOST_DEVICE
+    LessOp(const T& pivot)
         : pivot_{pivot}
-    {
-    }
+    {}
 
-    ROCPRIM_HOST_DEVICE bool operator()(const T& val) const {
+    ROCPRIM_HOST_DEVICE
+    bool operator()(const T& val) const
+    {
         return val < pivot_;
     }
+
 private:
     T pivot_;
 };
-}
+} // namespace
 
 TYPED_TEST(RocprimDevicePartitionTests, PredicateThreeWay)
 {
-    using T = typename TestFixture::input_type;
-    using U = typename TestFixture::output_type;
+    using T                                     = typename TestFixture::input_type;
+    using U                                     = typename TestFixture::output_type;
     using config                                = typename TestFixture::config;
     static constexpr bool use_identity_iterator = TestFixture::use_identity_iterator;
-    const bool debug_synchronous = TestFixture::debug_synchronous;
+    const bool            debug_synchronous     = TestFixture::debug_synchronous;
 
     hipStream_t stream = 0; // default stream
-    if (TestFixture::use_graphs)
+    if(TestFixture::use_graphs)
     {
         // Default stream does not support hipGraph stream capture, so create one
         HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
     }
 
-    const std::vector<std::array<T,2>> limit_pairs{
-        { static_cast<T>(30), static_cast<T>(60) }, // all sections may contain items
-        { static_cast<T>(0), static_cast<T>(60) },  // first section is empty
-        { static_cast<T>(30), static_cast<T>(30) }, // second section is empty
-        { static_cast<T>(30), static_cast<T>(101) } // unselected is empty
+    const std::vector<std::array<T, 2>> limit_pairs{
+        {static_cast<T>(30),  static_cast<T>(60)}, // all sections may contain items
+        { static_cast<T>(0),  static_cast<T>(60)}, // first section is empty
+        {static_cast<T>(30),  static_cast<T>(30)}, // second section is empty
+        {static_cast<T>(30), static_cast<T>(101)}  // unselected is empty
     };
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
         const unsigned int seed_value = seed_index < random_seeds_count
-            ? static_cast<unsigned int>(rand()) : seeds[seed_index - random_seeds_count];
+                                            ? static_cast<unsigned int>(rand())
+                                            : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         for(auto size : test_utils::get_sizes(seed_value))
@@ -813,8 +827,8 @@ TYPED_TEST(RocprimDevicePartitionTests, PredicateThreeWay)
             SCOPED_TRACE(testing::Message() << "with size = " << size);
             for(const auto& limits : limit_pairs)
             {
-                SCOPED_TRACE(testing::Message() << "with limits = "
-                    << std::get<0>(limits) << ", " << std::get<1>(limits));
+                SCOPED_TRACE(testing::Message() << "with limits = " << std::get<0>(limits) << ", "
+                                                << std::get<1>(limits));
                 // Generate data
                 const auto input = test_utils::get_random_data_wrapped<T>(size, 1, 100, seed_value);
 
@@ -836,19 +850,18 @@ TYPED_TEST(RocprimDevicePartitionTests, PredicateThreeWay)
 
                 d_input.store(input);
 
-                const auto first_op = LessOp<T>{std::get<0>(limits)};
+                const auto first_op  = LessOp<T>{std::get<0>(limits)};
                 const auto second_op = LessOp<T>{std::get<1>(limits)};
 
-                auto copy = input;
-                const auto partion_point =
-                    std::stable_partition(copy.begin(), copy.end(), first_op);
-                const auto second_partiton_point =
-                    std::stable_partition(partion_point, copy.end(), second_op);
+                auto       copy = input;
+                const auto partion_point
+                    = std::stable_partition(copy.begin(), copy.end(), first_op);
+                const auto second_partiton_point
+                    = std::stable_partition(partion_point, copy.end(), second_op);
 
                 const auto expected_counts = std::array<unsigned int, 2>{
                     static_cast<unsigned int>(partion_point - copy.begin()),
-                    static_cast<unsigned int>(second_partiton_point - partion_point)
-                };
+                    static_cast<unsigned int>(second_partiton_point - partion_point)};
 
                 const auto expected = [&]
                 {
@@ -925,7 +938,8 @@ TYPED_TEST(RocprimDevicePartitionTests, PredicateThreeWay)
                 ASSERT_EQ(selected_counts, expected_counts);
 
                 // Check if output values are as expected_selected
-                const auto output = [&]{
+                const auto output = [&]
+                {
                     auto result = std::vector<U>(input.size());
                     HIP_CHECK(hipMemcpy(result.data(),
                                         d_first_output.get(),
@@ -982,59 +996,72 @@ public:
         : current_index_(0), modulo_(modulo), size_(size), incorrect_flag_(incorrect_flag)
     {}
 
-    ROCPRIM_HOST_DEVICE bool operator==(const check_modulo_iterator& rhs) const
+    ROCPRIM_HOST_DEVICE
+    bool operator==(const check_modulo_iterator& rhs) const
     {
         return current_index_ == rhs.current_index_;
     }
-    ROCPRIM_HOST_DEVICE bool operator!=(const check_modulo_iterator& rhs) const
+    ROCPRIM_HOST_DEVICE
+    bool operator!=(const check_modulo_iterator& rhs) const
     {
         return !(*this == rhs);
     }
-    ROCPRIM_HOST_DEVICE reference operator*()
+    ROCPRIM_HOST_DEVICE
+    reference operator*()
     {
         return value_type(current_index_, modulo_, size_, incorrect_flag_);
     }
-    ROCPRIM_HOST_DEVICE reference operator[](const difference_type& distance) const
+    ROCPRIM_HOST_DEVICE
+    reference operator[](const difference_type& distance) const
     {
         return *(*this + distance);
     }
-    ROCPRIM_HOST_DEVICE check_modulo_iterator& operator+=(const difference_type& rhs)
+    ROCPRIM_HOST_DEVICE
+    check_modulo_iterator& operator+=(const difference_type& rhs)
     {
         current_index_ += rhs;
         return *this;
     }
-    ROCPRIM_HOST_DEVICE check_modulo_iterator& operator-=(const difference_type& rhs)
+    ROCPRIM_HOST_DEVICE
+    check_modulo_iterator& operator-=(const difference_type& rhs)
     {
         current_index_ -= rhs;
         return *this;
     }
-    ROCPRIM_HOST_DEVICE difference_type operator-(const check_modulo_iterator& rhs) const
+    ROCPRIM_HOST_DEVICE
+    difference_type operator-(const check_modulo_iterator& rhs) const
     {
         return current_index_ - rhs.current_index_;
     }
-    ROCPRIM_HOST_DEVICE check_modulo_iterator operator+(const difference_type& rhs) const
+    ROCPRIM_HOST_DEVICE
+    check_modulo_iterator operator+(const difference_type& rhs) const
     {
         return check_modulo_iterator(*this) += rhs;
     }
-    ROCPRIM_HOST_DEVICE check_modulo_iterator operator-(const difference_type& rhs) const
+    ROCPRIM_HOST_DEVICE
+    check_modulo_iterator operator-(const difference_type& rhs) const
     {
         return check_modulo_iterator(*this) -= rhs;
     }
-    ROCPRIM_HOST_DEVICE check_modulo_iterator& operator++()
+    ROCPRIM_HOST_DEVICE
+    check_modulo_iterator& operator++()
     {
         ++current_index_;
         return *this;
     }
-    ROCPRIM_HOST_DEVICE check_modulo_iterator& operator--()
+    ROCPRIM_HOST_DEVICE
+    check_modulo_iterator& operator--()
     {
         --current_index_;
         return *this;
     }
-    ROCPRIM_HOST_DEVICE check_modulo_iterator operator++(int)
+    ROCPRIM_HOST_DEVICE
+    check_modulo_iterator operator++(int)
     {
         return ++check_modulo_iterator{*this};
     }
-    ROCPRIM_HOST_DEVICE check_modulo_iterator operator--(int)
+    ROCPRIM_HOST_DEVICE
+    check_modulo_iterator operator--(int)
     {
         return --check_modulo_iterator{*this};
     }
@@ -1154,14 +1181,16 @@ private:
 class check_modulo_exclude2
 {
 public:
-    ROCPRIM_HOST_DEVICE check_modulo_exclude2(size_t current_index,
-                                              size_t modulo,
-                                              size_t /*size*/,
-                                              unsigned int* incorrect_flag)
+    ROCPRIM_HOST_DEVICE
+    check_modulo_exclude2(size_t current_index,
+                          size_t modulo,
+                          size_t /*size*/,
+                          unsigned int* incorrect_flag)
         : current_index_(current_index), modulo_(modulo), incorrect_flag_(incorrect_flag)
     {}
 
-    ROCPRIM_DEVICE check_modulo_exclude2& operator=(size_t value)
+    ROCPRIM_DEVICE
+    check_modulo_exclude2& operator=(size_t value)
     {
         const bool is_mod = (value % modulo_) == 0;
         // Note: expected index is reduced by one since a value 0 is modulo!
@@ -1184,7 +1213,7 @@ struct modulo_predicate
     size_t modulo_;
 
     ROCPRIM_DEVICE
-    bool operator()(const size_t value) const
+    bool   operator()(const size_t value) const
     {
         return value % modulo_ == 0;
     }
@@ -1192,7 +1221,8 @@ struct modulo_predicate
 
 } // namespace
 
-struct RocprimDevicePartitionLargeInputTests : public ::testing::TestWithParam<std::pair<size_t, bool>>
+struct RocprimDevicePartitionLargeInputTests
+    : public ::testing::TestWithParam<std::pair<size_t, bool>>
 {};
 
 INSTANTIATE_TEST_SUITE_P(RocprimDevicePartitionLargeInputTest,
@@ -1204,13 +1234,13 @@ INSTANTIATE_TEST_SUITE_P(RocprimDevicePartitionLargeInputTest,
 
 TEST_P(RocprimDevicePartitionLargeInputTests, LargeInputPartition)
 {
-    static constexpr bool        debug_synchronous = false;
-    auto param = GetParam();
-    const size_t modulo = std::get<0>(param);
-    const bool use_graphs = std::get<1>(param);
+    static constexpr bool debug_synchronous = false;
+    auto                  param             = GetParam();
+    const size_t          modulo            = std::get<0>(param);
+    const bool            use_graphs        = std::get<1>(param);
 
     hipStream_t stream = 0; // default
-    if (use_graphs)
+    if(use_graphs)
     {
         // Default stream does not support hipGraph stream capture, so create one
         HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -1285,13 +1315,13 @@ TEST_P(RocprimDevicePartitionLargeInputTests, LargeInputPartition)
 
 TEST_P(RocprimDevicePartitionLargeInputTests, LargeInputPartitionTwoWay)
 {
-    static constexpr bool        debug_synchronous = false;
-    auto param = GetParam();
-    const size_t modulo = std::get<0>(param);
-    const bool use_graphs = std::get<1>(param);
+    static constexpr bool debug_synchronous = false;
+    auto                  param             = GetParam();
+    const size_t          modulo            = std::get<0>(param);
+    const bool            use_graphs        = std::get<1>(param);
 
     hipStream_t stream = 0; // default
-    if (use_graphs)
+    if(use_graphs)
     {
         // Default stream does not support hipGraph stream capture, so create one
         HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -1380,12 +1410,12 @@ TEST_P(RocprimDevicePartitionLargeInputTests, LargeInputPartitionTwoWay)
 
 TEST_P(RocprimDevicePartitionLargeInputTests, LargeInputPartitionThreeWay)
 {
-    static constexpr bool        debug_synchronous = false;
-    auto param = GetParam();
-    const bool use_graphs = std::get<1>(param);
+    static constexpr bool debug_synchronous = false;
+    auto                  param             = GetParam();
+    const bool            use_graphs        = std::get<1>(param);
 
     hipStream_t stream = 0; // default
-    if (use_graphs)
+    if(use_graphs)
     {
         // Default stream does not support hipGraph stream capture, so create one
         HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -1513,17 +1543,17 @@ TEST(RocprimDevicePartitionBlockSizeTests, BlockSize)
         bool operator==(const TestObject& other) const
         {
             bool equal = true;
-            for (size_t i = 0; equal && i < test_obj_size; i++)
+            for(size_t i = 0; equal && i < test_obj_size; i++)
                 equal = data[i] == other.data[i];
 
             return equal;
         }
     };
 
-    using T = TestObject; // input data type
-    using U = TestObject; // output data type
-    const bool debug_synchronous = false;
-    const hipStream_t stream = 0; // default stream
+    using T                             = TestObject; // input data type
+    using U                             = TestObject; // output data type
+    const bool        debug_synchronous = false;
+    const hipStream_t stream            = 0; // default stream
 
     auto select_op = select_data_op_t<T>{};
 
@@ -1532,7 +1562,8 @@ TEST(RocprimDevicePartitionBlockSizeTests, BlockSize)
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         for(auto size : sizes)
@@ -1546,7 +1577,7 @@ TEST(RocprimDevicePartitionBlockSizeTests, BlockSize)
                                                                      255,
                                                                      seed_value);
             std::vector<T> input(size);
-            for (size_t i = 0; i < size; i++)
+            for(size_t i = 0; i < size; i++)
                 memcpy(input[i].data, input_data.data() + i * test_obj_size, test_obj_size);
 
             common::device_ptr<T>            d_input(input);
@@ -1556,8 +1587,8 @@ TEST(RocprimDevicePartitionBlockSizeTests, BlockSize)
             // Calculate expected_selected and expected_rejected results on host
             std::vector<U> expected_selected;
             std::vector<U> expected_rejected;
-            expected_selected.reserve(input.size()/2);
-            expected_rejected.reserve(input.size()/2);
+            expected_selected.reserve(input.size() / 2);
+            expected_rejected.reserve(input.size() / 2);
             for(size_t i = 0; i < input.size(); i++)
             {
                 if(select_op(input[i]))
@@ -1599,7 +1630,8 @@ TEST(RocprimDevicePartitionBlockSizeTests, BlockSize)
                 auto j = i + expected_selected.size();
                 output_rejected.push_back(output[j]);
             }
-            ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(output, expected_selected, expected_selected.size()));
+            ASSERT_NO_FATAL_FAILURE(
+                test_utils::assert_eq(output, expected_selected, expected_selected.size()));
             ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(output_rejected,
                                                           expected_rejected,
                                                           expected_rejected.size()));

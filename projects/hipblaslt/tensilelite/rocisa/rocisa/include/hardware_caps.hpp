@@ -69,16 +69,17 @@ inline bool tryAssembler(const IsaVersion&  isaVersion,
     return true;
 }
 
-inline int getMaxCnt(const IsaVersion& isaVersion,
+inline int getMaxCnt(const IsaVersion&  isaVersion,
                      const std::string& assemblerPath,
                      const std::string& prefix,
                      const std::string& suffix,
-                     bool isDebug)
+                     bool               isDebug)
 {
     for(int p = 64; p > 1; p >>= 1)
     {
         // Try ( pow(2) - 1 ) from high to low
-        if(tryAssembler(isaVersion, assemblerPath, prefix + std::to_string(p - 1) + suffix, isDebug))
+        if(tryAssembler(
+               isaVersion, assemblerPath, prefix + std::to_string(p - 1) + suffix, isDebug))
             return p - 1;
     }
     return 0;
@@ -297,18 +298,19 @@ inline std::map<std::string, int>
     rv["s_delay_alu"]
         = tryAssembler(isaVersion, assemblerPath, "s_delay_alu instid0(VALU_DEP_1)", isDebug);
 
-    rv["SeparateVscnt"] = tryAssembler(isaVersion, assemblerPath, "s_waitcnt_vscnt null 0", isDebug);
+    rv["SeparateVscnt"]
+        = tryAssembler(isaVersion, assemblerPath, "s_waitcnt_vscnt null 0", isDebug);
 
     rv["SeparateLGKMcnt"] = tryAssembler(isaVersion, assemblerPath, "s_wait_dscnt 0", isDebug)
-                        && tryAssembler(isaVersion, assemblerPath, "s_wait_kmcnt 0", isDebug);
+                            && tryAssembler(isaVersion, assemblerPath, "s_wait_kmcnt 0", isDebug);
 
     rv["SeparateVMcnt"] = tryAssembler(isaVersion, assemblerPath, "s_wait_loadcnt 0", isDebug)
-                        && tryAssembler(isaVersion, assemblerPath, "s_wait_storecnt 0", isDebug);
+                          && tryAssembler(isaVersion, assemblerPath, "s_wait_storecnt 0", isDebug);
 
     if(rv["SeparateVMcnt"])
     {
         // s_wait_loadcnt accept 16 bits immediate, but only use the lowest 6 bits are used, can't use tryAssembler
-        rv["MaxLoadcnt"]  = 63;
+        rv["MaxLoadcnt"] = 63;
         // s_wait_storecnt accept 16 bits immediate, but only use the lowest 6 bits are used, can't use tryAssembler
         rv["MaxStorecnt"] = 63;
     }
@@ -321,7 +323,7 @@ inline std::map<std::string, int>
             rv["MaxVscnt"] = 63;
         }
     }
-    
+
     if(rv["SeparateLGKMcnt"])
     {
         // s_wait_dscnt accept 16 bits immediate, but only use the lowest 6 bits are used, can't use tryAssembler

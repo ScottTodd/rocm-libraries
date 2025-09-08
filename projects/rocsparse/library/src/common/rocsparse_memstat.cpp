@@ -243,7 +243,7 @@ private:
         }
     };
 
-    memstat(const memstat&) = delete;
+    memstat(const memstat&)            = delete;
     memstat& operator=(const memstat&) = delete;
 
     struct stat
@@ -929,15 +929,10 @@ void memstat::flush_report(std::ostream& out, bool finalize) const
                     //
                     out << " { ";
                     out << "  \"index\": \"" << e.index << "\"";
-                    out << ", "
-                        << "  \"mode\": \"" << memstat_mode::to_string(e.mode) << "\""
-                        << ", "
-                        << "  \"op\"  : \"" << e.kind << "\""
-                        << ", "
-                        << "  \"nbytes\" : \"" << e.nbytes << "\""
-                        << ", "
-                        << "   \"tag\": \"" << relfilename(e.tag) << "\""
-                        << " }";
+                    out << ", " << "  \"mode\": \"" << memstat_mode::to_string(e.mode) << "\""
+                        << ", " << "  \"op\"  : \"" << e.kind << "\"" << ", " << "  \"nbytes\" : \""
+                        << e.nbytes << "\"" << ", " << "   \"tag\": \"" << relfilename(e.tag)
+                        << "\"" << " }";
                     first = false;
                 }
 
@@ -1007,42 +1002,27 @@ void memstat::report(std::ostream& out) const
             out << "," << std::endl;
         out << " { ";
         out << "  \"index\": \"" << m_data[i].index << "\"";
-        out << ", "
-            << " \"time\": \"" << (m_data[i].t - m_start_time) / 1e3 << "\"";
+        out << ", " << " \"time\": \"" << (m_data[i].t - m_start_time) / 1e3 << "\"";
         for(auto v : memstat_mode::all)
         {
-            out << ", "
-                << "\"nbytes_" << memstat_mode::to_string(v) << "\" : \""
+            out << ", " << "\"nbytes_" << memstat_mode::to_string(v) << "\" : \""
                 << m_data[i].total_nbytes[v] << "\"";
         }
-        out << ", "
-            << "  \"mode\": \"" << memstat_mode::to_string(m_data[i].mode) << "\""
-            << ", "
-            << "  \"op\"  : \"" << m_data[i].kind << "\""
-            << ", "
-            << "  \"nbytes\" : \"" << m_data[i].nbytes << "\""
-            << ", "
-            << "   \"tag\": \"" << relfilename(m_data[i].tag) << "\""
-            << " }";
+        out << ", " << "  \"mode\": \"" << memstat_mode::to_string(m_data[i].mode) << "\"" << ", "
+            << "  \"op\"  : \"" << m_data[i].kind << "\"" << ", " << "  \"nbytes\" : \""
+            << m_data[i].nbytes << "\"" << ", " << "   \"tag\": \"" << relfilename(m_data[i].tag)
+            << "\"" << " }";
     }
 }
 
 void memstat::report_legend(std::ostream& out) const
 {
-    out << " [ "
-        << "\"index\", \"time\"";
+    out << " [ " << "\"index\", \"time\"";
     for(auto v : memstat_mode::all)
     {
-        out << ", "
-            << "\"nbytes_" << memstat_mode::to_string(v) << "\"";
+        out << ", " << "\"nbytes_" << memstat_mode::to_string(v) << "\"";
     }
-    out << ", \"mode\""
-        << ", "
-        << "\"op\""
-        << ", "
-        << "\"nbytes\""
-        << ", "
-        << " \"tag\"";
+    out << ", \"mode\"" << ", " << "\"op\"" << ", " << "\"nbytes\"" << ", " << " \"tag\"";
     out << " ]";
 }
 

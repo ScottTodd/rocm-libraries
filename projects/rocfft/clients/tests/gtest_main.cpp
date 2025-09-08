@@ -799,8 +799,7 @@ TEST(manual, vs_fftw) // MANUAL TESTS HERE
     // Run an individual test using the provided command-line parameters.
     params.validate();
 
-    std::cout << "Manual test:"
-              << "\n\t" << params.str("\n\t") << "\n";
+    std::cout << "Manual test:" << "\n\t" << params.str("\n\t") << "\n";
 
     std::cout << "Token: " << params.token() << "\n";
 
@@ -843,8 +842,7 @@ TEST(manual, bitwise_reproducibility) // MANUAL TESTS HERE
     // Run an individual test using the provided command-line parameters.
     params.validate();
 
-    std::cout << "Manual test:"
-              << "\n\t" << params.str("\n\t") << "\n";
+    std::cout << "Manual test:" << "\n\t" << params.str("\n\t") << "\n";
 
     std::cout << "Token: " << params.token() << "\n";
 

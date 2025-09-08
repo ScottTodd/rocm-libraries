@@ -55,7 +55,8 @@ namespace rocRoller
 
                 virtual CommandArguments commandArguments(CommandPtr,
                                                           ProblemParameters const& problemParams,
-                                                          RunParameters const& runParams) const = 0;
+                                                          RunParameters const&     runParams) const
+                    = 0;
 
                 virtual void setPredicates(CommandPtr, CommandKernelPtr, SolutionParameters const&)
                 {

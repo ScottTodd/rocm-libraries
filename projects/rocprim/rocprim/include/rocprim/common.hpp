@@ -18,13 +18,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-
 #ifndef ROCPRIM_COMMON_HPP_
 #define ROCPRIM_COMMON_HPP_
 
+#include <chrono>
 #include <hip/hip_runtime.h>
 #include <iostream>
-#include <chrono>
 
 namespace detail
 {

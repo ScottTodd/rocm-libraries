@@ -26,6 +26,7 @@ import pickle
 
 name = "Test"
 
+
 def test_label():
     lm = rocisa.label.LabelManager()
     # Basic
@@ -35,6 +36,7 @@ def test_label():
     print("Get name with index:", lm.getNameIndex(name, 0))
     print("Get unique name:", lm.getUniqueName())
     print("Get unique name with prefix:", lm.getUniqueNamePrefix("Yeee"))
+
 
 def test_label_copy():
     lm = rocisa.label.LabelManager()

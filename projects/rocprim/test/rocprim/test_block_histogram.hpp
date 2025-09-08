@@ -23,10 +23,10 @@
 // For intellisense: make the file stand-alone
 #ifndef suite_name_atomic
 
-// required rocprim headers
-#include <rocprim/block/block_load.hpp>
-#include <rocprim/block/block_store.hpp>
-#include <rocprim/block/block_histogram.hpp>
+    // required rocprim headers
+    #include <rocprim/block/block_histogram.hpp>
+    #include <rocprim/block/block_load.hpp>
+    #include <rocprim/block/block_store.hpp>
 
 // required test headers
     #include "../common_test_header.hpp"
@@ -40,34 +40,44 @@ struct RocprimBlockHistogramAtomicInputArrayTests;
 struct RocprimBlockHistogramSortInputArrayTests;
 
 struct Integral;
-#define suite_name_atomic RocprimBlockHistogramAtomicInputArrayTests
-#define suite_name_sort RocprimBlockHistogramSortInputArrayTests
-#define block_params_atomic BlockHistAtomicParamsIntegral
-#define block_params_sort BlockHistSortParamsIntegral
-#define name_suffix Integral
+    #define suite_name_atomic RocprimBlockHistogramAtomicInputArrayTests
+    #define suite_name_sort RocprimBlockHistogramSortInputArrayTests
+    #define block_params_atomic BlockHistAtomicParamsIntegral
+    #define block_params_sort BlockHistSortParamsIntegral
+    #define name_suffix Integral
 
 #endif
 
 block_histo_test_suite_type_def(suite_name_atomic, name_suffix)
-block_histo_test_suite_type_def(suite_name_sort, name_suffix)
+    block_histo_test_suite_type_def(suite_name_sort, name_suffix)
 
-typed_test_suite_def(suite_name_atomic, name_suffix, block_params_atomic);
+        typed_test_suite_def(suite_name_atomic, name_suffix, block_params_atomic);
 typed_test_suite_def(suite_name_sort, name_suffix, block_params_sort);
 
 typed_test_def(suite_name_atomic, name_suffix, Histogram)
 {
-    using T = typename TestFixture::type;
-    using BinType = typename TestFixture::bin_type;
+    using T                     = typename TestFixture::type;
+    using BinType               = typename TestFixture::bin_type;
     constexpr size_t block_size = TestFixture::block_size;
 
-    static_for_input_array<0, 4, T, BinType, block_size, rocprim::block_histogram_algorithm::using_atomic>::run();
+    static_for_input_array<0,
+                           4,
+                           T,
+                           BinType,
+                           block_size,
+                           rocprim::block_histogram_algorithm::using_atomic>::run();
 }
 
 typed_test_def(suite_name_sort, name_suffix, Histogram)
 {
-    using T = typename TestFixture::type;
-    using BinType = typename TestFixture::bin_type;
+    using T                     = typename TestFixture::type;
+    using BinType               = typename TestFixture::bin_type;
     constexpr size_t block_size = TestFixture::block_size;
 
-    static_for_input_array<0, 4, T, BinType, block_size, rocprim::block_histogram_algorithm::using_sort>::run();
+    static_for_input_array<0,
+                           4,
+                           T,
+                           BinType,
+                           block_size,
+                           rocprim::block_histogram_algorithm::using_sort>::run();
 }

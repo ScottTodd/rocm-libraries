@@ -44,12 +44,12 @@ struct rocfft_complex
     // Constructors
     // Do not initialize the members x or y by default, to ensure that it can
     // be used in __shared__ and that it is a trivial class compatible with C.
-    __device__ __host__ rocfft_complex()                      = default;
-    __device__ __host__ rocfft_complex(const rocfft_complex&) = default;
-    __device__ __host__ rocfft_complex(rocfft_complex&&)      = default;
+    __device__ __host__                 rocfft_complex()                       = default;
+    __device__ __host__                 rocfft_complex(const rocfft_complex&)  = default;
+    __device__ __host__                 rocfft_complex(rocfft_complex&&)       = default;
     __device__ __host__ rocfft_complex& operator=(const rocfft_complex& rhs) & = default;
-    __device__ __host__ rocfft_complex& operator=(rocfft_complex&& rhs) & = default;
-    __device__                          __host__ ~rocfft_complex()        = default;
+    __device__ __host__ rocfft_complex& operator=(rocfft_complex&& rhs) &      = default;
+    __device__                          __host__ ~rocfft_complex()             = default;
 
     // Constructor from real and imaginary parts
     __device__ __host__ constexpr rocfft_complex(Treal real, Treal imag)

@@ -45,45 +45,29 @@
 
 TEST(RocprimZipIteratorTests, Traits)
 {
-    ASSERT_TRUE((
-        std::is_same<
-            rocprim::zip_iterator<
-                rocprim::tuple<int*, double*, char*>
-            >::reference,
-            rocprim::tuple<int&, double&, char&>
-        >::value
-    ));
-    ASSERT_TRUE((
-        std::is_same<
-            rocprim::zip_iterator<
-                rocprim::tuple<const int*, double*, const char*>
-            >::reference,
-            rocprim::tuple<const int&, double&, const char&>
-        >::value
-    ));
+    ASSERT_TRUE(
+        (std::is_same<rocprim::zip_iterator<rocprim::tuple<int*, double*, char*>>::reference,
+                      rocprim::tuple<int&, double&, char&>>::value));
+    ASSERT_TRUE((std::is_same<
+                 rocprim::zip_iterator<rocprim::tuple<const int*, double*, const char*>>::reference,
+                 rocprim::tuple<const int&, double&, const char&>>::value));
     auto to_double = [](const int& x) -> double { return double(x); };
-    ASSERT_TRUE((
-        std::is_same<
+    ASSERT_TRUE(
+        (std::is_same<
             rocprim::zip_iterator<
-                rocprim::tuple<
-                    rocprim::counting_iterator<int>,
-                    rocprim::transform_iterator<int*, decltype(to_double)>
-                >
-            >::reference,
-            rocprim::tuple<
-                rocprim::counting_iterator<int>::reference,
-                rocprim::transform_iterator<int*, decltype(to_double)>::reference
-            >
-        >::value
-    ));
+                rocprim::tuple<rocprim::counting_iterator<int>,
+                               rocprim::transform_iterator<int*, decltype(to_double)>>>::reference,
+            rocprim::tuple<rocprim::counting_iterator<int>::reference,
+                           rocprim::transform_iterator<int*, decltype(to_double)>::reference>>::
+             value));
 }
 
 TEST(RocprimZipIteratorTests, Basics)
 {
-    int a[] = { 1, 2, 3, 4, 5};
-    int b[] = { 6, 7, 8, 9, 10};
-    double c[] = { 1., 2., 3., 4., 5.};
-    auto iterator_tuple = rocprim::make_tuple(a, b, c);
+    int    a[]            = {1, 2, 3, 4, 5};
+    int    b[]            = {6, 7, 8, 9, 10};
+    double c[]            = {1., 2., 3., 4., 5.};
+    auto   iterator_tuple = rocprim::make_tuple(a, b, c);
 
     // Constructor
     rocprim::zip_iterator<decltype(iterator_tuple)> zit(iterator_tuple);
@@ -96,7 +80,7 @@ TEST(RocprimZipIteratorTests, Basics)
     ASSERT_EQ(b[0], 8);
     ASSERT_EQ(c[0], 15.0);
     auto ref = *zit;
-    ref = rocprim::make_tuple(1, 6, 1.0);
+    ref      = rocprim::make_tuple(1, 6, 1.0);
     ASSERT_EQ(*zit, rocprim::make_tuple(1, 6, 1.0));
     ASSERT_EQ(a[0], 1);
     ASSERT_EQ(b[0], 6);
@@ -167,26 +151,27 @@ TEST(RocprimZipIteratorTests, Transform)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using T1 = int;
-    using T2 = double;
-    using T3 = unsigned char;
-    using U = T1;
-    const bool debug_synchronous = false;
-    const size_t size = 1024 * 16;
+    using T1                       = int;
+    using T2                       = double;
+    using T3                       = unsigned char;
+    using U                        = T1;
+    const bool   debug_synchronous = false;
+    const size_t size              = 1024 * 16;
 
     // using default stream
     hipStream_t stream = 0;
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
         std::vector<T1> input1 = test_utils::get_random_data_wrapped<T1>(size, 1, 100, seed_value);
         std::vector<T2> input2 = test_utils::get_random_data_wrapped<T2>(size, 1, 100, seed_value);
         std::vector<T3> input3 = test_utils::get_random_data_wrapped<T3>(size, 1, 100, seed_value);
-        std::vector<U> output(input1.size());
+        std::vector<U>  output(input1.size());
 
         common::device_ptr<T1> d_input1(input1);
         common::device_ptr<T2> d_input2(input2);
@@ -197,16 +182,12 @@ TEST(RocprimZipIteratorTests, Transform)
 
         // Calculate expected results on host
         std::vector<U> expected(input1.size());
-        std::transform(
-            rocprim::make_zip_iterator(
-                rocprim::make_tuple(input1.begin(), input2.begin(), input3.begin())
-            ),
-            rocprim::make_zip_iterator(
-                rocprim::make_tuple(input1.end(), input2.end(), input3.end())
-            ),
-            expected.begin(),
-            tuple3_transform_op<T1, T2, T3>()
-        );
+        std::transform(rocprim::make_zip_iterator(
+                           rocprim::make_tuple(input1.begin(), input2.begin(), input3.begin())),
+                       rocprim::make_zip_iterator(
+                           rocprim::make_tuple(input1.end(), input2.end(), input3.end())),
+                       expected.begin(),
+                       tuple3_transform_op<T1, T2, T3>());
 
         // Run
         HIP_CHECK(rocprim::transform(
@@ -229,32 +210,27 @@ TEST(RocprimZipIteratorTests, Transform)
                                 expected,
                                 std::max(test_utils::precision<U>, test_utils::precision<T1> * 2));
     }
-
 }
 
 template<class T1, class T2, class T3>
 struct tuple3to2_transform_op
 {
-    __device__ __host__ inline
-    rocprim::tuple<T1, T2> operator()(const rocprim::tuple<T1, T2, T3>& t) const
+    __device__ __host__
+    inline rocprim::tuple<T1, T2> operator()(const rocprim::tuple<T1, T2, T3>& t) const
     {
-        return rocprim::make_tuple(
-            rocprim::get<0>(t), T2(rocprim::get<1>(t) + rocprim::get<2>(t))
-        );
+        return rocprim::make_tuple(rocprim::get<0>(t), T2(rocprim::get<1>(t) + rocprim::get<2>(t)));
     }
 };
 
 template<class T1, class T2>
 struct tuple2_reduce_op
 {
-    __device__ __host__ inline
-    rocprim::tuple<T1, T2> operator()(const rocprim::tuple<T1, T2>& t1,
-                                      const rocprim::tuple<T1, T2>& t2) const
+    __device__ __host__
+    inline rocprim::tuple<T1, T2> operator()(const rocprim::tuple<T1, T2>& t1,
+                                             const rocprim::tuple<T1, T2>& t2) const
     {
-        return rocprim::make_tuple(
-            rocprim::get<0>(t1) + rocprim::get<0>(t2),
-            rocprim::get<1>(t1) + rocprim::get<1>(t2)
-        );
+        return rocprim::make_tuple(rocprim::get<0>(t1) + rocprim::get<0>(t2),
+                                   rocprim::get<1>(t1) + rocprim::get<1>(t2));
     };
 };
 
@@ -264,20 +240,21 @@ TEST(RocprimZipIteratorTests, TransformReduce)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using T1 = int;
-    using T2 = unsigned int;
-    using T3 = unsigned char;
-    using U1 = T1;
-    using U2 = T2;
-    const bool debug_synchronous = false;
-    const size_t size = 1024 * 16;
+    using T1                       = int;
+    using T2                       = unsigned int;
+    using T3                       = unsigned char;
+    using U1                       = T1;
+    using U2                       = T2;
+    const bool   debug_synchronous = false;
+    const size_t size              = 1024 * 16;
 
     // using default stream
     hipStream_t stream = 0;
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
@@ -296,7 +273,7 @@ TEST(RocprimZipIteratorTests, TransformReduce)
         // Calculate expected results on host
         U1 expected1 = std::accumulate(input1.begin(), input1.end(), T1(0));
         U2 expected2 = std::accumulate(input2.begin(), input2.end(), T2(0))
-            + std::accumulate(input3.begin(), input3.end(), T2(0));
+                       + std::accumulate(input3.begin(), input3.end(), T2(0));
 
         test_utils::test_kernel_wrapper(
             [&](void* temp_storage, size_t& storage_bytes)
@@ -335,5 +312,4 @@ TEST(RocprimZipIteratorTests, TransformReduce)
                                 (std::max(test_utils::precision<T2>, test_utils::precision<U2>)
                                  + test_utils::precision<T2>)*size);
     }
-
 }

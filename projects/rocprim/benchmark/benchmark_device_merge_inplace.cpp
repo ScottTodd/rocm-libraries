@@ -102,7 +102,7 @@ struct inplace_runner
     hipStream_t stream;
 
     common::device_ptr<void> d_temporary_storage;
-    size_t temporary_storage_bytes = 0;
+    size_t                   temporary_storage_bytes = 0;
 
     compare_op_type compare_op{};
 

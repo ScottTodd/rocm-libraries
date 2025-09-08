@@ -36,7 +36,8 @@ void warp_inclusive_scan_kernel(T* device_input, T* device_output)
         T value = device_input[index];
 
         using wscan_t = rocprim::warp_scan<T, LogicalWarpSize>;
-        __shared__ typename wscan_t::storage_type storage[warps_no];
+        __shared__
+        typename wscan_t::storage_type storage[warps_no];
         wscan_t().inclusive_scan(value, value, storage[warp_id]);
 
         device_output[index] = value;
@@ -56,7 +57,8 @@ void warp_inclusive_scan_initial_value_kernel(T* device_input, T* device_output,
         T value = device_input[index];
 
         using wscan_t = rocprim::warp_scan<T, LogicalWarpSize>;
-        __shared__ typename wscan_t::storage_type storage[warps_no];
+        __shared__
+        typename wscan_t::storage_type storage[warps_no];
         wscan_t().inclusive_scan(value, value, storage[warp_id], initial_value);
 
         device_output[index] = value;
@@ -79,7 +81,8 @@ void warp_inclusive_scan_reduce_kernel(T* device_input,
         T reduction;
 
         using wscan_t = rocprim::warp_scan<T, LogicalWarpSize>;
-        __shared__ typename wscan_t::storage_type storage[warps_no];
+        __shared__
+        typename wscan_t::storage_type storage[warps_no];
         wscan_t().inclusive_scan(value, value, reduction, storage[warp_id]);
 
         device_output[index] = value;
@@ -107,7 +110,8 @@ void warp_inclusive_scan_reduce_initial_value_kernel(T* device_input,
         T reduction;
 
         using wscan_t = rocprim::warp_scan<T, LogicalWarpSize>;
-        __shared__ typename wscan_t::storage_type storage[warps_no];
+        __shared__
+        typename wscan_t::storage_type storage[warps_no];
         wscan_t().inclusive_scan(value, value, reduction, storage[warp_id], initial_value);
 
         device_output[index] = value;
@@ -131,7 +135,8 @@ void warp_exclusive_scan_kernel(T* device_input, T* device_output, T init)
         T value = device_input[index];
 
         using wscan_t = rocprim::warp_scan<T, LogicalWarpSize>;
-        __shared__ typename wscan_t::storage_type storage[warps_no];
+        __shared__
+        typename wscan_t::storage_type storage[warps_no];
         wscan_t().exclusive_scan(value, value, init, storage[warp_id]);
 
         device_output[index] = value;
@@ -156,7 +161,8 @@ void warp_exclusive_scan_reduce_kernel(T* device_input,
         T reduction;
 
         using wscan_t = rocprim::warp_scan<T, LogicalWarpSize>;
-        __shared__ typename wscan_t::storage_type storage[warps_no];
+        __shared__
+        typename wscan_t::storage_type storage[warps_no];
         wscan_t().exclusive_scan(value, value, init, reduction, storage[warp_id]);
 
         device_output[index] = value;
@@ -180,7 +186,8 @@ void warp_broadcast_kernel(T* device_input, T* device_output)
         T value = device_input[index];
 
         using wscan_t = rocprim::warp_scan<T, LogicalWarpSize>;
-        __shared__ typename wscan_t::storage_type storage;
+        __shared__
+        typename wscan_t::storage_type storage;
         value = wscan_t().broadcast(value, src_lane, storage);
 
         device_output[index] = value;
@@ -201,7 +208,8 @@ void warp_exclusive_scan_wo_init_kernel(T* device_input, T* device_output)
         T value = device_input[global_index];
 
         using wscan_t = rocprim::warp_scan<T, LogicalWarpSize>;
-        __shared__ typename wscan_t::storage_type storage[block_warps_no];
+        __shared__
+        typename wscan_t::storage_type storage[block_warps_no];
         wscan_t().exclusive_scan(value, value, storage[block_warp_id]);
 
         device_output[global_index] = value;
@@ -227,7 +235,8 @@ void warp_exclusive_scan_reduce_wo_init_kernel(T* device_input,
         T reduction;
 
         using wscan_t = rocprim::warp_scan<T, LogicalWarpSize>;
-        __shared__ typename wscan_t::storage_type storage[block_warps_no];
+        __shared__
+        typename wscan_t::storage_type storage[block_warps_no];
         wscan_t().exclusive_scan(value, value, storage[block_warp_id], reduction);
 
         device_output[global_index] = value;
@@ -255,7 +264,8 @@ void warp_scan_kernel(T* device_input,
         T inclusive_output, exclusive_output;
 
         using wscan_t = rocprim::warp_scan<T, LogicalWarpSize>;
-        __shared__ typename wscan_t::storage_type storage[warps_no];
+        __shared__
+        typename wscan_t::storage_type storage[warps_no];
         wscan_t().scan(input, inclusive_output, exclusive_output, init, storage[warp_id]);
 
         device_inclusive_output[index] = inclusive_output;
@@ -281,7 +291,8 @@ void warp_scan_reduce_kernel(T* device_input,
         T inclusive_output, exclusive_output, reduction;
 
         using wscan_t = rocprim::warp_scan<T, LogicalWarpSize>;
-        __shared__ typename wscan_t::storage_type storage[warps_no];
+        __shared__
+        typename wscan_t::storage_type storage[warps_no];
         wscan_t()
             .scan(input, inclusive_output, exclusive_output, init, reduction, storage[warp_id]);
 

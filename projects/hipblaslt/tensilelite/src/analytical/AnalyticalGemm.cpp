@@ -1014,14 +1014,15 @@ namespace TensileLite
                     }
                 }
 
-                if (element_size_A == 8) {
+                if(element_size_A == 8)
+                {
                     if(MT_M == 256 && MT_N == 256 && MT_K == 128)
                     {
                         //The kernel for this is more optimized
                         total_latency = total_latency * 0.8;
                     }
 
-                     //Bias towards dimensions divisible by 64 for 8-bit datatypes
+                    //Bias towards dimensions divisible by 64 for 8-bit datatypes
                     //This biases the other dimensions to being divisible by 64 bytes
                     if((MT_M > 64) && (MT_M % 64 != 0))
                     {
@@ -1034,7 +1035,8 @@ namespace TensileLite
                     }
                 }
 
-                if (element_size_A == 16) {
+                if(element_size_A == 16)
+                {
                     if(MT_M == 256 && MT_N == 256 && MT_K == 64)
                     {
                         //The kernel for this is more optimized

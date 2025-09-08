@@ -58,110 +58,128 @@ public:
     /// \brief Constructs a `threedim_iterator` at the beginning of a range specified by `dimensions`.
     /// The constructed iterator "points" to 3D indices `{0, 0, 0}`.
     /// \param dimensions The extents of the 3D grid.
-    [[nodiscard]] static threedim_iterator begin(const dim3 dimensions)
+    [[nodiscard]]
+    static threedim_iterator begin(const dim3 dimensions)
     {
         return threedim_iterator(dimensions);
     }
 
     /// \brief Constructs a `threedim_iterator` at the end of a range specified by `dimensions`.
     /// \param dimensions The extents of the 3D grid.
-    [[nodiscard]] static threedim_iterator end(const dim3 dimensions)
+    [[nodiscard]]
+    static threedim_iterator end(const dim3 dimensions)
     {
         return threedim_iterator(dimensions,
                                  static_cast<size_t>(dimensions.x) * dimensions.y * dimensions.z);
     }
 
-    [[nodiscard]] bool operator!=(const threedim_iterator& other) const
+    [[nodiscard]]
+    bool operator!=(const threedim_iterator& other) const
     {
         return m_index != other.m_index || m_dimensions.x != other.m_dimensions.x
                || m_dimensions.y != other.m_dimensions.y || m_dimensions.z != other.m_dimensions.z;
     }
 
-    [[nodiscard]] bool operator==(const threedim_iterator& other) const
+    [[nodiscard]]
+    bool operator==(const threedim_iterator& other) const
     {
         return !this->operator!=(other);
     }
 
-    [[nodiscard]] bool operator>(const threedim_iterator& other) const
+    [[nodiscard]]
+    bool operator>(const threedim_iterator& other) const
     {
         return m_index > other.m_index;
     }
 
-    [[nodiscard]] bool operator>=(const threedim_iterator& other) const
+    [[nodiscard]]
+    bool operator>=(const threedim_iterator& other) const
     {
         return m_index >= other.m_index;
     }
 
-    [[nodiscard]] bool operator<(const threedim_iterator& other) const
+    [[nodiscard]]
+    bool operator<(const threedim_iterator& other) const
     {
         return m_index < other.m_index;
     }
 
-    [[nodiscard]] bool operator<=(const threedim_iterator& other) const
+    [[nodiscard]]
+    bool operator<=(const threedim_iterator& other) const
     {
         return m_index <= other.m_index;
     }
 
-    [[maybe_unused]] threedim_iterator& operator++()
+    [[maybe_unused]]
+    threedim_iterator& operator++()
     {
         ++m_index;
         return *this;
     }
 
-    [[maybe_unused]] threedim_iterator& operator+=(const difference_type diff)
+    [[maybe_unused]]
+    threedim_iterator& operator+=(const difference_type diff)
     {
         m_index += diff;
         return *this;
     }
 
-    [[nodiscard]] threedim_iterator operator++(int)
+    [[nodiscard]]
+    threedim_iterator operator++(int)
     {
         const auto tmp = *this;
-        this->     operator++();
+        this->operator++();
         return tmp;
     }
 
-    [[nodiscard]] threedim_iterator operator+(const difference_type diff) const
+    [[nodiscard]]
+    threedim_iterator operator+(const difference_type diff) const
     {
         return threedim_iterator(m_dimensions, m_index + diff);
     }
 
-    [[nodiscard]] friend threedim_iterator operator+(const difference_type    diff,
-                                                     const threedim_iterator& iter)
+    [[nodiscard]]
+    friend threedim_iterator operator+(const difference_type diff, const threedim_iterator& iter)
     {
         return iter + diff;
     }
 
-    [[maybe_unused]] threedim_iterator& operator--()
+    [[maybe_unused]]
+    threedim_iterator& operator--()
     {
         --m_index;
         return *this;
     }
 
-    [[maybe_unused]] threedim_iterator& operator-=(const difference_type diff)
+    [[maybe_unused]]
+    threedim_iterator& operator-=(const difference_type diff)
     {
         m_index -= diff;
         return *this;
     }
 
-    [[nodiscard]] threedim_iterator operator--(int)
+    [[nodiscard]]
+    threedim_iterator operator--(int)
     {
         const auto tmp = *this;
-        this->     operator--();
+        this->operator--();
         return tmp;
     }
 
-    [[nodiscard]] difference_type operator-(const threedim_iterator& other) const
+    [[nodiscard]]
+    difference_type operator-(const threedim_iterator& other) const
     {
         return static_cast<difference_type>(m_index) - static_cast<difference_type>(other.m_index);
     }
 
-    [[nodiscard]] threedim_iterator operator-(const difference_type diff) const
+    [[nodiscard]]
+    threedim_iterator operator-(const difference_type diff) const
     {
         return threedim_iterator(m_dimensions, m_index - diff);
     }
 
-    [[nodiscard]] reference operator*() const
+    [[nodiscard]]
+    reference operator*() const
     {
         dim3 ret{0, 0, 0};
         ret.x = static_cast<uint32_t>(m_index % m_dimensions.x);
@@ -170,7 +188,8 @@ public:
         return ret;
     }
 
-    [[nodiscard]] reference operator[](const difference_type diff) const
+    [[nodiscard]]
+    reference operator[](const difference_type diff) const
     {
         return *this->operator+(diff);
     }

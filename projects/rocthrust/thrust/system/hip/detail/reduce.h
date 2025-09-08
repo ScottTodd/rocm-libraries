@@ -106,8 +106,8 @@ reduce(execution_policy<Derived>& policy, InputIt first, Size num_items, T init,
     "reduce failed on 1st step");
 
   size_t storage_size = 0;
-  void* ptr       = nullptr;
-  void* temp_stor = nullptr;
+  void* ptr           = nullptr;
+  void* temp_stor     = nullptr;
   T* d_result;
 
   auto l_part = make_linear_partition(make_partition(&temp_stor, temp_storage_bytes), ptr_aligned_array(&d_result, 1));

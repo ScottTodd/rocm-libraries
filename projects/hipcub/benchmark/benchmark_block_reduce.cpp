@@ -35,7 +35,8 @@ template<class Runner,
          unsigned int BlockSize,
          unsigned int ItemsPerThread,
          unsigned int Trials>
-__global__ __launch_bounds__(BlockSize) void kernel(const T* input, T* output)
+__global__ __launch_bounds__(BlockSize)
+void kernel(const T* input, T* output)
 {
     Runner::template run<T, BlockSize, ItemsPerThread, Trials>(input, output);
 }
@@ -44,7 +45,8 @@ template<hipcub::BlockReduceAlgorithm algorithm>
 struct reduce
 {
     template<class T, unsigned int BlockSize, unsigned int ItemsPerThread, unsigned int Trials>
-    __device__ static void run(const T* input, T* output)
+    __device__
+    static void run(const T* input, T* output)
     {
         const unsigned int i = hipBlockIdx_x * hipBlockDim_x + hipThreadIdx_x;
 
@@ -56,7 +58,8 @@ struct reduce
         }
 
         using breduce_t = hipcub::BlockReduce<T, BlockSize, algorithm>;
-        __shared__ typename breduce_t::TempStorage storage;
+        __shared__
+        typename breduce_t::TempStorage storage;
 
 #pragma nounroll
         for(unsigned int trial = 0; trial < Trials; trial++)

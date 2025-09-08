@@ -287,15 +287,15 @@ private:
     class check_output
     {
     public:
-        HIPCUB_DEVICE check_output(flag_type*              incorrect_flag,
-                                   size_t                  current_index,
-                                   unsigned long long int* counter)
+        HIPCUB_DEVICE
+        check_output(flag_type*              incorrect_flag,
+                     size_t                  current_index,
+                     unsigned long long int* counter)
             : current_index_(current_index), incorrect_flag_(incorrect_flag), counter_(counter)
         {}
 
         HIPCUB_DEVICE
-        check_output&
-            operator=(size_t value)
+        check_output& operator=(size_t value)
         {
             if(value != current_index_)
             {
@@ -319,10 +319,10 @@ public:
     using reference         = check_output;
     using pointer           = check_output*;
     using iterator_category = std::random_access_iterator_tag;
-    using difference_type = std::ptrdiff_t;
+    using difference_type   = std::ptrdiff_t;
 
-    HIPCUB_HOST_DEVICE check_output_iterator(flag_type* const              incorrect_flag,
-                                             unsigned long long int* const counter)
+    HIPCUB_HOST_DEVICE
+    check_output_iterator(flag_type* const incorrect_flag, unsigned long long int* const counter)
         : current_index_(0), incorrect_flag_(incorrect_flag), counter_(counter)
     {}
 
@@ -337,72 +337,61 @@ public:
         return !(*this == rhs);
     }
     HIPCUB_DEVICE
-    reference
-        operator*()
+    reference operator*()
     {
         return reference(incorrect_flag_, current_index_, counter_);
     }
     HIPCUB_DEVICE
-    reference
-        operator[](const difference_type distance) const
+    reference operator[](const difference_type distance) const
     {
         return *(*this + distance);
     }
     HIPCUB_HOST_DEVICE
-    check_output_iterator&
-        operator+=(const difference_type rhs)
+    check_output_iterator& operator+=(const difference_type rhs)
     {
         current_index_ += rhs;
         return *this;
     }
     HIPCUB_HOST_DEVICE
-    check_output_iterator&
-        operator-=(const difference_type rhs)
+    check_output_iterator& operator-=(const difference_type rhs)
     {
         current_index_ -= rhs;
         return *this;
     }
     HIPCUB_HOST_DEVICE
-    difference_type
-        operator-(const check_output_iterator& rhs) const
+    difference_type operator-(const check_output_iterator& rhs) const
     {
         return current_index_ - rhs.current_index_;
     }
     HIPCUB_HOST_DEVICE
-    check_output_iterator
-        operator+(const difference_type rhs) const
+    check_output_iterator operator+(const difference_type rhs) const
     {
         return check_output_iterator(*this) += rhs;
     }
     HIPCUB_HOST_DEVICE
-    check_output_iterator
-        operator-(const difference_type rhs) const
+    check_output_iterator operator-(const difference_type rhs) const
     {
         return check_output_iterator(*this) -= rhs;
     }
     HIPCUB_HOST_DEVICE
-    check_output_iterator&
-        operator++()
+    check_output_iterator& operator++()
     {
         ++current_index_;
         return *this;
     }
     HIPCUB_HOST_DEVICE
-    check_output_iterator&
-        operator--()
+    check_output_iterator& operator--()
     {
         --current_index_;
         return *this;
     }
     HIPCUB_HOST_DEVICE
-    check_output_iterator
-        operator++(int)
+    check_output_iterator operator++(int)
     {
         return ++check_output_iterator{*this};
     }
     HIPCUB_HOST_DEVICE
-    check_output_iterator
-        operator--(int)
+    check_output_iterator operator--(int)
     {
         return --check_output_iterator{*this};
     }
@@ -428,16 +417,14 @@ struct FocusIndex
 {
     template<class T, bool left_ = left, typename std::enable_if<left_>::type* = nullptr>
     HIPCUB_HOST_DEVICE
-    constexpr auto
-        operator()(const T& larger_value, const T& smaller_value) const noexcept
+    constexpr auto operator()(const T& larger_value, const T& smaller_value) const noexcept
     {
         return (smaller_value + larger_value) / 2 + 1;
     };
 
     template<class T, bool left_ = left, typename std::enable_if<!left_>::type* = nullptr>
     HIPCUB_HOST_DEVICE
-    constexpr auto
-        operator()(const T& larger_value, const T& smaller_value) const noexcept
+    constexpr auto operator()(const T& larger_value, const T& smaller_value) const noexcept
     {
         return (smaller_value + larger_value) / 2 + 0;
     };
@@ -480,7 +467,7 @@ TYPED_TEST(HipcubDeviceAdjacentDifferenceLargeTests, LargeIndicesAndOpOnce)
             HIP_CHECK(hipMemset(d_incorrect_flag, 0, sizeof(*d_incorrect_flag)));
             HIP_CHECK(hipMemset(d_counter, 0, sizeof(*d_counter)));
 
-            OutputIterator output(d_incorrect_flag, d_counter);
+            OutputIterator        output(d_incorrect_flag, d_counter);
             const auto            input    = rocprim::counting_iterator<T>(T{0});
             static constexpr auto left_tag = std::integral_constant<bool, left>{};
             static constexpr auto copy_tag = std::integral_constant<bool, copy>{};

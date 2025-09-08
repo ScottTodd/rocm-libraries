@@ -68,7 +68,8 @@ TYPED_TEST(DoubleBufferTest, TestDoubleBuffer)
     // Test default construction
     rocprim::double_buffer<T> db_default;
     ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(db_default.current(), static_cast<T*>(nullptr)));
-    ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(db_default.alternate(), static_cast<T*>(nullptr)));
+    ASSERT_NO_FATAL_FAILURE(
+        test_utils::assert_eq(db_default.alternate(), static_cast<T*>(nullptr)));
 
     // Test current buffer
     ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(this->db.current(), &this->value1));
@@ -110,7 +111,8 @@ TYPED_TEST(FutureValueTest, TestFutureValue)
     ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(rocprim::detail::get_input_value(val), val));
 
     // Test future input value
-    ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(rocprim::detail::get_input_value(this->fv), this->value));
+    ASSERT_NO_FATAL_FAILURE(
+        test_utils::assert_eq(rocprim::detail::get_input_value(this->fv), this->value));
 }
 
 template<class K, class V>
@@ -209,7 +211,8 @@ TYPED_TEST(UninitializedArrayTest, EmplaceConstructsCorrectValue)
         V  val = get_random_full_range<V>();
         V& ref = this->ua.emplace(i, val); // Emplace construction
         ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(ref, val)); // Same value by reference
-        ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(this->ua.get_unsafe_array()[i], val)); // Same value in array
+        ASSERT_NO_FATAL_FAILURE(
+            test_utils::assert_eq(this->ua.get_unsafe_array()[i], val)); // Same value in array
     }
 
     // Test memory consistency
@@ -217,7 +220,8 @@ TYPED_TEST(UninitializedArrayTest, EmplaceConstructsCorrectValue)
     this->ua.emplace(0, v0);
 
     auto& arr = this->ua.get_unsafe_array();
-    ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(&arr[0], &this->ua.get_unsafe_array()[0])); // Same address
+    ASSERT_NO_FATAL_FAILURE(
+        test_utils::assert_eq(&arr[0], &this->ua.get_unsafe_array()[0])); // Same address
     ASSERT_NO_FATAL_FAILURE(test_utils::assert_eq(arr[0], v0)); // Same content
 
     for(unsigned int i = 0; i < TestFixture::Count; ++i)

@@ -22,7 +22,7 @@
 
 test_suite_type_def(suite_name, name_suffix)
 
-typed_test_suite_def(suite_name, name_suffix, warp_params);
+    typed_test_suite_def(suite_name, name_suffix, warp_params);
 
 typed_test_def(suite_name, name_suffix, SortKeys)
 {
@@ -30,8 +30,8 @@ typed_test_def(suite_name, name_suffix, SortKeys)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using key_type = typename TestFixture::params::input_type;
-    using value_type = typename TestFixture::params::output_type;
+    using key_type              = typename TestFixture::params::input_type;
+    using value_type            = typename TestFixture::params::output_type;
     constexpr size_t block_size = TestFixture::params::block_size;
 
     static_for<0, n_sizes, key_type, value_type, 0, block_size>::run();
@@ -43,8 +43,8 @@ typed_test_def(suite_name, name_suffix, SortKeysValues)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using key_type = typename TestFixture::params::input_type;
-    using value_type = typename TestFixture::params::output_type;
+    using key_type              = typename TestFixture::params::input_type;
+    using value_type            = typename TestFixture::params::output_type;
     constexpr size_t block_size = TestFixture::params::block_size;
 
     static_for<0, n_sizes, key_type, value_type, 1, block_size>::run();

@@ -561,9 +561,7 @@ namespace rocRoller
             return std::visit(
                 rocRoller::overloaded{
                     [&](CIsAnyOf<CG::StoreTiled, CG::StoreVGPR, CG::StoreSGPR> auto const& op)
-                        -> result {
-                        return {kgraph.mapper.get<CT::User>(tag), GD::Upstream};
-                    },
+                        -> result { return {kgraph.mapper.get<CT::User>(tag), GD::Upstream}; },
                     [&](CIsAnyOf<CG::LoadTiled,
                                  CG::LoadVGPR,
                                  CG::LoadSGPR,

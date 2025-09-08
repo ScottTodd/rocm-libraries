@@ -53,8 +53,8 @@ struct file_handle_wrapper
     // no copies, moves
     file_handle_wrapper(const file_handle_wrapper&) = delete;
     file_handle_wrapper(file_handle_wrapper&&)      = delete;
-    void operator=(const file_handle_wrapper&) = delete;
-    void operator=(file_handle_wrapper&&) = delete;
+    void operator=(const file_handle_wrapper&)      = delete;
+    void operator=(file_handle_wrapper&&)           = delete;
     ~file_handle_wrapper()
     {
         this->close();

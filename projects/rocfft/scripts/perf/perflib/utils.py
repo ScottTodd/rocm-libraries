@@ -42,22 +42,22 @@ def join(sep, s):
 
 def sjoin(s):
     """Return 's' joined with spaces."""
-    return join(' ', [str(x) for x in s])
+    return join(" ", [str(x) for x in s])
 
 
 def njoin(s):
     """Return 's' joined with newlines."""
-    return join('\n', s)
+    return join("\n", s)
 
 
 def cjoin(s):
     """Return 's' joined with commas."""
-    return join(',', s)
+    return join(",", s)
 
 
 def tjoin(s):
     """Return 's' joined with tabs."""
-    return join('\t', s)
+    return join("\t", s)
 
 
 #
@@ -86,31 +86,31 @@ def write_tsv(path, records, meta={}, overwrite=False):
     """Write tab separated file."""
     path = Path(path)
     dat = []
-    with open(path, 'a') as f:
+    with open(path, "a") as f:
         if overwrite:
             f.truncate(0)
         if f.tell() == 0:
             if meta is not None:
                 for k, v in meta.items():
-                    dat.append(f'# {k}: {v}')
+                    dat.append(f"# {k}: {v}")
         dat += [tjoin([str(x) for x in r]) for r in records]
         f.write(njoin(dat))
-        f.write('\n')
+        f.write("\n")
 
 
 def write_csv(path, records, meta={}, overwrite=False):
     """Write commas separated file."""
     path = Path(path)
     dat = []
-    with open(path, 'a') as f:
+    with open(path, "a") as f:
         if overwrite:
             f.truncate(0)
             if meta is not None:
                 for k, v in meta.items():
-                    dat.append(f'# {k}: {v}')
+                    dat.append(f"# {k}: {v}")
         dat += [cjoin([str(x) for x in r]) for r in records]
         f.write(njoin(dat))
-        f.write('\n')
+        f.write("\n")
 
 
 # Find the number of matching test tokens.
@@ -125,7 +125,7 @@ def find_ncompare(runs):
         all_runs = perflib.utils.read_runs(outdirs)
         runs = perflib.utils.by_dat(all_runs)
         for dat_name, dat_runs in runs.items():
-            if (refdir in dat_runs.keys() and testdir in dat_runs.keys()):
+            if refdir in dat_runs.keys() and testdir in dat_runs.keys():
                 refdat = dat_runs[refdir]
                 testdat = dat_runs[testdir]
                 for token, sample in refdat.get_samples():
@@ -137,6 +137,7 @@ def find_ncompare(runs):
 
 def find_geomean(outdirs, verbose):
     import perflib.utils
+
     all_runs = perflib.utils.read_runs(outdirs, verbose)
     if len(all_runs) != 2:
         return None
@@ -149,22 +150,21 @@ def find_geomean(outdirs, verbose):
     from dataclasses import dataclass
 
     for dat_name, dat_runs in runs.items():
-        if (refdir in dat_runs.keys() and testdir in dat_runs.keys()):
+        if refdir in dat_runs.keys() and testdir in dat_runs.keys():
             refdat = dat_runs[refdir]
             testdat = dat_runs[testdir]
             for token, sample in refdat.get_samples():
                 if token in testdat.samples:
                     Avals = refdat.samples[token].times
                     Bvals = testdat.samples[token].times
-                    ratios.append(
-                        statistics.median(Avals) / statistics.median(Bvals))
+                    ratios.append(statistics.median(Avals) / statistics.median(Bvals))
 
     import scipy
+
     return scipy.stats.mstats.gmean(ratios)
 
 
-def find_slower_faster(outdirs, method, multitest, significance, ncompare,
-                       verbose):
+def find_slower_faster(outdirs, method, multitest, significance, ncompare, verbose):
     # Takes exactly two outdirs; the first is the reference, the
     # second is the values to be compared.
 
@@ -199,7 +199,7 @@ def find_slower_faster(outdirs, method, multitest, significance, ncompare,
         measure_b: float
 
     for dat_name, dat_runs in runs.items():
-        if (refdir in dat_runs.keys() and testdir in dat_runs.keys()):
+        if refdir in dat_runs.keys() and testdir in dat_runs.keys():
             refdat = dat_runs[refdir]
             testdat = dat_runs[testdir]
             for token, sample in refdat.get_samples():
@@ -210,16 +210,16 @@ def find_slower_faster(outdirs, method, multitest, significance, ncompare,
                     pval = None
                     measure_a = None
                     measure_b = None
-                    if method == 'moods':
+                    if method == "moods":
                         _, pval, _, _ = scipy.stats.median_test(Avals, Bvals)
                         measure_a = statistics.median(Avals)
                         measure_b = statistics.median(Bvals)
 
-                    elif method == 'ttest':
+                    elif method == "ttest":
                         _, pval = scipy.stats.ttest_ind(Avals, Bvals)
                         measure_a = np.mean(Avals)
                         measure_b = np.mean(Bvals)
-                    elif method == 'mwu':
+                    elif method == "mwu":
                         _, pval = scipy.stats.mannwhitneyu(Avals, Bvals)
                         measure_a = statistics.median(Avals)
                         measure_b = statistics.median(Bvals)
@@ -227,8 +227,7 @@ def find_slower_faster(outdirs, method, multitest, significance, ncompare,
                         print("unsupported statistical method")
                         sys.exit(1)
 
-                    thistokendata = tokendata(token, pval, measure_a,
-                                              measure_b)
+                    thistokendata = tokendata(token, pval, measure_a, measure_b)
                     dats = [token, pval, measure_a, measure_b]
 
                     token_p_measures.append(thistokendata)
@@ -242,7 +241,7 @@ def find_slower_faster(outdirs, method, multitest, significance, ncompare,
 
         pvals.sort()
 
-        #print(pvals)
+        # print(pvals)
 
         new_significance = None
 
@@ -259,11 +258,11 @@ def find_slower_faster(outdirs, method, multitest, significance, ncompare,
     # Now that we have the new significance, decide on cases.
     for dat in token_p_measures:
         if dat.pval < new_significance:
-            #print(measure_a, measure_b)
+            # print(measure_a, measure_b)
             if dat.measure_a > dat.measure_b:
                 faster.append([dat.token, dat.measure_a, dat.measure_b])
             else:
-                #print(dat.token, dat.measure_a, dat.measure_b)
+                # print(dat.token, dat.measure_a, dat.measure_b)
                 slower.append([dat.token, dat.measure_a, dat.measure_b])
 
     return slower, faster, new_significance
@@ -275,12 +274,12 @@ SPLIT_TYPES = {
     (True, False, False): "SLOW_IN",
     (False, True, False): "SLOW_OUT",
     (True, False, True): "SLOW_IN_FAST_OUT",
-    (True, True, True): "PENCIL_3D"
+    (True, True, True): "PENCIL_3D",
 }
 
 
 def get_split_dims(bricks):
-    coords = list(zip(*(b['lower'] for b in bricks)))
+    coords = list(zip(*(b["lower"] for b in bricks)))
     return [len(set(dim_vals)) > 1 for dim_vals in coords]  # X, Y, Z
 
 
@@ -307,7 +306,7 @@ def get_decomposition_type(bricks, label="unknown"):
 def get_proc_grid(bricks):
     if not bricks:
         return (1, 1, 1)
-    lowers = [b['lower'] for b in bricks]
+    lowers = [b["lower"] for b in bricks]
     grid_dims = []
     for i in range(3):  # X, Y, Z
         unique_coords = sorted(set(coord[i] for coord in lowers))
@@ -318,7 +317,7 @@ def get_proc_grid(bricks):
 def print_mgpu_data_layout(bricks):
     print("Layout per device/rank:")
     for b in bricks:
-        rank_str = f"{b['rank']}" if b['rank'] is not None else "N/A"
+        rank_str = f"{b['rank']}" if b["rank"] is not None else "N/A"
         print(
             f"  Rank {rank_str:<3} | Dev {b['dev']:<2} | Lower {b['lower']} Upper {b['upper']}"
         )
@@ -401,8 +400,9 @@ def parse_token(token):
     if words[1] not in {"forward", "inverse"}:
         print("Error parsing token:", token)
         sys.exit(1)
-    transform_type = ("forward" if words[1] == "forward" else
-                      "backward") + "_" + words[0]
+    transform_type = (
+        ("forward" if words[1] == "forward" else "backward") + "_" + words[0]
+    )
 
     for idx in range(len(words)):
         if words[idx] == "len":
@@ -415,8 +415,7 @@ def parse_token(token):
         else:
             # Now we have the precision and placeness
             precision = words[idx]
-            placeness = "out-of-place" if words[idx +
-                                                1] == "op" else "in-place"
+            placeness = "out-of-place" if words[idx + 1] == "op" else "in-place"
             break
 
     batchidx = -1
@@ -444,8 +443,8 @@ def parse_token(token):
         if field_type:
             current_field = field_type
 
-        lower = tuple(map(int, lower_str.split('_')))
-        upper = tuple(map(int, upper_str.split('_')))
+        lower = tuple(map(int, lower_str.split("_")))
+        upper = tuple(map(int, upper_str.split("_")))
         dev = int(dev_str)
         rank = int(rank_str) if rank_str else None
 
@@ -453,15 +452,25 @@ def parse_token(token):
         if rank is not None:
             ranks.add(rank)
 
-        bricks[current_field].append({
-            'dev': dev,
-            'rank': rank,
-            'lower': lower[1:],  # skip batch dimension
-            'upper': upper[1:]
-        })
+        bricks[current_field].append(
+            {
+                "dev": dev,
+                "rank": rank,
+                "lower": lower[1:],  # skip batch dimension
+                "upper": upper[1:],
+            }
+        )
 
-    return transform_type, placeness, length, batch, precision, bricks, sorted(
-        gpus), sorted(ranks)
+    return (
+        transform_type,
+        placeness,
+        length,
+        batch,
+        precision,
+        bricks,
+        sorted(gpus),
+        sorted(ranks),
+    )
 
 
 def read_dat(fname):
@@ -469,15 +478,15 @@ def read_dat(fname):
     path = Path(fname)
     records, meta = {}, {}
     for line in path.read_text().splitlines():
-        if line.startswith('# '):
-            k, v = [x.strip() for x in line[2:].split(':', 1)]
+        if line.startswith("# "):
+            k, v = [x.strip() for x in line[2:].split(":", 1)]
             meta[k] = v
             continue
         words = line.split("\t")
         token = words[0]
         times = list(map(float, words[2:]))
         records[token] = Sample(token, times)
-    tag = meta['title'].replace(' ', '_')
+    tag = meta["title"].replace(" ", "_")
     return DAT(tag, path, records, meta)
 
 
@@ -495,7 +504,7 @@ def read_run(dname, verbose=False):
 def list_runs(dname):
     """List all .dat files in a directory."""
     path = Path(dname)
-    return sorted(list(path.glob('*.dat')))
+    return sorted(list(path.glob("*.dat")))
 
 
 def read_runs(dnames, verbose=False):
@@ -513,7 +522,7 @@ def get_post_processed(dname, docdir, outdirs, ngroup):
     """
     primary = []
     for outdir in outdirs:
-        path = (Path(outdir) / dname).with_suffix('.mdat')
+        path = (Path(outdir) / dname).with_suffix(".mdat")
         if path.exists():
             primary.append(path)
 
@@ -527,7 +536,7 @@ def get_post_processed(dname, docdir, outdirs, ngroup):
 
     # FIXME: ngroup needs to be here as well.
     for gidx in range(totalgroups):
-        sdatname = 'group_' + str(gidx) + "-" + dname + ".sdat"
+        sdatname = "group_" + str(gidx) + "-" + dname + ".sdat"
         path = os.path.join(docdir, sdatname)
         if os.path.isfile(path):
             secondary.append(path)
@@ -539,26 +548,23 @@ def by_dat(runs):
     r = {}
     for dat in runs[0].dats.values():
         dstem = dat.path.stem
-        r[dstem] = {
-            run.path: run.dats[dstem]
-            for run in runs if dstem in run.dats
-        }
+        r[dstem] = {run.path: run.dats[dstem] for run in runs if dstem in run.dats}
     return r
 
 
 def to_data_frames(primaries, secondaries):
     import pandas
+
     data_frames = []
     for primary in primaries:
-        df = pandas.read_csv(primary, delimiter='\t', comment='#')
+        df = pandas.read_csv(primary, delimiter="\t", comment="#")
         data_frames.append(df)
 
     for i, secondary in enumerate(secondaries):
-        df = pandas.read_csv(secondary, delimiter='\t', comment='#')
-        data_frames[i + 1] = data_frames[i + 1].merge(df,
-                                                      how='left',
-                                                      on='token',
-                                                      suffixes=('', '_y'))
+        df = pandas.read_csv(secondary, delimiter="\t", comment="#")
+        data_frames[i + 1] = data_frames[i + 1].merge(
+            df, how="left", on="token", suffixes=("", "_y")
+        )
 
     return data_frames
 

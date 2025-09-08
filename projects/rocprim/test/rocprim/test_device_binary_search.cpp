@@ -52,19 +52,20 @@ template<class Haystack,
          class Output          = size_t,
          class CompareFunction = rocprim::less<>,
          class Config          = rocprim::default_config,
-         bool  UseGraphs       = false>
+         bool UseGraphs        = false>
 struct params
 {
-    using haystack_type = Haystack;
-    using needle_type = Needle;
-    using output_type = Output;
-    using compare_op_type = CompareFunction;
-    using config          = Config;
+    using haystack_type              = Haystack;
+    using needle_type                = Needle;
+    using output_type                = Output;
+    using compare_op_type            = CompareFunction;
+    using config                     = Config;
     static constexpr bool use_graphs = UseGraphs;
 };
 
 template<class Params>
-class RocprimDeviceBinarySearch : public ::testing::Test {
+class RocprimDeviceBinarySearch : public ::testing::Test
+{
 public:
     using params = Params;
 };
@@ -100,17 +101,17 @@ TYPED_TEST(RocprimDeviceBinarySearch, LowerBound)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using haystack_type = typename TestFixture::params::haystack_type;
-    using needle_type = typename TestFixture::params::needle_type;
-    using output_type = typename TestFixture::params::output_type;
+    using haystack_type   = typename TestFixture::params::haystack_type;
+    using needle_type     = typename TestFixture::params::needle_type;
+    using output_type     = typename TestFixture::params::output_type;
     using compare_op_type = typename TestFixture::params::compare_op_type;
     using config          = std::conditional_t<
-        std::is_same<typename TestFixture::params::config, use_custom_config>::value,
-        rocprim::lower_bound_config<64, 2>,
-        typename TestFixture::params::config>;
+                 std::is_same<typename TestFixture::params::config, use_custom_config>::value,
+                 rocprim::lower_bound_config<64, 2>,
+                 typename TestFixture::params::config>;
 
     hipStream_t stream = 0;
-    if (TestFixture::params::use_graphs)
+    if(TestFixture::params::use_graphs)
     {
         // Default stream does not support hipGraph stream capture, so create one
         HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -122,7 +123,8 @@ TYPED_TEST(RocprimDeviceBinarySearch, LowerBound)
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         for(size_t size : test_utils::get_sizes(seed_value))
@@ -130,7 +132,8 @@ TYPED_TEST(RocprimDeviceBinarySearch, LowerBound)
             SCOPED_TRACE(testing::Message() << "with size = " << size);
 
             const size_t haystack_size = size;
-            const size_t needles_size = (size_t)std::sqrt(size); // cast promises no data loss, silences warning
+            const size_t needles_size
+                = (size_t)std::sqrt(size); // cast promises no data loss, silences warning
             const size_t d = haystack_size / 100;
 
             // Generate data
@@ -156,9 +159,9 @@ TYPED_TEST(RocprimDeviceBinarySearch, LowerBound)
             std::vector<output_type> expected(needles_size);
             for(size_t i = 0; i < needles_size; i++)
             {
-                expected[i] =
-                    std::lower_bound(haystack.begin(), haystack.end(), needles[i], compare_op) -
-                    haystack.begin();
+                expected[i]
+                    = std::lower_bound(haystack.begin(), haystack.end(), needles[i], compare_op)
+                      - haystack.begin();
             }
 
             size_t temporary_storage_bytes;
@@ -210,7 +213,7 @@ TYPED_TEST(RocprimDeviceBinarySearch, LowerBound)
         }
     }
 
-    if (TestFixture::params::use_graphs)
+    if(TestFixture::params::use_graphs)
         HIP_CHECK(hipStreamDestroy(stream));
 }
 
@@ -220,17 +223,17 @@ TYPED_TEST(RocprimDeviceBinarySearch, UpperBound)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using haystack_type = typename TestFixture::params::haystack_type;
-    using needle_type = typename TestFixture::params::needle_type;
-    using output_type = typename TestFixture::params::output_type;
+    using haystack_type   = typename TestFixture::params::haystack_type;
+    using needle_type     = typename TestFixture::params::needle_type;
+    using output_type     = typename TestFixture::params::output_type;
     using compare_op_type = typename TestFixture::params::compare_op_type;
     using config          = std::conditional_t<
-        std::is_same<typename TestFixture::params::config, use_custom_config>::value,
-        rocprim::upper_bound_config<64, 2>,
-        typename TestFixture::params::config>;
+                 std::is_same<typename TestFixture::params::config, use_custom_config>::value,
+                 rocprim::upper_bound_config<64, 2>,
+                 typename TestFixture::params::config>;
 
     hipStream_t stream = 0;
-    if (TestFixture::params::use_graphs)
+    if(TestFixture::params::use_graphs)
     {
         // Default stream does not support hipGraph stream capture, so create one
         HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -242,14 +245,16 @@ TYPED_TEST(RocprimDeviceBinarySearch, UpperBound)
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        seed_type seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        seed_type seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         for(size_t size : test_utils::get_sizes(seed_value))
         {
             SCOPED_TRACE(testing::Message() << "with size = " << size);
             const size_t haystack_size = size;
-            const size_t needles_size = (size_t)std::sqrt(size); // cast promises no data loss, silences warning
+            const size_t needles_size
+                = (size_t)std::sqrt(size); // cast promises no data loss, silences warning
             const size_t d = haystack_size / 100;
 
             // Generate data
@@ -275,9 +280,9 @@ TYPED_TEST(RocprimDeviceBinarySearch, UpperBound)
             std::vector<output_type> expected(needles_size);
             for(size_t i = 0; i < needles_size; i++)
             {
-                expected[i] =
-                    std::upper_bound(haystack.begin(), haystack.end(), needles[i], compare_op) -
-                    haystack.begin();
+                expected[i]
+                    = std::upper_bound(haystack.begin(), haystack.end(), needles[i], compare_op)
+                      - haystack.begin();
             }
 
             size_t temporary_storage_bytes;
@@ -341,17 +346,17 @@ TYPED_TEST(RocprimDeviceBinarySearch, BinarySearch)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using haystack_type = typename TestFixture::params::haystack_type;
-    using needle_type = typename TestFixture::params::needle_type;
-    using output_type = typename TestFixture::params::output_type;
+    using haystack_type   = typename TestFixture::params::haystack_type;
+    using needle_type     = typename TestFixture::params::needle_type;
+    using output_type     = typename TestFixture::params::output_type;
     using compare_op_type = typename TestFixture::params::compare_op_type;
     using config          = std::conditional_t<
-        std::is_same<typename TestFixture::params::config, use_custom_config>::value,
-        rocprim::binary_search_config<64, 2>,
-        typename TestFixture::params::config>;
+                 std::is_same<typename TestFixture::params::config, use_custom_config>::value,
+                 rocprim::binary_search_config<64, 2>,
+                 typename TestFixture::params::config>;
 
     hipStream_t stream = 0;
-    if (TestFixture::params::use_graphs)
+    if(TestFixture::params::use_graphs)
     {
         // Default stream does not support hipGraph stream capture, so create one
         HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -363,7 +368,8 @@ TYPED_TEST(RocprimDeviceBinarySearch, BinarySearch)
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         for(size_t size : test_utils::get_sizes(seed_value))
@@ -371,7 +377,8 @@ TYPED_TEST(RocprimDeviceBinarySearch, BinarySearch)
             SCOPED_TRACE(testing::Message() << "with size = " << size);
 
             const size_t haystack_size = size;
-            const size_t needles_size = (size_t)std::sqrt(size); // cast promises no data loss, silences warning
+            const size_t needles_size
+                = (size_t)std::sqrt(size); // cast promises no data loss, silences warning
             const size_t d = haystack_size / 100;
 
             // Generate data
@@ -397,7 +404,8 @@ TYPED_TEST(RocprimDeviceBinarySearch, BinarySearch)
             std::vector<output_type> expected(needles_size);
             for(size_t i = 0; i < needles_size; i++)
             {
-                expected[i] = std::binary_search(haystack.begin(), haystack.end(), needles[i], compare_op);
+                expected[i]
+                    = std::binary_search(haystack.begin(), haystack.end(), needles[i], compare_op);
             }
 
             size_t temporary_storage_bytes;

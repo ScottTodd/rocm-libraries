@@ -74,7 +74,6 @@
 
 #endif // THRUST_DEVICE_COMPILER == THRUST_DEVICE_COMPILER_HIP
 
-
 namespace test
 {
 
@@ -204,9 +203,10 @@ inline std::string demangle(const char* name)
 /// than any values of unsigned types (in contrast to the behaviour of the built-in comparison operator)
 /// This is a backport of a C++20 standard library feature to C++14
 template <class T, class U>
-constexpr auto cmp_less(T t, U u) noexcept -> std::enable_if_t<
-  std::is_signed<T>::value == std::is_signed<U>::value || !std::is_integral<T>::value || !std::is_integral<U>::value,
-  bool>
+constexpr auto cmp_less(T t, U u) noexcept
+  -> std::enable_if_t<std::is_signed<T>::value == std::is_signed<U>::value || !std::is_integral<T>::value
+                        || !std::is_integral<U>::value,
+                      bool>
 {
   return t < u;
 }
@@ -424,13 +424,14 @@ inline auto get_random_data(size_t size, T min, T max, seed_type seed) ->
 #endif
 
 template <class T>
-inline auto get_random_data(size_t size, T min, T max, seed_type seed) -> typename std::enable_if_t<
-  rocprim::is_integral<T>::value && !std::is_same_v<T, bool>
+inline auto get_random_data(size_t size, T min, T max, seed_type seed) ->
+  typename std::enable_if_t<
+    rocprim::is_integral<T>::value && !std::is_same_v<T, bool>
 #if defined(_MSC_VER)
-    && !std::is_same_v<T, signed char> && !std::is_same_v<T, unsigned char> && !std::is_same_v<T, char>
+      && !std::is_same_v<T, signed char> && !std::is_same_v<T, unsigned char> && !std::is_same_v<T, char>
 #endif
-  ,
-  thrust::host_vector<T>>
+    ,
+    thrust::host_vector<T>>
 {
   std::random_device rd;
   std::default_random_engine gen(rd());
@@ -782,22 +783,20 @@ void check_assert_throws(
     }
     case threw_wrong_type: {
       UnitTestFailure f;
-      f << "[" << file_name << ":" << line_number << "] did not throw an "
-        << "object of type " << exception_name;
+      f << "[" << file_name << ":" << line_number << "] did not throw an " << "object of type " << exception_name;
       throw f;
     }
     case threw_right_type_but_wrong_value: {
       UnitTestFailure f;
-      f << "[" << file_name << ":" << line_number << "] threw an object of the "
-        << "correct type (" << exception_name << ") but wrong value";
+      f << "[" << file_name << ":" << line_number << "] threw an object of the " << "correct type (" << exception_name
+        << ") but wrong value";
       throw f;
     }
     case threw_right_type:
       break;
     default: {
       UnitTestFailure f;
-      f << "[" << file_name << ":" << line_number << "] encountered an "
-        << "unknown error";
+      f << "[" << file_name << ":" << line_number << "] encountered an " << "unknown error";
       throw f;
     }
   }

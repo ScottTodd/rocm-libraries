@@ -33,7 +33,8 @@ template<class Runner,
          unsigned int BlockSize,
          unsigned int ItemsPerThread,
          unsigned int Trials>
-__global__ __launch_bounds__(BlockSize) void kernel(const T* input, T* output)
+__global__ __launch_bounds__(BlockSize)
+void kernel(const T* input, T* output)
 {
     Runner::template run<T, BlockSize, ItemsPerThread, Trials>(input, output);
 }
@@ -44,14 +45,16 @@ struct offset
              unsigned int BlockSize,
              unsigned int /* ItemsPerThread */,
              unsigned int Trials>
-    __device__ static void run(const T* input, T* output)
+    __device__
+    static void run(const T* input, T* output)
     {
         const unsigned int tid = hipBlockIdx_x * BlockSize + hipThreadIdx_x;
 
         T value = input[tid];
 
         using bshuffle_t = hipcub::BlockShuffle<T, BlockSize>;
-        __shared__ typename bshuffle_t::TempStorage storage;
+        __shared__
+        typename bshuffle_t::TempStorage storage;
 
 #pragma nounroll
         for(unsigned int trial = 0; trial < Trials; trial++)
@@ -75,14 +78,16 @@ struct rotate
              unsigned int BlockSize,
              unsigned int /* ItemsPerThread */,
              unsigned int Trials>
-    __device__ static void run(const T* input, T* output)
+    __device__
+    static void run(const T* input, T* output)
     {
         const unsigned int tid = hipBlockIdx_x * BlockSize + hipThreadIdx_x;
 
         T value = input[tid];
 
         using bshuffle_t = hipcub::BlockShuffle<T, BlockSize>;
-        __shared__ typename bshuffle_t::TempStorage storage;
+        __shared__
+        typename bshuffle_t::TempStorage storage;
 
 #pragma nounroll
         for(unsigned int trial = 0; trial < Trials; trial++)
@@ -103,7 +108,8 @@ struct rotate
 struct up
 {
     template<class T, unsigned int BlockSize, unsigned int ItemsPerThread, unsigned int Trials>
-    __device__ static void run(const T* input, T* output)
+    __device__
+    static void run(const T* input, T* output)
     {
         const unsigned int tid = hipBlockIdx_x * BlockSize + hipThreadIdx_x;
 
@@ -114,7 +120,8 @@ struct up
         }
 
         using bshuffle_t = hipcub::BlockShuffle<T, BlockSize>;
-        __shared__ typename bshuffle_t::TempStorage storage;
+        __shared__
+        typename bshuffle_t::TempStorage storage;
 
 #pragma nounroll
         for(unsigned int trial = 0; trial < Trials; trial++)
@@ -138,7 +145,8 @@ struct up
 struct down
 {
     template<class T, unsigned int BlockSize, unsigned int ItemsPerThread, unsigned int Trials>
-    __device__ static void run(const T* input, T* output)
+    __device__
+    static void run(const T* input, T* output)
     {
         const unsigned int tid = hipBlockIdx_x * BlockSize + hipThreadIdx_x;
 
@@ -149,7 +157,8 @@ struct down
         }
 
         using bshuffle_t = hipcub::BlockShuffle<T, BlockSize>;
-        __shared__ typename bshuffle_t::TempStorage storage;
+        __shared__
+        typename bshuffle_t::TempStorage storage;
 
 #pragma nounroll
         for(unsigned int trial = 0; trial < Trials; trial++)

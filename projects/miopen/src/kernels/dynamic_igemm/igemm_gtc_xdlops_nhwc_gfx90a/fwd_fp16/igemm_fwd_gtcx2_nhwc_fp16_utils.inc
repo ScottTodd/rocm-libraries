@@ -211,4 +211,3 @@
     v_mfma_f32_32x32x8f16 \d, \a, \b, \c
 .endif
 .endm
-

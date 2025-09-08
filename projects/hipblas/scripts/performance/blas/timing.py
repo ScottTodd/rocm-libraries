@@ -26,12 +26,38 @@
 import argparse
 import subprocess
 import os
-import re # regexp package
+import re  # regexp package
 import sys
 import tempfile
 
-def runcase(workingdir, mval, nval, kval, ntrial, precision, nbatch,
-            devicenum, logfilename, function, side, uplo, diag, transA, transB, alpha, beta, incx, incy, lda, ldb, ldc, iters, cold_iters, algo):
+
+def runcase(
+    workingdir,
+    mval,
+    nval,
+    kval,
+    ntrial,
+    precision,
+    nbatch,
+    devicenum,
+    logfilename,
+    function,
+    side,
+    uplo,
+    diag,
+    transA,
+    transB,
+    alpha,
+    beta,
+    incx,
+    incy,
+    lda,
+    ldb,
+    ldc,
+    iters,
+    cold_iters,
+    algo,
+):
     progname = "hipblas-bench"
     prog = os.path.join(workingdir, progname)
 
@@ -109,15 +135,20 @@ def runcase(workingdir, mval, nval, kval, ntrial, precision, nbatch,
     fout = tempfile.TemporaryFile(mode="w+")
 
     for x in range(ntrial):
-        proc = subprocess.Popen(cmd, cwd=os.path.join(workingdir,"..",".."), stdout=fout, stderr=fout,
-                                env=os.environ.copy())
+        proc = subprocess.Popen(
+            cmd,
+            cwd=os.path.join(workingdir, "..", ".."),
+            stdout=fout,
+            stderr=fout,
+            env=os.environ.copy(),
+        )
         proc.wait()
         rc = proc.returncode
 
         if rc != 0:
             lines = fout.readlines()
             logfile = open(logfilename, "a")
-            logfile.write('\n'.join(lines))
+            logfile.write("\n".join(lines))
             logfile.close()
             print("\twell, that didn't work")
             print(rc)
@@ -132,7 +163,7 @@ def runcase(workingdir, mval, nval, kval, ntrial, precision, nbatch,
 
     lines = fout.readlines()
     logfile = open(logfilename, "a")
-    logfile.write('\n'.join(lines))
+    logfile.write("\n".join(lines))
     logfile.close()
 
     gf_string = "hipblas-Gflops"
@@ -141,114 +172,123 @@ def runcase(workingdir, mval, nval, kval, ntrial, precision, nbatch,
     for i in range(0, len(lines)):
         if re.search(r"\b" + re.escape(us_string) + r"\b", lines[i]) is not None:
             us_line = lines[i].strip().split(",")
-            index = [idx for idx, s in enumerate(us_line) if us_string in s][0] #us_line.index()
-            us_vals.append(float(re.split(r',\s*(?![^()]*\))', lines[i+1])[index]))
+            index = [idx for idx, s in enumerate(us_line) if us_string in s][
+                0
+            ]  # us_line.index()
+            us_vals.append(float(re.split(r",\s*(?![^()]*\))", lines[i + 1])[index]))
         if gf_string in lines[i]:
             gf_line = lines[i].split(",")
             index = gf_line.index(gf_string)
-            gf_vals.append(float(re.split(r',\s*(?![^()]*\))', lines[i+1])[index]))
+            gf_vals.append(float(re.split(r",\s*(?![^()]*\))", lines[i + 1])[index]))
         if bw_string in lines[i]:
             bw_line = lines[i].split(",")
             index = bw_line.index(bw_string)
-            bw_vals.append(float(re.split(r',\s*(?![^()]*\))', lines[i+1])[index]))
-
+            bw_vals.append(float(re.split(r",\s*(?![^()]*\))", lines[i + 1])[index]))
 
     fout.close()
 
     return us_vals, gf_vals, bw_vals
 
+
 def incrementParam(cur, max, mul, step_size, done):
     if cur < max:
         if mul == 1 and cur * step_size <= max:
-            return cur*step_size, False
+            return cur * step_size, False
         elif mul != 1 and cur + step_size <= max:
-            return cur+step_size, False
+            return cur + step_size, False
     return cur, done
 
 
 def main():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-w', '--workingdir',     required=False, default = '/home/marnauta/hipBLAS/build/release/clients/staging')
-    parser.add_argument('-n', '--nmin',           required=False, default = 1, type=int)
-    parser.add_argument('-N', '--nmax',           required=False, default = 1024, type=int)
-    parser.add_argument('-k', '--kmin',           required=False, default = 1, type=int)
-    parser.add_argument('-K', '--kmax',           required=False, default = 1, type=int)
-    parser.add_argument('-m', '--mmin',           required=False, default = 1, type=int)
-    parser.add_argument('-M', '--mmax',           required=False, default = 1, type=int)
-    parser.add_argument('-a', '--ntrial',         required=False, default = 1, type=int)
-    parser.add_argument('-i', '--iters',          required=False, default = 1, type=int)
-    parser.add_argument('-j', '--cold_iters',     required=False, default = 2, type=int)
-    parser.add_argument('-o', '--outfilename',    required=False, default = 'timing.dat')
-    parser.add_argument('-p', '--precision',      required=False, default = 'f32_r')
-    parser.add_argument('-b', '--nbatch',         required=False, default = 1, type=int)
-    parser.add_argument('-r', '--radix',          required=False, default = 2, type=int)
-    parser.add_argument('-s', '--step_size',      required=False, default = 10, type=int)
-    parser.add_argument('-g', '--devicenum',      required=False, default = 0, type=int)
-    parser.add_argument('-f', '--function',       required=False, default = '')
-    parser.add_argument(      '--alpha',          required=False, default = 1, type=float)
-    parser.add_argument(      '--beta',           required=False, default = 1, type=float)
-    parser.add_argument(      '--incx',           required=False, default = 1, type=int)
-    parser.add_argument(      '--incy',           required=False, default = 1, type=int)
-    parser.add_argument(      '--transA',         required=False, default = 'N')
-    parser.add_argument(      '--transB',         required=False, default = 'N')
-    parser.add_argument(      '--lda',            required=False, default = 1, type=int)
-    parser.add_argument(      '--ldb',            required=False, default = 1, type=int)
-    parser.add_argument(      '--ldc',            required=False, default = 1, type=int)
-    parser.add_argument(      '--LDA',            required=False, default = 1, type=int)
-    parser.add_argument(      '--LDB',            required=False, default = 1, type=int)
-    parser.add_argument(      '--LDC',            required=False, default = 1, type=int)
-    parser.add_argument(      '--initialization', required=False, default = '')
-    parser.add_argument('-x', '--step_mult',      required=False, default = False, action='store_true')
-    parser.add_argument(      '--side',           required=False, default = 'L')
-    parser.add_argument(      '--uplo',           required=False, default = 'L')
-    parser.add_argument(      '--diag',           required=False, default = 'N')
-    parser.add_argument(      '--algo',           required=False, default = 0, type=int)
+    parser.add_argument(
+        "-w",
+        "--workingdir",
+        required=False,
+        default="/home/marnauta/hipBLAS/build/release/clients/staging",
+    )
+    parser.add_argument("-n", "--nmin", required=False, default=1, type=int)
+    parser.add_argument("-N", "--nmax", required=False, default=1024, type=int)
+    parser.add_argument("-k", "--kmin", required=False, default=1, type=int)
+    parser.add_argument("-K", "--kmax", required=False, default=1, type=int)
+    parser.add_argument("-m", "--mmin", required=False, default=1, type=int)
+    parser.add_argument("-M", "--mmax", required=False, default=1, type=int)
+    parser.add_argument("-a", "--ntrial", required=False, default=1, type=int)
+    parser.add_argument("-i", "--iters", required=False, default=1, type=int)
+    parser.add_argument("-j", "--cold_iters", required=False, default=2, type=int)
+    parser.add_argument("-o", "--outfilename", required=False, default="timing.dat")
+    parser.add_argument("-p", "--precision", required=False, default="f32_r")
+    parser.add_argument("-b", "--nbatch", required=False, default=1, type=int)
+    parser.add_argument("-r", "--radix", required=False, default=2, type=int)
+    parser.add_argument("-s", "--step_size", required=False, default=10, type=int)
+    parser.add_argument("-g", "--devicenum", required=False, default=0, type=int)
+    parser.add_argument("-f", "--function", required=False, default="")
+    parser.add_argument("--alpha", required=False, default=1, type=float)
+    parser.add_argument("--beta", required=False, default=1, type=float)
+    parser.add_argument("--incx", required=False, default=1, type=int)
+    parser.add_argument("--incy", required=False, default=1, type=int)
+    parser.add_argument("--transA", required=False, default="N")
+    parser.add_argument("--transB", required=False, default="N")
+    parser.add_argument("--lda", required=False, default=1, type=int)
+    parser.add_argument("--ldb", required=False, default=1, type=int)
+    parser.add_argument("--ldc", required=False, default=1, type=int)
+    parser.add_argument("--LDA", required=False, default=1, type=int)
+    parser.add_argument("--LDB", required=False, default=1, type=int)
+    parser.add_argument("--LDC", required=False, default=1, type=int)
+    parser.add_argument("--initialization", required=False, default="")
+    parser.add_argument(
+        "-x", "--step_mult", required=False, default=False, action="store_true"
+    )
+    parser.add_argument("--side", required=False, default="L")
+    parser.add_argument("--uplo", required=False, default="L")
+    parser.add_argument("--diag", required=False, default="N")
+    parser.add_argument("--algo", required=False, default=0, type=int)
 
     user_args = parser.parse_args()
 
     # de-namespace for backwards compatibility
-    workingdir     = user_args.workingdir
-    nmin           = user_args.nmin
-    nmax           = user_args.nmax
-    kmin           = user_args.kmin
-    kmax           = user_args.kmax
-    mmin           = user_args.mmin
-    mmax           = user_args.mmax
-    ntrial         = user_args.ntrial
-    iters          = user_args.iters
-    cold_iters     = user_args.cold_iters
-    outfilename    = user_args.outfilename
-    precision      = user_args.precision
-    nbatch         = user_args.nbatch
-    radix          = user_args.radix
-    step_size      = user_args.step_size
-    devicenum      = user_args.devicenum
-    function       = user_args.function
-    alpha          = user_args.alpha
-    beta           = user_args.beta
-    incx           = user_args.incx
-    incy           = user_args.incy
-    precision      = user_args.precision
-    transA         = user_args.transA
-    transB         = user_args.transB
-    lda            = user_args.lda
-    ldb            = user_args.ldb
-    ldc            = user_args.ldc
-    LDA            = user_args.LDA
-    LDB            = user_args.LDB
-    LDC            = user_args.LDC
+    workingdir = user_args.workingdir
+    nmin = user_args.nmin
+    nmax = user_args.nmax
+    kmin = user_args.kmin
+    kmax = user_args.kmax
+    mmin = user_args.mmin
+    mmax = user_args.mmax
+    ntrial = user_args.ntrial
+    iters = user_args.iters
+    cold_iters = user_args.cold_iters
+    outfilename = user_args.outfilename
+    precision = user_args.precision
+    nbatch = user_args.nbatch
+    radix = user_args.radix
+    step_size = user_args.step_size
+    devicenum = user_args.devicenum
+    function = user_args.function
+    alpha = user_args.alpha
+    beta = user_args.beta
+    incx = user_args.incx
+    incy = user_args.incy
+    precision = user_args.precision
+    transA = user_args.transA
+    transB = user_args.transB
+    lda = user_args.lda
+    ldb = user_args.ldb
+    ldc = user_args.ldc
+    LDA = user_args.LDA
+    LDB = user_args.LDB
+    LDC = user_args.LDC
     initialization = user_args.initialization
-    step_mult      = 1 if user_args.step_mult else 0
-    side           = user_args.side
-    uplo           = user_args.uplo
-    diag           = user_args.diag
-    algo           = user_args.algo
+    step_mult = 1 if user_args.step_mult else 0
+    side = user_args.side
+    uplo = user_args.uplo
+    diag = user_args.diag
+    algo = user_args.algo
 
-    print("workingdir: "+ workingdir)
-    print("outfilename: "+ outfilename)
+    print("workingdir: " + workingdir)
+    print("outfilename: " + outfilename)
     print("ntrial: " + str(ntrial))
-    print("nmin: "+ str(nmin) + " nmax: " + str(nmax))
+    print("nmin: " + str(nmin) + " nmax: " + str(nmax))
     print("batch-size: " + str(nbatch))
     # print("data type: " + datatype)
     print("device number: " + str(devicenum))
@@ -260,9 +300,9 @@ def main():
         sys.exit(1)
 
     logfilename = outfilename + ".log"
-    print("log filename: "  + logfilename)
+    print("log filename: " + logfilename)
     logfile = open(logfilename, "w+")
-    metadatastring = "# " + " ".join(sys.argv)  + "\n"
+    metadatastring = "# " + " ".join(sys.argv) + "\n"
     logfile.write(metadatastring)
     logfile.close()
 
@@ -274,28 +314,53 @@ def main():
     nval = nmin
     kval = kmin
     done = False
-    while(not done):
-        us, gf, bw = runcase(workingdir, mval, nval, kval, ntrial,
-                          precision, nbatch, devicenum, logfilename, function, side, uplo, diag, transA, transB, alpha, beta, incx, incy, lda, ldb, ldc, iters, cold_iters, algo)
-        #print(seconds)
-        with open(outfilename, 'a') as outfile:
-            if function == 'trsm':
-                if side == 'R':
+    while not done:
+        us, gf, bw = runcase(
+            workingdir,
+            mval,
+            nval,
+            kval,
+            ntrial,
+            precision,
+            nbatch,
+            devicenum,
+            logfilename,
+            function,
+            side,
+            uplo,
+            diag,
+            transA,
+            transB,
+            alpha,
+            beta,
+            incx,
+            incy,
+            lda,
+            ldb,
+            ldc,
+            iters,
+            cold_iters,
+            algo,
+        )
+        # print(seconds)
+        with open(outfilename, "a") as outfile:
+            if function == "trsm":
+                if side == "R":
                     outfile.write(str(mval))
                 else:
                     outfile.write(str(nval))
             else:
                 outfile.write(str(nval))
             outfile.write("\t")
-            outfile.write('{:4.0f}'.format(len(us)))
+            outfile.write("{:4.0f}".format(len(us)))
             for time in us:
-                outfile.write('{:12.2f}'.format(time))
-            outfile.write('{:4.0f}'.format(len(gf)))
+                outfile.write("{:12.2f}".format(time))
+            outfile.write("{:4.0f}".format(len(gf)))
             for flops in gf:
-                outfile.write('{:10.2f}'.format(flops))
-            outfile.write('{:4.0f}'.format(len(bw)))
+                outfile.write("{:10.2f}".format(flops))
+            outfile.write("{:4.0f}".format(len(bw)))
             for bandwidth in bw:
-                outfile.write('{:10.2f}'.format(bandwidth))
+                outfile.write("{:10.2f}".format(bandwidth))
             outfile.write("\n")
 
         done = True
@@ -307,7 +372,5 @@ def main():
         ldc, done = incrementParam(ldc, LDC, step_mult, step_size, done)
 
 
-
 if __name__ == "__main__":
     main()
-

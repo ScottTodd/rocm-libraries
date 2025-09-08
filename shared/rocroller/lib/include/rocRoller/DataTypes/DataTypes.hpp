@@ -398,17 +398,13 @@ namespace rocRoller
     template <typename Result, typename T>
     concept CCanStaticCastTo = requires(T val) //
     {
-        {
-            static_cast<Result>(val)
-            } -> std::same_as<Result>;
+        { static_cast<Result>(val) } -> std::same_as<Result>;
     };
 
     template <typename T>
     concept CHasTypeInfo = requires() //
     {
-        {
-            TypeInfo<T>::Name()
-            } -> std::convertible_to<std::string>;
+        { TypeInfo<T>::Name() } -> std::convertible_to<std::string>;
     };
 
     struct Halfx2 : public DistinctType<uint32_t, Halfx2>

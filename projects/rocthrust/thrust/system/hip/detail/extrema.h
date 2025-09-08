@@ -192,7 +192,7 @@ extrema(execution_policy<Derived>& policy, InputIt first, Size num_items, Binary
   size_t temp_storage_bytes = 0;
   hipStream_t stream        = hip_rocprim::stream(policy);
 
-  bool debug_sync           = THRUST_HIP_DEBUG_SYNC_FLAG;
+  bool debug_sync = THRUST_HIP_DEBUG_SYNC_FLAG;
 
   // Determine temporary device storage requirements.
   hip_rocprim::throw_on_error(

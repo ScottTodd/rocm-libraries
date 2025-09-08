@@ -60,8 +60,8 @@ namespace hipblaslt_ext
         std::string description() const override
         {
             std::stringstream ss;
-            ss << "Softmax, (Datatype, tileM, tileN) = "
-               << "(" << TensileLite::ToString(datatype) << ", " << tileM << ", " << tileN << ")";
+            ss << "Softmax, (Datatype, tileM, tileN) = " << "(" << TensileLite::ToString(datatype)
+               << ", " << tileM << ", " << tileN << ")";
             return ss.str();
         }
 
@@ -254,8 +254,7 @@ namespace hipblaslt_ext
         std::string description() const override
         {
             std::stringstream ss;
-            ss << "LayerNorm, (Datatype) = "
-               << "(" << TensileLite::ToString(datatype) << ")";
+            ss << "LayerNorm, (Datatype) = " << "(" << TensileLite::ToString(datatype) << ")";
             return ss.str();
         }
 
@@ -424,9 +423,8 @@ namespace hipblaslt_ext
         std::string description() const override
         {
             std::stringstream ss;
-            ss << "AMax, (Datatype, outDatatype) = "
-               << "(" << TensileLite::ToString(datatype) << ", "
-               << TensileLite::ToString(outDatatype) << ")";
+            ss << "AMax, (Datatype, outDatatype) = " << "(" << TensileLite::ToString(datatype)
+               << ", " << TensileLite::ToString(outDatatype) << ")";
             return ss.str();
         }
 

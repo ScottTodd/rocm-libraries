@@ -894,8 +894,8 @@ namespace rocsparse
         else
         {
             std::stringstream sstr;
-            sstr << "invalid precision configuration: "
-                 << "compute_type: " << rocsparse::enum_utils::to_string(compute_type_)
+            sstr << "invalid precision configuration: " << "compute_type: "
+                 << rocsparse::enum_utils::to_string(compute_type_)
                  << ", i_type: " << rocsparse::enum_utils::to_string(i_type_)
                  << ", j_type: " << rocsparse::enum_utils::to_string(j_type_);
 

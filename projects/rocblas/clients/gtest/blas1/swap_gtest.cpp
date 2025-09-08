@@ -91,13 +91,14 @@ namespace
 
     // This tells whether the BLAS1 tests are enabled
     template <blas1 BLAS1, typename Ti, typename To, typename Tc>
-    using swap_enabled = std::integral_constant<
-        bool,
-        ((BLAS1 == blas1::swap || BLAS1 == blas1::swap_batched
-          || BLAS1 == blas1::swap_strided_batched)
-         && std::is_same_v<
-             To,
-             Ti> && std::is_same_v<To, Tc> && (std::is_same_v<Ti, float> || std::is_same_v<Ti, double> || std::is_same_v<Ti, rocblas_float_complex> || std::is_same_v<Ti, rocblas_double_complex>))>;
+    using swap_enabled
+        = std::integral_constant<bool,
+                                 ((BLAS1 == blas1::swap || BLAS1 == blas1::swap_batched
+                                   || BLAS1 == blas1::swap_strided_batched)
+                                  && std::is_same_v<To, Ti> && std::is_same_v<To, Tc>
+                                  && (std::is_same_v<Ti, float> || std::is_same_v<Ti, double>
+                                      || std::is_same_v<Ti, rocblas_float_complex>
+                                      || std::is_same_v<Ti, rocblas_double_complex>))>;
 
 // Creates tests for one of the BLAS 1 functions
 // ARG passes 1-3 template arguments to the testing_* function

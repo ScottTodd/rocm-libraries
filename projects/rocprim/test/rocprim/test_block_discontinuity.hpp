@@ -29,7 +29,7 @@
 
 test_suite_type_def(suite_name, name_suffix)
 
-typed_test_suite_def(RocprimBlockDiscontinuity, name_suffix, warp_params);
+    typed_test_suite_def(RocprimBlockDiscontinuity, name_suffix, warp_params);
 
 typed_test_def(RocprimBlockDiscontinuity, name_suffix, FlagHeads)
 {

@@ -38,15 +38,13 @@ namespace rocRoller
         struct SameType;
 
         template <typename T, typename IO, typename Context = EmptyContext>
-        concept CMappedType = requires(T& obj, IO& io, Context& ctx)
-        {
-            {MappingTraits<T, IO, Context>::mapping(io, obj, ctx)};
+        concept CMappedType = requires(T& obj, IO& io, Context& ctx) {
+            { MappingTraits<T, IO, Context>::mapping(io, obj, ctx) };
         };
 
         template <typename T, typename IO, typename Context = EmptyContext>
-        concept CEmptyMappedType = requires(T& obj, IO& io)
-        {
-            {MappingTraits<T, IO, Context>::mapping(io, obj)};
+        concept CEmptyMappedType = requires(T& obj, IO& io) {
+            { MappingTraits<T, IO, Context>::mapping(io, obj) };
         };
 
         template <typename T, typename IO, typename Context = EmptyContext>
@@ -63,8 +61,8 @@ namespace rocRoller
         };
 
         template <typename T, typename IO, typename Context = EmptyContext>
-        concept EmptyMappedType = has_EmptyMappingTraits<T, IO, Context>::
-            value && !has_MappingTraits<T, IO, Context>::value;
+        concept EmptyMappedType = has_EmptyMappingTraits<T, IO, Context>::value
+                                  && !has_MappingTraits<T, IO, Context>::value;
 
         template <typename T, typename IO>
         class has_EnumTraits
@@ -85,14 +83,10 @@ namespace rocRoller
         concept EnumType = has_EnumTraits<T, IO>::value;
 
         template <typename T>
-        concept CHasScalarTraits = requires(T const& cval, T& val, std::string const& string)
-        {
+        concept CHasScalarTraits = requires(T const& cval, T& val, std::string const& string) {
+            { ScalarTraits<T>::output(cval) } -> std::convertible_to<std::string>;
 
-            {
-                ScalarTraits<T>::output(cval)
-                } -> std::convertible_to<std::string>;
-
-            {ScalarTraits<T>::input(string, val)};
+            { ScalarTraits<T>::input(string, val) };
         };
 
         template <typename T, typename IO>
@@ -157,8 +151,7 @@ namespace rocRoller
         concept ValueType = !has_SerializationTraits<T, IO>::value;
 
         template <typename T>
-        concept CHasFlowMember = requires
-        {
+        concept CHasFlowMember = requires {
             // clang-format off
             { T::flow } -> std::convertible_to<bool>;
             // clang-format on

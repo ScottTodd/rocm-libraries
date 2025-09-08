@@ -50,7 +50,7 @@ template<class Params>
 class RocprimTextureCacheIteratorTests : public ::testing::Test
 {
 public:
-    using input_type = typename Params::input_type;
+    using input_type             = typename Params::input_type;
     const bool debug_synchronous = false;
 };
 
@@ -83,15 +83,18 @@ TYPED_TEST(RocprimTextureCacheIteratorTests, Transform)
     hipDeviceProp_t props;
     HIP_CHECK(hipGetDeviceProperties(&props, device_id));
     std::string deviceName = std::string(props.gcnArchName);
-    if (deviceName.rfind("gfx94", 0) == 0 || deviceName.rfind("gfx120") == 0 || deviceName.rfind("gfx95") == 0) {
+    if(deviceName.rfind("gfx94", 0) == 0 || deviceName.rfind("gfx120") == 0
+       || deviceName.rfind("gfx95") == 0)
+    {
         // This is a gfx94x or gfx120x device, so skip this test
-        GTEST_SKIP() << "Test not run on gfx94x, gfx120x or gfx95x as texture cache API is not supported";
+        GTEST_SKIP()
+            << "Test not run on gfx94x, gfx120x or gfx95x as texture cache API is not supported";
     }
 
     HIP_CHECK(hipSetDevice(device_id));
 
-    using T = typename TestFixture::input_type;
-    using Iterator = typename rocprim::texture_cache_iterator<T>;
+    using T                      = typename TestFixture::input_type;
+    using Iterator               = typename rocprim::texture_cache_iterator<T>;
     const bool debug_synchronous = TestFixture::debug_synchronous;
 
     const size_t size = 1024;
@@ -102,7 +105,8 @@ TYPED_TEST(RocprimTextureCacheIteratorTests, Transform)
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         for(size_t i = 0; i < size; i++)
@@ -110,7 +114,7 @@ TYPED_TEST(RocprimTextureCacheIteratorTests, Transform)
             input[i] = test_utils::get_random_value<T>(1, 200, seed_value);
         }
 
-        std::vector<T> output(size);
+        std::vector<T>        output(size);
         common::device_ptr<T> d_input(input);
         common::device_ptr<T> d_output(output.size());
 
@@ -119,12 +123,7 @@ TYPED_TEST(RocprimTextureCacheIteratorTests, Transform)
 
         // Calculate expected results on host
         std::vector<T> expected(size);
-        std::transform(
-            input.begin(),
-            input.end(),
-            expected.begin(),
-            transform<T>()
-        );
+        std::transform(input.begin(), input.end(), expected.begin(), transform<T>());
 
         // Run
         HIP_CHECK(
@@ -229,8 +228,8 @@ TYPED_TEST(RocprimTextureCacheIteratorTests, DeviceIteratorOps)
 
     HIP_CHECK(hipSetDevice(device_id));
 
-    using T        = typename TestFixture::input_type;
-    using Iterator = rocprim::texture_cache_iterator<T>;
+    using T               = typename TestFixture::input_type;
+    using Iterator        = rocprim::texture_cache_iterator<T>;
     using WrappedIterator = rocprim::texture_cache_iterator<Wrapper<T>>;
 
     constexpr int num_threads  = 10;

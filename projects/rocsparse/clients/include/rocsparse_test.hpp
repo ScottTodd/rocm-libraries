@@ -308,8 +308,8 @@ public:
         return std::move(name);
     }
 
-    RocSPARSE_TestName()                          = default;
-    RocSPARSE_TestName(const RocSPARSE_TestName&) = delete;
+    RocSPARSE_TestName()                                     = default;
+    RocSPARSE_TestName(const RocSPARSE_TestName&)            = delete;
     RocSPARSE_TestName& operator=(const RocSPARSE_TestName&) = delete;
 };
 

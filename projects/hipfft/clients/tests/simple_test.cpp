@@ -62,11 +62,11 @@ class enum_helper
 {
     using base_t = typename std::underlying_type<T>::type;
     // static class cannot be instantiated, copied, or moved
-    enum_helper()                    = delete;
-    ~enum_helper()                   = delete;
-    enum_helper(const enum_helper&)  = delete;
-    enum_helper(enum_helper&& other) = delete;
-    enum_helper& operator=(const enum_helper&) = delete;
+    enum_helper()                               = delete;
+    ~enum_helper()                              = delete;
+    enum_helper(const enum_helper&)             = delete;
+    enum_helper(enum_helper&& other)            = delete;
+    enum_helper& operator=(const enum_helper&)  = delete;
     enum_helper& operator=(enum_helper&& other) = delete;
 
 public:

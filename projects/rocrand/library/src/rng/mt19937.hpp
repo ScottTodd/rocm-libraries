@@ -114,8 +114,9 @@ void jump_ahead_mt19937(dim3 block_idx,
     constexpr unsigned int tail_n = mt19937_constants::n - (items_per_thread - 1) * block_size;
 
 #if defined(__HIP_DEVICE_COMPILE__)
-    __shared__ unsigned int temp[mt19937_constants::n];
-    unsigned int            state[items_per_thread];
+    __shared__
+    unsigned int temp[mt19937_constants::n];
+    unsigned int state[items_per_thread];
 
 #else
     unsigned int temp[mt19937_constants::n];
@@ -156,17 +157,17 @@ void jump_ahead_mt19937(dim3 block_idx,
         }
 #endif
     }
-    // clang-format on
+// clang-format on
 
-    system::syncthreads<isDevice>{}();
+system::syncthreads<isDevice>{}();
 
-    const unsigned int engine_id = block_idx.x;
+const unsigned int engine_id = block_idx.x;
 
-    // Jump ahead by engine_id * 2 ^ 1000 using precomputed polynomials for jumps of
-    // i * 2 ^ 1000 and mt19937_jumps_radix * i * 2 ^ 1000 values
-    // where i is in range [1; mt19937_jumps_radix).
-    unsigned int e = engine_id;
-    // clang-format off
+// Jump ahead by engine_id * 2 ^ 1000 using precomputed polynomials for jumps of
+// i * 2 ^ 1000 and mt19937_jumps_radix * i * 2 ^ 1000 values
+// where i is in range [1; mt19937_jumps_radix).
+unsigned int e = engine_id;
+// clang-format off
     for(unsigned int r = 0; r < mt19937_jumps_radixes; r++)
     {
         const unsigned int radix = e % mt19937_jumps_radix;
@@ -271,7 +272,7 @@ void jump_ahead_mt19937(dim3 block_idx,
         }
 #endif
     }
-    // clang-format on
+// clang-format on
 }
 
 // This kernel is not explicitly tuned, but uses the same configs as the generate-kernels.
@@ -297,7 +298,7 @@ void init_engines_mt19937(dim3 block_idx,
     const unsigned int thread_id = block_idx.x * block_size + thread_idx.x;
     // every eight octo engines gather from the same engine
     mt19937_octo_engine_accessor<stride> accessor(octo_engines);
-    mt19937_octo_engine engine;
+    mt19937_octo_engine                  engine;
     engine.gather(
         &engines[thread_id / mt19937_octo_engine::threads_per_generator * mt19937_constants::n],
         thread_idx);
@@ -462,12 +463,12 @@ void generate_long_mt19937(dim3 block_idx,
     static_assert(block_size % threads_per_generator == 0,
                   "All eight threads of the generator must be in the same block");
 
-    constexpr unsigned int input_width      = Distribution::input_width;
-    constexpr unsigned int output_width     = Distribution::output_width;
+    constexpr unsigned int input_width  = Distribution::input_width;
+    constexpr unsigned int output_width = Distribution::output_width;
     constexpr unsigned int inputs_per_state
         = (mt19937_constants::n / mt19937_octo_engine::threads_per_generator) / input_width;
-    constexpr unsigned int stride           = block_size * grid_size;
-    constexpr unsigned int full_stride      = stride * inputs_per_state;
+    constexpr unsigned int stride      = block_size * grid_size;
+    constexpr unsigned int full_stride = stride * inputs_per_state;
 
     // clang-format off
 #if defined(__HIP_DEVICE_COMPILE__)
@@ -573,17 +574,17 @@ void generate_long_mt19937(dim3 block_idx,
         }
 #endif
     }
-    // clang-format on
+// clang-format on
 
-    // Generate one extra VecT if data is not aligned by sizeof(VecT) or
-    // size % output_width != 0
-    const unsigned int extra = (head_size > 0 || tail_size > 0) ? 1 : 0;
+// Generate one extra VecT if data is not aligned by sizeof(VecT) or
+// size % output_width != 0
+const unsigned int extra = (head_size > 0 || tail_size > 0) ? 1 : 0;
 
-    // End sequence: generate n values but use only a required part of them
-    if(base_index < vec_size + extra)
-    {
-        bool is_extra_thread = false;
-        // clang-format off
+// End sequence: generate n values but use only a required part of them
+if(base_index < vec_size + extra)
+{
+    bool is_extra_thread = false;
+    // clang-format off
 #if defined(__HIP_DEVICE_COMPILE__)
         engine.gen_next_n();
 #else
@@ -646,11 +647,11 @@ void generate_long_mt19937(dim3 block_idx,
 #if !defined(__HIP_DEVICE_COMPILE__)
         }
 #endif
-        // clang-format on
-    }
+    // clang-format on
+}
 
-    // save state
-    // clang-format off
+// save state
+// clang-format off
 #if defined(__HIP_DEVICE_COMPILE__)
     accessor.save(thread_id, engine);
 #else
@@ -659,7 +660,7 @@ void generate_long_mt19937(dim3 block_idx,
         accessor.save(block_idx.x * block_dim.x + thread_idx.x + i, thread_engines[i]);
     }
 #endif
-    // clang-format on
+// clang-format on
 }
 
 template<class System, class ConfigProvider>
@@ -926,7 +927,7 @@ public:
         const unsigned int full_stride = stride * inputs_per_state;
 
         generator_config config;
-        hipError_t err = ConfigProvider::template host_config<T>(m_stream, m_order, config);
+        hipError_t       err = ConfigProvider::template host_config<T>(m_stream, m_order, config);
         if(err != hipSuccess)
         {
             return ROCRAND_STATUS_INTERNAL_ERROR;

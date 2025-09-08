@@ -46,7 +46,7 @@ BEGIN_ROCPRIM_NAMESPACE
 /// \endcode
 /// \tparam T
 /// \tparam Iter
-template <typename T, typename Iter = T*>
+template<typename T, typename Iter = T*>
 class future_value
 {
 public:
@@ -55,10 +55,10 @@ public:
 
     /// \brief Constructs a future value
     /// \param iter An iterator that will point to the value when it becomes available.
-    explicit ROCPRIM_HOST_DEVICE future_value(const Iter iter)
-        : iter_ {iter}
-    {
-    }
+    explicit ROCPRIM_HOST_DEVICE
+    future_value(const Iter iter)
+        : iter_{iter}
+    {}
 
     /// \brief Returns the value by dereferencing the iterator that the constructor was passed.
     /// \note The value must be available at the point this is called.
@@ -73,43 +73,48 @@ public:
     {
         return *iter_;
     }
+
 private:
     Iter iter_;
 };
 
 namespace detail
 {
-    /// \brief Used for unpacking a future_value, basically just a cast but its more explicit
-    /// this way.
-    template <typename T>
-    ROCPRIM_HOST_DEVICE T get_input_value(const T value)
-    {
-        return value;
-    }
-
-    template <typename T, typename Iter>
-    ROCPRIM_HOST_DEVICE T get_input_value(::rocprim::future_value<T, Iter> future) {
-        return future;
-    }
-
-    template <class T>
-    struct input_value_traits {
-        using value_type = T;
-    };
-
-    template <class T, typename Iter> 
-    struct input_value_traits<::rocprim::future_value<T, Iter>>
-    {
-        using value_type    = T;
-        using iterator_type = Iter;
-    };
-
-    template <typename T>
-    using input_type_t = typename input_value_traits<T>::value_type;
-
-    template <typename T>
-    using input_iterator_t = typename input_value_traits<T>::iterator_type;
+/// \brief Used for unpacking a future_value, basically just a cast but its more explicit
+/// this way.
+template<typename T>
+ROCPRIM_HOST_DEVICE
+T get_input_value(const T value)
+{
+    return value;
 }
+
+template<typename T, typename Iter>
+ROCPRIM_HOST_DEVICE
+T get_input_value(::rocprim::future_value<T, Iter> future)
+{
+    return future;
+}
+
+template<class T>
+struct input_value_traits
+{
+    using value_type = T;
+};
+
+template<class T, typename Iter>
+struct input_value_traits<::rocprim::future_value<T, Iter>>
+{
+    using value_type    = T;
+    using iterator_type = Iter;
+};
+
+template<typename T>
+using input_type_t = typename input_value_traits<T>::value_type;
+
+template<typename T>
+using input_iterator_t = typename input_value_traits<T>::iterator_type;
+} // namespace detail
 
 END_ROCPRIM_NAMESPACE
 

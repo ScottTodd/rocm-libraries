@@ -36,6 +36,6 @@
     "num_tuning_params": {
         "fwd": 9,
         "bwd": 9,
-        "wrw": 9        
+        "wrw": 9
     }
 }

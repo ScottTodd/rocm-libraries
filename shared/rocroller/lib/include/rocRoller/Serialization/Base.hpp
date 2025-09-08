@@ -225,8 +225,8 @@ namespace rocRoller
             using iot      = IOTraits<IO>;
 
             template <typename Base>
-            requires(std::derived_from<Subclass, Base>) static bool mapping(
-                IO& io, std::shared_ptr<Base>& p, Context& ctx)
+                requires(std::derived_from<Subclass, Base>)
+            static bool mapping(IO& io, std::shared_ptr<Base>& p, Context& ctx)
             {
                 std::shared_ptr<Subclass> sc;
 
@@ -246,13 +246,8 @@ namespace rocRoller
             }
 
             template <typename Base>
-            requires(
-                std::same_as<
-                    EmptyContext,
-                    Context> && (std::derived_from<Subclass, Base>)) static bool mapping(IO& io,
-                                                                                         std::shared_ptr<
-                                                                                             Base>&
-                                                                                             p)
+                requires(std::same_as<EmptyContext, Context> && (std::derived_from<Subclass, Base>))
+            static bool mapping(IO& io, std::shared_ptr<Base>& p)
             {
                 Context ctx;
                 return mapping(io, p, ctx);

@@ -22,7 +22,6 @@ import subprocess, os, sys, datetime
 
 
 class sbatchparams:
-
     def __init__(self):
         self.partition = None
         self.acct = None
@@ -37,7 +36,6 @@ class sbatchparams:
 
 
 class sbatchjob:
-
     def __init__(self, jobid, outfilename, errfilename):
         self.jobid = jobid
         self.outfilename = outfilename
@@ -59,21 +57,25 @@ def sbatch(jobname, params, logdir, workdir, jobcmd, verbose=0):
         batchscript += "#SBATCH --partition=" + params.partition + "\n"
     batchscript += "#SBATCH --nodes=" + str(params.nnodes) + "\n"
     if params.ntaskspernode != None:
-        batchscript += "#SBATCH --ntasks-per-node=" + str(
-            params.ntaskspernode) + "\n"
+        batchscript += "#SBATCH --ntasks-per-node=" + str(params.ntaskspernode) + "\n"
     if params.gpuspernode != None:
-        batchscript += "#SBATCH --gpus-per-node=" + str(
-            params.gpuspernode) + "\n"
+        batchscript += "#SBATCH --gpus-per-node=" + str(params.gpuspernode) + "\n"
     if params.timelimit != None:
         batchscript += "#SBATCH --time=" + str(params.timelimit) + "\n"
     if params.acct != None:
         batchscript += "#SBATCH --account=" + params.acct + "\n"
     if len(params.afterany) > 0:
-        batchscript += "#SBATCH --dependency=afterany:" + ",".join(
-            str(x) for x in params.afterany) + "\n"
+        batchscript += (
+            "#SBATCH --dependency=afterany:"
+            + ",".join(str(x) for x in params.afterany)
+            + "\n"
+        )
     if len(params.afterok) > 0:
-        batchscript += "#SBATCH --dependency=afterok:" + ",".join(
-            str(x) for x in params.afterok) + "\n"
+        batchscript += (
+            "#SBATCH --dependency=afterok:"
+            + ",".join(str(x) for x in params.afterok)
+            + "\n"
+        )
 
     for module in params.modules:
         batchscript += "module load " + module + "\n"
@@ -88,10 +90,9 @@ def sbatch(jobname, params, logdir, workdir, jobcmd, verbose=0):
         print(verbose)
         print(batchscript)
 
-    p = subprocess.Popen(sbatchcmd,
-                         stdin=subprocess.PIPE,
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
+    p = subprocess.Popen(
+        sbatchcmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
     for line in batchscript.splitlines():
         byteline = str.encode(line + "\n")
         p.stdin.write(byteline)
@@ -103,8 +104,11 @@ def sbatch(jobname, params, logdir, workdir, jobcmd, verbose=0):
         outwords = p.stdout.read().decode("utf-8")
         jobid = int(outwords.split()[-1])
         print("queued", jobname, jobid)
-        newjob = sbatchjob(jobid, outfilename.replace("%j", str(jobid)),
-                           errfilename.replace("%j", str(jobid)))
+        newjob = sbatchjob(
+            jobid,
+            outfilename.replace("%j", str(jobid)),
+            errfilename.replace("%j", str(jobid)),
+        )
         return newjob
     else:
         print("sbatch failed")
@@ -150,19 +154,22 @@ def reportonjobs(params, logdir, jobs, verbose=0):
     # TODO: copy out and err log files to the report working dir.
     # TODO: out and err files, and job name.
     if len(jobids) > 0:
-        batchscript += "#SBATCH --dependency=afterany:" + ",".join(
-            str(x) for x in jobids) + "\n"
+        batchscript += (
+            "#SBATCH --dependency=afterany:" + ",".join(str(x) for x in jobids) + "\n"
+        )
 
     reportcmd = ""
 
     for job in jobs:
         joblogdir = os.path.dirname(os.path.realpath(job.outfilename))
-        #print(joblogdir)
+        # print(joblogdir)
         reportcmd += "cp -r " + joblogdir + " " + logdir + "/$SLURM_JOB_ID\n"
 
-
-    reportcmd += "sacct -X -j " + ",".join(str(x) for x in jobids) \
+    reportcmd += (
+        "sacct -X -j "
+        + ",".join(str(x) for x in jobids)
         + " -o JobName,JobID,state,Elapsed,ExitCode\n"
+    )
 
     batchscript += reportcmd + "\n"
 
@@ -171,18 +178,17 @@ def reportonjobs(params, logdir, jobs, verbose=0):
 
     sbatchcmd = []
     sbatchcmd.append("sbatch")
-    p = subprocess.Popen(sbatchcmd,
-                         stdin=subprocess.PIPE,
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
+    p = subprocess.Popen(
+        sbatchcmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
     for line in batchscript.splitlines():
         byteline = str.encode(line + "\n")
         p.stdin.write(byteline)
     p.stdin.close()
 
-    #sacct -X -j 9628127,9628128 -o JobID,state,ExitCode
+    # sacct -X -j 9628127,9628128 -o JobID,state,ExitCode
 
-    #reportjob = sbatch("finalreport", params, logdir, workdir, jobcmd, verbose=False):
+    # reportjob = sbatch("finalreport", params, logdir, workdir, jobcmd, verbose=False):
 
     p.wait()
 
@@ -190,8 +196,11 @@ def reportonjobs(params, logdir, jobs, verbose=0):
         outwords = p.stdout.read().decode("utf-8")
         jobid = int(outwords.split()[-1])
         print("queued report", jobid)
-        newjob = sbatchjob(jobid, outfilename.replace("%j", str(jobid)),
-                           errfilename.replace("%j", str(jobid)))
+        newjob = sbatchjob(
+            jobid,
+            outfilename.replace("%j", str(jobid)),
+            errfilename.replace("%j", str(jobid)),
+        )
         return newjob
     else:
         print("sbatch failed")

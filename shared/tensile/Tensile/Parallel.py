@@ -110,7 +110,9 @@ def ParallelMap(
 
     inputs = list(zip(objects, itertools.repeat(globalParameters)))
     pargs = Utils.tqdm(inputs, desc=message)
-    pcall = pcallWithGlobalParamsMultiArg if multiArg else pcallWithGlobalParamsSingleArg
+    pcall = (
+        pcallWithGlobalParamsMultiArg if multiArg else pcallWithGlobalParamsSingleArg
+    )
 
     return joblib.Parallel(n_jobs=threadCount)(
         joblib.delayed(pcall)(function, a, params) for a, params in pargs

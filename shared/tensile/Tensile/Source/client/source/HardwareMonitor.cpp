@@ -451,11 +451,8 @@ namespace Tensile
             if(m_dataPoints == 0)
                 throw std::runtime_error("No data points collected!");
 
-            std::cout << "\nROCm SMI API consolidated frequency,power,temperature data"
-                      << "\n";
-            std::cout << "GFX Value\t\t\t\t"
-                      << "PPT0_value\t\t\t"
-                      << "Temperature\n";
+            std::cout << "\nROCm SMI API consolidated frequency,power,temperature data" << "\n";
+            std::cout << "GFX Value\t\t\t\t" << "PPT0_value\t\t\t" << "Temperature\n";
             // Log individual data
             for(int i = 0; i < m_freqValues.size(); i++)
             {
@@ -464,10 +461,7 @@ namespace Tensile
             }
 
             std::cout << "\n";
-            std::cout << "\t\t\t\t\tMin\t\t"
-                      << "Max\t\t"
-                      << "Average\t  "
-                      << "Median\n";
+            std::cout << "\t\t\t\t\tMin\t\t" << "Max\t\t" << "Average\t  " << "Median\n";
             // min, max,avg, median frequency
             printMinMaxAverageMedian("GFX Frequency", m_freqValues);
             printMinMaxAverageMedian("Power Value", m_powerValues);

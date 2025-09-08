@@ -26,35 +26,32 @@
 #include "../../config.hpp"
 #include "../../detail/various.hpp"
 
-#include "../../intrinsics.hpp"
 #include "../../functional.hpp"
+#include "../../intrinsics.hpp"
 
-#include "../block_radix_sort.hpp"
 #include "../block_discontinuity.hpp"
+#include "../block_radix_sort.hpp"
 
 BEGIN_ROCPRIM_NAMESPACE
 
 namespace detail
 {
 
-template<
-    class T,
-    unsigned int BlockSizeX,
-    unsigned int BlockSizeY,
-    unsigned int BlockSizeZ,
-    unsigned int ItemsPerThread,
-    unsigned int Bins
->
+template<class T,
+         unsigned int BlockSizeX,
+         unsigned int BlockSizeY,
+         unsigned int BlockSizeZ,
+         unsigned int ItemsPerThread,
+         unsigned int Bins>
 class block_histogram_sort
 {
     static constexpr unsigned int BlockSize = BlockSizeX * BlockSizeY * BlockSizeZ;
-    static_assert(
-        std::is_convertible<T, unsigned int>::value,
-        "T must be convertible to unsigned int"
-    );
+    static_assert(std::is_convertible<T, unsigned int>::value,
+                  "T must be convertible to unsigned int");
 
 private:
-    using radix_sort = block_radix_sort<T, BlockSizeX, ItemsPerThread, empty_type, BlockSizeY, BlockSizeZ>;
+    using radix_sort
+        = block_radix_sort<T, BlockSizeX, ItemsPerThread, empty_type, BlockSizeY, BlockSizeZ>;
     using discontinuity = block_discontinuity<T, BlockSizeX, BlockSizeY, BlockSizeZ>;
 
 public:
@@ -64,8 +61,8 @@ public:
         struct
         {
             typename discontinuity::storage_type flag;
-            unsigned int start[Bins];
-            unsigned int end[Bins];
+            unsigned int                         start[Bins];
+            unsigned int                         end[Bins];
         };
     };
 
@@ -78,15 +75,14 @@ public:
     void composite(T (&input)[ItemsPerThread],
                    Counter hist[Bins])
     {
-        ROCPRIM_SHARED_MEMORY storage_type storage;
+        ROCPRIM_SHARED_MEMORY
+        storage_type storage;
         this->composite(input, hist, storage);
     }
 
     template<class Counter>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void composite(T (&input)[ItemsPerThread],
-                   Counter hist[Bins],
-                   storage_type& storage)
+    void composite(T (&input)[ItemsPerThread], Counter hist[Bins], storage_type& storage)
     {
         // TODO: Check, MSVC rejects the code with the static assertion, yet compiles fine for all tested types. Predicate likely too strict
         //static_assert(
@@ -95,12 +91,13 @@ public:
         //);
         constexpr auto tile_size = BlockSize * ItemsPerThread;
         const auto flat_tid = ::rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>();
-        unsigned int head_flags[ItemsPerThread];
+        unsigned int     head_flags[ItemsPerThread];
         discontinuity_op flags_op(storage);
-        storage_type_& storage_ = storage.get();
+        storage_type_&   storage_ = storage.get();
 
         radix_sort().sort(input, storage_.sort);
-        ::rocprim::syncthreads(); // Fix race condition that appeared on Vega10 hardware, storage LDS is reused below.
+        ::rocprim::
+            syncthreads(); // Fix race condition that appeared on Vega10 hardware, storage LDS is reused below.
 
         // Due to a compiler bug, it appear that in some cases, the optimizer is
         // reordering things such that shared memory writes in 'flag_heads()' run
@@ -112,7 +109,7 @@ public:
         for(unsigned int offset = 0; offset + flat_tid < Bins; offset += BlockSize)
         {
             storage_.start[offset + flat_tid] = tile_size;
-            storage_.end[offset + flat_tid] = tile_size;
+            storage_.end[offset + flat_tid]   = tile_size;
         }
         ::rocprim::syncthreads();
 
@@ -135,7 +132,8 @@ public:
             const unsigned int offset_tid = offset + flat_tid;
             if(offset_tid < Bins)
             {
-                Counter count = static_cast<Counter>(storage_.end[offset_tid] - storage_.start[offset_tid]);
+                Counter count
+                    = static_cast<Counter>(storage_.end[offset_tid] - storage_.start[offset_tid]);
                 hist[offset_tid] += count;
             }
         }
@@ -144,12 +142,12 @@ public:
 private:
     struct discontinuity_op
     {
-        storage_type &storage;
+        storage_type& storage;
 
         ROCPRIM_DEVICE ROCPRIM_INLINE
-        discontinuity_op(storage_type &storage) : storage(storage)
-        {
-        }
+        discontinuity_op(storage_type& storage)
+            : storage(storage)
+        {}
 
         ROCPRIM_DEVICE ROCPRIM_INLINE
         bool operator()(const T& a, const T& b, unsigned int b_index) const
@@ -158,7 +156,7 @@ private:
             if(static_cast<unsigned int>(a) != static_cast<unsigned int>(b))
             {
                 storage_.start[static_cast<unsigned int>(b)] = b_index;
-                storage_.end[static_cast<unsigned int>(a)] = b_index;
+                storage_.end[static_cast<unsigned int>(a)]   = b_index;
                 return true;
             }
             else

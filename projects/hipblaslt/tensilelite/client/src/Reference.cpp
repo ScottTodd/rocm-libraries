@@ -314,7 +314,8 @@ namespace TensileLite
                                        || std::is_same<int32_t, Accumulator>::value
                                        || std::is_same<int64_t, Accumulator>::value
                                        || std::is_same<int8_t, Accumulator>::value,
-                                   bool> = true>
+                                   bool>
+                  = true>
         void SetValue(rocisa::DataType dataType, Accumulator& src, void* dstPtr, size_t pos)
         {
             switch(dataType)
@@ -404,7 +405,8 @@ namespace TensileLite
                                        && !std::is_same<BFloat8, Accumulator>::value
                                        && !std::is_same<Float8_fnuz, Accumulator>::value
                                        && !std::is_same<BFloat8_fnuz, Accumulator>::value,
-                                   bool> = true>
+                                   bool>
+                  = true>
         void SetValue(rocisa::DataType dataType, Accumulator& src, void* dstPtr, size_t pos)
         {
             switch(dataType)
@@ -463,12 +465,13 @@ namespace TensileLite
                     return static_cast<T>(
                         std::min(static_cast<castT>(val), static_cast<castT>(args[1])));
                 return static_cast<T>(
-                        std::min(static_cast<castT>(0.0), static_cast<castT>(args[1])));
+                    std::min(static_cast<castT>(0.0), static_cast<castT>(args[1])));
             }
             else if(new_type == ActivationType::Clamp)
             {
-	      return static_cast<T>(
-                  std::max(static_cast<castT>(args[0]), std::min(static_cast<castT>(val), static_cast<castT>(args[1]))));
+                return static_cast<T>(
+                    std::max(static_cast<castT>(args[0]),
+                             std::min(static_cast<castT>(val), static_cast<castT>(args[1]))));
             }
             else if(new_type == ActivationType::Exp)
             {
@@ -609,7 +612,8 @@ namespace TensileLite
                     || std::is_same<Float8, Input>::value || std::is_same<BFloat8, Input>::value
                     || std::is_same<Float8_fnuz, Input>::value
                     || std::is_same<BFloat8_fnuz, Input>::value,
-                bool> = true>
+                bool>
+            = true>
         std::string ReductionCPU(TensorDescriptor const&  biasTensor,
                                  TensorDescriptor const&  tensor,
                                  void const*              src,
@@ -676,7 +680,8 @@ namespace TensileLite
                     && !std::is_same<Float8, Input>::value && !std::is_same<BFloat8, Input>::value
                     && !std::is_same<Float8_fnuz, Input>::value
                     && !std::is_same<BFloat8_fnuz, Input>::value,
-                bool> = true>
+                bool>
+            = true>
         std::string ReductionCPU(TensorDescriptor const&  biasTensor,
                                  TensorDescriptor const&  tensor,
                                  void const*              src,

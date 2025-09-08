@@ -46,7 +46,7 @@ namespace rocRoller
         public:
             OPSEL94x() {}
             OPSEL94x(ContextPtr context)
-                : WaitStateObserver<OPSEL94x>(context){};
+                : WaitStateObserver<OPSEL94x>(context) {};
 
             constexpr static bool required(GPUArchitectureTarget const& target)
             {

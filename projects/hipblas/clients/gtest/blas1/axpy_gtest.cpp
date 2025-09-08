@@ -75,13 +75,15 @@ namespace
 
     // This tells whether the BLAS1 tests are enabled
     template <blas1 BLAS1, typename Ti, typename To, typename Tc>
-    using axpy_enabled = std::integral_constant<
-        bool,
-        ((BLAS1 == blas1::axpy || BLAS1 == blas1::axpy_batched
-          || BLAS1 == blas1::axpy_strided_batched)
-         && std::is_same_v<
-             Ti,
-             To> && std::is_same_v<To, Tc> && (std::is_same_v<Ti, hipblasHalf> || std::is_same_v<Ti, std::complex<float>> || std::is_same_v<Ti, std::complex<double>> || std::is_same_v<Ti, float> || std::is_same_v<Ti, double>))>;
+    using axpy_enabled
+        = std::integral_constant<bool,
+                                 ((BLAS1 == blas1::axpy || BLAS1 == blas1::axpy_batched
+                                   || BLAS1 == blas1::axpy_strided_batched)
+                                  && std::is_same_v<Ti, To> && std::is_same_v<To, Tc>
+                                  && (std::is_same_v<Ti, hipblasHalf>
+                                      || std::is_same_v<Ti, std::complex<float>>
+                                      || std::is_same_v<Ti, std::complex<double>>
+                                      || std::is_same_v<Ti, float> || std::is_same_v<Ti, double>))>;
 
 // Creates tests for one of the BLAS 1 functions
 // ARG passes 1-3 template arguments to the testing_* function

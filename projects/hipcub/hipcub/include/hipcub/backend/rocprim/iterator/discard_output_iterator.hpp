@@ -37,8 +37,8 @@
 
 #include <rocprim/iterator/discard_iterator.hpp> // IWYU pragma: export
 
-#include <iterator>
 #include <iostream>
+#include <iterator>
 
 BEGIN_HIPCUB_NAMESPACE
 
@@ -46,7 +46,6 @@ BEGIN_HIPCUB_NAMESPACE
  * \addtogroup UtilIterator
  * @{
  */
-
 
 /**
  * \brief A discard iterator
@@ -67,23 +66,21 @@ public:
         typename detail::IteratorCategory<value_type, reference>::type; ///< The iterator category
 
 private:
-
     OffsetT offset;
 
 public:
-
     /// Constructor
-    __host__ __device__ __forceinline__ DiscardOutputIterator(
-        OffsetT offset = 0)     ///< Base offset
-    :
-        offset(offset)
+    __host__ __device__ __forceinline__
+    DiscardOutputIterator(OffsetT offset = 0) ///< Base offset
+        : offset(offset)
     {}
 
     /**
     * @typedef self_type
     * @brief Postfix increment
     */
-    __host__ __device__ __forceinline__ self_type operator++(int)
+    __host__ __device__ __forceinline__
+    self_type operator++(int)
     {
         self_type retval = *this;
         offset++;
@@ -94,7 +91,8 @@ public:
     * @typedef self_type
     * @brief Postfix increment
     */
-    __host__ __device__ __forceinline__ self_type operator++()
+    __host__ __device__ __forceinline__
+    self_type operator++()
     {
         offset++;
         return *this;
@@ -104,7 +102,8 @@ public:
     * @typedef self_type
     * @brief Indirection
     */
-    __host__ __device__ __forceinline__ self_type& operator*()
+    __host__ __device__ __forceinline__
+    self_type& operator*()
     {
         // return self reference, which can be assigned to anything
         return *this;
@@ -114,8 +113,9 @@ public:
     * @typedef self_type
     * @brief Addition
     */
-    template <typename Distance>
-    __host__ __device__ __forceinline__ self_type operator+(Distance n) const
+    template<typename Distance>
+    __host__ __device__ __forceinline__
+    self_type operator+(Distance n) const
     {
         self_type retval(offset + n);
         return retval;
@@ -125,8 +125,9 @@ public:
     * @typedef self_type
     * @brief Addition assignment
     */
-    template <typename Distance>
-    __host__ __device__ __forceinline__ self_type& operator+=(Distance n)
+    template<typename Distance>
+    __host__ __device__ __forceinline__
+    self_type& operator+=(Distance n)
     {
         offset += n;
         return *this;
@@ -136,8 +137,9 @@ public:
     * @typedef self_type
     * @brief Subtraction assignment
     */
-    template <typename Distance>
-    __host__ __device__ __forceinline__ self_type operator-(Distance n) const
+    template<typename Distance>
+    __host__ __device__ __forceinline__
+    self_type operator-(Distance n) const
     {
         self_type retval(offset - n);
         return retval;
@@ -147,8 +149,9 @@ public:
     * @typedef self_type
     * @brief Subtraction assignment
     */
-    template <typename Distance>
-    __host__ __device__ __forceinline__ self_type& operator-=(Distance n)
+    template<typename Distance>
+    __host__ __device__ __forceinline__
+    self_type& operator-=(Distance n)
     {
         offset -= n;
         return *this;
@@ -158,7 +161,8 @@ public:
     * @typedef self_type
     * @brief Distance
     */
-    __host__ __device__ __forceinline__ difference_type operator-(self_type other) const
+    __host__ __device__ __forceinline__
+    difference_type operator-(self_type other) const
     {
         return offset - other.offset;
     }
@@ -167,22 +171,25 @@ public:
     * @typedef self_type
     * @brief Array subscript
     */
-    template <typename Distance>
-    __host__ __device__ __forceinline__ self_type& operator[](Distance)
+    template<typename Distance>
+    __host__ __device__ __forceinline__
+    self_type& operator[](Distance)
     {
         // return self reference, which can be assigned to anything
         return *this;
     }
 
     /// Structure dereference
-    __host__ __device__ __forceinline__ pointer operator->()
+    __host__ __device__ __forceinline__
+    pointer operator->()
     {
         return;
     }
 
     /// Assignment to anything else (no-op)
     template<typename T>
-    __host__ __device__ __forceinline__ void operator=(T const&)
+    __host__ __device__ __forceinline__
+    void operator=(T const&)
     {}
 
     /// Cast to void* operator
@@ -195,7 +202,8 @@ public:
     * @typedef self_type
     * @brief Equal to
     */
-    __host__ __device__ __forceinline__ bool operator==(const self_type& rhs) const
+    __host__ __device__ __forceinline__
+    bool operator==(const self_type& rhs) const
     {
         return (offset == rhs.offset);
     }
@@ -204,7 +212,8 @@ public:
     * @typedef self_type
     * @brief Not equal to
     */
-    __host__ __device__ __forceinline__ bool operator!=(const self_type& rhs) const
+    __host__ __device__ __forceinline__
+    bool operator!=(const self_type& rhs) const
     {
         return (offset != rhs.offset);
     }

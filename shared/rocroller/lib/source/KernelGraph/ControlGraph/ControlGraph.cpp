@@ -54,8 +54,7 @@ namespace rocRoller::KernelGraph::ControlGraph
         int width = std::ceil(std::log10(static_cast<float>(*nodes.rbegin())));
         width     = std::max(width, 3);
 
-        msg << std::setw(width) << " "
-            << "\\";
+        msg << std::setw(width) << " " << "\\";
         for(int n : nodes)
             msg << " " << std::setw(width) << n;
 
@@ -80,9 +79,7 @@ namespace rocRoller::KernelGraph::ControlGraph
             msg << " | " << std::setw(width) << i;
         }
 
-        msg << std::endl
-            << std::setw(width) << " "
-            << "|";
+        msg << std::endl << std::setw(width) << " " << "|";
         for(int n : nodes)
             msg << " " << std::setw(width) << n;
 
@@ -145,8 +142,8 @@ namespace rocRoller::KernelGraph::ControlGraph
             return std::visit(
                 [](auto&& arg) {
                     using OpType = std::decay_t<decltype(arg)>;
-                    return !(
-                        std::is_same_v<OpType, ForLoopOp> or std::is_same_v<OpType, SetCoordinate>);
+                    return !(std::is_same_v<OpType, ForLoopOp>
+                             or std::is_same_v<OpType, SetCoordinate>);
                 },
                 std::get<Operation>(el));
         }

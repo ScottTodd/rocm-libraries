@@ -56,8 +56,8 @@ THRUST_HOST_DEVICE inline void apply_to_each_in_tuple_impl(Tuple&& t, Function&&
 }
 
 template <class Tuple, class Function>
-THRUST_HOST_DEVICE inline auto apply_to_each_in_tuple(Tuple&& t, Function&& f)
-  -> std::void_t<tuple_size<std::remove_reference_t<Tuple>>>
+THRUST_HOST_DEVICE inline auto
+apply_to_each_in_tuple(Tuple&& t, Function&& f) -> std::void_t<tuple_size<std::remove_reference_t<Tuple>>>
 {
   static constexpr size_t size = tuple_size<std::remove_reference_t<Tuple>>::value;
   apply_to_each_in_tuple_impl(std::forward<Tuple>(t), std::forward<Function>(f), thrust::make_index_sequence<size>());

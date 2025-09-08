@@ -214,7 +214,7 @@ struct bit_rshift
 
 #define MAKE_BINARY_COMPOSITE(op, functor)                                                                       \
   template <typename A, typename B, _THRUST_STD::enable_if_t<is_actor<A>::value || is_actor<B>::value, int> = 0> \
-  THRUST_HOST_DEVICE auto operator op(const A& a, const B& b) -> decltype(compose(functor{}, a, b))              \
+  THRUST_HOST_DEVICE auto operator op(const A& a, const B& b)->decltype(compose(functor{}, a, b))                \
   {                                                                                                              \
     return compose(functor{}, a, b);                                                                             \
   }
@@ -262,8 +262,8 @@ struct unary_plus
 
   THRUST_EXEC_CHECK_DISABLE
   template <typename T1>
-  THRUST_HOST_DEVICE constexpr auto operator()(T1&& t1) const noexcept(noexcept(+THRUST_FWD(t1)))
-    -> decltype(+THRUST_FWD(t1))
+  THRUST_HOST_DEVICE constexpr auto operator()(T1&& t1) const
+    noexcept(noexcept(+THRUST_FWD(t1))) -> decltype(+THRUST_FWD(t1))
   {
     return +THRUST_FWD(t1);
   }
@@ -276,8 +276,8 @@ struct prefix_increment
 
   THRUST_EXEC_CHECK_DISABLE
   template <typename T1>
-  THRUST_HOST_DEVICE constexpr auto operator()(T1&& t1) const noexcept(noexcept(++THRUST_FWD(t1)))
-    -> decltype(++THRUST_FWD(t1))
+  THRUST_HOST_DEVICE constexpr auto operator()(T1&& t1) const
+    noexcept(noexcept(++THRUST_FWD(t1))) -> decltype(++THRUST_FWD(t1))
   {
     return ++THRUST_FWD(t1);
   }
@@ -290,8 +290,8 @@ struct postfix_increment
 
   THRUST_EXEC_CHECK_DISABLE
   template <typename T1>
-  THRUST_HOST_DEVICE constexpr auto operator()(T1&& t1) const noexcept(noexcept(THRUST_FWD(t1)++))
-    -> decltype(THRUST_FWD(t1)++)
+  THRUST_HOST_DEVICE constexpr auto operator()(T1&& t1) const
+    noexcept(noexcept(THRUST_FWD(t1)++)) -> decltype(THRUST_FWD(t1)++)
   {
     return THRUST_FWD(t1)++;
   }
@@ -304,8 +304,8 @@ struct prefix_decrement
 
   THRUST_EXEC_CHECK_DISABLE
   template <typename T1>
-  THRUST_HOST_DEVICE constexpr auto operator()(T1&& t1) const noexcept(noexcept(--THRUST_FWD(t1)))
-    -> decltype(--THRUST_FWD(t1))
+  THRUST_HOST_DEVICE constexpr auto operator()(T1&& t1) const
+    noexcept(noexcept(--THRUST_FWD(t1))) -> decltype(--THRUST_FWD(t1))
   {
     return --THRUST_FWD(t1);
   }
@@ -318,8 +318,8 @@ struct postfix_decrement
 
   THRUST_EXEC_CHECK_DISABLE
   template <typename T1>
-  THRUST_HOST_DEVICE constexpr auto operator()(T1&& t1) const noexcept(noexcept(THRUST_FWD(t1)--))
-    -> decltype(THRUST_FWD(t1)--)
+  THRUST_HOST_DEVICE constexpr auto operator()(T1&& t1) const
+    noexcept(noexcept(THRUST_FWD(t1)--)) -> decltype(THRUST_FWD(t1)--)
   {
     return THRUST_FWD(t1)--;
   }
@@ -332,18 +332,18 @@ struct bit_not
 
   THRUST_EXEC_CHECK_DISABLE
   template <typename T1>
-  THRUST_HOST_DEVICE constexpr auto operator()(T1&& t1) const noexcept(noexcept(~THRUST_FWD(t1)))
-    -> decltype(~THRUST_FWD(t1))
+  THRUST_HOST_DEVICE constexpr auto operator()(T1&& t1) const
+    noexcept(noexcept(~THRUST_FWD(t1))) -> decltype(~THRUST_FWD(t1))
   {
     return ~THRUST_FWD(t1);
   }
 }; // end prefix_increment
 
-#define MAKE_UNARY_COMPOSITE(op, functor)                                            \
-  template <typename A, _THRUST_STD::enable_if_t<is_actor<A>::value, int> = 0>       \
-  THRUST_HOST_DEVICE auto operator op(const A& a) -> decltype(compose(functor{}, a)) \
-  {                                                                                  \
-    return compose(functor{}, a);                                                    \
+#define MAKE_UNARY_COMPOSITE(op, functor)                                          \
+  template <typename A, _THRUST_STD::enable_if_t<is_actor<A>::value, int> = 0>     \
+  THRUST_HOST_DEVICE auto operator op(const A& a)->decltype(compose(functor{}, a)) \
+  {                                                                                \
+    return compose(functor{}, a);                                                  \
   }
 
 MAKE_UNARY_COMPOSITE(+, unary_plus)
@@ -355,11 +355,11 @@ MAKE_UNARY_COMPOSITE(~, bit_not)
 
 #undef MAKE_UNARY_COMPOSITE
 
-#define MAKE_UNARY_COMPOSITE_POSTFIX(op, functor)                                         \
-  template <typename A, _THRUST_STD::enable_if_t<is_actor<A>::value, int> = 0>            \
-  THRUST_HOST_DEVICE auto operator op(const A& a, int) -> decltype(compose(functor{}, a)) \
-  {                                                                                       \
-    return compose(functor{}, a);                                                         \
+#define MAKE_UNARY_COMPOSITE_POSTFIX(op, functor)                                       \
+  template <typename A, _THRUST_STD::enable_if_t<is_actor<A>::value, int> = 0>          \
+  THRUST_HOST_DEVICE auto operator op(const A& a, int)->decltype(compose(functor{}, a)) \
+  {                                                                                     \
+    return compose(functor{}, a);                                                       \
   }
 
 MAKE_UNARY_COMPOSITE_POSTFIX(++, postfix_increment)

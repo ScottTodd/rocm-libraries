@@ -35,15 +35,15 @@ from .utils import find_library, expand_paths
 
 # Finalize is only supported by python >= 3.4
 try:
-  from weakref import finalize
+    from weakref import finalize
 except ImportError:
-  from backports.weakref import finalize
+    from backports.weakref import finalize
 
 
-HIPRAND_PATHS = [
-        os.getenv("HIPRAND_PATH"),
-        os.getenv("ROCRAND_PATH")
-    ] + expand_paths(HIP_PATHS, ["", "rocrand", "hiprand"])
+HIPRAND_PATHS = [os.getenv("HIPRAND_PATH"), os.getenv("ROCRAND_PATH")] + expand_paths(
+    HIP_PATHS, ["", "rocrand", "hiprand"]
+)
+
 
 def load_hiprand():
     global hiprand
@@ -55,6 +55,7 @@ def load_hiprand():
 
     load_hip()
 
+
 # Delay the loading of hiprand to the first use
 # so no code is executed when loading this module
 class _load_hiprand_on_access(object):
@@ -62,6 +63,7 @@ class _load_hiprand_on_access(object):
         global hiprand
         load_hiprand()
         return getattr(hiprand, name)
+
 
 hiprand = _load_hiprand_on_access()
 
@@ -93,49 +95,58 @@ HIPRAND_STATUS_INTERNAL_ERROR = 999
 HIPRAND_STATUS_NOT_IMPLEMENTED = 1000
 
 HIPRAND_STATUS = {
-    HIPRAND_STATUS_SUCCESS: (
-        "HIPRAND_STATUS_SUCCESS",
-        "Success"),
+    HIPRAND_STATUS_SUCCESS: ("HIPRAND_STATUS_SUCCESS", "Success"),
     HIPRAND_STATUS_VERSION_MISMATCH: (
         "HIPRAND_STATUS_VERSION_MISMATCH",
-        "Header file and linked library version do not match"),
+        "Header file and linked library version do not match",
+    ),
     HIPRAND_STATUS_NOT_INITIALIZED: (
         "HIPRAND_STATUS_NOT_INITIALIZED",
-        "Generator was not created using hiprandCreateGenerator"),
+        "Generator was not created using hiprandCreateGenerator",
+    ),
     HIPRAND_STATUS_ALLOCATION_FAILED: (
         "HIPRAND_STATUS_ALLOCATION_FAILED",
-        "Memory allocation failed during execution"),
-    HIPRAND_STATUS_TYPE_ERROR: (
-        "HIPRAND_STATUS_TYPE_ERROR",
-        "Generator type is wrong"),
+        "Memory allocation failed during execution",
+    ),
+    HIPRAND_STATUS_TYPE_ERROR: ("HIPRAND_STATUS_TYPE_ERROR", "Generator type is wrong"),
     HIPRAND_STATUS_OUT_OF_RANGE: (
         "HIPRAND_STATUS_OUT_OF_RANGE",
-        "Argument out of range"),
+        "Argument out of range",
+    ),
     HIPRAND_STATUS_LENGTH_NOT_MULTIPLE: (
         "HIPRAND_STATUS_LENGTH_NOT_MULTIPLE",
-        "Length requested is not a multiple of dimension"),
+        "Length requested is not a multiple of dimension",
+    ),
     HIPRAND_STATUS_DOUBLE_PRECISION_REQUIRED: (
         "HIPRAND_STATUS_DOUBLE_PRECISION_REQUIRED",
-        "GPU does not have double precision"),
+        "GPU does not have double precision",
+    ),
     HIPRAND_STATUS_LAUNCH_FAILURE: (
         "HIPRAND_STATUS_LAUNCH_FAILURE",
-        "Kernel launch failure"),
+        "Kernel launch failure",
+    ),
     HIPRAND_STATUS_PREEXISTING_FAILURE: (
         "HIPRAND_STATUS_PREEXISTING_FAILURE",
-        "Preexisting failure on library entry"),
+        "Preexisting failure on library entry",
+    ),
     HIPRAND_STATUS_INITIALIZATION_FAILED: (
         "HIPRAND_STATUS_INITIALIZATION_FAILED",
-        "Initialization of HIP failed"),
+        "Initialization of HIP failed",
+    ),
     HIPRAND_STATUS_ARCH_MISMATCH: (
         "HIPRAND_STATUS_ARCH_MISMATCH",
-        "Architecture mismatch, GPU does not support requested feature"),
+        "Architecture mismatch, GPU does not support requested feature",
+    ),
     HIPRAND_STATUS_INTERNAL_ERROR: (
         "HIPRAND_STATUS_INTERNAL_ERROR",
-        "Internal library error"),
+        "Internal library error",
+    ),
     HIPRAND_STATUS_NOT_IMPLEMENTED: (
         "HIPRAND_STATUS_NOT_IMPLEMENTED",
-        "Feature not implemented yet")
+        "Feature not implemented yet",
+    ),
 }
+
 
 def check_hiprand(status):
     if status != HIPRAND_STATUS_SUCCESS:
@@ -161,7 +172,11 @@ class RNG(object):
 
     def __init__(self, rngtype, offset=None, stream=None, *, is_host=False):
         self._gen = c_void_p()
-        create_fun = hiprand.hiprandCreateGeneratorHost if is_host else hiprand.hiprandCreateGenerator
+        create_fun = (
+            hiprand.hiprandCreateGeneratorHost
+            if is_host
+            else hiprand.hiprandCreateGenerator
+        )
         check_hiprand(create_fun(byref(self._gen), rngtype))
         finalize(self, RNG._finalize, self._gen)
 
@@ -231,12 +246,16 @@ class RNG(object):
             raise ValueError("requested size is greater than ary")
 
         if isinstance(ary, DeviceNDArray):
-            raise TypeError("Generate called with a device-side array on a host-side generator. "
-                            "For device arrays, instantiate a device-side generator")
+            raise TypeError(
+                "Generate called with a device-side array on a host-side generator. "
+                "For device arrays, instantiate a device-side generator"
+            )
         elif not isinstance(ary, np.ndarray):
             raise TypeError("unsupported type {}".format(type(ary)))
 
-        check_hiprand(gen_func(self._gen, ctypes.c_void_p(ary.ctypes.data), c_size_t(size), *args))
+        check_hiprand(
+            gen_func(self._gen, ctypes.c_void_p(ary.ctypes.data), c_size_t(size), *args)
+        )
 
     def _generate(self, gen_func, ary, size, *args):
         if self._is_host:
@@ -260,13 +279,9 @@ class RNG(object):
         :param size: Number of samples to generate, default to **ary.size**
         """
         if ary.dtype in (np.uint32, np.int32):
-            self._generate(
-                hiprand.hiprandGenerate,
-                ary, size)
+            self._generate(hiprand.hiprandGenerate, ary, size)
         elif ary.dtype in (np.uint64, np.int64):
-            self._generate(
-                hiprand.hiprandGenerateLongLong,
-                ary, size)
+            self._generate(hiprand.hiprandGenerateLongLong, ary, size)
         else:
             raise TypeError("unsupported type {}".format(ary.dtype))
 
@@ -286,13 +301,9 @@ class RNG(object):
         :param size: Number of samples to generate, default to **ary.size**
         """
         if ary.dtype == np.float32:
-            self._generate(
-                hiprand.hiprandGenerateUniform,
-                ary, size)
+            self._generate(hiprand.hiprandGenerateUniform, ary, size)
         elif ary.dtype == np.float64:
-            self._generate(
-                hiprand.hiprandGenerateUniformDouble,
-                ary, size)
+            self._generate(hiprand.hiprandGenerateUniformDouble, ary, size)
         else:
             raise TypeError("unsupported type {}".format(ary.dtype))
 
@@ -312,14 +323,16 @@ class RNG(object):
         """
         if ary.dtype == np.float32:
             self._generate(
-                hiprand.hiprandGenerateNormal,
-                ary, size,
-                c_float(mean), c_float(stddev))
+                hiprand.hiprandGenerateNormal, ary, size, c_float(mean), c_float(stddev)
+            )
         elif ary.dtype == np.float64:
             self._generate(
                 hiprand.hiprandGenerateNormalDouble,
-                ary, size,
-                c_double(mean), c_double(stddev))
+                ary,
+                size,
+                c_double(mean),
+                c_double(stddev),
+            )
         else:
             raise TypeError("unsupported type {}".format(ary.dtype))
 
@@ -340,13 +353,19 @@ class RNG(object):
         if ary.dtype == np.float32:
             self._generate(
                 hiprand.hiprandGenerateLogNormal,
-                ary, size,
-                c_float(mean), c_float(stddev))
+                ary,
+                size,
+                c_float(mean),
+                c_float(stddev),
+            )
         elif ary.dtype == np.float64:
             self._generate(
                 hiprand.hiprandGenerateLogNormalDouble,
-                ary, size,
-                c_double(mean), c_double(stddev))
+                ary,
+                size,
+                c_double(mean),
+                c_double(stddev),
+            )
         else:
             raise TypeError("unsupported type {}".format(ary.dtype))
 
@@ -364,29 +383,28 @@ class RNG(object):
         :param size:  Number of samples to generate, default to **ary.size**
         """
         if ary.dtype in (np.uint32, np.int32):
-            self._generate(
-                hiprand.hiprandGeneratePoisson,
-                ary, size,
-                c_double(lmbd))
+            self._generate(hiprand.hiprandGeneratePoisson, ary, size, c_double(lmbd))
         else:
             raise TypeError("unsupported type {}".format(ary.dtype))
 
 
 class PRNG(RNG):
-    DEFAULT       = HIPRAND_RNG_PSEUDO_DEFAULT
+    DEFAULT = HIPRAND_RNG_PSEUDO_DEFAULT
     """Default pseudo-random generator type, :const:`XORWOW`"""
-    XORWOW        = HIPRAND_RNG_PSEUDO_XORWOW
+    XORWOW = HIPRAND_RNG_PSEUDO_XORWOW
     """XORWOW pseudo-random generator type"""
-    MRG32K3A      = HIPRAND_RNG_PSEUDO_MRG32K3A
+    MRG32K3A = HIPRAND_RNG_PSEUDO_MRG32K3A
     """MRG32k3a pseudo-random generator type"""
-    MTGP32        = HIPRAND_RNG_PSEUDO_MTGP32
+    MTGP32 = HIPRAND_RNG_PSEUDO_MTGP32
     """Mersenne Twister MTGP32 pseudo-random generator type"""
-    MT19937       = HIPRAND_RNG_PSEUDO_MT19937
+    MT19937 = HIPRAND_RNG_PSEUDO_MT19937
     """Mersenne Twister 19937 pseudo-random generator type"""
     PHILOX4_32_10 = HIPRAND_RNG_PSEUDO_PHILOX4_32_10
     """PHILOX_4x32 (10 rounds) pseudo-random generator type"""
 
-    def __init__(self, rngtype=DEFAULT, seed=None, offset=None, stream=None, *, is_host=False):
+    def __init__(
+        self, rngtype=DEFAULT, seed=None, offset=None, stream=None, *, is_host=False
+    ):
         """__init__(self, rngtype=DEFAULT, seed=None, offset=None, stream=None)
         Creates a new pseudo-random number generator.
 
@@ -420,7 +438,9 @@ class PRNG(RNG):
             gen.poisson(a, 10.0)
             print(a)
         """
-        super(PRNG, self).__init__(rngtype, offset=offset, stream=stream, is_host=is_host)
+        super(PRNG, self).__init__(
+            rngtype, offset=offset, stream=stream, is_host=is_host
+        )
 
         self._seed = None
         if seed is not None:
@@ -436,23 +456,27 @@ class PRNG(RNG):
 
     @seed.setter
     def seed(self, seed):
-        check_hiprand(hiprand.hiprandSetPseudoRandomGeneratorSeed(self._gen, c_ulonglong(seed)))
+        check_hiprand(
+            hiprand.hiprandSetPseudoRandomGeneratorSeed(self._gen, c_ulonglong(seed))
+        )
         self._seed = seed
 
 
 class QRNG(RNG):
-    DEFAULT           = HIPRAND_RNG_QUASI_DEFAULT
+    DEFAULT = HIPRAND_RNG_QUASI_DEFAULT
     """Default quasi-random generator type, :const:`SOBOL32`"""
-    SOBOL32           = HIPRAND_RNG_QUASI_SOBOL32
+    SOBOL32 = HIPRAND_RNG_QUASI_SOBOL32
     """Sobol32 quasi-random generator type"""
     SCRAMBLED_SOBOL32 = HIPRAND_RNG_QUASI_SCRAMBLED_SOBOL32
     """Scrambled Sobol32 quasi-random generator type"""
-    SOBOL64           = HIPRAND_RNG_QUASI_SOBOL64
+    SOBOL64 = HIPRAND_RNG_QUASI_SOBOL64
     """Sobol64 quasi-random generator type"""
     SCRAMBLED_SOBOL64 = HIPRAND_RNG_QUASI_SCRAMBLED_SOBOL64
     """Scrambled Sobol64 quasi-random generator type"""
 
-    def __init__(self, rngtype=DEFAULT, ndim=None, offset=None, stream=None, *, is_host=False):
+    def __init__(
+        self, rngtype=DEFAULT, ndim=None, offset=None, stream=None, *, is_host=False
+    ):
         """
         Creates a new quasi-random number generator.
 
@@ -488,7 +512,9 @@ class QRNG(RNG):
             print(a)
         """
 
-        super(QRNG, self).__init__(rngtype, offset=offset, stream=stream, is_host=is_host)
+        super(QRNG, self).__init__(
+            rngtype, offset=offset, stream=stream, is_host=is_host
+        )
 
         self._ndim = 1
         if ndim is not None:
@@ -505,7 +531,9 @@ class QRNG(RNG):
 
     @ndim.setter
     def ndim(self, ndim):
-        check_hiprand(hiprand.hiprandSetQuasiRandomGeneratorDimensions(self._gen, c_uint(ndim)))
+        check_hiprand(
+            hiprand.hiprandSetQuasiRandomGeneratorDimensions(self._gen, c_uint(ndim))
+        )
         self._ndim = ndim
 
 

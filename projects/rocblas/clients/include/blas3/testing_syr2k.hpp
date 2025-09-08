@@ -392,9 +392,8 @@ void testing_syr2k(const Arguments& arg)
                     const double tol = K * sum_error_tolerance<T>;
                     near_check_general<T>(N, N, ldc, hC_gold, hC, tol);
                 }
-                else if(std::is_same_v<
-                            T,
-                            rocblas_float_complex> || std::is_same_v<T, rocblas_double_complex>)
+                else if(std::is_same_v<T, rocblas_float_complex>
+                        || std::is_same_v<T, rocblas_double_complex>)
                 {
                     const double tol = K * sum_error_tolerance<T>;
                     near_check_general<T>(N, N, ldc, hC_gold, hC, tol);
@@ -424,9 +423,8 @@ void testing_syr2k(const Arguments& arg)
                     const double tol = K * sum_error_tolerance<T>;
                     near_check_general<T>(N, N, ldc, hC_gold, hC, tol);
                 }
-                else if(std::is_same_v<
-                            T,
-                            rocblas_float_complex> || std::is_same_v<T, rocblas_double_complex>)
+                else if(std::is_same_v<T, rocblas_float_complex>
+                        || std::is_same_v<T, rocblas_double_complex>)
                 {
                     const double tol = K * sum_error_tolerance<T>;
                     near_check_general<T>(N, N, ldc, hC_gold, hC, tol);

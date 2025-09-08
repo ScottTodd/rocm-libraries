@@ -139,9 +139,9 @@ THRUST_HOST_DEVICE ValuesOutputIterator inclusive_scan_by_key(
   KeyCompareFunction key_compare_op,
   BinaryFunction scan_op)
 {
-  size_t num_items    = static_cast<size_t>(thrust::distance(key_first, key_last));
-  hipStream_t stream  = hip_rocprim::stream(policy);
-  bool debug_sync     = THRUST_HIP_DEBUG_SYNC_FLAG;
+  size_t num_items   = static_cast<size_t>(thrust::distance(key_first, key_last));
+  hipStream_t stream = hip_rocprim::stream(policy);
+  bool debug_sync    = THRUST_HIP_DEBUG_SYNC_FLAG;
 
   if (num_items == 0)
   {
@@ -284,9 +284,9 @@ THRUST_HOST_DEVICE ValuesOutputIterator exclusive_scan_by_key(
   KeyCompareFunction key_compare_op,
   BinaryFunction scan_op)
 {
-  size_t num_items    = static_cast<size_t>(thrust::distance(key_first, key_last));
-  hipStream_t stream  = hip_rocprim::stream(policy);
-  bool debug_sync     = THRUST_HIP_DEBUG_SYNC_FLAG;
+  size_t num_items   = static_cast<size_t>(thrust::distance(key_first, key_last));
+  hipStream_t stream = hip_rocprim::stream(policy);
+  bool debug_sync    = THRUST_HIP_DEBUG_SYNC_FLAG;
   if (num_items == 0)
   {
     return value_result;

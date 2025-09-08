@@ -409,9 +409,9 @@ struct tensor_reorder_driver : tensor_reorder_base_driver
             // we expect excact match, since use integer
             bool valid_result = verify_tensor(t_dst_gpu, t_dst);
             std::cout << "[" << reorder_str::get(order_0, order_1, order_2, order_3) << ", b"
-                      << (sizeof(T) * 8) << " ] "
-                      << "dim_0:" << dim_0 << ", dim_1:" << dim_1 << ", dim_2:" << dim_2
-                      << ", dim_3:" << dim_3 << ", valid:" << valid_result << std::endl;
+                      << (sizeof(T) * 8) << " ] " << "dim_0:" << dim_0 << ", dim_1:" << dim_1
+                      << ", dim_2:" << dim_2 << ", dim_3:" << dim_3 << ", valid:" << valid_result
+                      << std::endl;
             EXPECT(valid_result == true);
         };
 

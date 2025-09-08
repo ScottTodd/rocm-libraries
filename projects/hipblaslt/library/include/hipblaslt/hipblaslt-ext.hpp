@@ -186,8 +186,10 @@ namespace hipblaslt_ext
         HIPBLASLT_EXPORT void
             setScalingBType(hipblasLtMatmulMatrixScale_t
                                 scalingBType); //!< Only works if DataTypeA = DataTypeB = FP8.
-        HIPBLASLT_EXPORT void setAct0(float act0); //!< Set first extra argument for activation function.
-        HIPBLASLT_EXPORT void setAct1(float act1); //!< Set second extra argument for activation function.
+        HIPBLASLT_EXPORT void
+            setAct0(float act0); //!< Set first extra argument for activation function.
+        HIPBLASLT_EXPORT void
+            setAct1(float act1); //!< Set second extra argument for activation function.
 
         HIPBLASLT_EXPORT hipblasLtEpilogue_t
                                      getMode() const; //!< The mode of epilogue. Default is gemm.
@@ -350,7 +352,7 @@ namespace hipblaslt_ext
             strideE2; //!< The aux batch stride. Only works if mode is set to aux related epilogues.
         float act0; //!< The activation value 1. Some activations might use it.
         float act1; //!< The activation value 2.
-        int   activationType; //!< The activation type.  Only works if mode is set to activation related epilogues.
+        int activationType; //!< The activation type.  Only works if mode is set to activation related epilogues.
     } __attribute__((packed));
 
     /*! \ingroup types_module

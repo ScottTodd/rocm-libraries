@@ -26,9 +26,8 @@
 
 #include "get_rocprim_version.hpp"
 
-__global__
-__launch_bounds__(ROCPRIM_DEFAULT_MAX_BLOCK_SIZE)
-void get_version_kernel(unsigned int * version)
+__global__ __launch_bounds__(ROCPRIM_DEFAULT_MAX_BLOCK_SIZE)
+void get_version_kernel(unsigned int* version)
 {
     *version = rocprim::version();
 }

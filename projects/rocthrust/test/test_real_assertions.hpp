@@ -30,10 +30,9 @@
 #include <cfloat>
 #include <cmath>
 
-#include <gtest/gtest.h>
-
 #include "test_param_fixtures.hpp"
 #include "test_utils.hpp"
+#include <gtest/gtest.h>
 
 template <typename T1, typename T2>
 testing::AssertionResult

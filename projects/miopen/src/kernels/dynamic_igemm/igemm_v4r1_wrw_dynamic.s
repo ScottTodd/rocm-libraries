@@ -216,7 +216,7 @@
     ;v_cndmask_b32 v[\v_flag], 0, 1, vcc
 
     ;   flag: 0<= * <wi
-    ;v_cmp_gt_u32 vcc, s[\s_wi], v[\v_in_iwi] 
+    ;v_cmp_gt_u32 vcc, s[\s_wi], v[\v_in_iwi]
     ;v_cndmask_b32 v[\v_flag], 0, v[\v_flag], vcc
 
 ; load input from global. {e,n1,b,n2}:{1,2,1,4}
@@ -285,13 +285,13 @@
 
 ; store input to LDS. {e,n1,b,n2}:{1,2,1,4}, stride_n1:256, vector_n2:4, offset:0
 .macro .v_in_sst_e_n1_b_n2_1_2_1_4_n1s256_n2v4 v_src, v_sst_os
-    ds_write_b128 v[\v_sst_os], v[\v_src:\v_src+3] 
+    ds_write_b128 v[\v_sst_os], v[\v_src:\v_src+3]
     ds_write_b128 v[\v_sst_os], v[\v_src+4:\v_src+4+3] offset:256
 .endm
 
 ; store input to LDS. {e,n1,b,n2}:{1,1,1,2}, stride_n1:64, vector_n2:2, offset:0
 .macro .v_in_sst_e_n1_b_n2_1_1_1_2_n1s64_n2v2 v_src, v_sst_os
-    ds_write_b64 v[\v_sst_os], v[\v_src:\v_src+1] 
+    ds_write_b64 v[\v_sst_os], v[\v_src:\v_src+1]
 .endm
 
 ; store weight to LDS. {e,k}:{4,2}, stride_e:512, vector_k:2, offset:0
@@ -304,7 +304,7 @@
 
 ; store weight to LDS. {e,k}:{1,8}, vector_k:8, offset:0
 .macro .v_wei_sst_e_k_1_8_kv8 v_src, v_sst_os
-    ds_write_b128 v[\v_sst_os], v[\v_src:\v_src+3] 
+    ds_write_b128 v[\v_sst_os], v[\v_src:\v_src+3]
     ds_write_b128 v[\v_sst_os], v[\v_src+4:\v_src+7] offset:16
 .endm
 
@@ -323,7 +323,7 @@
     .v_write4d_strided \v_src,\s_p_out,\v_out_os,\s_out_stride_n2,\s_out_stride_n1,\s_out_stride_k1,\s_out_stride_k0,\s_dst_os_4,2,2,2,2
 .endm
 
-; move input slice window. unified for all tunable along e=c*y*x 
+; move input slice window. unified for all tunable along e=c*y*x
 ; update v_in_os, v_flag, update v_in_ic, v_in_iy, v_in_ix (zero or possitive), v_in_ihi, v_in_iwi (negative, zero, possitive)
 .macro .v_in_move_slice_window v_in_os, v_in_ic, v_in_iy, v_in_ix, v_in_ihi, v_in_iwi, v_flag, s_hi, s_wi, s_y, s_x, s_in_stride_c, s_dilation_h, s_dilation_w, s_in_ic, s_in_iy, s_in_ix, v_idc, v_idy, v_idx, s_tmp2
     ; record old ic, iy, ix
@@ -371,7 +371,7 @@
     .v_in_set_flag \v_flag, \v_in_ihi, \v_in_iwi, \s_hi, \s_wi, \s_tmp2
 .endm
 
-; move weight slice window. unified for all tunable along e=c*y*x 
+; move weight slice window. unified for all tunable along e=c*y*x
 ; update v_wei_os, update v_wei_ic, v_wei_iy, v_wei_ix (zero or possitive)
 .macro .v_wei_move_slice_window v_wei_os, v_wei_ic, v_wei_iy, v_wei_ix, s_y, s_x, s_wei_stride_c, s_wei_ic, s_wei_iy, s_wei_ix, v_idc, v_idy, v_idx, s_tmp2
     ; record old ic, iy, ix
@@ -409,7 +409,7 @@
     v_lshl_add_u32 v[\v_wei_os], v[\v_idc], 2, v[\v_wei_os]  ; indeed, idc here must be possitive
 .endm
 
-; move input slice window. unified for all tunable along e=c*y*x 
+; move input slice window. unified for all tunable along e=c*y*x
 ; update v_in_os, v_flag, update v_in_ic, v_in_iy, v_in_ix (zero or possitive), v_in_ihi, v_in_iwi (negative, zero, possitive)
 .macro .v_in_wei_move_slice_window_wrw v_in_os, v_wei_os, v_in_ic, v_in_iy, v_in_ix, v_in_ihi, v_in_iwi, v_flag, s_hi, s_wi, s_y, s_x, s_in_stride_c, s_wei_stride_c, s_dilation_h, s_dilation_w, s_in_ic, s_in_iy, s_in_ix, v_idc, v_idy, v_idx, v_wei_idc, s_tmp2
     ; record old ic, iy, ix
@@ -481,7 +481,7 @@
 ; in_block_copy_cluster_lengths_n2 : 1
 ; wei_block_copy_cluster_lengths_e : 4
 ; wei_block_copy_cluster_lengths_k : 16
-; 
+;
 ; in_block_copy_sub_lengths_e      : 1
 ; in_block_copy_sub_lengths_n1     : 1
 ; in_block_copy_sub_lengths_b      : 1
@@ -490,7 +490,7 @@
 ; wei_block_copy_sub_lengths_k     : 2
 ; block_size                       : 64
 ; thread_tile                      : 4x4
-; 
+;
 ; kernarg offset
 .set k_p_in,                0
 .set k_p_wei,               8
@@ -658,11 +658,11 @@ igemm_v4r1_dynamic_wrw_32x32x4_4x4_2x2x4x2x4x2_4x2x8x1_4x16:
     ; block e index on global
     .v_u32_div_ss v_tmp+5, s_bx, s_group_stride, v_tmp, s_tmp ; v_tmp_5=block_idx/(n*ho*wo/32*k/32)
     v_readfirstlane_b32 s[s_block_ie], v[v_tmp+5] ; s_block_ie=block_idx/(n*ho*wo/32*k/32)
-    
+
     ; block k, b index on global
     s_mul_i32 s[s_tmp+2], s[s_block_ie], s[s_group_stride] ; s_tmp_2=block_idx/(n*ho*wo/32*k/32)*(n*ho*wo/32*k/32)
     s_sub_i32 s[s_group_left], s[s_bx], s[s_tmp+2] ; s_tmp_1=block_idx-block_idx/(n*ho*wo/32*k/32)*(n*ho*wo/32*k/32)
-    
+
     .v_u32_div_ss v_tmp+5, s_group_left, 0, v_tmp, s_tmp ; v_tmp_5=block_idx/(ho*wo*n/4/8)
     v_readfirstlane_b32 s[s_tmp], v[v_tmp+5] ; s_tmp=v_tmp_5
     s_mul_i32 s[s_tmp+2], s[s_tmp], s[0] ; s_tmp_2=block_idx/(ho*wo*n/4/8)*(ho*wo*n/4/8)
@@ -678,7 +678,7 @@ igemm_v4r1_dynamic_wrw_32x32x4_4x4_2x2x4x2x4x2_4x2x8x1_4x16:
     v_mul_lo_u32 v[v_tmp], s[s_out_stride_n2], v[v_in_in0] ; v_tmp=v_in_n0*(ho*wo)
     v_sub_u32 v[v_tmp+4], v[v_tmp+4], v[v_tmp] ; v_tmp_4=block_ib+v_in_ib-v_in_n0*(ho*wo)
     .v_u32_div_vs v_in_iho, v_tmp+4, s_wo, v_tmp, s_tmp ; v_in_iho=v_tmp_4/wo
-    v_mul_lo_u32 v[v_tmp], s[s_wo], v[v_in_iho] 
+    v_mul_lo_u32 v[v_tmp], s[s_wo], v[v_in_iho]
     v_sub_u32 v[v_in_iwo], v[v_tmp+4], v[v_tmp] ; v_in_iwo=v_tmp_4-v_in_iho*wo
 
     ; e_n1_b_n2:e
@@ -848,8 +848,8 @@ igemm_v4r1_dynamic_wrw_32x32x4_4x4_2x2x4x2x4x2_4x2x8x1_4x16:
 
 L_igemm_v4r1_dynamic_wrw_32x32x4_4x4_2x2x4x2x4x2_4x2x8x1_4x16_fma_body:
     ; do fma accumulate with unroll 4
-    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os] 
-    ds_read_b64 v[v_b:v_b+1], v[v_sld_b_os] 
+    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os]
+    ds_read_b64 v[v_b:v_b+1], v[v_sld_b_os]
     ds_read_b64 v[v_b+2:v_b+2+1], v[v_sld_b_os] offset:64
     ds_read_b64 v[v_a+2:v_a+2+1], v[v_sld_a_os] offset:64
     .itr_k = 0
@@ -909,8 +909,8 @@ L_igemm_v4r1_dynamic_wrw_32x32x4_4x4_2x2x4x2x4x2_4x2x8x1_4x16_fma_finishing:
 L_igemm_v4r1_dynamic_wrw_32x32x4_4x4_2x2x4x2x4x2_4x2x8x1_4x16_end:
     s_waitcnt lgkmcnt(0)
     s_barrier
-    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os] 
-    ds_read_b64 v[v_b:v_b+1], v[v_sld_b_os] 
+    ds_read_b64 v[v_a:v_a+1], v[v_sld_a_os]
+    ds_read_b64 v[v_b:v_b+1], v[v_sld_b_os]
     ds_read_b64 v[v_b+2:v_b+2+1], v[v_sld_b_os] offset:64
     ds_read_b64 v[v_a+2:v_a+2+1], v[v_sld_a_os] offset:64
     .itr_k = 0
@@ -984,7 +984,7 @@ L_igemm_v4r1_dynamic_wrw_32x32x4_4x4_2x2x4x2x4x2_4x2x8x1_4x16_end:
 ; in_block_copy_cluster_lengths_n2 : 1
 ; wei_block_copy_cluster_lengths_e : 4
 ; wei_block_copy_cluster_lengths_k : 64
-; 
+;
 ; in_block_copy_sub_lengths_e      : 1
 ; in_block_copy_sub_lengths_n1     : 2
 ; in_block_copy_sub_lengths_b      : 1
@@ -993,7 +993,7 @@ L_igemm_v4r1_dynamic_wrw_32x32x4_4x4_2x2x4x2x4x2_4x2x8x1_4x16_end:
 ; wei_block_copy_sub_lengths_k     : 2
 ; block_size                       : 256
 ; thread_tile                      : 8x8
-; 
+;
 ; kernarg offset
 .set k_p_in,                0
 .set k_p_wei,               8
@@ -1157,11 +1157,11 @@ L_igemm_v4r1_dynamic_wrw_32x32x4_4x4_2x2x4x2x4x2_4x2x8x1_4x16_end:
     ; block e index on global
     .v_u32_div_ss v_tmp+5, s_bx, s_group_stride, v_tmp, s_tmp ; v_tmp_5=block_idx/(n*ho*wo/128*k/128)
     v_readfirstlane_b32 s[s_block_ie], v[v_tmp+5] ; s_block_ie=block_idx/(n*ho*wo/128*k/128)
-    
+
     ; block k, b index on global
     s_mul_i32 s[s_tmp+2], s[s_block_ie], s[s_group_stride] ; s_tmp_2=block_idx/(n*ho*wo/128*k/128)*(n*ho*wo/128*k/128)
     s_sub_i32 s[s_group_left], s[s_bx], s[s_tmp+2] ; s_tmp_1=block_idx-block_idx/(n*ho*wo/128*k/128)*(n*ho*wo/128*k/128)
-    
+
     .v_u32_div_ss v_tmp+5, s_group_left, 0, v_tmp, s_tmp ; v_tmp_5=block_idx/(ho*wo*n/8/16)
     v_readfirstlane_b32 s[s_tmp], v[v_tmp+5] ; s_tmp=v_tmp_5
     s_mul_i32 s[s_tmp+2], s[s_tmp], s[0] ; s_tmp_2=block_idx/(ho*wo*n/8/16)*(ho*wo*n/8/16)
@@ -1177,7 +1177,7 @@ L_igemm_v4r1_dynamic_wrw_32x32x4_4x4_2x2x4x2x4x2_4x2x8x1_4x16_end:
     v_mul_lo_u32 v[v_tmp], s[s_out_stride_n2], v[v_in_in0] ; v_tmp=v_in_n0*(ho*wo)
     v_sub_u32 v[v_tmp+4], v[v_tmp+4], v[v_tmp] ; v_tmp_4=block_ib+v_in_ib-v_in_n0*(ho*wo)
     .v_u32_div_vs v_in_iho, v_tmp+4, s_wo, v_tmp, s_tmp ; v_in_iho=v_tmp_4/wo
-    v_mul_lo_u32 v[v_tmp], s[s_wo], v[v_in_iho] 
+    v_mul_lo_u32 v[v_tmp], s[s_wo], v[v_in_iho]
     v_sub_u32 v[v_in_iwo], v[v_tmp+4], v[v_tmp] ; v_in_iwo=v_tmp_4-v_in_iho*wo
 
     ; e_n1_b_n2:e
@@ -1295,7 +1295,7 @@ L_igemm_v4r1_dynamic_wrw_32x32x4_4x4_2x2x4x2x4x2_4x2x8x1_4x16_end:
     s_mul_i32 s[s_tmp], s[s_tmp], s[s_block_ie] ; s_tmp=s_block_ie*k*n*wo*ho
     v_add_u32 v[v_out_os], v[v_out_os], s[s_tmp] ; v_out_os=v_out_os+s_block_ie*k*n*wo*ho
     s_lshl_b32 s[s_out_stride_k1], s[s_out_stride_k1], 2
-    v_lshlrev_b32 v[v_out_os], 2, v[v_out_os] 
+    v_lshlrev_b32 v[v_out_os], 2, v[v_out_os]
 
     ; in lds offset block e_n1_b_n2
     v_lshlrev_b32 v[v_tmp], 7, v[v_in_ie]
@@ -1337,8 +1337,8 @@ L_igemm_v4r1_dynamic_wrw_32x32x4_4x4_2x2x4x2x4x2_4x2x8x1_4x16_end:
 
 L_igemm_v4r1_dynamic_wrw_128x128x16_8x8_4x4x4x4x4x4_16x1x16x1_4x64_fma_body:
     ; do fma accumulate with unroll 16
-    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os] 
-    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] 
+    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os]
+    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os]
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:256
     ds_read_b128 v[v_a+4:v_a+4+3], v[v_sld_a_os] offset:256
 
@@ -1399,8 +1399,8 @@ L_igemm_v4r1_dynamic_wrw_128x128x16_8x8_4x4x4x4x4x4_16x1x16x1_4x64_fma_finishing
 L_igemm_v4r1_dynamic_wrw_128x128x16_8x8_4x4x4x4x4x4_16x1x16x1_4x64_end:
     s_waitcnt lgkmcnt(0)
     s_barrier
-    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os] 
-    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] 
+    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os]
+    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os]
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:256
     ds_read_b128 v[v_a+4:v_a+4+3], v[v_sld_a_os] offset:256
     .itr_k = 0
@@ -1440,7 +1440,7 @@ L_igemm_v4r1_dynamic_wrw_128x128x16_8x8_4x4x4x4x4x4_16x1x16x1_4x64_end:
     s_mov_b32 s[s_tmp+2], 0
     s_mov_b32 s[s_tmp+3], 0
     .v_out_write_k0_k1_n1_b_n2_2_4_2_1_4 v_c, s_p_buf_out, v_out_os, s_out_stride_k0, s_out_stride_k1, s_out_stride_n1, s_out_stride_n2, s_tmp
-    
+
 L_program_end:
     s_endpgm
 .rodata
@@ -1476,7 +1476,7 @@ L_program_end:
 ; in_block_copy_cluster_lengths_n2 : 1
 ; wei_block_copy_cluster_lengths_e : 16
 ; wei_block_copy_cluster_lengths_k : 16
-; 
+;
 ; in_block_copy_sub_lengths_e      : 1
 ; in_block_copy_sub_lengths_n1     : 2
 ; in_block_copy_sub_lengths_b      : 1
@@ -1485,7 +1485,7 @@ L_program_end:
 ; wei_block_copy_sub_lengths_k     : 8
 ; block_size                       : 256
 ; thread_tile                      : 8x8
-; 
+;
 ; kernarg offset
 .set k_p_in,                0
 .set k_p_wei,               8
@@ -1649,11 +1649,11 @@ L_program_end:
     ; block e index on global
     .v_u32_div_ss v_tmp+5, s_bx, s_group_stride, v_tmp, s_tmp ; v_tmp_5=block_idx/(n*ho*wo/128*k/128)
     v_readfirstlane_b32 s[s_block_ie], v[v_tmp+5] ; s_block_ie=block_idx/(n*ho*wo/128*k/128)
-    
+
     ; block k, b index on global
     s_mul_i32 s[s_tmp+2], s[s_block_ie], s[s_group_stride] ; s_tmp_2=block_idx/(n*ho*wo/128*k/128)*(n*ho*wo/128*k/128)
     s_sub_i32 s[s_group_left], s[s_bx], s[s_tmp+2] ; s_tmp_1=block_idx-block_idx/(n*ho*wo/128*k/128)*(n*ho*wo/128*k/128)
-    
+
     .v_u32_div_ss v_tmp+5, s_group_left, 0, v_tmp, s_tmp ; v_tmp_5=block_idx/(ho*wo*n/8/16)
     v_readfirstlane_b32 s[s_tmp], v[v_tmp+5] ; s_tmp=v_tmp_5
     s_mul_i32 s[s_tmp+2], s[s_tmp], s[0] ; s_tmp_2=block_idx/(ho*wo*n/8/16)*(ho*wo*n/8/16)
@@ -1669,7 +1669,7 @@ L_program_end:
     v_mul_lo_u32 v[v_tmp], s[s_out_stride_n2], v[v_in_in0] ; v_tmp=v_in_n0*(ho*wo)
     v_sub_u32 v[v_tmp+4], v[v_tmp+4], v[v_tmp] ; v_tmp_4=block_ib+v_in_ib-v_in_n0*(ho*wo)
     .v_u32_div_vs v_in_iho, v_tmp+4, s_wo, v_tmp, s_tmp ; v_in_iho=v_tmp_4/wo
-    v_mul_lo_u32 v[v_tmp], s[s_wo], v[v_in_iho] 
+    v_mul_lo_u32 v[v_tmp], s[s_wo], v[v_in_iho]
     v_sub_u32 v[v_in_iwo], v[v_tmp+4], v[v_tmp] ; v_in_iwo=v_tmp_4-v_in_iho*wo
 
     ; e_n1_b_n2:e
@@ -1787,7 +1787,7 @@ L_program_end:
     s_mul_i32 s[s_tmp], s[s_tmp], s[s_block_ie] ; s_tmp=s_block_ie*k*n*wo*ho
     v_add_u32 v[v_out_os], v[v_out_os], s[s_tmp] ; v_out_os=v_out_os+s_block_ie*k*n*wo*ho
     s_lshl_b32 s[s_out_stride_k1], s[s_out_stride_k1], 2
-    v_lshlrev_b32 v[v_out_os], 2, v[v_out_os] 
+    v_lshlrev_b32 v[v_out_os], 2, v[v_out_os]
 
     ; in lds offset block e_n1_b_n2
     v_lshlrev_b32 v[v_tmp], 7, v[v_in_ie]
@@ -1828,11 +1828,11 @@ L_program_end:
 
 L_igemm_v4r1_dynamic_wrw_128x128x16_8x8_4x4x4x4x4x4_16x1x16x1_16x16_fma_body:
     ; do fma accumulate with unroll 16
-    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os] 
-    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] 
+    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os]
+    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os]
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:256
     ds_read_b128 v[v_a+4:v_a+4+3], v[v_sld_a_os] offset:256
-    
+
     .itr_k = 0
     .rept 15
         s_waitcnt lgkmcnt(2)
@@ -1862,7 +1862,7 @@ L_igemm_v4r1_dynamic_wrw_128x128x16_8x8_4x4x4x4x4x4_16x1x16x1_16x16_fma_body:
     s_waitcnt lgkmcnt(1)
     .v_fma_4x4_s8 v_c+4,v_a,v_b+4
 
-    s_waitcnt vmcnt(8) 
+    s_waitcnt vmcnt(8)
     .v_in_sst_e_n1_b_n2_1_2_1_4_n1s256_n2v4 v_gld_b, v_sst_b_os
     s_waitcnt vmcnt(0)
     .v_wei_sst_e_k_1_8_kv8 v_gld_a, v_sst_a_os
@@ -1890,8 +1890,8 @@ L_igemm_v4r1_dynamic_wrw_128x128x16_8x8_4x4x4x4x4x4_16x1x16x1_16x16_fma_finishin
 L_igemm_v4r1_dynamic_wrw_128x128x16_8x8_4x4x4x4x4x4_16x1x16x1_16x16_end:
     s_waitcnt lgkmcnt(0)
     s_barrier
-    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os] 
-    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] 
+    ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os]
+    ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os]
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:256
     ds_read_b128 v[v_a+4:v_a+4+3], v[v_sld_a_os] offset:256
     .itr_k = 0
@@ -1931,7 +1931,7 @@ L_igemm_v4r1_dynamic_wrw_128x128x16_8x8_4x4x4x4x4x4_16x1x16x1_16x16_end:
     s_mov_b32 s[s_tmp+2], 0
     s_mov_b32 s[s_tmp+3], 0
     .v_out_write_k0_k1_n1_b_n2_2_4_2_1_4 v_c, s_p_buf_out, v_out_os, s_out_stride_k0, s_out_stride_k1, s_out_stride_n1, s_out_stride_n2, s_tmp
-    
+
 L_program_end_1:
     s_endpgm
 .rodata

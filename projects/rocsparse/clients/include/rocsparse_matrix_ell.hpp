@@ -45,8 +45,8 @@ struct ell_matrix
     array_t<I>             ind{};
     array_t<T>             val{};
 
-    ell_matrix(){};
-    ~ell_matrix(){};
+    ell_matrix() {};
+    ~ell_matrix() {};
 
     ell_matrix(I m_, I n_, I width_, rocsparse_index_base base_)
         : m(m_)
@@ -55,7 +55,7 @@ struct ell_matrix
         , nnz((int64_t)m_ * width_)
         , base(base_)
         , ind(nnz)
-        , val(nnz){};
+        , val(nnz) {};
 
     explicit ell_matrix(const ell_matrix<MODE, T, I>& that_, bool transfer = true)
         : ell_matrix<MODE, T, I>(that_.m, that_.n, that_.width, that_.base)

@@ -254,9 +254,9 @@ TEST(DecisionTree, DecisionTreeMultiLibrary)
     using Range       = Predicates::Contraction::Range;
     using And         = Predicates::And<ContractionProblem>;
     using BForest     = BasicForest<Key,
-                                ContractionProblem,
-                                std::shared_ptr<ContractionLibrary>,
-                                std::shared_ptr<ContractionSolution>>;
+                                    ContractionProblem,
+                                    std::shared_ptr<ContractionLibrary>,
+                                    std::shared_ptr<ContractionSolution>>;
 
     // This will test the behavior of the dtree logic can handle multiple regions correctly.
     // The two regions that are constructed have the opposite branching logic.

@@ -42,10 +42,12 @@ def TensileUpdateLibrary(userArgs):
 
     # argument parsing and related setup
     argParser = argparse.ArgumentParser()
-    argParser.add_argument("LogicFile", type=os.path.realpath,
-                           help="Library logic file to update")
-    argParser.add_argument("OutputPath", type=os.path.realpath,
-                           help="Where to place updated logic file")
+    argParser.add_argument(
+        "LogicFile", type=os.path.realpath, help="Library logic file to update"
+    )
+    argParser.add_argument(
+        "OutputPath", type=os.path.realpath, help="Where to place updated logic file"
+    )
 
     addCommonArguments(argParser)
     args = argParser.parse_args(userArgs)
@@ -85,18 +87,21 @@ def TensileUpdateLibrary(userArgs):
     for solution in solutions:
         solutionState = solution.getAttributes()
         solutionState["ProblemType"] = solutionState["ProblemType"].state
-        solutionState["ProblemType"]["DataType"] = \
-                solutionState["ProblemType"]["DataType"].value
-        solutionState["ProblemType"]["DestDataType"] = \
-                solutionState["ProblemType"]["DestDataType"].value
-        solutionState["ProblemType"]["ComputeDataType"] = \
-                solutionState["ProblemType"]["ComputeDataType"].value
+        solutionState["ProblemType"]["DataType"] = solutionState["ProblemType"][
+            "DataType"
+        ].value
+        solutionState["ProblemType"]["DestDataType"] = solutionState["ProblemType"][
+            "DestDataType"
+        ].value
+        solutionState["ProblemType"]["ComputeDataType"] = solutionState["ProblemType"][
+            "ComputeDataType"
+        ].value
 
         solutionState["ISA"] = list(solutionState["ISA"])
         solutionList.append(solutionState)
 
     # update yaml
-    libYaml[0] = {"MinimumRequiredVersion":__version__}
+    libYaml[0] = {"MinimumRequiredVersion": __version__}
     libYaml[4] = problemTypeState
     libYaml[5] = solutionList
     LibraryIO.writeYAML(outFile, libYaml, explicit_start=False, explicit_end=False)

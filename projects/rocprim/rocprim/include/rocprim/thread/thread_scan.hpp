@@ -30,7 +30,6 @@
 #ifndef ROCPRIM_THREAD_THREAD_SCAN_HPP_
 #define ROCPRIM_THREAD_THREAD_SCAN_HPP_
 
-
 #include "../config.hpp"
 #include "../functional.hpp"
 
@@ -53,7 +52,8 @@ BEGIN_ROCPRIM_NAMESPACE
 /// \param scan_op [in]      Binary scan operator
 /// \return                  Aggregate of the scan
 template<int LENGTH, typename T, typename ScanOp>
-ROCPRIM_DEVICE ROCPRIM_INLINE T thread_scan_exclusive(
+ROCPRIM_DEVICE ROCPRIM_INLINE
+T thread_scan_exclusive(
     T inclusive, T exclusive, T* input, T* output, ScanOp scan_op, Int2Type<LENGTH> /*length*/)
 {
     ROCPRIM_UNROLL
@@ -78,8 +78,8 @@ ROCPRIM_DEVICE ROCPRIM_INLINE T thread_scan_exclusive(
 /// \param apply_prefix [in] Whether or not the calling thread should apply its prefix.  (Handy for preventing thread-0 from applying a prefix.)
 /// \return                  Aggregate of the scan
 template<int LENGTH, typename T, typename ScanOp>
-ROCPRIM_DEVICE ROCPRIM_INLINE T
-    thread_scan_exclusive(T* input, T* output, ScanOp scan_op, T prefix, bool apply_prefix = true)
+ROCPRIM_DEVICE ROCPRIM_INLINE
+T thread_scan_exclusive(T* input, T* output, ScanOp scan_op, T prefix, bool apply_prefix = true)
 {
     T inclusive = input[0];
     if(apply_prefix)
@@ -107,7 +107,8 @@ ROCPRIM_DEVICE ROCPRIM_INLINE T
 /// \param apply_prefix [in] Whether or not the calling thread should apply its prefix.  (Handy for preventing thread-0 from applying a prefix.)
 /// \return                  Aggregate of the scan
 template<int LENGTH, typename T, typename ScanOp>
-ROCPRIM_DEVICE ROCPRIM_INLINE T thread_scan_exclusive(
+ROCPRIM_DEVICE ROCPRIM_INLINE
+T thread_scan_exclusive(
     T (&input)[LENGTH], T (&output)[LENGTH], ScanOp scan_op, T prefix, bool apply_prefix = true)
 {
     return thread_scan_exclusive<LENGTH>((T*)input, (T*)output, scan_op, prefix, apply_prefix);
@@ -132,7 +133,8 @@ ROCPRIM_DEVICE ROCPRIM_INLINE T thread_scan_exclusive(
 /// \param scan_op [in]      Binary scan operator
 /// \return                  Aggregate of the scan
 template<int LENGTH, typename T, typename ScanOp>
-ROCPRIM_DEVICE ROCPRIM_INLINE T thread_scan_inclusive(
+ROCPRIM_DEVICE ROCPRIM_INLINE
+T thread_scan_inclusive(
     T inclusive, T* input, T* output, ScanOp scan_op, Int2Type<LENGTH> /*length*/)
 {
     ROCPRIM_UNROLL
@@ -153,7 +155,8 @@ ROCPRIM_DEVICE ROCPRIM_INLINE T thread_scan_inclusive(
 /// \param scan_op [in] Binary scan operator
 /// \return             Aggregate of the scan
 template<int LENGTH, typename T, typename ScanOp>
-ROCPRIM_DEVICE ROCPRIM_INLINE T thread_scan_inclusive(T* input, T* output, ScanOp scan_op)
+ROCPRIM_DEVICE ROCPRIM_INLINE
+T thread_scan_inclusive(T* input, T* output, ScanOp scan_op)
 {
     T inclusive = input[0];
     output[0]   = inclusive;
@@ -170,9 +173,8 @@ ROCPRIM_DEVICE ROCPRIM_INLINE T thread_scan_inclusive(T* input, T* output, ScanO
 /// \param scan_op [in] Binary scan operator
 /// \return             Aggregate of the scan
 template<int LENGTH, typename T, typename ScanOp>
-ROCPRIM_DEVICE ROCPRIM_INLINE T thread_scan_inclusive(T (&input)[LENGTH],
-                                                      T (&output)[LENGTH],
-                                                      ScanOp scan_op)
+ROCPRIM_DEVICE ROCPRIM_INLINE
+T thread_scan_inclusive(T (&input)[LENGTH], T (&output)[LENGTH], ScanOp scan_op)
 {
     return thread_scan_inclusive<LENGTH>((T*)input, (T*)output, scan_op);
 }
@@ -188,8 +190,8 @@ ROCPRIM_DEVICE ROCPRIM_INLINE T thread_scan_inclusive(T (&input)[LENGTH],
 /// \param apply_prefix [in] Whether or not the calling thread should apply its prefix.  (Handy for preventing thread-0 from applying a prefix.)
 /// \return                  Aggregate of the scan
 template<int LENGTH, typename T, typename ScanOp>
-ROCPRIM_DEVICE ROCPRIM_INLINE T
-    thread_scan_inclusive(T* input, T* output, ScanOp scan_op, T prefix, bool apply_prefix = true)
+ROCPRIM_DEVICE ROCPRIM_INLINE
+T thread_scan_inclusive(T* input, T* output, ScanOp scan_op, T prefix, bool apply_prefix = true)
 {
     T inclusive = input[0];
     if(apply_prefix)
@@ -213,7 +215,8 @@ ROCPRIM_DEVICE ROCPRIM_INLINE T
 /// \param apply_prefix [in] Whether or not the calling thread should apply its prefix.  (Handy for preventing thread-0 from applying a prefix.)
 /// \return                  Aggregate of the scan
 template<int LENGTH, typename T, typename ScanOp>
-ROCPRIM_DEVICE ROCPRIM_INLINE T thread_scan_inclusive(
+ROCPRIM_DEVICE ROCPRIM_INLINE
+T thread_scan_inclusive(
     T (&input)[LENGTH], T (&output)[LENGTH], ScanOp scan_op, T prefix, bool apply_prefix = true)
 {
     return thread_scan_inclusive<LENGTH>((T*)input, (T*)output, scan_op, prefix, apply_prefix);

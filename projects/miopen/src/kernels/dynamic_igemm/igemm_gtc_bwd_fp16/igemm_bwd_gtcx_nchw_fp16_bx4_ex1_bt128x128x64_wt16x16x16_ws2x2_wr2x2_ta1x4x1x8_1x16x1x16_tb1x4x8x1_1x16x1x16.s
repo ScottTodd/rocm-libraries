@@ -86,10 +86,10 @@
 ; precision                  : fp16
 ; nxb                        : 4
 ; nxe                        : 1
-; 
+;
 ; block_size                 : 256
 ; lds_total                  : 32768
-; 
+;
 .set k_p_in, 0
 .set k_p_wei, 8
 .set k_p_out, 16
@@ -498,8 +498,8 @@ igemm_bwd_gtcx_nchw_fp16_bx4_ex1_bt128x128x64_wt16x16x16_ws2x2_wr2x2_ta1x4x1x8_1
 
     v_mov_b32 v[v_tmp+5], v0
     ; xdlops mapping, get source matrix gemm index
-    v_and_b32 v[v_gemm_in], 15, v[v_tmp+5]           ; block_n index 
-    v_and_b32 v[v_gemm_im], 15, v[v_tmp+5]           ; block_m index 
+    v_and_b32 v[v_gemm_in], 15, v[v_tmp+5]           ; block_n index
+    v_and_b32 v[v_gemm_im], 15, v[v_tmp+5]           ; block_m index
     v_lshrrev_b32 v[v_tmp+5], 4, v[v_tmp+5]
     v_and_b32 v[v_tmp + 0], 3, v[v_tmp+5]          ; block_k_per_wave index
     v_lshl_or_b32 v[v_gemm_in], v[v_tmp + 0], 7, v[v_gemm_in]
@@ -729,7 +729,7 @@ igemm_bwd_gtcx_nchw_fp16_bx4_ex1_bt128x128x64_wt16x16x16_ws2x2_wr2x2_ta1x4x1x8_1
     ; move slice window by unroll-k along gemm-k
     v_add_u32 v[v_out_os], s[s_out_stride_k_k1], v[v_out_os]
     v_add_u32 v[v_wei_os], s[s_wei_stride_k_k1], v[v_wei_os]
-    
+
     s_waitcnt lgkmcnt(0)
     s_barrier
 L_igemm_bwd_gtcx_nchw_fp16_bx4_ex1_bt128x128x64_wt16x16x16_ws2x2_wr2x2_ta1x4x1x8_1x16x1x16_tb1x4x8x1_1x16x1x16_mfma_body:
@@ -1267,7 +1267,7 @@ L_igemm_bwd_gtcx_nchw_fp16_bx4_ex1_bt128x128x64_wt16x16x16_ws2x2_wr2x2_ta1x4x1x8
     s_waitcnt lgkmcnt(0)
     s_barrier
     ;   load from lds
-    ds_read_b64 v[v_c:v_c+1], v[v_co_sld] 
+    ds_read_b64 v[v_c:v_c+1], v[v_co_sld]
     ds_read_b64 v[v_c+2:v_c+2+1], v[v_co_sld] offset:2048
     ds_read_b64 v[v_c+4:v_c+4+1], v[v_co_sld] offset:4096
     ds_read_b64 v[v_c+6:v_c+6+1], v[v_co_sld] offset:6144

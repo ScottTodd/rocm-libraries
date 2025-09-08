@@ -23,8 +23,7 @@ from pathlib import Path
 import sys
 
 
-
-def get_merge_id(git_log : list):
+def get_merge_id(git_log: list):
 
     """
     This method is used to get merge id and pull id from a git log.
@@ -39,10 +38,10 @@ def get_merge_id(git_log : list):
 
     """
 
-    merge_id = ''
-    pull_id = ''
+    merge_id = ""
+    pull_id = ""
 
-    try :
+    try:
         merge_id = git_log[0][7:]
         for i in git_log:
             if "merge pull request #" in i.lower():
@@ -88,39 +87,41 @@ def create_github_file(filename: str) -> str:
     """
 
     # Declaring the git info parameters as empty strings
-    branch_name = ''
-    merge_id = ''
-    pull_id = ''
-    git_hash = ''
+    branch_name = ""
+    merge_id = ""
+    pull_id = ""
+    git_hash = ""
 
     try:
         # Retrieving the values, when package/project is running inside any git repo
         repo = git.Repo(search_parent_directories=True)
         git_hash = repo.head.object.hexsha
-        git_logs = repo.git.log("--grep=Merge","--max-count=1")
-        if len(git_logs) > 0 :
+        git_logs = repo.git.log("--grep=Merge", "--max-count=1")
+        if len(git_logs) > 0:
             merge_id, pull_id = get_merge_id(git_logs.split("\n"))
         try:
             branch_name = repo.active_branch.name
         except TypeError:
             branch_name = "None"
 
-
-
     except (git.InvalidGitRepositoryError, git.exc.NoSuchPathError):
-        print('')
+        print("")
 
     # Asking the user to specify location, if the above code doesn't retrieve the parameter values.
-    if git_hash == '':
+    if git_hash == "":
         print("Git information file is missing in the specified location.")
-        github_loc = Path(input("Please specify the location of local repository or name of the file containing git info: "))
+        github_loc = Path(
+            input(
+                "Please specify the location of local repository or name of the file containing git info: "
+            )
+        )
 
         if github_loc.exists():
             try:
                 repo = git.Repo(github_loc, search_parent_directories=True)
                 git_hash = repo.head.object.hexsha
-                git_logs = repo.git.log("--grep=Merge","--max-count=1")
-                if len(git_logs) > 0 :
+                git_logs = repo.git.log("--grep=Merge", "--max-count=1")
+                if len(git_logs) > 0:
                     merge_id, pull_id = get_merge_id(git_logs.split("\n"))
                 try:
                     branch_name = repo.active_branch.name
@@ -128,54 +129,56 @@ def create_github_file(filename: str) -> str:
                     branch_name = "None"
 
             except (git.exc.InvalidGitRepositoryError, git.exc.NoSuchPathError):
-                try :
-                    with open(github_loc, 'r') as git_file:
+                try:
+                    with open(github_loc, "r") as git_file:
                         all_lines = git_file.read().splitlines()
                         lines = [name for name in all_lines if name]
                         for i in lines:
-                            if 'branch' in i.lower():
-                                branch_name = i.split(':')[1]
-                            elif 'merge' in i.lower():
-                                merge_id = i.split(':')[1]
-                            elif 'pull' in i.lower():
-                                pull_id = i.split(':')[1]
-                            elif 'hash' in i.lower():
-                                git_hash = i.split(':')[1]
-                        if (branch_name == merge_id == pull_id == git_hash == '') and len(lines) >= 4 :
+                            if "branch" in i.lower():
+                                branch_name = i.split(":")[1]
+                            elif "merge" in i.lower():
+                                merge_id = i.split(":")[1]
+                            elif "pull" in i.lower():
+                                pull_id = i.split(":")[1]
+                            elif "hash" in i.lower():
+                                git_hash = i.split(":")[1]
+                        if (
+                            branch_name == merge_id == pull_id == git_hash == ""
+                        ) and len(lines) >= 4:
                             branch_name = lines[0]
                             merge_id = lines[1]
                             pull_id = lines[2]
                             git_hash = lines[3]
 
                 except IOError:
-                    print('Could not find any git files in the specified location.')
+                    print("Could not find any git files in the specified location.")
                     sys.exit()
         else:
-            print('The specified location is not found.')
+            print("The specified location is not found.")
             sys.exit()
 
     if not branch_name:
-        print('')
+        print("")
         branch_name = input("Branch Name is not defined. please provide branch name :")
     if not merge_id:
-        print('')
-        merge_id = 'None'
+        print("")
+        merge_id = "None"
     if not pull_id:
-        print('')
-        pull_id = 'None'
+        print("")
+        pull_id = "None"
     if not git_hash:
-        print('')
+        print("")
         git_hash = input("Git Hash is not defined. please provide git hash :")
 
     # If any parameter still remains as empty string then terminating the process.
     if (not branch_name) or (not merge_id) or (not pull_id) or (not git_hash):
-        print('')
-        print('Git Info is not specified correctly.')
+        print("")
+        print("Git Info is not specified correctly.")
         sys.exit()
 
     # If all parameters are captured successfully then those parameters are written in a file.
-    try :
-        with open(filename, 'w') as file:
+    try:
+        with open(filename, "w") as file:
             file.write(f"Branch Name : {branch_name}\n")
             file.write(f"Merge Id : {merge_id}\n")
             file.write(f"Pull Id : {pull_id}\n")

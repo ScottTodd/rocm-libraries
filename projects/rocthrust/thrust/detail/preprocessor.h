@@ -1032,7 +1032,7 @@
 
 #define THRUST_PP_TRIGGER_PAREN(...) ,
 
-#define THRUST_PP_IS_VARIADIC_NULLARY(...)                                      \
+#define THRUST_PP_IS_VARIADIC_NULLARY(...)                                       \
   THRUST_PP_IS_VARIADIC_NULLARY_IMPL0(                                        \
     /* Test if there is just one argument, eventually an empty one. */        \
     THRUST_PP_HAS_COMMA(__VA_ARGS__),                                         \

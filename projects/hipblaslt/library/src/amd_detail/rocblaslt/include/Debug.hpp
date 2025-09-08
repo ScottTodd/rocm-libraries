@@ -104,12 +104,12 @@ namespace rocblaslt
     private:
         friend LazySingleton<Debug>;
 
-        int         m_value;
-        int         m_value2;
-        bool        m_printMarker       = false;
-        bool        m_printLogAsMarker  = false;
-        bool        m_preloadAllKernels = false;
-        bool        m_benchPrintCommand = false;
+        int  m_value;
+        int  m_value2;
+        bool m_printMarker       = false;
+        bool m_printLogAsMarker  = false;
+        bool m_preloadAllKernels = false;
+        bool m_benchPrintCommand = false;
 
         Debug();
     };

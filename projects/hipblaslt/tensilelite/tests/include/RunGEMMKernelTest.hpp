@@ -41,11 +41,11 @@ struct RunGEMMKernelTestParams
     using TestInterface = GEMMKernelTest<DeviceBackend>;
 
     // Extract test interface components
-    using ContractionProblemGemm  = typename TestInterface::ContractionProblemGemm;
-    using ContractionSolution = typename TestInterface::ContractionSolution;
-    using MemoryPageAlignment = typename TestInterface::MemoryPageAlignment;
-    using SolutionAdapter     = typename TestInterface::SolutionAdapter;
-    using SolutionLibrary     = typename TestInterface::SolutionLibrary;
+    using ContractionProblemGemm = typename TestInterface::ContractionProblemGemm;
+    using ContractionSolution    = typename TestInterface::ContractionSolution;
+    using MemoryPageAlignment    = typename TestInterface::MemoryPageAlignment;
+    using SolutionAdapter        = typename TestInterface::SolutionAdapter;
+    using SolutionLibrary        = typename TestInterface::SolutionLibrary;
 
     // Test input params
     using ProblemParams  = typename TestInterface::ProblemParams;

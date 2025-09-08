@@ -73,8 +73,7 @@ template<class T>
 struct plus
 {
     HIPCUB_HOST_DEVICE
-    inline void
-        operator()(T& a) const
+    inline void operator()(T& a) const
     {
         a = a + T(5);
     }
@@ -129,7 +128,7 @@ TYPED_TEST(HipcubDeviceForTests, ForEach)
             // Run
             HIP_CHECK(hipcub::DeviceFor::ForEach(d_input, d_input + size, plus<T>(), stream));
 
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipGetLastError());
@@ -199,9 +198,9 @@ TEST(HipcubDeviceForTests, ForEachTempStore)
             SCOPED_TRACE(testing::Message() << "with size = " << size);
 
             // Generate data
-            std::vector<T>      input    = test_utils::get_random_data<T>(size, 1, 100, seed_value);
-            unsigned int        expected = 0;
-            count_host_t        host_op{&expected};
+            std::vector<T> input    = test_utils::get_random_data<T>(size, 1, 100, seed_value);
+            unsigned int   expected = 0;
+            count_host_t   host_op{&expected};
 
             // Device pointers
             T*            d_input;

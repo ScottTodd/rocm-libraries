@@ -46,7 +46,8 @@ BEGIN_HIPCUB_NAMESPACE
 struct Equality
 {
     template<class T, class U>
-    HIPCUB_HOST_DEVICE inline constexpr bool operator()(T&& t, U&& u) const
+    HIPCUB_HOST_DEVICE
+    inline constexpr bool operator()(T&& t, U&& u) const
     {
         return std::forward<T>(t) == std::forward<U>(u);
     }
@@ -56,23 +57,27 @@ struct Equality
 struct Inequality
 {
     template<class T, class U>
-    HIPCUB_HOST_DEVICE inline constexpr bool operator()(T&& t, U&& u) const
+    HIPCUB_HOST_DEVICE
+    inline constexpr bool operator()(T&& t, U&& u) const
     {
         return std::forward<T>(t) != std::forward<U>(u);
     }
 };
 
 // TODO: this is deprecated in cub, we should also mark this as deprecated when we have libhipcxx
-template <class EqualityOp>
+template<class EqualityOp>
 struct InequalityWrapper
 {
     EqualityOp op;
 
-    HIPCUB_HOST_DEVICE inline
-    InequalityWrapper(EqualityOp op) : op(op) {}
+    HIPCUB_HOST_DEVICE
+    inline InequalityWrapper(EqualityOp op)
+        : op(op)
+    {}
 
     template<class T, class U>
-    HIPCUB_HOST_DEVICE inline bool operator()(T&& t, U&& u)
+    HIPCUB_HOST_DEVICE
+    inline bool operator()(T&& t, U&& u)
     {
         return !op(std::forward<T>(t), std::forward<U>(u));
     }
@@ -82,7 +87,8 @@ struct InequalityWrapper
 struct Sum
 {
     template<class T, class U>
-    HIPCUB_HOST_DEVICE inline constexpr auto operator()(T&& t, U&& u) const -> decltype(auto)
+    HIPCUB_HOST_DEVICE
+    inline constexpr auto operator()(T&& t, U&& u) const -> decltype(auto)
     {
         return std::forward<T>(t) + std::forward<U>(u);
     }
@@ -92,7 +98,8 @@ struct Sum
 struct Difference
 {
     template<class T, class U>
-    HIPCUB_HOST_DEVICE inline constexpr auto operator()(T&& t, U&& u) const -> decltype(auto)
+    HIPCUB_HOST_DEVICE
+    inline constexpr auto operator()(T&& t, U&& u) const -> decltype(auto)
     {
         return std::forward<T>(t) - std::forward<U>(u);
     }
@@ -102,7 +109,8 @@ struct Difference
 struct Division
 {
     template<class T, class U>
-    HIPCUB_HOST_DEVICE inline constexpr auto operator()(T&& t, U&& u) const -> decltype(auto)
+    HIPCUB_HOST_DEVICE
+    inline constexpr auto operator()(T&& t, U&& u) const -> decltype(auto)
     {
         return std::forward<T>(t) / std::forward<U>(u);
     }
@@ -112,8 +120,8 @@ struct Division
 struct Max
 {
     template<class T, class U>
-    HIPCUB_HOST_DEVICE inline constexpr typename std::common_type<T, U>::type
-        operator()(T&& t, U&& u) const
+    HIPCUB_HOST_DEVICE
+    inline constexpr typename std::common_type<T, U>::type operator()(T&& t, U&& u) const
     {
         // TODO: change to use hip::std::max after libhipcxx is ready
         return (((u) > (t)) ? (u) : (t));
@@ -124,8 +132,8 @@ struct Max
 struct Min
 {
     template<class T, class U>
-    HIPCUB_HOST_DEVICE inline constexpr typename std::common_type<T, U>::type
-        operator()(T&& t, U&& u) const
+    HIPCUB_HOST_DEVICE
+    inline constexpr typename std::common_type<T, U>::type operator()(T&& t, U&& u) const
     {
         // TODO: change to use hip::std::min after libhipcxx is ready
         return (((u) < (t)) ? (u) : (t));
@@ -134,14 +142,10 @@ struct Min
 
 struct ArgMax
 {
-    template<
-        class Key,
-        class Value
-    >
-    HIPCUB_HOST_DEVICE inline
-    constexpr KeyValuePair<Key, Value>
-    operator()(const KeyValuePair<Key, Value>& a,
-               const KeyValuePair<Key, Value>& b) const
+    template<class Key, class Value>
+    HIPCUB_HOST_DEVICE
+    inline constexpr KeyValuePair<Key, Value> operator()(const KeyValuePair<Key, Value>& a,
+                                                         const KeyValuePair<Key, Value>& b) const
     {
         return ((b.value > a.value) || ((a.value == b.value) && (b.key < a.key))) ? b : a;
     }
@@ -149,106 +153,95 @@ struct ArgMax
 
 struct ArgMin
 {
-    template<
-        class Key,
-        class Value
-    >
-    HIPCUB_HOST_DEVICE inline
-    constexpr KeyValuePair<Key, Value>
-    operator()(const KeyValuePair<Key, Value>& a,
-               const KeyValuePair<Key, Value>& b) const
+    template<class Key, class Value>
+    HIPCUB_HOST_DEVICE
+    inline constexpr KeyValuePair<Key, Value> operator()(const KeyValuePair<Key, Value>& a,
+                                                         const KeyValuePair<Key, Value>& b) const
     {
         return ((b.value < a.value) || ((a.value == b.value) && (b.key < a.key))) ? b : a;
     }
 };
 
-template <typename B>
+template<typename B>
 struct CastOp
 {
     template<typename A>
-    HIPCUB_HOST_DEVICE inline B operator()(A&& a) const
+    HIPCUB_HOST_DEVICE
+    inline B operator()(A&& a) const
     {
         return (B)a;
     }
 };
 
-template <typename ScanOp>
+template<typename ScanOp>
 class SwizzleScanOp
 {
 private:
     ScanOp scan_op;
 
 public:
-    HIPCUB_HOST_DEVICE inline
-    SwizzleScanOp(ScanOp scan_op) : scan_op(scan_op)
-    {
-    }
+    HIPCUB_HOST_DEVICE
+    inline SwizzleScanOp(ScanOp scan_op)
+        : scan_op(scan_op)
+    {}
 
-    template <typename T>
-    HIPCUB_HOST_DEVICE inline
-    T operator()(const T &a, const T &b)
+    template<typename T>
+    HIPCUB_HOST_DEVICE
+    inline T operator()(const T& a, const T& b)
     {
-      T _a(a);
-      T _b(b);
+        T _a(a);
+        T _b(b);
 
-      return scan_op(_b, _a);
+        return scan_op(_b, _a);
     }
 };
 
-template <typename ReductionOpT>
+template<typename ReductionOpT>
 struct ReduceBySegmentOp
 {
     ReductionOpT op;
 
-    HIPCUB_HOST_DEVICE inline
-    ReduceBySegmentOp()
-    {
-    }
+    HIPCUB_HOST_DEVICE
+    inline ReduceBySegmentOp()
+    {}
 
-    HIPCUB_HOST_DEVICE inline
-    ReduceBySegmentOp(ReductionOpT op) : op(op)
-    {
-    }
+    HIPCUB_HOST_DEVICE
+    inline ReduceBySegmentOp(ReductionOpT op)
+        : op(op)
+    {}
 
-    template <typename KeyValuePairT>
-    HIPCUB_HOST_DEVICE inline
-    KeyValuePairT operator()(
-        const KeyValuePairT &first,
-        const KeyValuePairT &second)
+    template<typename KeyValuePairT>
+    HIPCUB_HOST_DEVICE
+    inline KeyValuePairT operator()(const KeyValuePairT& first, const KeyValuePairT& second)
     {
         KeyValuePairT retval;
-        retval.key = first.key + second.key;
-        retval.value = (second.key) ?
-                second.value :
-                op(first.value, second.value);
+        retval.key   = first.key + second.key;
+        retval.value = (second.key) ? second.value : op(first.value, second.value);
         return retval;
     }
 };
 
-template <typename ReductionOpT>
+template<typename ReductionOpT>
 struct ReduceByKeyOp
 {
     ReductionOpT op;
 
-    HIPCUB_HOST_DEVICE inline
-    ReduceByKeyOp()
-    {
-    }
+    HIPCUB_HOST_DEVICE
+    inline ReduceByKeyOp()
+    {}
 
-    HIPCUB_HOST_DEVICE inline
-    ReduceByKeyOp(ReductionOpT op) : op(op)
-    {
-    }
+    HIPCUB_HOST_DEVICE
+    inline ReduceByKeyOp(ReductionOpT op)
+        : op(op)
+    {}
 
-    template <typename KeyValuePairT>
-    HIPCUB_HOST_DEVICE inline
-    KeyValuePairT operator()(
-        const KeyValuePairT &first,
-        const KeyValuePairT &second)
+    template<typename KeyValuePairT>
+    HIPCUB_HOST_DEVICE
+    inline KeyValuePairT operator()(const KeyValuePairT& first, const KeyValuePairT& second)
     {
         KeyValuePairT retval = second;
 
-        if (first.key == second.key)
+        if(first.key == second.key)
         {
             retval.value = op(first.value, retval.value);
         }
@@ -256,24 +249,25 @@ struct ReduceByKeyOp
     }
 };
 
-template <typename BinaryOpT>
+template<typename BinaryOpT>
 struct BinaryFlip
 {
     BinaryOpT binary_op;
 
     HIPCUB_HOST_DEVICE
-    explicit BinaryFlip(BinaryOpT binary_op) : binary_op(binary_op)
-    {
-    }
+    explicit BinaryFlip(BinaryOpT binary_op)
+        : binary_op(binary_op)
+    {}
 
     template<typename T, typename U>
-    HIPCUB_DEVICE auto operator()(T&& t, U&& u) -> decltype(auto)
+    HIPCUB_DEVICE
+    auto operator()(T&& t, U&& u) -> decltype(auto)
     {
         return binary_op(std::forward<U>(u), std::forward<T>(t));
     }
 };
 
-template <typename BinaryOpT>
+template<typename BinaryOpT>
 HIPCUB_HOST_DEVICE
 BinaryFlip<BinaryOpT> MakeBinaryFlip(BinaryOpT binary_op)
 {
@@ -297,8 +291,7 @@ struct [[deprecated(
     using simd_type = int32_t;
 
     HIPCUB_HOST_DEVICE __forceinline__
-    constexpr uint32_t
-        operator()(int32_t t, int32_t u) const
+    constexpr uint32_t operator()(int32_t t, int32_t u) const
     {
         return HIPCUB_MIN(t, u);
     }
@@ -311,8 +304,7 @@ struct [[deprecated(
     using simd_type = uint32_t;
 
     HIPCUB_HOST_DEVICE __forceinline__
-    constexpr uint32_t
-        operator()(uint32_t t, uint32_t u) const
+    constexpr uint32_t operator()(uint32_t t, uint32_t u) const
     {
         return HIPCUB_MIN(t, u);
     }
@@ -326,8 +318,7 @@ struct [[deprecated(
 
     // This function is not constexpr because the operator< of __half does not produce a constant expression
     HIPCUB_HOST_DEVICE __forceinline__
-    __half2
-        operator()(__half2 t, __half2 u) const
+    __half2 operator()(__half2 t, __half2 u) const
     {
         return HIPCUB_MIN(t, u);
     }
@@ -341,8 +332,7 @@ struct [[deprecated("SIMD intrinsics are currently not supported on HIP, use Min
 
     // This function is not constexpr because the operator< of __half does not produce a constant expression
     HIPCUB_HOST_DEVICE __forceinline__
-    __hip_bfloat162
-        operator()(__hip_bfloat162 t, __hip_bfloat162 u) const
+    __hip_bfloat162 operator()(__hip_bfloat162 t, __hip_bfloat162 u) const
     {
         return HIPCUB_MIN(t, u);
     }
@@ -362,8 +352,7 @@ struct [[deprecated(
     using simd_type = int32_t;
 
     HIPCUB_HOST_DEVICE __forceinline__
-    constexpr uint32_t
-        operator()(int32_t t, int32_t u) const
+    constexpr uint32_t operator()(int32_t t, int32_t u) const
     {
         return HIPCUB_MAX(t, u);
     }
@@ -376,8 +365,7 @@ struct [[deprecated(
     using simd_type = uint32_t;
 
     HIPCUB_HOST_DEVICE __forceinline__
-    constexpr uint32_t
-        operator()(uint32_t t, uint32_t u) const
+    constexpr uint32_t operator()(uint32_t t, uint32_t u) const
     {
         return HIPCUB_MAX(t, u);
     }
@@ -390,8 +378,7 @@ struct [[deprecated(
     using simd_type = __half2;
 
     HIPCUB_HOST_DEVICE __forceinline__
-    __half2
-        operator()(__half2 t, __half2 u) const
+    __half2 operator()(__half2 t, __half2 u) const
     {
         return HIPCUB_MAX(t, u);
     }
@@ -404,8 +391,7 @@ struct [[deprecated("SIMD intrinsics are currently not supported on HIP, use Max
     using simd_type = __hip_bfloat162;
 
     HIPCUB_HOST_DEVICE __forceinline__
-    __hip_bfloat162
-        operator()(__hip_bfloat162 t, __hip_bfloat162 u) const
+    __hip_bfloat162 operator()(__hip_bfloat162 t, __hip_bfloat162 u) const
     {
         return HIPCUB_MAX(t, u);
     }
@@ -425,8 +411,7 @@ struct [[deprecated(
     using simd_type = int32_t;
 
     HIPCUB_HOST_DEVICE __forceinline__
-    constexpr uint32_t
-        operator()(int32_t t, int32_t u) const
+    constexpr uint32_t operator()(int32_t t, int32_t u) const
     {
         return t + u;
     }
@@ -439,8 +424,7 @@ struct [[deprecated(
     using simd_type = uint32_t;
 
     HIPCUB_HOST_DEVICE __forceinline__
-    constexpr uint32_t
-        operator()(uint32_t t, uint32_t u) const
+    constexpr uint32_t operator()(uint32_t t, uint32_t u) const
     {
         return t + u;
     }
@@ -453,8 +437,7 @@ struct [[deprecated(
     using simd_type = __half2;
 
     HIPCUB_HOST_DEVICE __forceinline__
-    __half2
-        operator()(__half2 t, __half2 u) const
+    __half2 operator()(__half2 t, __half2 u) const
     {
         return t + u;
     }
@@ -467,8 +450,7 @@ struct [[deprecated("SIMD intrinsics are currently not supported on HIP, use Sum
     using simd_type = __hip_bfloat162;
 
     HIPCUB_HOST_DEVICE __forceinline__
-    __hip_bfloat162
-        operator()(__hip_bfloat162 t, __hip_bfloat162 u) const
+    __hip_bfloat162 operator()(__hip_bfloat162 t, __hip_bfloat162 u) const
     {
         return t + u;
     }
@@ -490,8 +472,7 @@ struct [[deprecated("Warning: SIMD intrinsics are currently not supported on HIP
     using simd_type = int32_t;
 
     HIPCUB_HOST_DEVICE __forceinline__
-    constexpr uint32_t
-        operator()(int32_t t, int32_t u) const
+    constexpr uint32_t operator()(int32_t t, int32_t u) const
     {
         return t * u;
     }
@@ -504,8 +485,7 @@ struct [[deprecated("Warning: SIMD intrinsics are currently not supported on HIP
     using simd_type = uint32_t;
 
     HIPCUB_HOST_DEVICE __forceinline__
-    constexpr uint32_t
-        operator()(uint32_t t, uint32_t u) const
+    constexpr uint32_t operator()(uint32_t t, uint32_t u) const
     {
         return t * u;
     }
@@ -518,8 +498,7 @@ struct [[deprecated("Warning: SIMD intrinsics are currently not supported on HIP
     using simd_type = __half2;
 
     HIPCUB_HOST_DEVICE __forceinline__
-    __half2
-        operator()(__half2 t, __half2 u) const
+    __half2 operator()(__half2 t, __half2 u) const
     {
         return t * u;
     }
@@ -532,8 +511,7 @@ struct [[deprecated("Warning: SIMD intrinsics are currently not supported on HIP
     using simd_type = __hip_bfloat162;
 
     HIPCUB_HOST_DEVICE __forceinline__
-    __hip_bfloat162
-        operator()(__hip_bfloat162 t, __hip_bfloat162 u) const
+    __hip_bfloat162 operator()(__hip_bfloat162 t, __hip_bfloat162 u) const
     {
         return t * u;
     }
@@ -604,11 +582,7 @@ using accumulator_t = ::rocprim::accumulator_t<Invokable, InputT, InitT>;
 // rocPRIM: short Sum(short, short)
 //
 // This wrapper allows to have compatibility with CUB in hipCUB.
-template<
-    class InputIteratorT,
-    class OutputIteratorT,
-    class BinaryFunction
->
+template<class InputIteratorT, class OutputIteratorT, class BinaryFunction>
 struct convert_result_type_wrapper
 {
     using input_type  = typename std::iterator_traits<InputIteratorT>::value_type;
@@ -618,8 +592,8 @@ struct convert_result_type_wrapper
     convert_result_type_wrapper(BinaryFunction op) : op(op) {}
 
     template<class T>
-    HIPCUB_HOST_DEVICE inline
-    constexpr result_type operator()(const T &a, const T &b) const
+    HIPCUB_HOST_DEVICE
+    inline constexpr result_type operator()(const T& a, const T& b) const
     {
         return static_cast<result_type>(op(a, b));
     }
@@ -627,14 +601,9 @@ struct convert_result_type_wrapper
     BinaryFunction op;
 };
 
-template<
-    class InputIteratorT,
-    class OutputIteratorT,
-    class BinaryFunction
->
-inline
-convert_result_type_wrapper<InputIteratorT, OutputIteratorT, BinaryFunction>
-convert_result_type(BinaryFunction op)
+template<class InputIteratorT, class OutputIteratorT, class BinaryFunction>
+inline convert_result_type_wrapper<InputIteratorT, OutputIteratorT, BinaryFunction>
+    convert_result_type(BinaryFunction op)
 {
     return convert_result_type_wrapper<InputIteratorT, OutputIteratorT, BinaryFunction>(op);
 }
@@ -653,14 +622,15 @@ convert_result_type(BinaryFunction op)
 template<class BinaryFunction, class InputIteratorT, class InitT>
 struct convert_binary_result_type_wrapper
 {
-    using input_type  = typename std::iterator_traits<InputIteratorT>::value_type;
-    using init_type   = InitT;
-    using accum_type  = accumulator_t<BinaryFunction, input_type, init_type>;
+    using input_type = typename std::iterator_traits<InputIteratorT>::value_type;
+    using init_type  = InitT;
+    using accum_type = accumulator_t<BinaryFunction, input_type, init_type>;
 
     convert_binary_result_type_wrapper(BinaryFunction op) : op(op) {}
 
     template<class T>
-    HIPCUB_HOST_DEVICE inline constexpr accum_type operator()(const T& a, const T& b) const
+    HIPCUB_HOST_DEVICE
+    inline constexpr accum_type operator()(const T& a, const T& b) const
     {
         return static_cast<accum_type>(op(a, b));
     }
@@ -675,7 +645,7 @@ inline convert_binary_result_type_wrapper<BinaryFunction, InputIteratorT, InitT>
     return convert_binary_result_type_wrapper<BinaryFunction, InputIteratorT, InitT>(op);
 }
 
-} // end detail namespace
+} // namespace detail
 
 END_HIPCUB_NAMESPACE
 

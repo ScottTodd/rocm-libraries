@@ -30,13 +30,10 @@
 #ifndef ROCPRIM_BLOCK_BLOCK_ADJACENT_DIFFERENCE_HPP_
 #define ROCPRIM_BLOCK_BLOCK_ADJACENT_DIFFERENCE_HPP_
 
-
 #include "detail/block_adjacent_difference_impl.hpp"
 
 #include "../config.hpp"
 #include "../detail/various.hpp"
-
-
 
 /// \addtogroup blockmodule
 /// @{
@@ -82,12 +79,7 @@ BEGIN_ROCPRIM_NAMESPACE
 /// }
 /// \endcode
 /// \endparblock
-template<
-    class T,
-    unsigned int BlockSizeX,
-    unsigned int BlockSizeY = 1,
-    unsigned int BlockSizeZ = 1
->
+template<class T, unsigned int BlockSizeX, unsigned int BlockSizeY = 1, unsigned int BlockSizeZ = 1>
 class block_adjacent_difference
 #ifndef DOXYGEN_SHOULD_SKIP_THIS // hide implementation detail from documentation
     : private detail::block_adjacent_difference_impl<T, BlockSizeX, BlockSizeY, BlockSizeZ>
@@ -104,22 +96,21 @@ class block_adjacent_difference
     };
 
 public:
-
-    /// \brief Struct used to allocate a temporary memory that is required for thread
-    /// communication during operations provided by related parallel primitive.
-    ///
-    /// Depending on the implemention the operations exposed by parallel primitive may
-    /// require a temporary storage for thread communication. The storage should be allocated
-    /// using keywords <tt>__shared__</tt>. It can be aliased to
-    /// an externally allocated memory, or be a part of a union type with other storage types
-    /// to increase shared memory reusability.
-    #ifndef DOXYGEN_SHOULD_SKIP_THIS // hides storage_type implementation for Doxygen
+/// \brief Struct used to allocate a temporary memory that is required for thread
+/// communication during operations provided by related parallel primitive.
+///
+/// Depending on the implemention the operations exposed by parallel primitive may
+/// require a temporary storage for thread communication. The storage should be allocated
+/// using keywords <tt>__shared__</tt>. It can be aliased to
+/// an externally allocated memory, or be a part of a union type with other storage types
+/// to increase shared memory reusability.
+#ifndef DOXYGEN_SHOULD_SKIP_THIS // hides storage_type implementation for Doxygen
     ROCPRIM_DETAIL_SUPPRESS_DEPRECATION_WITH_PUSH
     using storage_type = detail::raw_storage<storage_type_>;
     ROCPRIM_DETAIL_SUPPRESS_DEPRECATION_POP
-    #else
+#else
     using storage_type = storage_type_;
-    #endif
+#endif
 
     /// \brief Apply a function to each consecutive pair of elements partitioned across threads in
     /// the block and write the output to the position of the left item.
@@ -144,22 +135,27 @@ public:
     /// \par Storage reuse
     /// Synchronization barrier should be placed before `storage` is reused
     /// or repurposed: `__syncthreads()` or \link syncthreads() rocprim::syncthreads() \endlink.
-    template <typename Output, unsigned int ItemsPerThread, typename BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void subtract_left(const T (&input)[ItemsPerThread],
-                                                     Output (&output)[ItemsPerThread],
-                                                     const BinaryFunction op,
-                                                     storage_type&        storage)
+    template<typename Output, unsigned int ItemsPerThread, typename BinaryFunction>
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void subtract_left(const T (&input)[ItemsPerThread],
+                       Output (&output)[ItemsPerThread],
+                       const BinaryFunction op,
+                       storage_type&        storage)
     {
         static constexpr auto as_flags         = false;
         static constexpr auto reversed         = true;
         static constexpr auto with_predecessor = false;
 
         base_type::template apply_left<as_flags, reversed, with_predecessor>(
-            input, output, op, input[0] /* predecessor */, storage.get().left);
+            input,
+            output,
+            op,
+            input[0] /* predecessor */,
+            storage.get().left);
     }
 
     /// \brief Apply a function to each consecutive pair of elements partitioned across threads in
-    /// the block and write the output to the position of the left item, with an explicit item before 
+    /// the block and write the output to the position of the left item, with an explicit item before
     /// the tile.
     ///
     /// \code
@@ -178,25 +174,29 @@ public:
     /// The signature of the function should be equivalent to the following:
     /// `bool f(const T &a, const T &b)` The signature does not need to have
     /// `const &` but the function object must not modify the objects passed to it.
-    /// \param [in] tile_predecessor the item before the tile, will be used as the input 
+    /// \param [in] tile_predecessor the item before the tile, will be used as the input
     /// of the first application of `op`
     /// \param storage reference to a temporary storage object of type #storage_type
     /// \par Storage reuse
     /// Synchronization barrier should be placed before `storage` is reused
     /// or repurposed: `__syncthreads()` or \link syncthreads() rocprim::syncthreads() \endlink.
-    template <typename Output, unsigned int ItemsPerThread, typename BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void subtract_left(const T (&input)[ItemsPerThread],
-                                                     Output (&output)[ItemsPerThread],
-                                                     const BinaryFunction op,
-                                                     const T              tile_predecessor,
-                                                     storage_type&        storage)
+    template<typename Output, unsigned int ItemsPerThread, typename BinaryFunction>
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void subtract_left(const T (&input)[ItemsPerThread],
+                       Output (&output)[ItemsPerThread],
+                       const BinaryFunction op,
+                       const T              tile_predecessor,
+                       storage_type&        storage)
     {
         static constexpr auto as_flags         = false;
         static constexpr auto reversed         = true;
         static constexpr auto with_predecessor = true;
 
-        base_type::template apply_left<as_flags, reversed, with_predecessor>(
-            input, output, op, tile_predecessor, storage.get().left);
+        base_type::template apply_left<as_flags, reversed, with_predecessor>(input,
+                                                                             output,
+                                                                             op,
+                                                                             tile_predecessor,
+                                                                             storage.get().left);
     }
 
     /// \brief Apply a function to each consecutive pair of elements partitioned across threads in
@@ -225,19 +225,25 @@ public:
     /// \par Storage reuse
     /// Synchronization barrier should be placed before `storage` is reused
     /// or repurposed: `__syncthreads()` or \link syncthreads() rocprim::syncthreads() \endlink.
-    template <typename Output, unsigned int ItemsPerThread, typename BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void subtract_left_partial(const T (&input)[ItemsPerThread],
-                                                             Output (&output)[ItemsPerThread],
-                                                             const BinaryFunction op,
-                                                             const unsigned int   valid_items,
-                                                             storage_type&        storage)
+    template<typename Output, unsigned int ItemsPerThread, typename BinaryFunction>
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void subtract_left_partial(const T (&input)[ItemsPerThread],
+                               Output (&output)[ItemsPerThread],
+                               const BinaryFunction op,
+                               const unsigned int   valid_items,
+                               storage_type&        storage)
     {
         static constexpr auto as_flags         = false;
         static constexpr auto reversed         = true;
         static constexpr auto with_predecessor = false;
 
         base_type::template apply_left_partial<as_flags, reversed, with_predecessor>(
-            input, output, op, input[0] /* predecessor */, valid_items, storage.get().left);
+            input,
+            output,
+            op,
+            input[0] /* predecessor */,
+            valid_items,
+            storage.get().left);
     }
 
     /// \brief Apply a function to each consecutive pair of elements partitioned across threads in
@@ -254,7 +260,7 @@ public:
     /// The signature of the function should be equivalent to the following:
     /// `bool f(const T &a, const T &b)` The signature does not need to have
     /// `const &` but the function object must not modify the objects passed to it.
-    /// \param [in] tile_predecessor the item before the tile, will be used as the input 
+    /// \param [in] tile_predecessor the item before the tile, will be used as the input
     /// of the first application of `op`
     /// \param [in] valid_items number of items in the block which are considered "valid" and will
     /// be used. Must be less or equal to `BlockSize` * `ItemsPerThread`
@@ -262,20 +268,26 @@ public:
     /// \par Storage reuse
     /// Synchronization barrier should be placed before `storage` is reused
     /// or repurposed: `__syncthreads()` or \link syncthreads() rocprim::syncthreads() \endlink.
-    template <typename Output, unsigned int ItemsPerThread, typename BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void subtract_left_partial(const T (&input)[ItemsPerThread],
-                                                             Output (&output)[ItemsPerThread],
-                                                             const BinaryFunction op,
-                                                             const T              tile_predecessor,
-                                                             const unsigned int   valid_items,
-                                                             storage_type&        storage)
+    template<typename Output, unsigned int ItemsPerThread, typename BinaryFunction>
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void subtract_left_partial(const T (&input)[ItemsPerThread],
+                               Output (&output)[ItemsPerThread],
+                               const BinaryFunction op,
+                               const T              tile_predecessor,
+                               const unsigned int   valid_items,
+                               storage_type&        storage)
     {
         static constexpr auto as_flags         = false;
         static constexpr auto reversed         = true;
         static constexpr auto with_predecessor = true;
 
         base_type::template apply_left_partial<as_flags, reversed, with_predecessor>(
-            input, output, op, tile_predecessor, valid_items, storage.get().left);
+            input,
+            output,
+            op,
+            tile_predecessor,
+            valid_items,
+            storage.get().left);
     }
 
     /// \brief Apply a function to each consecutive pair of elements partitioned across threads in
@@ -301,22 +313,27 @@ public:
     /// \par Storage reuse
     /// Synchronization barrier should be placed before `storage` is reused
     /// or repurposed: `__syncthreads()` or \link syncthreads() rocprim::syncthreads() \endlink.
-    template <typename Output, unsigned int ItemsPerThread, typename BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void subtract_right(const T (&input)[ItemsPerThread],
-                                                      Output (&output)[ItemsPerThread],
-                                                      const BinaryFunction op,
-                                                      storage_type&        storage)
+    template<typename Output, unsigned int ItemsPerThread, typename BinaryFunction>
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void subtract_right(const T (&input)[ItemsPerThread],
+                        Output (&output)[ItemsPerThread],
+                        const BinaryFunction op,
+                        storage_type&        storage)
     {
         static constexpr auto as_flags       = false;
         static constexpr auto reversed       = false;
         static constexpr auto with_successor = false;
 
         base_type::template apply_right<as_flags, reversed, with_successor>(
-            input, output, op, input[0] /* successor */, storage.get().right);
+            input,
+            output,
+            op,
+            input[0] /* successor */,
+            storage.get().right);
     }
 
     /// \brief Apply a function to each consecutive pair of elements partitioned across threads in
-    /// the block and write the output to the position of the right item, with an explicit item after 
+    /// the block and write the output to the position of the right item, with an explicit item after
     /// the tile.
     ///
     /// \code
@@ -336,25 +353,29 @@ public:
     /// The signature of the function should be equivalent to the following:
     /// `bool f(const T &a, const T &b)` The signature does not need to have
     /// `const &` but the function object must not modify the objects passed to it.
-    /// \param [in] tile_successor the item after the tile, will be used as the input 
+    /// \param [in] tile_successor the item after the tile, will be used as the input
     /// of the last application of `op`
     /// \param storage reference to a temporary storage object of type #storage_type
     /// \par Storage reuse
     /// Synchronization barrier should be placed before `storage` is reused
     /// or repurposed: `__syncthreads()` or \link syncthreads() rocprim::syncthreads() \endlink.
-    template <typename Output, unsigned int ItemsPerThread, typename BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void subtract_right(const T (&input)[ItemsPerThread],
-                                                      Output (&output)[ItemsPerThread],
-                                                      const BinaryFunction op,
-                                                      const T              tile_successor,
-                                                      storage_type&        storage)
+    template<typename Output, unsigned int ItemsPerThread, typename BinaryFunction>
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void subtract_right(const T (&input)[ItemsPerThread],
+                        Output (&output)[ItemsPerThread],
+                        const BinaryFunction op,
+                        const T              tile_successor,
+                        storage_type&        storage)
     {
         static constexpr auto as_flags       = false;
         static constexpr auto reversed       = false;
         static constexpr auto with_successor = true;
 
-        base_type::template apply_right<as_flags, reversed, with_successor>(
-            input, output, op, tile_successor, storage.get().right);
+        base_type::template apply_right<as_flags, reversed, with_successor>(input,
+                                                                            output,
+                                                                            op,
+                                                                            tile_successor,
+                                                                            storage.get().right);
     }
 
     /// \brief Apply a function to each consecutive pair of elements partitioned across threads in
@@ -382,18 +403,22 @@ public:
     /// \par Storage reuse
     /// Synchronization barrier should be placed before `storage` is reused
     /// or repurposed: `__syncthreads()` or \link syncthreads() rocprim::syncthreads() \endlink.
-    template <typename Output, unsigned int ItemsPerThread, typename BinaryFunction>
-    ROCPRIM_DEVICE ROCPRIM_INLINE void subtract_right_partial(const T (&input)[ItemsPerThread],
-                                                              Output (&output)[ItemsPerThread],
-                                                              const BinaryFunction op,
-                                                              const unsigned int   valid_items,
-                                                              storage_type&        storage)
+    template<typename Output, unsigned int ItemsPerThread, typename BinaryFunction>
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    void subtract_right_partial(const T (&input)[ItemsPerThread],
+                                Output (&output)[ItemsPerThread],
+                                const BinaryFunction op,
+                                const unsigned int   valid_items,
+                                storage_type&        storage)
     {
         static constexpr auto as_flags = false;
         static constexpr auto reversed = false;
 
-        base_type::template apply_right_partial<as_flags, reversed>(
-            input, output, op, valid_items, storage.get().right);
+        base_type::template apply_right_partial<as_flags, reversed>(input,
+                                                                    output,
+                                                                    op,
+                                                                    valid_items,
+                                                                    storage.get().right);
     }
 };
 

@@ -44,14 +44,14 @@ struct hipsparse_bench_timing_t
         std::vector<double>      gbs{};
         std::vector<std::string> outputs{};
         std::string              outputs_legend{};
-        item_t(){};
+        item_t() {};
 
         explicit item_t(int nruns_)
             : m_nruns(nruns_)
             , msec(nruns_)
             , gflops(nruns_)
             , gbs(nruns_)
-            , outputs(nruns_){};
+            , outputs(nruns_) {};
 
         item_t& operator()(int nruns_)
         {
@@ -208,7 +208,7 @@ public:
         return s_instance;
     }
 
-    hipsparse_bench_app(const hipsparse_bench_app&) = delete;
+    hipsparse_bench_app(const hipsparse_bench_app&)            = delete;
     hipsparse_bench_app& operator=(const hipsparse_bench_app&) = delete;
 
     static bool applies(int argc, char** argv)

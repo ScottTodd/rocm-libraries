@@ -36,27 +36,30 @@ from ..SolutionStructs import Solution
 
 from .Component import Assembler, Linker, Bundler
 
+
 class AssemblyToolchain(NamedTuple):
-   assembler: Assembler
-   linker: Linker
-   bundler: Bundler
+    assembler: Assembler
+    linker: Linker
+    bundler: Bundler
 
 
-def makeAssemblyToolchain(assembler_path, bundler_path, co_version, build_id_kind="sha1", debug=False):
-   compiler = Assembler(assembler_path, co_version, debug)
-   linker = Linker(assembler_path, build_id_kind)
-   bundler = Bundler(bundler_path)
-   return AssemblyToolchain(compiler, linker, bundler)
+def makeAssemblyToolchain(
+    assembler_path, bundler_path, co_version, build_id_kind="sha1", debug=False
+):
+    compiler = Assembler(assembler_path, co_version, debug)
+    linker = Linker(assembler_path, build_id_kind)
+    bundler = Bundler(bundler_path)
+    return AssemblyToolchain(compiler, linker, bundler)
 
 
 def buildAssemblyCodeObjectFiles(
-      linker: Linker,
-      bundler: Bundler,
-      kernels: List[Solution],
-      destDir: Union[Path, str],
-      asmDir: Union[Path, str],
-      compress: bool=True,
-    ):
+    linker: Linker,
+    bundler: Bundler,
+    kernels: List[Solution],
+    destDir: Union[Path, str],
+    asmDir: Union[Path, str],
+    compress: bool = True,
+):
     """Builds code object files from assembly files
 
     Args:
@@ -74,31 +77,37 @@ def buildAssemblyCodeObjectFiles(
 
     archKernelMap = collections.defaultdict(list)
     for k in kernels:
-      archKernelMap[tuple(k['ISA'])].append(k)
+        archKernelMap[tuple(k["ISA"])].append(k)
 
     coFiles = []
     for arch, archKernels in archKernelMap.items():
-      if len(archKernels) == 0:
-        continue
+        if len(archKernels) == 0:
+            continue
 
-      gfx = isaToGfx(arch)
+        gfx = isaToGfx(arch)
 
-      objectFiles = [str(asmDir / (k["BaseName"] + extObj)) for k in archKernels if 'codeObjectFile' not in k]
-      coFileMap = collections.defaultdict(set)
-      if len(objectFiles):
-        coFileMap[asmDir / ("TensileLibrary_"+ gfx + extCoRaw)] = objectFiles
-      for kernel in archKernels:
-        coName = kernel.get("codeObjectFile", None)
-        if coName:
-          coFileMap[asmDir / (coName + extCoRaw)].add(str(asmDir / (kernel["BaseName"] + extObj)))
+        objectFiles = [
+            str(asmDir / (k["BaseName"] + extObj))
+            for k in archKernels
+            if "codeObjectFile" not in k
+        ]
+        coFileMap = collections.defaultdict(set)
+        if len(objectFiles):
+            coFileMap[asmDir / ("TensileLibrary_" + gfx + extCoRaw)] = objectFiles
+        for kernel in archKernels:
+            coName = kernel.get("codeObjectFile", None)
+            if coName:
+                coFileMap[asmDir / (coName + extCoRaw)].add(
+                    str(asmDir / (kernel["BaseName"] + extObj))
+                )
 
-      for coFileRaw, objFiles in coFileMap.items():
-        linker(objFiles, str(coFileRaw))
-        coFile = destDir / coFileRaw.name.replace(extCoRaw, extCo)
-        if compress:
-          bundler.compress(str(coFileRaw), str(coFile), gfx)
-        else:
-          shutil.move(coFileRaw, coFile)
-        coFiles.append(coFile)
+        for coFileRaw, objFiles in coFileMap.items():
+            linker(objFiles, str(coFileRaw))
+            coFile = destDir / coFileRaw.name.replace(extCoRaw, extCo)
+            if compress:
+                bundler.compress(str(coFileRaw), str(coFile), gfx)
+            else:
+                shutil.move(coFileRaw, coFile)
+            coFiles.append(coFile)
 
     return coFiles

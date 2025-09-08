@@ -169,7 +169,7 @@ namespace TensileLite
                 stream << this->type() << " {" << std::endl;
                 for(auto const& term : value)
                 {
-                    if (!(*term)(obj))
+                    if(!(*term)(obj))
                         term->debugEval(obj, stream);
                 }
                 stream << "}: " << rv << std::endl;
@@ -217,7 +217,7 @@ namespace TensileLite
                 stream << this->type() << " {" << std::endl;
                 for(auto const& term : value)
                 {
-                    if (!(*term)(obj))
+                    if(!(*term)(obj))
                         term->debugEval(obj, stream);
                 }
                 stream << "}: " << rv << std::endl;

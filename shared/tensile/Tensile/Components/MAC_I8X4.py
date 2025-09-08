@@ -25,6 +25,7 @@
 from ..Component import Component, MAC
 from ..DataType import DataType
 
+
 class MAC_I8X4_Plain(MAC):
     asmCaps = {"VOP3v_dot4_i32_i8": True}
     kernel = {"ProblemType": {"DataType": DataType(DataType.int8x4)}}
@@ -45,11 +46,13 @@ class MAC_I8X4_Plain(MAC):
                 vars["a"] = a
                 for iui in range(0, innerUnroll):
                     vars["iui"] = iui
-                    vars["cidx"] = a + b*kernel["ThreadTile0"] + 0
+                    vars["cidx"] = a + b * kernel["ThreadTile0"] + 0
                     vars["cStr"] = "v[vgprValuC+{a}+{b}*{ThreadTile0}]".format_map(vars)
                     vars["aStr"] = "v[vgprValuA_X{m}_I{iui}+{a}]".format_map(vars)
                     vars["bStr"] = "v[vgprValuB_X{m}_I{iui}+{b}]".format_map(vars)
-                    kStr += "v_dot4_i32_i8 {cStr}, {aStr}, {bStr}, {cStr} op_sel:[0,0] op_sel_hi:[1,1] //valuC[{cidx}]{endLine}".format_map(vars)
+                    kStr += "v_dot4_i32_i8 {cStr}, {aStr}, {bStr}, {cStr} op_sel:[0,0] op_sel_hi:[1,1] //valuC[{cidx}]{endLine}".format_map(
+                        vars
+                    )
                     kStr += priority(writer, 1, "Raise priority while processing macs")
 
         kStr += priority(writer, 0, "Reset priority after macs")

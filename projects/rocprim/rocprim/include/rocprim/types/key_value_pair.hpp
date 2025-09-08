@@ -47,12 +47,17 @@ struct key_value_pair
     /// The stored value.
     value_type value;
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE key_value_pair() = default;
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    key_value_pair()
+        = default;
 
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE ~key_value_pair() = default;
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    ~key_value_pair()
+        = default;
 
     /// \brief Constructs a key-value pair using the supplied values.
-    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE key_value_pair(const key_type key, const value_type value)
+    ROCPRIM_HOST_DEVICE ROCPRIM_INLINE
+    key_value_pair(const key_type key, const value_type value)
         : key(key), value(value)
     {}
 

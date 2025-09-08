@@ -50,7 +50,7 @@ struct rocsparse_importer_format_t
 #undef FORMAT
 
     value_type value{};
-    rocsparse_importer_format_t(){};
+    rocsparse_importer_format_t() {};
 
 public:
     static const char* extension(const value_type val)

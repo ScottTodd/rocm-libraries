@@ -66,7 +66,7 @@ std::string to_string(common::api_variant aliasing)
     }
 }
 
-template <typename Output, typename T, typename BinaryFunction>
+template<typename Output, typename T, typename BinaryFunction>
 auto get_expected_result(const std::vector<T>& input,
                          const BinaryFunction  op,
                          std::true_type /*left*/)
@@ -76,7 +76,7 @@ auto get_expected_result(const std::vector<T>& input,
     return result;
 }
 
-template <typename Output, typename T, typename BinaryFunction>
+template<typename Output, typename T, typename BinaryFunction>
 auto get_expected_result(const std::vector<T>& input,
                          const BinaryFunction  op,
                          std::false_type /*left*/)
@@ -109,7 +109,7 @@ struct DeviceAdjacentDifferenceParams
     static constexpr bool use_indirect_iterator                = UseIndirectIterator;
 };
 
-template <class Params>
+template<class Params>
 class RocprimDeviceAdjacentDifferenceTests : public ::testing::Test
 {
 public:
@@ -236,7 +236,7 @@ TYPED_TEST(RocprimDeviceAdjacentDifferenceTests, AdjacentDifference)
         for(auto size : test_utils::get_sizes(seed_value))
         {
             hipStream_t stream = 0; // default
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
             {
                 // Default stream does not support hipGraph stream capture, so create one
                 HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -369,7 +369,7 @@ struct DeviceAdjacentDifferenceLargeParams
     static constexpr bool                use_graphs = UseGraphs;
 };
 
-template <class Params>
+template<class Params>
 class RocprimDeviceAdjacentDifferenceLargeTests : public ::testing::Test
 {
 public:
@@ -389,11 +389,13 @@ private:
     class check_output
     {
     public:
-        __device__ check_output(flag_type* incorrect_flag, size_t current_index, size_t* counter)
+        __device__
+        check_output(flag_type* incorrect_flag, size_t current_index, size_t* counter)
             : current_index_(current_index), incorrect_flag_(incorrect_flag), counter_(counter)
         {}
 
-        __device__ check_output& operator=(size_t value)
+        __device__
+        check_output& operator=(size_t value)
         {
             if(value != current_index_)
             {
@@ -419,64 +421,77 @@ public:
     using iterator_category = std::random_access_iterator_tag;
     using difference_type   = std::ptrdiff_t;
 
-    __host__ __device__ check_output_iterator(flag_type* const incorrect_flag,
-                                              size_t* const    counter)
+    __host__ __device__
+    check_output_iterator(flag_type* const incorrect_flag, size_t* const counter)
         : current_index_(0), incorrect_flag_(incorrect_flag), counter_(counter)
     {}
 
-    __device__ bool operator==(const check_output_iterator& rhs) const
+    __device__
+    bool operator==(const check_output_iterator& rhs) const
     {
         return current_index_ == rhs.current_index_;
     }
-    __device__ bool operator!=(const check_output_iterator& rhs) const
+    __device__
+    bool operator!=(const check_output_iterator& rhs) const
     {
         return !(*this == rhs);
     }
-    __device__ reference operator*()
+    __device__
+    reference operator*()
     {
         return reference(incorrect_flag_, current_index_, counter_);
     }
-    __device__ reference operator[](const difference_type distance) const
+    __device__
+    reference operator[](const difference_type distance) const
     {
         return *(*this + distance);
     }
-    __host__ __device__ check_output_iterator& operator+=(const difference_type rhs)
+    __host__ __device__
+    check_output_iterator& operator+=(const difference_type rhs)
     {
         current_index_ += rhs;
         return *this;
     }
-    __host__ __device__ check_output_iterator& operator-=(const difference_type rhs)
+    __host__ __device__
+    check_output_iterator& operator-=(const difference_type rhs)
     {
         current_index_ -= rhs;
         return *this;
     }
-    __host__ __device__ difference_type operator-(const check_output_iterator& rhs) const
+    __host__ __device__
+    difference_type operator-(const check_output_iterator& rhs) const
     {
         return current_index_ - rhs.current_index_;
     }
-    __host__ __device__ check_output_iterator operator+(const difference_type rhs) const
+    __host__ __device__
+    check_output_iterator operator+(const difference_type rhs) const
     {
         return check_output_iterator(*this) += rhs;
     }
-    __host__ __device__ check_output_iterator operator-(const difference_type rhs) const
+    __host__ __device__
+    check_output_iterator operator-(const difference_type rhs) const
     {
         return check_output_iterator(*this) -= rhs;
     }
-    __host__ __device__ check_output_iterator& operator++()
+    __host__ __device__
+    check_output_iterator& operator++()
     {
         ++current_index_;
         return *this;
     }
-    __host__ __device__ check_output_iterator& operator--()
+    __host__ __device__
+    check_output_iterator& operator--()
     {
         --current_index_;
         return *this;
     }
-    __host__ __device__ check_output_iterator operator++(int)
+    __host__ __device__
+    check_output_iterator operator++(int)
     {
         return ++check_output_iterator{*this};
     }
-    __host__ __device__ check_output_iterator operator--(int)
+    __host__ __device__
+    check_output_iterator operator--(int)
     {
         return --check_output_iterator{*this};
     }
@@ -515,7 +530,7 @@ TYPED_TEST(RocprimDeviceAdjacentDifferenceLargeTests, LargeIndices)
                  << "is_left = " << is_left << ", api_variant = " << to_string(aliasing));
 
     hipStream_t stream = 0; // default
-    if (TestFixture::use_graphs)
+    if(TestFixture::use_graphs)
     {
         // Default stream does not support hipGraph stream capture, so create one
         HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -622,6 +637,6 @@ TYPED_TEST(RocprimDeviceAdjacentDifferenceLargeTests, LargeIndices)
         }
     }
 
-    if (TestFixture::use_graphs)
+    if(TestFixture::use_graphs)
         HIP_CHECK(hipStreamDestroy(stream));
 }

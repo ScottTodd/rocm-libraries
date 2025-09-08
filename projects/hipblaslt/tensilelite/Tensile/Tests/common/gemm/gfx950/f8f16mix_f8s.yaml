@@ -27,7 +27,7 @@ GlobalParameters:
 
 BenchmarkProblems:
   ########################################
-  # FP8FP16_HHS NT 
+  # FP8FP16_HHS NT
   ########################################
   -
     - # ProblemType
@@ -98,7 +98,7 @@ BenchmarkProblems:
           - [Enum: none]
 
   ########################################
-  # FP8FP16_HHS NN 
+  # FP8FP16_HHS NN
   ########################################
   -
     - # ProblemType
@@ -169,7 +169,7 @@ BenchmarkProblems:
           - [Enum: none]
 
   ########################################
-  # FP8FP16_HHS TN 
+  # FP8FP16_HHS TN
   ########################################
   -
     - # ProblemType
@@ -240,7 +240,7 @@ BenchmarkProblems:
           - [Enum: none]
 
   ########################################
-  # FP8FP16_HHS TT 
+  # FP8FP16_HHS TT
   ########################################
   -
     - # ProblemType
@@ -309,4 +309,3 @@ BenchmarkProblems:
         - BiasTypeArgs: ['s']
         - ActivationArgs:
           - [Enum: none]
-

@@ -34,7 +34,8 @@ void warp_reduce_sum_kernel(T* device_input, T* device_output)
         T value = device_input[index];
 
         using wreduce_t = rocprim::warp_reduce<T, LogicalWarpSize>;
-        __shared__ typename wreduce_t::storage_type storage[warps_no];
+        __shared__
+        typename wreduce_t::storage_type storage[warps_no];
         wreduce_t().reduce(value, value, storage[warp_id]);
 
         if(threadIdx.x % LogicalWarpSize == 0)
@@ -57,7 +58,8 @@ void warp_allreduce_sum_kernel(T* device_input, T* device_output)
         T value = device_input[index];
 
         using wreduce_t = rocprim::warp_reduce<T, LogicalWarpSize, true>;
-        __shared__ typename wreduce_t::storage_type storage[warps_no];
+        __shared__
+        typename wreduce_t::storage_type storage[warps_no];
         wreduce_t().reduce(value, value, storage[warp_id]);
 
         device_output[index] = value;
@@ -77,7 +79,8 @@ void warp_reduce_sum_kernel(T* device_input, T* device_output, size_t valid)
         T value = device_input[index];
 
         using wreduce_t = rocprim::warp_reduce<T, LogicalWarpSize>;
-        __shared__ typename wreduce_t::storage_type storage[warps_no];
+        __shared__
+        typename wreduce_t::storage_type storage[warps_no];
         wreduce_t().reduce(value, value, valid, storage[warp_id]);
 
         if(threadIdx.x % LogicalWarpSize == 0)
@@ -100,7 +103,8 @@ void warp_allreduce_sum_kernel(T* device_input, T* device_output, size_t valid)
         T value = device_input[index];
 
         using wreduce_t = rocprim::warp_reduce<T, LogicalWarpSize, true>;
-        __shared__ typename wreduce_t::storage_type storage[warps_no];
+        __shared__
+        typename wreduce_t::storage_type storage[warps_no];
         wreduce_t().reduce(value, value, valid, storage[warp_id]);
 
         device_output[index] = value;
@@ -121,7 +125,8 @@ void head_segmented_warp_reduce_kernel(T* input, Flag* flags, T* output)
         auto flag  = flags[index];
 
         using wreduce_t = rocprim::warp_reduce<T, LogicalWarpSize, true>;
-        __shared__ typename wreduce_t::storage_type storage[warps_no];
+        __shared__
+        typename wreduce_t::storage_type storage[warps_no];
         wreduce_t().head_segmented_reduce(value, value, flag, storage[warp_id]);
 
         output[index] = value;
@@ -142,7 +147,8 @@ void tail_segmented_warp_reduce_kernel(T* input, Flag* flags, T* output)
         auto flag  = flags[index];
 
         using wreduce_t = rocprim::warp_reduce<T, LogicalWarpSize, true>;
-        __shared__ typename wreduce_t::storage_type storage[warps_no];
+        __shared__
+        typename wreduce_t::storage_type storage[warps_no];
         wreduce_t().tail_segmented_reduce(value, value, flag, storage[warp_id]);
 
         output[index] = value;

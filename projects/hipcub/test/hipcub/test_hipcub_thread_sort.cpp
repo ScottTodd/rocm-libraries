@@ -29,22 +29,21 @@
 
 #include <hip/hip_runtime.h>
 
-template<
-    typename Key,
-    typename Value,
-    unsigned int ItemsPerThread,
-    typename CompareFunction = test_utils::less
->
+template<typename Key,
+         typename Value,
+         unsigned int ItemsPerThread,
+         typename CompareFunction = test_utils::less>
 struct params
 {
-    using key_type = Key;
-    using value_type = Value;
+    using key_type                                 = Key;
+    using value_type                               = Value;
     static constexpr unsigned int items_per_thread = ItemsPerThread;
-    using compare_function = CompareFunction;
+    using compare_function                         = CompareFunction;
 };
 
 template<class Params>
-class HipcubThreadSort : public ::testing::Test {
+class HipcubThreadSort : public ::testing::Test
+{
 public:
     using params = Params;
 };
@@ -70,12 +69,12 @@ using Params = ::testing::Types<
 
 TYPED_TEST_SUITE(HipcubThreadSort, Params);
 
-template <unsigned int BlockSize, unsigned int ItemsPerThread, typename Key, typename Compare>
-__global__
-__launch_bounds__(BlockSize)
-void sort_keys(Key* keys, Compare compare) {
+template<unsigned int BlockSize, unsigned int ItemsPerThread, typename Key, typename Compare>
+__global__ __launch_bounds__(BlockSize)
+void sort_keys(Key* keys, Compare compare)
+{
     constexpr unsigned int items_per_block = BlockSize * ItemsPerThread;
-    const unsigned int block_offset = blockIdx.x * items_per_block;
+    const unsigned int     block_offset    = blockIdx.x * items_per_block;
 
     Key thread_keys[ItemsPerThread];
     hipcub::LoadDirectBlocked(threadIdx.x, keys + block_offset, thread_keys);
@@ -86,12 +85,16 @@ void sort_keys(Key* keys, Compare compare) {
     hipcub::StoreDirectBlocked(threadIdx.x, keys + block_offset, thread_keys);
 }
 
-template <unsigned int BlockSize, unsigned int ItemsPerThread, typename Key, typename Value, typename Compare>
-__global__
-__launch_bounds__(BlockSize)
-void sort_keys_values(Key* keys, Value* values, Compare compare) {
+template<unsigned int BlockSize,
+         unsigned int ItemsPerThread,
+         typename Key,
+         typename Value,
+         typename Compare>
+__global__ __launch_bounds__(BlockSize)
+void sort_keys_values(Key* keys, Value* values, Compare compare)
+{
     constexpr unsigned int items_per_block = BlockSize * ItemsPerThread;
-    const unsigned int block_offset = blockIdx.x * items_per_block;
+    const unsigned int     block_offset    = blockIdx.x * items_per_block;
 
     Key   thread_keys[ItemsPerThread];
     Value thread_values[ItemsPerThread];
@@ -110,21 +113,22 @@ TYPED_TEST(HipcubThreadSort, SortKeys)
     SCOPED_TRACE(testing::Message() << "with device_id= " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using params = typename TestFixture::params;
+    using params   = typename TestFixture::params;
     using key_type = typename params::key_type;
 
-    constexpr unsigned int block_size = 256;
-    constexpr auto items_per_thread   = params::items_per_thread;
+    constexpr unsigned int block_size       = 256;
+    constexpr auto         items_per_thread = params::items_per_thread;
 
     constexpr auto items_per_block = block_size * items_per_thread;
 
     constexpr auto num_blocks  = 337;
     constexpr auto num_threads = num_blocks * block_size;
-    constexpr auto size = num_blocks * items_per_block;
+    constexpr auto size        = num_blocks * items_per_block;
 
-    for (size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
+    for(size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed= " << seed_value);
 
         // Generate data
@@ -132,22 +136,24 @@ TYPED_TEST(HipcubThreadSort, SortKeys)
 
         auto keys = test_utils::is_floating_point<wrapped_type>::value
                         ? test_utils::get_random_data<key_type>(
-                            size,
-                            test_utils::convert_to_device<wrapped_type>(-1000),
-                            test_utils::convert_to_device<wrapped_type>(1000),
-                            seed_value)
+                              size,
+                              test_utils::convert_to_device<wrapped_type>(-1000),
+                              test_utils::convert_to_device<wrapped_type>(1000),
+                              seed_value)
                         : test_utils::get_random_data<key_type>(
-                            size,
-                            test_utils::numeric_limits<wrapped_type>::lowest(),
-                            test_utils::numeric_limits<wrapped_type>::max(),
-                            seed_value);
+                              size,
+                              test_utils::numeric_limits<wrapped_type>::lowest(),
+                              test_utils::numeric_limits<wrapped_type>::max(),
+                              seed_value);
 
         const auto compare = typename params::compare_function{};
 
         // Calculate expected results on host
-        const auto expected = [&]() {
+        const auto expected = [&]()
+        {
             auto result = keys;
-            for (unsigned int thread = 0; thread < num_threads; ++thread) {
+            for(unsigned int thread = 0; thread < num_threads; ++thread)
+            {
                 std::stable_sort(result.begin() + thread * items_per_thread,
                                  result.begin() + thread * items_per_thread + items_per_thread,
                                  compare);
@@ -157,21 +163,24 @@ TYPED_TEST(HipcubThreadSort, SortKeys)
 
         key_type* device_keys = nullptr;
         HIP_CHECK(test_common_utils::hipMallocHelper(&device_keys, keys.size() * sizeof(keys[0])));
-        HIP_CHECK(hipMemcpy(device_keys, keys.data(),
+        HIP_CHECK(hipMemcpy(device_keys,
+                            keys.data(),
                             keys.size() * sizeof(keys[0]),
                             hipMemcpyHostToDevice));
 
-        hipLaunchKernelGGL(HIP_KERNEL_NAME(sort_keys<block_size, items_per_thread>), dim3(num_blocks),
-                           dim3(block_size), 0, 0, device_keys, compare);
+        hipLaunchKernelGGL(HIP_KERNEL_NAME(sort_keys<block_size, items_per_thread>),
+                           dim3(num_blocks),
+                           dim3(block_size),
+                           0,
+                           0,
+                           device_keys,
+                           compare);
         HIP_CHECK(hipGetLastError());
 
-        HIP_CHECK(
-            hipMemcpy(
-                keys.data(), device_keys,
-                keys.size() * sizeof(keys[0]),
-                hipMemcpyDeviceToHost
-            )
-        );
+        HIP_CHECK(hipMemcpy(keys.data(),
+                            device_keys,
+                            keys.size() * sizeof(keys[0]),
+                            hipMemcpyDeviceToHost));
 
         // Verifying results
         for(size_t i = 0; i < size; i++)
@@ -190,22 +199,23 @@ TYPED_TEST(HipcubThreadSort, SortKeysValues)
     SCOPED_TRACE(testing::Message() << "with device_id= " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using params = typename TestFixture::params;
-    using key_type = typename params::key_type;
+    using params     = typename TestFixture::params;
+    using key_type   = typename params::key_type;
     using value_type = typename params::value_type;
 
-    constexpr unsigned int block_size = 256;
-    constexpr auto items_per_thread   = params::items_per_thread;
+    constexpr unsigned int block_size       = 256;
+    constexpr auto         items_per_thread = params::items_per_thread;
 
     constexpr auto items_per_block = block_size * items_per_thread;
 
     constexpr auto num_blocks  = 269;
     constexpr auto num_threads = num_blocks * block_size;
-    constexpr auto size = num_blocks * items_per_block;
+    constexpr auto size        = num_blocks * items_per_block;
 
-    for (size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
+    for(size_t seed_index = 0; seed_index < random_seeds_count + seed_size; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed= " << seed_value);
 
         // Generate data
@@ -213,47 +223,49 @@ TYPED_TEST(HipcubThreadSort, SortKeysValues)
 
         auto keys = test_utils::is_floating_point<wrapped_type>::value
                         ? test_utils::get_random_data<key_type>(
-                            size,
-                            test_utils::convert_to_device<wrapped_type>(-1000),
-                            test_utils::convert_to_device<wrapped_type>(1000),
-                            seed_value)
+                              size,
+                              test_utils::convert_to_device<wrapped_type>(-1000),
+                              test_utils::convert_to_device<wrapped_type>(1000),
+                              seed_value)
                         : test_utils::get_random_data<key_type>(
-                            size,
-                            test_utils::numeric_limits<wrapped_type>::lowest(),
-                            test_utils::numeric_limits<wrapped_type>::max(),
-                            seed_value);
+                              size,
+                              test_utils::numeric_limits<wrapped_type>::lowest(),
+                              test_utils::numeric_limits<wrapped_type>::max(),
+                              seed_value);
 
         using value_wrapped_type = typename test_utils::inner_type<value_type>::type;
 
         auto values = test_utils::is_floating_point<value_wrapped_type>::value
                           ? test_utils::get_random_data<value_type>(
-                              size,
-                              test_utils::convert_to_device<value_wrapped_type>(-1000),
-                              test_utils::convert_to_device<value_wrapped_type>(1000),
-                              seed_value)
+                                size,
+                                test_utils::convert_to_device<value_wrapped_type>(-1000),
+                                test_utils::convert_to_device<value_wrapped_type>(1000),
+                                seed_value)
                           : test_utils::get_random_data<value_type>(
-                              size,
-                              test_utils::numeric_limits<value_wrapped_type>::lowest(),
-                              test_utils::numeric_limits<value_wrapped_type>::max(),
-                              seed_value ^ (seed_value >> 1ul));
+                                size,
+                                test_utils::numeric_limits<value_wrapped_type>::lowest(),
+                                test_utils::numeric_limits<value_wrapped_type>::max(),
+                                seed_value ^ (seed_value >> 1ul));
 
         const auto compare = typename params::compare_function{};
 
         // Calculate expected results on host
-        const auto expected = [&]() {
-            using pair = std::pair<key_type, value_type>;
+        const auto expected = [&]()
+        {
+            using pair  = std::pair<key_type, value_type>;
             auto result = std::vector<pair>{size};
-            for(size_t i = 0; i < keys.size(); ++i) {
-                result[i].first = keys[i];
+            for(size_t i = 0; i < keys.size(); ++i)
+            {
+                result[i].first  = keys[i];
                 result[i].second = values[i];
             }
 
-            for (unsigned int thread = 0; thread < num_threads; ++thread) {
+            for(unsigned int thread = 0; thread < num_threads; ++thread)
+            {
                 std::stable_sort(result.begin() + thread * items_per_thread,
                                  result.begin() + thread * items_per_thread + items_per_thread,
-                                 [&compare](const pair &lhs, const pair &rhs) {
-                                   return compare(lhs.first, rhs.first);
-                                 });
+                                 [&compare](const pair& lhs, const pair& rhs)
+                                 { return compare(lhs.first, rhs.first); });
             }
             return result;
         }();
@@ -261,35 +273,35 @@ TYPED_TEST(HipcubThreadSort, SortKeysValues)
         key_type*   device_keys   = nullptr;
         value_type* device_values = nullptr;
         HIP_CHECK(test_common_utils::hipMallocHelper(&device_keys, keys.size() * sizeof(keys[0])));
-        HIP_CHECK(test_common_utils::hipMallocHelper(
-            &device_values,
-            values.size() * sizeof(values[0])));
-        HIP_CHECK(hipMemcpy(device_keys, keys.data(),
+        HIP_CHECK(
+            test_common_utils::hipMallocHelper(&device_values, values.size() * sizeof(values[0])));
+        HIP_CHECK(hipMemcpy(device_keys,
+                            keys.data(),
                             keys.size() * sizeof(keys[0]),
                             hipMemcpyHostToDevice));
-        HIP_CHECK(hipMemcpy(device_values, values.data(),
+        HIP_CHECK(hipMemcpy(device_values,
+                            values.data(),
                             values.size() * sizeof(values[0]),
                             hipMemcpyHostToDevice));
 
-        hipLaunchKernelGGL(HIP_KERNEL_NAME(sort_keys_values<block_size, items_per_thread>), dim3(num_blocks),
-                           dim3(block_size), 0, 0, device_keys, device_values,
+        hipLaunchKernelGGL(HIP_KERNEL_NAME(sort_keys_values<block_size, items_per_thread>),
+                           dim3(num_blocks),
+                           dim3(block_size),
+                           0,
+                           0,
+                           device_keys,
+                           device_values,
                            compare);
         HIP_CHECK(hipGetLastError());
 
-        HIP_CHECK(
-            hipMemcpy(
-                keys.data(), device_keys,
-                keys.size() * sizeof(keys[0]),
-                hipMemcpyDeviceToHost
-            )
-        );
-        HIP_CHECK(
-            hipMemcpy(
-                values.data(), device_values,
-                values.size() * sizeof(values[0]),
-                hipMemcpyDeviceToHost
-            )
-        );
+        HIP_CHECK(hipMemcpy(keys.data(),
+                            device_keys,
+                            keys.size() * sizeof(keys[0]),
+                            hipMemcpyDeviceToHost));
+        HIP_CHECK(hipMemcpy(values.data(),
+                            device_values,
+                            values.size() * sizeof(values[0]),
+                            hipMemcpyDeviceToHost));
 
         // Verifying results
         for(size_t i = 0; i < size; i++)

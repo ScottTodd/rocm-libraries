@@ -203,8 +203,8 @@ namespace CopyGeneratorTest
         auto i64minustwo = Register::Value::Literal(i64);
 
         EXPECT_THROW({ m_context->schedule(m_context->copier()->copy(ir, i32vr)); }, FatalError);
-        EXPECT_THROW({ m_context->schedule(m_context->copier()->copy(literal, i32vr)); },
-                     FatalError);
+        EXPECT_THROW(
+            { m_context->schedule(m_context->copier()->copy(literal, i32vr)); }, FatalError);
 
         m_context->schedule(m_context->copier()->copy(i32sr, i32vr));
 
@@ -673,11 +673,11 @@ namespace CopyGeneratorTest
                                                 1,
                                                 Register::AllocationOptions::FullyContiguous());
 
-        EXPECT_THROW({ m_context->schedule(m_context->copier()->copy(accVGPR, literal)); },
-                     FatalError);
-        EXPECT_THROW({ m_context->schedule(m_context->copier()->copy(accVGPR, vgpr)); },
-                     FatalError);
-        EXPECT_THROW({ m_context->schedule(m_context->copier()->copy(vgpr, accVGPR)); },
-                     FatalError);
+        EXPECT_THROW(
+            { m_context->schedule(m_context->copier()->copy(accVGPR, literal)); }, FatalError);
+        EXPECT_THROW(
+            { m_context->schedule(m_context->copier()->copy(accVGPR, vgpr)); }, FatalError);
+        EXPECT_THROW(
+            { m_context->schedule(m_context->copier()->copy(vgpr, accVGPR)); }, FatalError);
     }
 }

@@ -229,7 +229,7 @@ TEST(rocfft_UnitTest, log_levels)
 #ifdef WIN32
     static const char* log_output = "NUL";
 #else
-    static const char* log_output   = "/dev/null";
+    static const char* log_output = "/dev/null";
 #endif
     EnvironmentSetTemp log_trace_path("ROCFFT_LOG_TRACE_PATH", log_output);
     EnvironmentSetTemp log_bench_path("ROCFFT_LOG_BENCH_PATH", log_output);
@@ -339,7 +339,7 @@ TEST(rocfft_UnitTest, log_multithreading)
     std::ifstream trace_log(TRACE_FILE);
     std::string   line;
     std::regex    validator("^rocfft_(setup|cleanup|plan_description_(create|destroy),"
-                         "description,[x0-9a-fA-F]+)$");
+                            "description,[x0-9a-fA-F]+)$");
     while(std::getline(trace_log, line))
     {
         bool res = std::regex_match(line, validator);
@@ -655,8 +655,8 @@ TEST(rocfft_UnitTest, rtc_helper_crash)
     fs::path test_exe    = filename;
     fs::path crasher_exe = test_exe.replace_filename("rtc_helper_crash.exe");
 #else
-    fs::path           test_exe     = program_invocation_name;
-    fs::path           crasher_exe  = test_exe.replace_filename("rtc_helper_crash");
+    fs::path test_exe    = program_invocation_name;
+    fs::path crasher_exe = test_exe.replace_filename("rtc_helper_crash");
 #endif
 
     // use the crashing helper

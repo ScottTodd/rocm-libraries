@@ -40,8 +40,8 @@
 // Ensure printing of CUDA runtime errors to console
 #define CUB_STDERR
 
-#include <stdio.h>
 #include <iostream>
+#include <stdio.h>
 
 #include <hipcub/device/device_select.hpp>
 
@@ -49,56 +49,49 @@
 
 using namespace hipcub;
 
-
 //---------------------------------------------------------------------
 // Globals, constants and typedefs
 //---------------------------------------------------------------------
 
-bool                            g_verbose = false;  // Whether to display input/output to console
-hipcub::CachingDeviceAllocator  g_allocator;  // Caching allocator for device memory
-
+bool                           g_verbose = false; // Whether to display input/output to console
+hipcub::CachingDeviceAllocator g_allocator; // Caching allocator for device memory
 
 //---------------------------------------------------------------------
 // Test generation
 //---------------------------------------------------------------------
 
-
 /**
  * Initialize problem, setting flags at distances of random length
  * chosen from [1..max_segment]
  */
-void Initialize(
-    int             *h_in,
-    unsigned char   *h_flags,
-    int             num_items,
-    int             max_segment)
+void Initialize(int* h_in, unsigned char* h_flags, int num_items, int max_segment)
 {
-    unsigned short max_short = (unsigned short) -1;
+    unsigned short max_short = (unsigned short)-1;
 
     int key = 0;
-    int i = 0;
-    while (i < num_items)
+    int i   = 0;
+    while(i < num_items)
     {
         // Select number of repeating occurrences
         unsigned short repeat;
         RandomBits(repeat);
-        repeat = (unsigned short) ((float(repeat) * (float(max_segment) / float(max_short))));
+        repeat = (unsigned short)((float(repeat) * (float(max_segment) / float(max_short))));
         repeat = std::max<unsigned short>(1, repeat);
 
         int j = i;
-        while (j < std::min<int>(i + repeat, num_items))
+        while(j < std::min<int>(i + repeat, num_items))
         {
             h_flags[j] = 0;
-            h_in[j] = key;
+            h_in[j]    = key;
             j++;
         }
 
         h_flags[i] = 1;
-        i = j;
+        i          = j;
         key++;
     }
 
-    if (g_verbose)
+    if(g_verbose)
     {
         printf("Input:\n");
         DisplayResults(h_in, num_items);
@@ -108,20 +101,15 @@ void Initialize(
     }
 }
 
-
 /**
  * Solve unique problem
  */
-int Solve(
-    int             *h_in,
-    unsigned char   *h_flags,
-    int             *h_reference,
-    int             num_items)
+int Solve(int* h_in, unsigned char* h_flags, int* h_reference, int num_items)
 {
     int num_selected = 0;
-    for (int i = 0; i < num_items; ++i)
+    for(int i = 0; i < num_items; ++i)
     {
-        if (h_flags[i])
+        if(h_flags[i])
         {
             h_reference[num_selected] = h_in[i];
             num_selected++;
@@ -135,7 +123,6 @@ int Solve(
     return num_selected;
 }
 
-
 //---------------------------------------------------------------------
 // Main
 //---------------------------------------------------------------------
@@ -145,8 +132,8 @@ int Solve(
  */
 int main(int argc, char** argv)
 {
-    int num_items           = 150;
-    int max_segment         = 40;       // Maximum segment length
+    int num_items   = 150;
+    int max_segment = 40; // Maximum segment length
 
     // Initialize command line
     CommandLineArgs args(argc, argv);
@@ -155,14 +142,15 @@ int main(int argc, char** argv)
     args.GetCmdLineArgument("maxseg", max_segment);
 
     // Print usage
-    if (args.CheckCmdLineFlag("help"))
+    if(args.CheckCmdLineFlag("help"))
     {
         printf("%s "
-            "[--n=<input items> "
-            "[--device=<device-id>] "
-            "[--maxseg=<max segment length>] "
-            "[--v] "
-            "\n", argv[0]);
+               "[--n=<input items> "
+               "[--device=<device-id>] "
+               "[--maxseg=<max segment length>] "
+               "[--v] "
+               "\n",
+               argv[0]);
         exit(0);
     }
 
@@ -170,16 +158,20 @@ int main(int argc, char** argv)
     HIP_CHECK(args.DeviceInit());
 
     // Allocate host arrays
-    int             *h_in        = new int[num_items];
-    int             *h_reference = new int[num_items];
-    unsigned char   *h_flags     = new unsigned char[num_items];
+    int*           h_in        = new int[num_items];
+    int*           h_reference = new int[num_items];
+    unsigned char* h_flags     = new unsigned char[num_items];
 
     // Initialize problem and solution
     Initialize(h_in, h_flags, num_items, max_segment);
     int num_selected = Solve(h_in, h_flags, h_reference, num_items);
 
-    printf("hipcub::DeviceSelect::Flagged %d items, %d selected (avg distance %d), %d-byte elements\n",
-        num_items, num_selected, (num_selected > 0) ? num_items / num_selected : 0, (int) sizeof(int));
+    printf(
+        "hipcub::DeviceSelect::Flagged %d items, %d selected (avg distance %d), %d-byte elements\n",
+        num_items,
+        num_selected,
+        (num_selected > 0) ? num_items / num_selected : 0,
+        (int)sizeof(int));
     fflush(stdout);
 
     // Allocate problem device arrays
@@ -201,8 +193,8 @@ int main(int argc, char** argv)
     HIP_CHECK(g_allocator.DeviceAllocate((void**)&d_num_selected_out, sizeof(int)));
 
     // Allocate temporary storage
-    void*           d_temp_storage     = nullptr;
-    size_t          temp_storage_bytes = 0;
+    void*  d_temp_storage     = nullptr;
+    size_t temp_storage_bytes = 0;
     HIP_CHECK(hipcub::DeviceSelect::Flagged(d_temp_storage,
                                             temp_storage_bytes,
                                             d_in,

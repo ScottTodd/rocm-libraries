@@ -21,8 +21,8 @@
 #ifndef ROCPRIM_DEVICE_DEVICE_BINARY_SEARCH_HPP_
 #define ROCPRIM_DEVICE_DEVICE_BINARY_SEARCH_HPP_
 
-#include <type_traits>
 #include <iterator>
+#include <type_traits>
 
 #include "../config.hpp"
 #include "../detail/various.hpp"
@@ -39,26 +39,23 @@ BEGIN_ROCPRIM_NAMESPACE
 namespace detail
 {
 
-template<
-    class Config,
-    class HaystackIterator,
-    class NeedlesIterator,
-    class OutputIterator,
-    class SearchFunction,
-    class CompareFunction
->
-inline
-hipError_t binary_search(void * temporary_storage,
-                         size_t& storage_size,
-                         HaystackIterator haystack,
-                         NeedlesIterator needles,
-                         OutputIterator output,
-                         size_t haystack_size,
-                         size_t needles_size,
-                         SearchFunction search_op,
-                         CompareFunction compare_op,
-                         hipStream_t stream,
-                         bool debug_synchronous)
+template<class Config,
+         class HaystackIterator,
+         class NeedlesIterator,
+         class OutputIterator,
+         class SearchFunction,
+         class CompareFunction>
+inline hipError_t binary_search(void*            temporary_storage,
+                                size_t&          storage_size,
+                                HaystackIterator haystack,
+                                NeedlesIterator  needles,
+                                OutputIterator   output,
+                                size_t           haystack_size,
+                                size_t           needles_size,
+                                SearchFunction   search_op,
+                                CompareFunction  compare_op,
+                                hipStream_t      stream,
+                                bool             debug_synchronous)
 {
     using value_type = typename std::iterator_traits<NeedlesIterator>::value_type;
 
@@ -93,7 +90,7 @@ struct is_default_or_has_tag<default_config, Tag>
     static constexpr bool value = true;
 };
 
-} // end of detail namespace
+} // namespace detail
 
 /// \brief Parallel primitive that uses binary search for computing a lower bound on a given ordered
 /// range for each element of a given input.
@@ -190,24 +187,21 @@ struct is_default_or_has_tag<default_config, Tag>
 /// // output = {0, 1, 2, 2, 3}
 /// \endcode
 /// \endparblock
-template<
-    class Config = default_config,
-    class HaystackIterator,
-    class NeedlesIterator,
-    class OutputIterator,
-    class CompareFunction = ::rocprim::less<>
->
-inline
-hipError_t lower_bound(void * temporary_storage,
-                       size_t& storage_size,
-                       HaystackIterator haystack,
-                       NeedlesIterator needles,
-                       OutputIterator output,
-                       size_t haystack_size,
-                       size_t needles_size,
-                       CompareFunction compare_op = CompareFunction(),
-                       hipStream_t stream = 0,
-                       bool debug_synchronous = false)
+template<class Config = default_config,
+         class HaystackIterator,
+         class NeedlesIterator,
+         class OutputIterator,
+         class CompareFunction = ::rocprim::less<>>
+inline hipError_t lower_bound(void*            temporary_storage,
+                              size_t&          storage_size,
+                              HaystackIterator haystack,
+                              NeedlesIterator  needles,
+                              OutputIterator   output,
+                              size_t           haystack_size,
+                              size_t           needles_size,
+                              CompareFunction  compare_op        = CompareFunction(),
+                              hipStream_t      stream            = 0,
+                              bool             debug_synchronous = false)
 {
     static_assert(detail::is_default_or_has_tag<Config, detail::lower_bound_config_tag>::value,
                   "Config must be a specialization of struct template lower_bound_config");
@@ -327,24 +321,21 @@ hipError_t lower_bound(void * temporary_storage,
 /// // output = {1, 2, 3, 3, 4}
 /// \endcode
 /// \endparblock
-template<
-    class Config = default_config,
-    class HaystackIterator,
-    class NeedlesIterator,
-    class OutputIterator,
-    class CompareFunction = ::rocprim::less<>
->
-inline
-hipError_t upper_bound(void * temporary_storage,
-                       size_t& storage_size,
-                       HaystackIterator haystack,
-                       NeedlesIterator needles,
-                       OutputIterator output,
-                       size_t haystack_size,
-                       size_t needles_size,
-                       CompareFunction compare_op = CompareFunction(),
-                       hipStream_t stream = 0,
-                       bool debug_synchronous = false)
+template<class Config = default_config,
+         class HaystackIterator,
+         class NeedlesIterator,
+         class OutputIterator,
+         class CompareFunction = ::rocprim::less<>>
+inline hipError_t upper_bound(void*            temporary_storage,
+                              size_t&          storage_size,
+                              HaystackIterator haystack,
+                              NeedlesIterator  needles,
+                              OutputIterator   output,
+                              size_t           haystack_size,
+                              size_t           needles_size,
+                              CompareFunction  compare_op        = CompareFunction(),
+                              hipStream_t      stream            = 0,
+                              bool             debug_synchronous = false)
 {
     static_assert(detail::is_default_or_has_tag<Config, detail::upper_bound_config_tag>::value,
                   "Config must be a specialization of struct template upper_bound_config");
@@ -458,24 +449,21 @@ hipError_t upper_bound(void * temporary_storage,
 /// // output = {1, 1, 0, 1, 0, 1, 1, 0}
 /// \endcode
 /// \endparblock
-template<
-    class Config = default_config,
-    class HaystackIterator,
-    class NeedlesIterator,
-    class OutputIterator,
-    class CompareFunction = ::rocprim::less<>
->
-inline
-hipError_t binary_search(void * temporary_storage,
-                         size_t& storage_size,
-                         HaystackIterator haystack,
-                         NeedlesIterator needles,
-                         OutputIterator output,
-                         size_t haystack_size,
-                         size_t needles_size,
-                         CompareFunction compare_op = CompareFunction(),
-                         hipStream_t stream = 0,
-                         bool debug_synchronous = false)
+template<class Config = default_config,
+         class HaystackIterator,
+         class NeedlesIterator,
+         class OutputIterator,
+         class CompareFunction = ::rocprim::less<>>
+inline hipError_t binary_search(void*            temporary_storage,
+                                size_t&          storage_size,
+                                HaystackIterator haystack,
+                                NeedlesIterator  needles,
+                                OutputIterator   output,
+                                size_t           haystack_size,
+                                size_t           needles_size,
+                                CompareFunction  compare_op        = CompareFunction(),
+                                hipStream_t      stream            = 0,
+                                bool             debug_synchronous = false)
 {
     static_assert(detail::is_default_or_has_tag<Config, detail::binary_search_config_tag>::value,
                   "Config must be a specialization of struct template binary_search_config");

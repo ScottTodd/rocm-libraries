@@ -46,7 +46,7 @@ namespace rocRoller
         public:
             WMMAReadSrcD() {}
             WMMAReadSrcD(ContextPtr context)
-                : WaitStateObserver<WMMAReadSrcD>(context){};
+                : WaitStateObserver<WMMAReadSrcD>(context) {};
 
             /**
              * Overriden as we need to target src C only

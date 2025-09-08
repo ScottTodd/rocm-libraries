@@ -117,63 +117,62 @@ BEGIN_HIPCUB_NAMESPACE
  * The corresponding output @p thread_keys in those threads will be
  * <tt>{ [0,1,2,3], [4,5,6,7], [8,9,10,11], ..., [508,509,510,511] }</tt>.
  */
-template <
-  typename    KeyT,
-  int         ITEMS_PER_THREAD,
-  int         LOGICAL_WARP_THREADS    = HIPCUB_DEVICE_WARP_THREADS,
-  typename    ValueT                  = NullType,
-  int         PTX_ARCH                = HIPCUB_ARCH>
+template<typename KeyT,
+         int ITEMS_PER_THREAD,
+         int LOGICAL_WARP_THREADS = HIPCUB_DEVICE_WARP_THREADS,
+         typename ValueT          = NullType,
+         int PTX_ARCH             = HIPCUB_ARCH>
 class WarpMergeSort
     : public BlockMergeSortStrategy<
-        KeyT,
-        ValueT,
-        LOGICAL_WARP_THREADS,
-        ITEMS_PER_THREAD,
-        WarpMergeSort<KeyT, ITEMS_PER_THREAD, LOGICAL_WARP_THREADS, ValueT, PTX_ARCH>,
-        true>
+          KeyT,
+          ValueT,
+          LOGICAL_WARP_THREADS,
+          ITEMS_PER_THREAD,
+          WarpMergeSort<KeyT, ITEMS_PER_THREAD, LOGICAL_WARP_THREADS, ValueT, PTX_ARCH>,
+          true>
 {
 private:
-  constexpr static bool IS_ARCH_WARP = LOGICAL_WARP_THREADS == HIPCUB_DEVICE_WARP_THREADS;
-  constexpr static bool KEYS_ONLY = ::rocprim::Equals<ValueT, NullType>::VALUE;
-  constexpr static int TILE_SIZE = ITEMS_PER_THREAD * LOGICAL_WARP_THREADS;
+    constexpr static bool IS_ARCH_WARP = LOGICAL_WARP_THREADS == HIPCUB_DEVICE_WARP_THREADS;
+    constexpr static bool KEYS_ONLY    = ::rocprim::Equals<ValueT, NullType>::VALUE;
+    constexpr static int  TILE_SIZE    = ITEMS_PER_THREAD * LOGICAL_WARP_THREADS;
 
-  using BlockMergeSortStrategyT = BlockMergeSortStrategy<KeyT,
-                                                         ValueT,
-                                                         LOGICAL_WARP_THREADS,
-                                                         ITEMS_PER_THREAD,
-                                                         WarpMergeSort,
-                                                         true>;
+    using BlockMergeSortStrategyT = BlockMergeSortStrategy<KeyT,
+                                                           ValueT,
+                                                           LOGICAL_WARP_THREADS,
+                                                           ITEMS_PER_THREAD,
+                                                           WarpMergeSort,
+                                                           true>;
 
-  const unsigned int warp_id;
-  const uint64_t member_mask;
+    const unsigned int warp_id;
+    const uint64_t     member_mask;
 
 public:
-  WarpMergeSort() = delete;
+    WarpMergeSort() = delete;
 
-  HIPCUB_DEVICE __forceinline__ WarpMergeSort(
-      typename BlockMergeSortStrategyT::TempStorage& temp_storage)
-      : BlockMergeSortStrategyT(temp_storage,
-                                IS_ARCH_WARP ? ::rocprim::lane_id()
-                                             : (::rocprim::lane_id() % LOGICAL_WARP_THREADS))
-      , warp_id(IS_ARCH_WARP ? 0 : (::rocprim::lane_id() / LOGICAL_WARP_THREADS))
-      , member_mask(WarpMask<LOGICAL_WARP_THREADS>(warp_id))
-  {
-  }
+    HIPCUB_DEVICE __forceinline__
+    WarpMergeSort(typename BlockMergeSortStrategyT::TempStorage& temp_storage)
+        : BlockMergeSortStrategyT(temp_storage,
+                                  IS_ARCH_WARP ? ::rocprim::lane_id()
+                                               : (::rocprim::lane_id() % LOGICAL_WARP_THREADS))
+        , warp_id(IS_ARCH_WARP ? 0 : (::rocprim::lane_id() / LOGICAL_WARP_THREADS))
+        , member_mask(WarpMask<LOGICAL_WARP_THREADS>(warp_id))
+    {}
 
-  HIPCUB_DEVICE __forceinline__ uint64_t get_member_mask() const
-  {
-    return member_mask;
-  }
+    HIPCUB_DEVICE __forceinline__
+    uint64_t get_member_mask() const
+    {
+        return member_mask;
+    }
 
 private:
-  HIPCUB_DEVICE __forceinline__ void SyncImplementation() const
-  {
-      ::rocprim::wave_barrier();
-  }
+    HIPCUB_DEVICE __forceinline__
+    void SyncImplementation() const
+    {
+        ::rocprim::wave_barrier();
+    }
 
-  friend BlockMergeSortStrategyT;
+    friend BlockMergeSortStrategyT;
 };
-
 
 END_HIPCUB_NAMESPACE
 

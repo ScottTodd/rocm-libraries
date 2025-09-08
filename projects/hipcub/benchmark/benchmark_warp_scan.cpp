@@ -37,7 +37,8 @@ enum class scan_type
 };
 
 template<class Runner, class T, unsigned int BlockSize, unsigned int WarpSize, unsigned int Trials>
-__global__ __launch_bounds__(BlockSize) void kernel(const T* input, T* output, const T init)
+__global__ __launch_bounds__(BlockSize)
+void kernel(const T* input, T* output, const T init)
 {
     Runner::template run<T, WarpSize, Trials>(input, output, init);
 }
@@ -55,8 +56,9 @@ struct inclusive_scan
         auto               value = input[i];
 
         using wscan_t = hipcub::WarpScan<T, WarpSize>;
-        __shared__ typename wscan_t::TempStorage storage;
-        auto                                     scan_op = hipcub::Sum();
+        __shared__
+        typename wscan_t::TempStorage storage;
+        auto                          scan_op = hipcub::Sum();
 #pragma nounroll
         for(unsigned int trial = 0; trial < Trials; trial++)
         {
@@ -84,8 +86,9 @@ struct exclusive_scan
         auto               value = input[i];
 
         using wscan_t = hipcub::WarpScan<T, WarpSize>;
-        __shared__ typename wscan_t::TempStorage storage;
-        auto                                     scan_op = hipcub::Sum();
+        __shared__
+        typename wscan_t::TempStorage storage;
+        auto                          scan_op = hipcub::Sum();
 #pragma nounroll
         for(unsigned int trial = 0; trial < Trials; trial++)
         {
@@ -117,7 +120,8 @@ struct broadcast
         auto               value    = input[i];
 
         using wscan_t = hipcub::WarpScan<T, WarpSize>;
-        __shared__ typename wscan_t::TempStorage storage;
+        __shared__
+        typename wscan_t::TempStorage storage;
 #pragma nounroll
         for(unsigned int trial = 0; trial < Trials; trial++)
         {

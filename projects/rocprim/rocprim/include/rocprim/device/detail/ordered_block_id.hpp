@@ -45,21 +45,22 @@ struct ordered_block_id
         id_type id;
     };
 
-    ROCPRIM_HOST static inline
-    ordered_block_id create(id_type * id)
+    ROCPRIM_HOST
+    static inline ordered_block_id create(id_type* id)
     {
         ordered_block_id ordered_id;
         ordered_id.id = id;
         return ordered_id;
     }
 
-    ROCPRIM_HOST static inline
-    size_t get_storage_size()
+    ROCPRIM_HOST
+    static inline size_t get_storage_size()
     {
         return sizeof(id_type);
     }
 
-    ROCPRIM_HOST static inline detail::temp_storage::layout get_temp_storage_layout()
+    ROCPRIM_HOST
+    static inline detail::temp_storage::layout get_temp_storage_layout()
     {
         return detail::temp_storage::layout{get_storage_size(), alignof(id_type)};
     }
@@ -182,7 +183,7 @@ struct block_id_wrapper<T, true>
     ::rocprim::detail::ordered_block_id<id_type> ordered_id;
 };
 
-} // end of detail namespace
+} // namespace detail
 
 END_ROCPRIM_NAMESPACE
 

@@ -80,7 +80,8 @@ namespace rocrand_impl::host
 struct mtgp32_device_engine : ::rocrand_device::mtgp32_engine
 {
     // suppress warning about no initialization for __shared__ variables
-    __host__ __device__ mtgp32_device_engine(){};
+    __host__ __device__
+    mtgp32_device_engine() {};
 
     __forceinline__ __host__ __device__
     unsigned int next()
@@ -98,10 +99,11 @@ struct mtgp32_device_engine : ::rocrand_device::mtgp32_engine
 };
 
 template<class T, class Distribution, unsigned int BlockSize>
-__host__ void generate(unsigned int (&input)[BlockSize][Distribution::input_width],
-                       T (&output)[BlockSize][Distribution::output_width],
-                       Distribution&         distribution,
-                       mtgp32_device_engine& engine)
+__host__
+void generate(unsigned int (&input)[BlockSize][Distribution::input_width],
+              T (&output)[BlockSize][Distribution::output_width],
+              Distribution&         distribution,
+              mtgp32_device_engine& engine)
 {
     for(unsigned int i = 0; i < Distribution::input_width; i++)
     {
@@ -131,7 +133,8 @@ void generate(unsigned int (&input)[Distribution::input_width],
 }
 
 template<class vec_type, class T, unsigned int output_width, unsigned int BlockSize>
-__host__ void save_vec_n(vec_type* vec_data, T (&output)[BlockSize][output_width], size_t index)
+__host__
+void save_vec_n(vec_type* vec_data, T (&output)[BlockSize][output_width], size_t index)
 {
     for(unsigned int j = 0; j < BlockSize; j++)
     {
@@ -147,8 +150,8 @@ void save_vec_n(vec_type* vec_data, T (&output)[output_width], size_t index)
 }
 
 template<class vec_type, class T, unsigned int output_width, unsigned int BlockSize>
-__host__ void
-    save_n(vec_type* vec_data, T (&output)[BlockSize][output_width], size_t index, size_t vec_n)
+__host__
+void save_n(vec_type* vec_data, T (&output)[BlockSize][output_width], size_t index, size_t vec_n)
 {
     for(unsigned int j = 0; j < BlockSize; j++)
     {
@@ -203,13 +206,14 @@ void save_head_tail_impl(T (&output)[output_width],
 }
 
 template<class T, unsigned int output_width, unsigned int BlockSize>
-__host__ void save_head_tail(T (&output)[BlockSize][output_width],
-                             size_t index,
-                             T*     data,
-                             size_t n,
-                             size_t head_size,
-                             size_t tail_size,
-                             size_t vec_n_up)
+__host__
+void save_head_tail(T (&output)[BlockSize][output_width],
+                    size_t index,
+                    T*     data,
+                    size_t n,
+                    size_t head_size,
+                    size_t tail_size,
+                    size_t vec_n_up)
 {
     for(unsigned int j = 0; j < BlockSize; j++)
     {
@@ -231,14 +235,15 @@ void save_head_tail(T (&output)[output_width],
 }
 
 template<class ConfigProvider, bool IsDynamic, class T, class Distribution>
-__host__ __device__ __forceinline__ void generate_mtgp(dim3 block_idx,
-                                       dim3 thread_idx,
-                                       dim3 grid_dim,
-                                       dim3 /*block_dim*/,
-                                       mtgp32_device_engine* engines,
-                                       T*                    data,
-                                       const size_t          n,
-                                       Distribution          distribution)
+__host__ __device__ __forceinline__
+void generate_mtgp(dim3 block_idx,
+                   dim3 thread_idx,
+                   dim3 grid_dim,
+                   dim3 /*block_dim*/,
+                   mtgp32_device_engine* engines,
+                   T*                    data,
+                   const size_t          n,
+                   Distribution          distribution)
 {
     static_assert(is_single_tile_config<ConfigProvider, T>(IsDynamic),
                   "This kernel should only be used with single tile configs");
@@ -256,7 +261,7 @@ __host__ __device__ __forceinline__ void generate_mtgp(dim3 block_idx,
 #ifdef __HIP_DEVICE_COMPILE__
     __shared__
 #endif
-        mtgp32_device_engine engine;
+    mtgp32_device_engine engine;
     engine.copy(&engines[engine_id]);
 
 #ifdef __HIP_DEVICE_COMPILE__
@@ -271,7 +276,7 @@ __host__ __device__ __forceinline__ void generate_mtgp(dim3 block_idx,
 
     const uintptr_t uintptr   = reinterpret_cast<uintptr_t>(data);
     const size_t misalignment = (output_width - uintptr / sizeof(T) % output_width) % output_width;
-    const unsigned int head_size    = cpp_utils::min(n, misalignment);
+    const unsigned int head_size = cpp_utils::min(n, misalignment);
     const unsigned int tail_size = (n - head_size) % output_width;
     const size_t       vec_n     = (n - head_size) / output_width;
 
@@ -430,7 +435,7 @@ public:
 
     rocrand_status init()
     {
-        if (m_engines_initialized)
+        if(m_engines_initialized)
         {
             return ROCRAND_STATUS_SUCCESS;
         }
@@ -445,7 +450,7 @@ public:
         }
         m_engines_size = config.blocks;
 
-        if (m_engines_size > mtgpdc_params_11213_num)
+        if(m_engines_size > mtgpdc_params_11213_num)
         {
             return ROCRAND_STATUS_ALLOCATION_FAILED;
         }
@@ -476,12 +481,11 @@ public:
         return ROCRAND_STATUS_SUCCESS;
     }
 
-    template<class T, class Distribution = uniform_distribution<T> >
-    rocrand_status generate(T * data, size_t data_size,
-                            Distribution distribution = Distribution())
+    template<class T, class Distribution = uniform_distribution<T>>
+    rocrand_status generate(T* data, size_t data_size, Distribution distribution = Distribution())
     {
         rocrand_status status = init();
-        if (status != ROCRAND_STATUS_SUCCESS)
+        if(status != ROCRAND_STATUS_SUCCESS)
         {
             return status;
         }
@@ -547,27 +551,27 @@ public:
     }
 
     template<class T>
-    rocrand_status generate_uniform(T * data, size_t data_size)
+    rocrand_status generate_uniform(T* data, size_t data_size)
     {
         uniform_distribution<T> distribution;
         return generate(data, data_size, distribution);
     }
 
     template<class T>
-    rocrand_status generate_normal(T * data, size_t data_size, T mean, T stddev)
+    rocrand_status generate_normal(T* data, size_t data_size, T mean, T stddev)
     {
         normal_distribution<T> distribution(mean, stddev);
         return generate(data, data_size, distribution);
     }
 
     template<class T>
-    rocrand_status generate_log_normal(T * data, size_t data_size, T mean, T stddev)
+    rocrand_status generate_log_normal(T* data, size_t data_size, T mean, T stddev)
     {
         log_normal_distribution<T> distribution(mean, stddev);
         return generate(data, data_size, distribution);
     }
 
-    rocrand_status generate_poisson(unsigned int * data, size_t data_size, double lambda)
+    rocrand_status generate_poisson(unsigned int* data, size_t data_size, double lambda)
     {
         // For an unknown reason, on CUDA, the initialization of the engines must precede
         // the initialization of the poisson distribution, otherwise spurious miscalculations

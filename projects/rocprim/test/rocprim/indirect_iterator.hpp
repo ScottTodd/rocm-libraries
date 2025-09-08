@@ -78,83 +78,99 @@ public:
 
     using iterator_category = std::random_access_iterator_tag;
 
-    ROCPRIM_HOST_DEVICE inline explicit indirect_iterator(T* ptr) : ptr_(ptr) {}
-
-    ROCPRIM_HOST_DEVICE inline ~indirect_iterator() = default;
+    ROCPRIM_HOST_DEVICE
+    inline explicit indirect_iterator(T* ptr)
+        : ptr_(ptr)
+    {}
 
     ROCPRIM_HOST_DEVICE
-    inline indirect_iterator&
-        operator++()
+    inline ~indirect_iterator()
+        = default;
+
+    ROCPRIM_HOST_DEVICE
+    inline indirect_iterator& operator++()
     {
         ++ptr_;
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE inline indirect_iterator operator++(int)
+    ROCPRIM_HOST_DEVICE
+    inline indirect_iterator operator++(int)
     {
         indirect_iterator old = *this;
         ++ptr_;
         return old;
     }
 
-    ROCPRIM_HOST_DEVICE inline indirect_iterator& operator--()
+    ROCPRIM_HOST_DEVICE
+    inline indirect_iterator& operator--()
     {
         --ptr_;
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE inline indirect_iterator operator--(int)
+    ROCPRIM_HOST_DEVICE
+    inline indirect_iterator operator--(int)
     {
         indirect_iterator old = *this;
         --ptr_;
         return old;
     }
 
-    ROCPRIM_HOST_DEVICE inline reference operator*() const
+    ROCPRIM_HOST_DEVICE
+    inline reference operator*() const
     {
         return reference{*ptr_};
     }
 
-    ROCPRIM_HOST_DEVICE inline reference operator[](difference_type n) const
+    ROCPRIM_HOST_DEVICE
+    inline reference operator[](difference_type n) const
     {
         return reference{*(ptr_ + n)};
     }
 
-    ROCPRIM_HOST_DEVICE inline indirect_iterator operator+(difference_type distance) const
+    ROCPRIM_HOST_DEVICE
+    inline indirect_iterator operator+(difference_type distance) const
     {
         auto i = ptr_ + distance;
         return indirect_iterator{i};
     }
 
-    ROCPRIM_HOST_DEVICE inline indirect_iterator& operator+=(difference_type distance)
+    ROCPRIM_HOST_DEVICE
+    inline indirect_iterator& operator+=(difference_type distance)
     {
         ptr_ += distance;
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE inline indirect_iterator operator-(difference_type distance) const
+    ROCPRIM_HOST_DEVICE
+    inline indirect_iterator operator-(difference_type distance) const
     {
         auto i = ptr_ - distance;
         return indirect_iterator{i};
     }
 
-    ROCPRIM_HOST_DEVICE inline indirect_iterator& operator-=(difference_type distance)
+    ROCPRIM_HOST_DEVICE
+    inline indirect_iterator& operator-=(difference_type distance)
     {
         ptr_ -= distance;
         return *this;
     }
 
-    ROCPRIM_HOST_DEVICE inline difference_type operator-(indirect_iterator other) const
+    ROCPRIM_HOST_DEVICE
+    inline difference_type operator-(indirect_iterator other) const
     {
         return ptr_ - other.ptr_;
     }
 
-    ROCPRIM_HOST_DEVICE inline bool operator==(indirect_iterator other) const
+    ROCPRIM_HOST_DEVICE
+    inline bool operator==(indirect_iterator other) const
     {
         return ptr_ == other.ptr_;
     }
 
-    ROCPRIM_HOST_DEVICE inline bool operator!=(indirect_iterator other) const
+    ROCPRIM_HOST_DEVICE
+    inline bool operator!=(indirect_iterator other) const
     {
         return ptr_ != other.ptr_;
     }

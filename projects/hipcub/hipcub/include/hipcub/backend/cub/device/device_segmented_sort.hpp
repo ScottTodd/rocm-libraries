@@ -40,15 +40,16 @@ BEGIN_HIPCUB_NAMESPACE
 struct DeviceSegmentedSort
 {
     template<typename KeyT, typename BeginOffsetIteratorT, typename EndOffsetIteratorT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t SortKeys(void*                d_temp_storage,
-                                                       size_t&              temp_storage_bytes,
-                                                       const KeyT*          d_keys_in,
-                                                       KeyT*                d_keys_out,
-                                                       int                  num_items,
-                                                       int                  num_segments,
-                                                       BeginOffsetIteratorT d_begin_offsets,
-                                                       EndOffsetIteratorT   d_end_offsets,
-                                                       hipStream_t          stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t SortKeys(void*                d_temp_storage,
+                               size_t&              temp_storage_bytes,
+                               const KeyT*          d_keys_in,
+                               KeyT*                d_keys_out,
+                               int                  num_items,
+                               int                  num_segments,
+                               BeginOffsetIteratorT d_begin_offsets,
+                               EndOffsetIteratorT   d_end_offsets,
+                               hipStream_t          stream = 0)
     {
         return hipCUDAErrorTohipError(::cub::DeviceSegmentedSort::SortKeys(d_temp_storage,
                                                                            temp_storage_bytes,
@@ -62,17 +63,17 @@ struct DeviceSegmentedSort
     }
 
     template<typename KeyT, typename BeginOffsetIteratorT, typename EndOffsetIteratorT>
-    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION static hipError_t
-        SortKeys(void*                d_temp_storage,
-                 size_t&              temp_storage_bytes,
-                 const KeyT*          d_keys_in,
-                 KeyT*                d_keys_out,
-                 int                  num_items,
-                 int                  num_segments,
-                 BeginOffsetIteratorT d_begin_offsets,
-                 EndOffsetIteratorT   d_end_offsets,
-                 hipStream_t          stream,
-                 bool                 debug_synchronous)
+    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION
+    static hipError_t SortKeys(void*                d_temp_storage,
+                               size_t&              temp_storage_bytes,
+                               const KeyT*          d_keys_in,
+                               KeyT*                d_keys_out,
+                               int                  num_items,
+                               int                  num_segments,
+                               BeginOffsetIteratorT d_begin_offsets,
+                               EndOffsetIteratorT   d_end_offsets,
+                               hipStream_t          stream,
+                               bool                 debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return SortKeys(d_temp_storage,
@@ -87,16 +88,16 @@ struct DeviceSegmentedSort
     }
 
     template<typename KeyT, typename BeginOffsetIteratorT, typename EndOffsetIteratorT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t
-        SortKeysDescending(void*                d_temp_storage,
-                           size_t&              temp_storage_bytes,
-                           const KeyT*          d_keys_in,
-                           KeyT*                d_keys_out,
-                           int                  num_items,
-                           int                  num_segments,
-                           BeginOffsetIteratorT d_begin_offsets,
-                           EndOffsetIteratorT   d_end_offsets,
-                           hipStream_t          stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t SortKeysDescending(void*                d_temp_storage,
+                                         size_t&              temp_storage_bytes,
+                                         const KeyT*          d_keys_in,
+                                         KeyT*                d_keys_out,
+                                         int                  num_items,
+                                         int                  num_segments,
+                                         BeginOffsetIteratorT d_begin_offsets,
+                                         EndOffsetIteratorT   d_end_offsets,
+                                         hipStream_t          stream = 0)
     {
         return hipCUDAErrorTohipError(
             ::cub::DeviceSegmentedSort::SortKeysDescending(d_temp_storage,
@@ -111,17 +112,17 @@ struct DeviceSegmentedSort
     }
 
     template<typename KeyT, typename BeginOffsetIteratorT, typename EndOffsetIteratorT>
-    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION static hipError_t
-        SortKeysDescending(void*                d_temp_storage,
-                           size_t&              temp_storage_bytes,
-                           const KeyT*          d_keys_in,
-                           KeyT*                d_keys_out,
-                           int                  num_items,
-                           int                  num_segments,
-                           BeginOffsetIteratorT d_begin_offsets,
-                           EndOffsetIteratorT   d_end_offsets,
-                           hipStream_t          stream,
-                           bool                 debug_synchronous)
+    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION
+    static hipError_t SortKeysDescending(void*                d_temp_storage,
+                                         size_t&              temp_storage_bytes,
+                                         const KeyT*          d_keys_in,
+                                         KeyT*                d_keys_out,
+                                         int                  num_items,
+                                         int                  num_segments,
+                                         BeginOffsetIteratorT d_begin_offsets,
+                                         EndOffsetIteratorT   d_end_offsets,
+                                         hipStream_t          stream,
+                                         bool                 debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return SortKeysDescending(d_temp_storage,
@@ -136,14 +137,15 @@ struct DeviceSegmentedSort
     }
 
     template<typename KeyT, typename BeginOffsetIteratorT, typename EndOffsetIteratorT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t SortKeys(void*                d_temp_storage,
-                                                       size_t&              temp_storage_bytes,
-                                                       DoubleBuffer<KeyT>&  d_keys,
-                                                       int                  num_items,
-                                                       int                  num_segments,
-                                                       BeginOffsetIteratorT d_begin_offsets,
-                                                       EndOffsetIteratorT   d_end_offsets,
-                                                       hipStream_t          stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t SortKeys(void*                d_temp_storage,
+                               size_t&              temp_storage_bytes,
+                               DoubleBuffer<KeyT>&  d_keys,
+                               int                  num_items,
+                               int                  num_segments,
+                               BeginOffsetIteratorT d_begin_offsets,
+                               EndOffsetIteratorT   d_end_offsets,
+                               hipStream_t          stream = 0)
     {
         return hipCUDAErrorTohipError(::cub::DeviceSegmentedSort::SortKeys(d_temp_storage,
                                                                            temp_storage_bytes,
@@ -156,16 +158,16 @@ struct DeviceSegmentedSort
     }
 
     template<typename KeyT, typename BeginOffsetIteratorT, typename EndOffsetIteratorT>
-    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION static hipError_t
-        SortKeys(void*                d_temp_storage,
-                 size_t&              temp_storage_bytes,
-                 DoubleBuffer<KeyT>&  d_keys,
-                 int                  num_items,
-                 int                  num_segments,
-                 BeginOffsetIteratorT d_begin_offsets,
-                 EndOffsetIteratorT   d_end_offsets,
-                 hipStream_t          stream,
-                 bool                 debug_synchronous)
+    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION
+    static hipError_t SortKeys(void*                d_temp_storage,
+                               size_t&              temp_storage_bytes,
+                               DoubleBuffer<KeyT>&  d_keys,
+                               int                  num_items,
+                               int                  num_segments,
+                               BeginOffsetIteratorT d_begin_offsets,
+                               EndOffsetIteratorT   d_end_offsets,
+                               hipStream_t          stream,
+                               bool                 debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return SortKeys(d_temp_storage,
@@ -179,15 +181,15 @@ struct DeviceSegmentedSort
     }
 
     template<typename KeyT, typename BeginOffsetIteratorT, typename EndOffsetIteratorT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t
-        SortKeysDescending(void*                d_temp_storage,
-                           size_t&              temp_storage_bytes,
-                           DoubleBuffer<KeyT>&  d_keys,
-                           int                  num_items,
-                           int                  num_segments,
-                           BeginOffsetIteratorT d_begin_offsets,
-                           EndOffsetIteratorT   d_end_offsets,
-                           hipStream_t          stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t SortKeysDescending(void*                d_temp_storage,
+                                         size_t&              temp_storage_bytes,
+                                         DoubleBuffer<KeyT>&  d_keys,
+                                         int                  num_items,
+                                         int                  num_segments,
+                                         BeginOffsetIteratorT d_begin_offsets,
+                                         EndOffsetIteratorT   d_end_offsets,
+                                         hipStream_t          stream = 0)
     {
         return hipCUDAErrorTohipError(
             ::cub::DeviceSegmentedSort::SortKeysDescending(d_temp_storage,
@@ -201,16 +203,16 @@ struct DeviceSegmentedSort
     }
 
     template<typename KeyT, typename BeginOffsetIteratorT, typename EndOffsetIteratorT>
-    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION static hipError_t
-        SortKeysDescending(void*                d_temp_storage,
-                           size_t&              temp_storage_bytes,
-                           DoubleBuffer<KeyT>&  d_keys,
-                           int                  num_items,
-                           int                  num_segments,
-                           BeginOffsetIteratorT d_begin_offsets,
-                           EndOffsetIteratorT   d_end_offsets,
-                           hipStream_t          stream,
-                           bool                 debug_synchronous)
+    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION
+    static hipError_t SortKeysDescending(void*                d_temp_storage,
+                                         size_t&              temp_storage_bytes,
+                                         DoubleBuffer<KeyT>&  d_keys,
+                                         int                  num_items,
+                                         int                  num_segments,
+                                         BeginOffsetIteratorT d_begin_offsets,
+                                         EndOffsetIteratorT   d_end_offsets,
+                                         hipStream_t          stream,
+                                         bool                 debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return SortKeysDescending(d_temp_storage,
@@ -224,15 +226,16 @@ struct DeviceSegmentedSort
     }
 
     template<typename KeyT, typename BeginOffsetIteratorT, typename EndOffsetIteratorT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t StableSortKeys(void*       d_temp_storage,
-                                                             size_t&     temp_storage_bytes,
-                                                             const KeyT* d_keys_in,
-                                                             KeyT*       d_keys_out,
-                                                             int         num_items,
-                                                             int         num_segments,
-                                                             BeginOffsetIteratorT d_begin_offsets,
-                                                             EndOffsetIteratorT   d_end_offsets,
-                                                             hipStream_t          stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t StableSortKeys(void*                d_temp_storage,
+                                     size_t&              temp_storage_bytes,
+                                     const KeyT*          d_keys_in,
+                                     KeyT*                d_keys_out,
+                                     int                  num_items,
+                                     int                  num_segments,
+                                     BeginOffsetIteratorT d_begin_offsets,
+                                     EndOffsetIteratorT   d_end_offsets,
+                                     hipStream_t          stream = 0)
     {
         return hipCUDAErrorTohipError(::cub::DeviceSegmentedSort::StableSortKeys(d_temp_storage,
                                                                                  temp_storage_bytes,
@@ -246,17 +249,17 @@ struct DeviceSegmentedSort
     }
 
     template<typename KeyT, typename BeginOffsetIteratorT, typename EndOffsetIteratorT>
-    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION static hipError_t
-        StableSortKeys(void*                d_temp_storage,
-                       size_t&              temp_storage_bytes,
-                       const KeyT*          d_keys_in,
-                       KeyT*                d_keys_out,
-                       int                  num_items,
-                       int                  num_segments,
-                       BeginOffsetIteratorT d_begin_offsets,
-                       EndOffsetIteratorT   d_end_offsets,
-                       hipStream_t          stream,
-                       bool                 debug_synchronous)
+    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION
+    static hipError_t StableSortKeys(void*                d_temp_storage,
+                                     size_t&              temp_storage_bytes,
+                                     const KeyT*          d_keys_in,
+                                     KeyT*                d_keys_out,
+                                     int                  num_items,
+                                     int                  num_segments,
+                                     BeginOffsetIteratorT d_begin_offsets,
+                                     EndOffsetIteratorT   d_end_offsets,
+                                     hipStream_t          stream,
+                                     bool                 debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return StableSortKeys(d_temp_storage,
@@ -271,16 +274,16 @@ struct DeviceSegmentedSort
     }
 
     template<typename KeyT, typename BeginOffsetIteratorT, typename EndOffsetIteratorT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t
-        StableSortKeysDescending(void*                d_temp_storage,
-                                 size_t&              temp_storage_bytes,
-                                 const KeyT*          d_keys_in,
-                                 KeyT*                d_keys_out,
-                                 int                  num_items,
-                                 int                  num_segments,
-                                 BeginOffsetIteratorT d_begin_offsets,
-                                 EndOffsetIteratorT   d_end_offsets,
-                                 hipStream_t          stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t StableSortKeysDescending(void*                d_temp_storage,
+                                               size_t&              temp_storage_bytes,
+                                               const KeyT*          d_keys_in,
+                                               KeyT*                d_keys_out,
+                                               int                  num_items,
+                                               int                  num_segments,
+                                               BeginOffsetIteratorT d_begin_offsets,
+                                               EndOffsetIteratorT   d_end_offsets,
+                                               hipStream_t          stream = 0)
     {
         return hipCUDAErrorTohipError(
             ::cub::DeviceSegmentedSort::StableSortKeysDescending(d_temp_storage,
@@ -295,17 +298,17 @@ struct DeviceSegmentedSort
     }
 
     template<typename KeyT, typename BeginOffsetIteratorT, typename EndOffsetIteratorT>
-    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION static hipError_t
-        StableSortKeysDescending(void*                d_temp_storage,
-                                 size_t&              temp_storage_bytes,
-                                 const KeyT*          d_keys_in,
-                                 KeyT*                d_keys_out,
-                                 int                  num_items,
-                                 int                  num_segments,
-                                 BeginOffsetIteratorT d_begin_offsets,
-                                 EndOffsetIteratorT   d_end_offsets,
-                                 hipStream_t          stream,
-                                 bool                 debug_synchronous)
+    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION
+    static hipError_t StableSortKeysDescending(void*                d_temp_storage,
+                                               size_t&              temp_storage_bytes,
+                                               const KeyT*          d_keys_in,
+                                               KeyT*                d_keys_out,
+                                               int                  num_items,
+                                               int                  num_segments,
+                                               BeginOffsetIteratorT d_begin_offsets,
+                                               EndOffsetIteratorT   d_end_offsets,
+                                               hipStream_t          stream,
+                                               bool                 debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return StableSortKeysDescending(d_temp_storage,
@@ -320,14 +323,15 @@ struct DeviceSegmentedSort
     }
 
     template<typename KeyT, typename BeginOffsetIteratorT, typename EndOffsetIteratorT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t StableSortKeys(void*               d_temp_storage,
-                                                             size_t&             temp_storage_bytes,
-                                                             DoubleBuffer<KeyT>& d_keys,
-                                                             int                 num_items,
-                                                             int                 num_segments,
-                                                             BeginOffsetIteratorT d_begin_offsets,
-                                                             EndOffsetIteratorT   d_end_offsets,
-                                                             hipStream_t          stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t StableSortKeys(void*                d_temp_storage,
+                                     size_t&              temp_storage_bytes,
+                                     DoubleBuffer<KeyT>&  d_keys,
+                                     int                  num_items,
+                                     int                  num_segments,
+                                     BeginOffsetIteratorT d_begin_offsets,
+                                     EndOffsetIteratorT   d_end_offsets,
+                                     hipStream_t          stream = 0)
     {
         return hipCUDAErrorTohipError(::cub::DeviceSegmentedSort::StableSortKeys(d_temp_storage,
                                                                                  temp_storage_bytes,
@@ -340,16 +344,16 @@ struct DeviceSegmentedSort
     }
 
     template<typename KeyT, typename BeginOffsetIteratorT, typename EndOffsetIteratorT>
-    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION static hipError_t
-        StableSortKeys(void*                d_temp_storage,
-                       size_t&              temp_storage_bytes,
-                       DoubleBuffer<KeyT>&  d_keys,
-                       int                  num_items,
-                       int                  num_segments,
-                       BeginOffsetIteratorT d_begin_offsets,
-                       EndOffsetIteratorT   d_end_offsets,
-                       hipStream_t          stream,
-                       bool                 debug_synchronous)
+    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION
+    static hipError_t StableSortKeys(void*                d_temp_storage,
+                                     size_t&              temp_storage_bytes,
+                                     DoubleBuffer<KeyT>&  d_keys,
+                                     int                  num_items,
+                                     int                  num_segments,
+                                     BeginOffsetIteratorT d_begin_offsets,
+                                     EndOffsetIteratorT   d_end_offsets,
+                                     hipStream_t          stream,
+                                     bool                 debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return StableSortKeys(d_temp_storage,
@@ -363,15 +367,15 @@ struct DeviceSegmentedSort
     }
 
     template<typename KeyT, typename BeginOffsetIteratorT, typename EndOffsetIteratorT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t
-        StableSortKeysDescending(void*                d_temp_storage,
-                                 size_t&              temp_storage_bytes,
-                                 DoubleBuffer<KeyT>&  d_keys,
-                                 int                  num_items,
-                                 int                  num_segments,
-                                 BeginOffsetIteratorT d_begin_offsets,
-                                 EndOffsetIteratorT   d_end_offsets,
-                                 hipStream_t          stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t StableSortKeysDescending(void*                d_temp_storage,
+                                               size_t&              temp_storage_bytes,
+                                               DoubleBuffer<KeyT>&  d_keys,
+                                               int                  num_items,
+                                               int                  num_segments,
+                                               BeginOffsetIteratorT d_begin_offsets,
+                                               EndOffsetIteratorT   d_end_offsets,
+                                               hipStream_t          stream = 0)
     {
         return hipCUDAErrorTohipError(
             ::cub::DeviceSegmentedSort::StableSortKeysDescending(d_temp_storage,
@@ -385,16 +389,16 @@ struct DeviceSegmentedSort
     }
 
     template<typename KeyT, typename BeginOffsetIteratorT, typename EndOffsetIteratorT>
-    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION static hipError_t
-        StableSortKeysDescending(void*                d_temp_storage,
-                                 size_t&              temp_storage_bytes,
-                                 DoubleBuffer<KeyT>&  d_keys,
-                                 int                  num_items,
-                                 int                  num_segments,
-                                 BeginOffsetIteratorT d_begin_offsets,
-                                 EndOffsetIteratorT   d_end_offsets,
-                                 hipStream_t          stream,
-                                 bool                 debug_synchronous)
+    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION
+    static hipError_t StableSortKeysDescending(void*                d_temp_storage,
+                                               size_t&              temp_storage_bytes,
+                                               DoubleBuffer<KeyT>&  d_keys,
+                                               int                  num_items,
+                                               int                  num_segments,
+                                               BeginOffsetIteratorT d_begin_offsets,
+                                               EndOffsetIteratorT   d_end_offsets,
+                                               hipStream_t          stream,
+                                               bool                 debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return StableSortKeysDescending(d_temp_storage,
@@ -411,17 +415,18 @@ struct DeviceSegmentedSort
              typename ValueT,
              typename BeginOffsetIteratorT,
              typename EndOffsetIteratorT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t SortPairs(void*                d_temp_storage,
-                                                        size_t&              temp_storage_bytes,
-                                                        const KeyT*          d_keys_in,
-                                                        KeyT*                d_keys_out,
-                                                        const ValueT*        d_values_in,
-                                                        ValueT*              d_values_out,
-                                                        int                  num_items,
-                                                        int                  num_segments,
-                                                        BeginOffsetIteratorT d_begin_offsets,
-                                                        EndOffsetIteratorT   d_end_offsets,
-                                                        hipStream_t          stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t SortPairs(void*                d_temp_storage,
+                                size_t&              temp_storage_bytes,
+                                const KeyT*          d_keys_in,
+                                KeyT*                d_keys_out,
+                                const ValueT*        d_values_in,
+                                ValueT*              d_values_out,
+                                int                  num_items,
+                                int                  num_segments,
+                                BeginOffsetIteratorT d_begin_offsets,
+                                EndOffsetIteratorT   d_end_offsets,
+                                hipStream_t          stream = 0)
     {
         return hipCUDAErrorTohipError(::cub::DeviceSegmentedSort::SortPairs(d_temp_storage,
                                                                             temp_storage_bytes,
@@ -440,19 +445,19 @@ struct DeviceSegmentedSort
              typename ValueT,
              typename BeginOffsetIteratorT,
              typename EndOffsetIteratorT>
-    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION static hipError_t
-        SortPairs(void*                d_temp_storage,
-                  size_t&              temp_storage_bytes,
-                  const KeyT*          d_keys_in,
-                  KeyT*                d_keys_out,
-                  const ValueT*        d_values_in,
-                  ValueT*              d_values_out,
-                  int                  num_items,
-                  int                  num_segments,
-                  BeginOffsetIteratorT d_begin_offsets,
-                  EndOffsetIteratorT   d_end_offsets,
-                  hipStream_t          stream,
-                  bool                 debug_synchronous)
+    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION
+    static hipError_t SortPairs(void*                d_temp_storage,
+                                size_t&              temp_storage_bytes,
+                                const KeyT*          d_keys_in,
+                                KeyT*                d_keys_out,
+                                const ValueT*        d_values_in,
+                                ValueT*              d_values_out,
+                                int                  num_items,
+                                int                  num_segments,
+                                BeginOffsetIteratorT d_begin_offsets,
+                                EndOffsetIteratorT   d_end_offsets,
+                                hipStream_t          stream,
+                                bool                 debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return SortPairs(d_temp_storage,
@@ -472,18 +477,18 @@ struct DeviceSegmentedSort
              typename ValueT,
              typename BeginOffsetIteratorT,
              typename EndOffsetIteratorT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t
-        SortPairsDescending(void*                d_temp_storage,
-                            size_t&              temp_storage_bytes,
-                            const KeyT*          d_keys_in,
-                            KeyT*                d_keys_out,
-                            const ValueT*        d_values_in,
-                            ValueT*              d_values_out,
-                            int                  num_items,
-                            int                  num_segments,
-                            BeginOffsetIteratorT d_begin_offsets,
-                            EndOffsetIteratorT   d_end_offsets,
-                            hipStream_t          stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t SortPairsDescending(void*                d_temp_storage,
+                                          size_t&              temp_storage_bytes,
+                                          const KeyT*          d_keys_in,
+                                          KeyT*                d_keys_out,
+                                          const ValueT*        d_values_in,
+                                          ValueT*              d_values_out,
+                                          int                  num_items,
+                                          int                  num_segments,
+                                          BeginOffsetIteratorT d_begin_offsets,
+                                          EndOffsetIteratorT   d_end_offsets,
+                                          hipStream_t          stream = 0)
     {
         return hipCUDAErrorTohipError(
             ::cub::DeviceSegmentedSort::SortPairsDescending(d_temp_storage,
@@ -503,19 +508,19 @@ struct DeviceSegmentedSort
              typename ValueT,
              typename BeginOffsetIteratorT,
              typename EndOffsetIteratorT>
-    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION static hipError_t
-        SortPairsDescending(void*                d_temp_storage,
-                            size_t&              temp_storage_bytes,
-                            const KeyT*          d_keys_in,
-                            KeyT*                d_keys_out,
-                            const ValueT*        d_values_in,
-                            ValueT*              d_values_out,
-                            int                  num_items,
-                            int                  num_segments,
-                            BeginOffsetIteratorT d_begin_offsets,
-                            EndOffsetIteratorT   d_end_offsets,
-                            hipStream_t          stream,
-                            bool                 debug_synchronous)
+    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION
+    static hipError_t SortPairsDescending(void*                d_temp_storage,
+                                          size_t&              temp_storage_bytes,
+                                          const KeyT*          d_keys_in,
+                                          KeyT*                d_keys_out,
+                                          const ValueT*        d_values_in,
+                                          ValueT*              d_values_out,
+                                          int                  num_items,
+                                          int                  num_segments,
+                                          BeginOffsetIteratorT d_begin_offsets,
+                                          EndOffsetIteratorT   d_end_offsets,
+                                          hipStream_t          stream,
+                                          bool                 debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return SortPairsDescending(d_temp_storage,
@@ -535,15 +540,16 @@ struct DeviceSegmentedSort
              typename ValueT,
              typename BeginOffsetIteratorT,
              typename EndOffsetIteratorT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t SortPairs(void*                 d_temp_storage,
-                                                        size_t&               temp_storage_bytes,
-                                                        DoubleBuffer<KeyT>&   d_keys,
-                                                        DoubleBuffer<ValueT>& d_values,
-                                                        int                   num_items,
-                                                        int                   num_segments,
-                                                        BeginOffsetIteratorT  d_begin_offsets,
-                                                        EndOffsetIteratorT    d_end_offsets,
-                                                        hipStream_t           stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t SortPairs(void*                 d_temp_storage,
+                                size_t&               temp_storage_bytes,
+                                DoubleBuffer<KeyT>&   d_keys,
+                                DoubleBuffer<ValueT>& d_values,
+                                int                   num_items,
+                                int                   num_segments,
+                                BeginOffsetIteratorT  d_begin_offsets,
+                                EndOffsetIteratorT    d_end_offsets,
+                                hipStream_t           stream = 0)
     {
         return hipCUDAErrorTohipError(::cub::DeviceSegmentedSort::SortPairs(d_temp_storage,
                                                                             temp_storage_bytes,
@@ -560,17 +566,17 @@ struct DeviceSegmentedSort
              typename ValueT,
              typename BeginOffsetIteratorT,
              typename EndOffsetIteratorT>
-    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION static hipError_t
-        SortPairs(void*                 d_temp_storage,
-                  size_t&               temp_storage_bytes,
-                  DoubleBuffer<KeyT>&   d_keys,
-                  DoubleBuffer<ValueT>& d_values,
-                  int                   num_items,
-                  int                   num_segments,
-                  BeginOffsetIteratorT  d_begin_offsets,
-                  EndOffsetIteratorT    d_end_offsets,
-                  hipStream_t           stream,
-                  bool                  debug_synchronous)
+    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION
+    static hipError_t SortPairs(void*                 d_temp_storage,
+                                size_t&               temp_storage_bytes,
+                                DoubleBuffer<KeyT>&   d_keys,
+                                DoubleBuffer<ValueT>& d_values,
+                                int                   num_items,
+                                int                   num_segments,
+                                BeginOffsetIteratorT  d_begin_offsets,
+                                EndOffsetIteratorT    d_end_offsets,
+                                hipStream_t           stream,
+                                bool                  debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return SortPairs(d_temp_storage,
@@ -588,16 +594,16 @@ struct DeviceSegmentedSort
              typename ValueT,
              typename BeginOffsetIteratorT,
              typename EndOffsetIteratorT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t
-        SortPairsDescending(void*                 d_temp_storage,
-                            size_t&               temp_storage_bytes,
-                            DoubleBuffer<KeyT>&   d_keys,
-                            DoubleBuffer<ValueT>& d_values,
-                            int                   num_items,
-                            int                   num_segments,
-                            BeginOffsetIteratorT  d_begin_offsets,
-                            EndOffsetIteratorT    d_end_offsets,
-                            hipStream_t           stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t SortPairsDescending(void*                 d_temp_storage,
+                                          size_t&               temp_storage_bytes,
+                                          DoubleBuffer<KeyT>&   d_keys,
+                                          DoubleBuffer<ValueT>& d_values,
+                                          int                   num_items,
+                                          int                   num_segments,
+                                          BeginOffsetIteratorT  d_begin_offsets,
+                                          EndOffsetIteratorT    d_end_offsets,
+                                          hipStream_t           stream = 0)
     {
         return hipCUDAErrorTohipError(
             ::cub::DeviceSegmentedSort::SortPairsDescending(d_temp_storage,
@@ -615,17 +621,17 @@ struct DeviceSegmentedSort
              typename ValueT,
              typename BeginOffsetIteratorT,
              typename EndOffsetIteratorT>
-    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION static hipError_t
-        SortPairsDescending(void*                 d_temp_storage,
-                            size_t&               temp_storage_bytes,
-                            DoubleBuffer<KeyT>&   d_keys,
-                            DoubleBuffer<ValueT>& d_values,
-                            int                   num_items,
-                            int                   num_segments,
-                            BeginOffsetIteratorT  d_begin_offsets,
-                            EndOffsetIteratorT    d_end_offsets,
-                            hipStream_t           stream,
-                            bool                  debug_synchronous)
+    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION
+    static hipError_t SortPairsDescending(void*                 d_temp_storage,
+                                          size_t&               temp_storage_bytes,
+                                          DoubleBuffer<KeyT>&   d_keys,
+                                          DoubleBuffer<ValueT>& d_values,
+                                          int                   num_items,
+                                          int                   num_segments,
+                                          BeginOffsetIteratorT  d_begin_offsets,
+                                          EndOffsetIteratorT    d_end_offsets,
+                                          hipStream_t           stream,
+                                          bool                  debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return SortPairsDescending(d_temp_storage,
@@ -643,17 +649,18 @@ struct DeviceSegmentedSort
              typename ValueT,
              typename BeginOffsetIteratorT,
              typename EndOffsetIteratorT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t StableSortPairs(void*         d_temp_storage,
-                                                              size_t&       temp_storage_bytes,
-                                                              const KeyT*   d_keys_in,
-                                                              KeyT*         d_keys_out,
-                                                              const ValueT* d_values_in,
-                                                              ValueT*       d_values_out,
-                                                              int           num_items,
-                                                              int           num_segments,
-                                                              BeginOffsetIteratorT d_begin_offsets,
-                                                              EndOffsetIteratorT   d_end_offsets,
-                                                              hipStream_t          stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t StableSortPairs(void*                d_temp_storage,
+                                      size_t&              temp_storage_bytes,
+                                      const KeyT*          d_keys_in,
+                                      KeyT*                d_keys_out,
+                                      const ValueT*        d_values_in,
+                                      ValueT*              d_values_out,
+                                      int                  num_items,
+                                      int                  num_segments,
+                                      BeginOffsetIteratorT d_begin_offsets,
+                                      EndOffsetIteratorT   d_end_offsets,
+                                      hipStream_t          stream = 0)
     {
         return hipCUDAErrorTohipError(
             ::cub::DeviceSegmentedSort::StableSortPairs(d_temp_storage,
@@ -673,19 +680,19 @@ struct DeviceSegmentedSort
              typename ValueT,
              typename BeginOffsetIteratorT,
              typename EndOffsetIteratorT>
-    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION static hipError_t
-        StableSortPairs(void*                d_temp_storage,
-                        size_t&              temp_storage_bytes,
-                        const KeyT*          d_keys_in,
-                        KeyT*                d_keys_out,
-                        const ValueT*        d_values_in,
-                        ValueT*              d_values_out,
-                        int                  num_items,
-                        int                  num_segments,
-                        BeginOffsetIteratorT d_begin_offsets,
-                        EndOffsetIteratorT   d_end_offsets,
-                        hipStream_t          stream,
-                        bool                 debug_synchronous)
+    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION
+    static hipError_t StableSortPairs(void*                d_temp_storage,
+                                      size_t&              temp_storage_bytes,
+                                      const KeyT*          d_keys_in,
+                                      KeyT*                d_keys_out,
+                                      const ValueT*        d_values_in,
+                                      ValueT*              d_values_out,
+                                      int                  num_items,
+                                      int                  num_segments,
+                                      BeginOffsetIteratorT d_begin_offsets,
+                                      EndOffsetIteratorT   d_end_offsets,
+                                      hipStream_t          stream,
+                                      bool                 debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return StableSortPairs(d_temp_storage,
@@ -705,18 +712,18 @@ struct DeviceSegmentedSort
              typename ValueT,
              typename BeginOffsetIteratorT,
              typename EndOffsetIteratorT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t
-        StableSortPairsDescending(void*                d_temp_storage,
-                                  size_t&              temp_storage_bytes,
-                                  const KeyT*          d_keys_in,
-                                  KeyT*                d_keys_out,
-                                  const ValueT*        d_values_in,
-                                  ValueT*              d_values_out,
-                                  int                  num_items,
-                                  int                  num_segments,
-                                  BeginOffsetIteratorT d_begin_offsets,
-                                  EndOffsetIteratorT   d_end_offsets,
-                                  hipStream_t          stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t StableSortPairsDescending(void*                d_temp_storage,
+                                                size_t&              temp_storage_bytes,
+                                                const KeyT*          d_keys_in,
+                                                KeyT*                d_keys_out,
+                                                const ValueT*        d_values_in,
+                                                ValueT*              d_values_out,
+                                                int                  num_items,
+                                                int                  num_segments,
+                                                BeginOffsetIteratorT d_begin_offsets,
+                                                EndOffsetIteratorT   d_end_offsets,
+                                                hipStream_t          stream = 0)
     {
         return hipCUDAErrorTohipError(
             ::cub::DeviceSegmentedSort::StableSortPairsDescending(d_temp_storage,
@@ -736,19 +743,19 @@ struct DeviceSegmentedSort
              typename ValueT,
              typename BeginOffsetIteratorT,
              typename EndOffsetIteratorT>
-    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION static hipError_t
-        StableSortPairsDescending(void*                d_temp_storage,
-                                  size_t&              temp_storage_bytes,
-                                  const KeyT*          d_keys_in,
-                                  KeyT*                d_keys_out,
-                                  const ValueT*        d_values_in,
-                                  ValueT*              d_values_out,
-                                  int                  num_items,
-                                  int                  num_segments,
-                                  BeginOffsetIteratorT d_begin_offsets,
-                                  EndOffsetIteratorT   d_end_offsets,
-                                  hipStream_t          stream,
-                                  bool                 debug_synchronous)
+    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION
+    static hipError_t StableSortPairsDescending(void*                d_temp_storage,
+                                                size_t&              temp_storage_bytes,
+                                                const KeyT*          d_keys_in,
+                                                KeyT*                d_keys_out,
+                                                const ValueT*        d_values_in,
+                                                ValueT*              d_values_out,
+                                                int                  num_items,
+                                                int                  num_segments,
+                                                BeginOffsetIteratorT d_begin_offsets,
+                                                EndOffsetIteratorT   d_end_offsets,
+                                                hipStream_t          stream,
+                                                bool                 debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return StableSortPairsDescending(d_temp_storage,
@@ -768,15 +775,16 @@ struct DeviceSegmentedSort
              typename ValueT,
              typename BeginOffsetIteratorT,
              typename EndOffsetIteratorT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t StableSortPairs(void*   d_temp_storage,
-                                                              size_t& temp_storage_bytes,
-                                                              DoubleBuffer<KeyT>&   d_keys,
-                                                              DoubleBuffer<ValueT>& d_values,
-                                                              int                   num_items,
-                                                              int                   num_segments,
-                                                              BeginOffsetIteratorT  d_begin_offsets,
-                                                              EndOffsetIteratorT    d_end_offsets,
-                                                              hipStream_t           stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t StableSortPairs(void*                 d_temp_storage,
+                                      size_t&               temp_storage_bytes,
+                                      DoubleBuffer<KeyT>&   d_keys,
+                                      DoubleBuffer<ValueT>& d_values,
+                                      int                   num_items,
+                                      int                   num_segments,
+                                      BeginOffsetIteratorT  d_begin_offsets,
+                                      EndOffsetIteratorT    d_end_offsets,
+                                      hipStream_t           stream = 0)
     {
         return hipCUDAErrorTohipError(
             ::cub::DeviceSegmentedSort::StableSortPairs(d_temp_storage,
@@ -794,17 +802,17 @@ struct DeviceSegmentedSort
              typename ValueT,
              typename BeginOffsetIteratorT,
              typename EndOffsetIteratorT>
-    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION static hipError_t
-        StableSortPairs(void*                 d_temp_storage,
-                        size_t&               temp_storage_bytes,
-                        DoubleBuffer<KeyT>&   d_keys,
-                        DoubleBuffer<ValueT>& d_values,
-                        int                   num_items,
-                        int                   num_segments,
-                        BeginOffsetIteratorT  d_begin_offsets,
-                        EndOffsetIteratorT    d_end_offsets,
-                        hipStream_t           stream,
-                        bool                  debug_synchronous)
+    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION
+    static hipError_t StableSortPairs(void*                 d_temp_storage,
+                                      size_t&               temp_storage_bytes,
+                                      DoubleBuffer<KeyT>&   d_keys,
+                                      DoubleBuffer<ValueT>& d_values,
+                                      int                   num_items,
+                                      int                   num_segments,
+                                      BeginOffsetIteratorT  d_begin_offsets,
+                                      EndOffsetIteratorT    d_end_offsets,
+                                      hipStream_t           stream,
+                                      bool                  debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return StableSortPairs(d_temp_storage,
@@ -822,16 +830,16 @@ struct DeviceSegmentedSort
              typename ValueT,
              typename BeginOffsetIteratorT,
              typename EndOffsetIteratorT>
-    HIPCUB_RUNTIME_FUNCTION static hipError_t
-        StableSortPairsDescending(void*                 d_temp_storage,
-                                  size_t&               temp_storage_bytes,
-                                  DoubleBuffer<KeyT>&   d_keys,
-                                  DoubleBuffer<ValueT>& d_values,
-                                  int                   num_items,
-                                  int                   num_segments,
-                                  BeginOffsetIteratorT  d_begin_offsets,
-                                  EndOffsetIteratorT    d_end_offsets,
-                                  hipStream_t           stream = 0)
+    HIPCUB_RUNTIME_FUNCTION
+    static hipError_t StableSortPairsDescending(void*                 d_temp_storage,
+                                                size_t&               temp_storage_bytes,
+                                                DoubleBuffer<KeyT>&   d_keys,
+                                                DoubleBuffer<ValueT>& d_values,
+                                                int                   num_items,
+                                                int                   num_segments,
+                                                BeginOffsetIteratorT  d_begin_offsets,
+                                                EndOffsetIteratorT    d_end_offsets,
+                                                hipStream_t           stream = 0)
     {
         return hipCUDAErrorTohipError(
             ::cub::DeviceSegmentedSort::StableSortPairsDescending(d_temp_storage,
@@ -849,17 +857,17 @@ struct DeviceSegmentedSort
              typename ValueT,
              typename BeginOffsetIteratorT,
              typename EndOffsetIteratorT>
-    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION static hipError_t
-        StableSortPairsDescending(void*                 d_temp_storage,
-                                  size_t&               temp_storage_bytes,
-                                  DoubleBuffer<KeyT>&   d_keys,
-                                  DoubleBuffer<ValueT>& d_values,
-                                  int                   num_items,
-                                  int                   num_segments,
-                                  BeginOffsetIteratorT  d_begin_offsets,
-                                  EndOffsetIteratorT    d_end_offsets,
-                                  hipStream_t           stream,
-                                  bool                  debug_synchronous)
+    HIPCUB_DETAIL_DEPRECATED_DEBUG_SYNCHRONOUS HIPCUB_RUNTIME_FUNCTION
+    static hipError_t StableSortPairsDescending(void*                 d_temp_storage,
+                                                size_t&               temp_storage_bytes,
+                                                DoubleBuffer<KeyT>&   d_keys,
+                                                DoubleBuffer<ValueT>& d_values,
+                                                int                   num_items,
+                                                int                   num_segments,
+                                                BeginOffsetIteratorT  d_begin_offsets,
+                                                EndOffsetIteratorT    d_end_offsets,
+                                                hipStream_t           stream,
+                                                bool                  debug_synchronous)
     {
         HIPCUB_DETAIL_RUNTIME_LOG_DEBUG_SYNCHRONOUS();
         return StableSortPairsDescending(d_temp_storage,

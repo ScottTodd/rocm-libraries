@@ -25,6 +25,7 @@ from rocisa.container import sgpr, vgpr
 from copy import deepcopy
 import math
 
+
 def test_instruction_common():
     from rocisa.instruction import SMovB32
 
@@ -45,6 +46,7 @@ def test_instruction_common():
     assert math.isclose(inst2.srcs[0], 1.4, abs_tol=0.000001)
 
     from rocisa.instruction import InstructionInputVector
+
     iiv = InstructionInputVector()
     iiv.append(1.0)
     iiv.append("hello")
@@ -54,116 +56,182 @@ def test_instruction_common():
     from rocisa.code import Module
     from rocisa.container import vgpr
     from rocisa.instruction import BufferLoadB64
+
     module = Module("Test")
     module.add(BufferLoadB64(vgpr(1), vgpr(2), vgpr(3), 3))
     assert rocisa.countGlobalRead(module) == 1
 
+
 def test_instruction_cvt():
-    from rocisa.instruction import VCvtF16toF32, VCvtF32toF16, VCvtF32toU32, VCvtU32toF32, \
-        VCvtI32toF32, VCvtF32toI32, VCvtFP8toF32, VCvtBF8toF32, VCvtPkFP8toF32, VCvtPkBF8toF32, \
-            VCvtPkF32toFP8, VCvtPkF32toBF8, VCvtSRF32toFP8, VCvtSRF32toBF8
+    from rocisa.instruction import (
+        VCvtF16toF32,
+        VCvtF32toF16,
+        VCvtF32toU32,
+        VCvtU32toF32,
+        VCvtI32toF32,
+        VCvtF32toI32,
+        VCvtFP8toF32,
+        VCvtBF8toF32,
+        VCvtPkFP8toF32,
+        VCvtPkBF8toF32,
+        VCvtPkF32toFP8,
+        VCvtPkF32toBF8,
+        VCvtSRF32toFP8,
+        VCvtSRF32toBF8,
+    )
 
     # Test VCvtF16toF32
     inst = VCvtF16toF32(dst=vgpr(1), src=vgpr(2), comment="test comment")
-    assert str(inst) == "v_cvt_f32_f16 v1, v2                               // test comment\n"
+    assert (
+        str(inst)
+        == "v_cvt_f32_f16 v1, v2                               // test comment\n"
+    )
     assert str(inst.dst) == "v1"
     assert str(inst.srcs[0]) == "v2"
     assert inst.comment == "test comment"
 
     # Test VCvtF32toF16
     inst = VCvtF32toF16(dst=vgpr(1), src=vgpr(2), comment="test comment")
-    assert str(inst) == "v_cvt_f16_f32 v1, v2                               // test comment\n"
+    assert (
+        str(inst)
+        == "v_cvt_f16_f32 v1, v2                               // test comment\n"
+    )
     assert str(inst.dst) == "v1"
     assert str(inst.srcs[0]) == "v2"
     assert inst.comment == "test comment"
 
     # Test VCvtF32toU32
     inst = VCvtF32toU32(dst=vgpr(1), src=vgpr(2), comment="test comment")
-    assert str(inst) == "v_cvt_u32_f32 v1, v2                               // test comment\n"
+    assert (
+        str(inst)
+        == "v_cvt_u32_f32 v1, v2                               // test comment\n"
+    )
     assert str(inst.dst) == "v1"
     assert str(inst.srcs[0]) == "v2"
     assert inst.comment == "test comment"
 
     # Test VCvtU32toF32
     inst = VCvtU32toF32(dst=vgpr(1), src=vgpr(2), comment="test comment")
-    assert str(inst) == "v_cvt_f32_u32 v1, v2                               // test comment\n"
+    assert (
+        str(inst)
+        == "v_cvt_f32_u32 v1, v2                               // test comment\n"
+    )
     assert str(inst.dst) == "v1"
     assert str(inst.srcs[0]) == "v2"
     assert inst.comment == "test comment"
 
     # Test VCvtI32toF32
     inst = VCvtI32toF32(dst=vgpr(1), src=vgpr(2), comment="test comment")
-    assert str(inst) == "v_cvt_f32_i32 v1, v2                               // test comment\n"
+    assert (
+        str(inst)
+        == "v_cvt_f32_i32 v1, v2                               // test comment\n"
+    )
     assert str(inst.dst) == "v1"
     assert str(inst.srcs[0]) == "v2"
     assert inst.comment == "test comment"
 
     # Test VCvtF32toI32
     inst = VCvtF32toI32(dst=vgpr(1), src=vgpr(2), comment="test comment")
-    assert str(inst) == "v_cvt_i32_f32 v1, v2                               // test comment\n"
+    assert (
+        str(inst)
+        == "v_cvt_i32_f32 v1, v2                               // test comment\n"
+    )
     assert str(inst.dst) == "v1"
     assert str(inst.srcs[0]) == "v2"
     assert inst.comment == "test comment"
 
     # Test VCvtFP8toF32
     inst = VCvtFP8toF32(dst=vgpr(1), src=vgpr(2), comment="test comment")
-    assert str(inst) == "v_cvt_f32_fp8 v1, v2                               // test comment\n"
+    assert (
+        str(inst)
+        == "v_cvt_f32_fp8 v1, v2                               // test comment\n"
+    )
     assert str(inst.dst) == "v1"
     assert str(inst.srcs[0]) == "v2"
     assert inst.comment == "test comment"
 
     # Test VCvtBF8toF32
     inst = VCvtBF8toF32(dst=vgpr(1), src=vgpr(2), comment="test comment")
-    assert str(inst) == "v_cvt_f32_bf8 v1, v2                               // test comment\n"
+    assert (
+        str(inst)
+        == "v_cvt_f32_bf8 v1, v2                               // test comment\n"
+    )
     assert str(inst.dst) == "v1"
     assert str(inst.srcs[0]) == "v2"
     assert inst.comment == "test comment"
 
     # Test VCvtPkFP8toF32
     inst = VCvtPkFP8toF32(dst=vgpr(1), src=vgpr(2), comment="test comment")
-    assert str(inst) == "v_cvt_pk_f32_fp8 v1, v2                            // test comment\n"
+    assert (
+        str(inst)
+        == "v_cvt_pk_f32_fp8 v1, v2                            // test comment\n"
+    )
     assert str(inst.dst) == "v1"
     assert str(inst.srcs[0]) == "v2"
     assert inst.comment == "test comment"
 
     # Test VCvtPkBF8toF32
     inst = VCvtPkBF8toF32(dst=vgpr(1), src=vgpr(2), comment="test comment")
-    assert str(inst) == "v_cvt_pk_f32_bf8 v1, v2                            // test comment\n"
+    assert (
+        str(inst)
+        == "v_cvt_pk_f32_bf8 v1, v2                            // test comment\n"
+    )
     assert str(inst.dst) == "v1"
     assert str(inst.srcs[0]) == "v2"
     assert inst.comment == "test comment"
 
     # Test VCvtPkF32toFP8
-    inst = VCvtPkF32toFP8(dst=vgpr(1), src0=vgpr(2), src1=vgpr(3), comment="test comment")
-    assert str(inst) == "v_cvt_pk_fp8_f32 v1, v2, v3                        // test comment\n"
+    inst = VCvtPkF32toFP8(
+        dst=vgpr(1), src0=vgpr(2), src1=vgpr(3), comment="test comment"
+    )
+    assert (
+        str(inst)
+        == "v_cvt_pk_fp8_f32 v1, v2, v3                        // test comment\n"
+    )
     assert str(inst.dst) == "v1"
     assert str(inst.srcs[0]) == "v2"
     assert str(inst.srcs[1]) == "v3"
     assert inst.comment == "test comment"
 
     # Test VCvtPkF32toBF8
-    inst = VCvtPkF32toBF8(dst=vgpr(1), src0=vgpr(2), src1=vgpr(3), comment="test comment")
-    assert str(inst) == "v_cvt_pk_bf8_f32 v1, v2, v3                        // test comment\n"
+    inst = VCvtPkF32toBF8(
+        dst=vgpr(1), src0=vgpr(2), src1=vgpr(3), comment="test comment"
+    )
+    assert (
+        str(inst)
+        == "v_cvt_pk_bf8_f32 v1, v2, v3                        // test comment\n"
+    )
     assert str(inst.dst) == "v1"
     assert str(inst.srcs[0]) == "v2"
     assert str(inst.srcs[1]) == "v3"
     assert inst.comment == "test comment"
 
     # Test VCvtSRF32toFP8
-    inst = VCvtSRF32toFP8(dst=vgpr(1), src0=vgpr(2), src1=vgpr(3), comment="test comment")
-    assert str(inst) == "v_cvt_sr_fp8_f32 v1, v2, v3                        // test comment\n"
+    inst = VCvtSRF32toFP8(
+        dst=vgpr(1), src0=vgpr(2), src1=vgpr(3), comment="test comment"
+    )
+    assert (
+        str(inst)
+        == "v_cvt_sr_fp8_f32 v1, v2, v3                        // test comment\n"
+    )
     assert str(inst.dst) == "v1"
     assert str(inst.srcs[0]) == "v2"
     assert str(inst.srcs[1]) == "v3"
     assert inst.comment == "test comment"
 
     # Test VCvtSRF32toBF8
-    inst = VCvtSRF32toBF8(dst=vgpr(1), src0=vgpr(2), src1=vgpr(3), comment="test comment")
-    assert str(inst) == "v_cvt_sr_bf8_f32 v1, v2, v3                        // test comment\n"
+    inst = VCvtSRF32toBF8(
+        dst=vgpr(1), src0=vgpr(2), src1=vgpr(3), comment="test comment"
+    )
+    assert (
+        str(inst)
+        == "v_cvt_sr_bf8_f32 v1, v2, v3                        // test comment\n"
+    )
     assert str(inst.dst) == "v1"
     assert str(inst.srcs[0]) == "v2"
     assert str(inst.srcs[1]) == "v3"
     assert inst.comment == "test comment"
+
 
 test_instruction_common()
 test_instruction_cvt()

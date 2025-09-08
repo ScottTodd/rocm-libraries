@@ -78,7 +78,7 @@ namespace rocRoller
             std::string   comment = "";
 
             template <typename T>
-            requires std::derived_from<T, Binary>
+                requires std::derived_from<T, Binary>
             inline T& copyParams(const T& other)
             {
                 return static_cast<T&>(*this);
@@ -86,10 +86,7 @@ namespace rocRoller
         };
 
         template <typename T>
-        concept CBinary = requires
-        {
-            requires std::derived_from<T, Binary>;
-        };
+        concept CBinary = requires { requires std::derived_from<T, Binary>; };
 
         // Complexity is a heuristic that estimates the relative cost of computing different
         // expressions. See the KernelOption minLaunchTimeExpressionComplexity for a more
@@ -282,7 +279,7 @@ namespace rocRoller
             std::string   comment = "";
 
             template <typename T>
-            requires std::derived_from<T, Ternary>
+                requires std::derived_from<T, Ternary>
             inline T& copyParams(const T& other)
             {
                 return static_cast<T&>(*this);
@@ -294,16 +291,10 @@ namespace rocRoller
         };
 
         template <typename T>
-        concept CTernaryMixed = requires
-        {
-            requires std::derived_from<T, TernaryMixed>;
-        };
+        concept CTernaryMixed = requires { requires std::derived_from<T, TernaryMixed>; };
 
         template <typename T>
-        concept CTernary = requires
-        {
-            requires std::derived_from<T, Ternary> || CTernaryMixed<T>;
-        };
+        concept CTernary = requires { requires std::derived_from<T, Ternary> || CTernaryMixed<T>; };
 
         /**
          * `result = (lhs + r1hs) << r2hs`
@@ -420,7 +411,7 @@ namespace rocRoller
             std::string   comment = "";
 
             template <typename T>
-            requires std::derived_from<T, Unary>
+                requires std::derived_from<T, Unary>
             inline T& copyParams(const T& other)
             {
                 return static_cast<T&>(*this);
@@ -428,10 +419,7 @@ namespace rocRoller
         };
 
         template <typename T>
-        concept CUnary = requires
-        {
-            requires std::derived_from<T, Unary>;
-        };
+        concept CUnary = requires { requires std::derived_from<T, Unary>; };
 
         struct MagicMultiple : Unary
         {
@@ -650,34 +638,23 @@ namespace rocRoller
                                   WaveTilePtr>;
 
         template <Category cat, typename T>
-        concept COpCategory = requires
-        {
-            requires static_cast<Category>(T::Type) == cat;
-        };
+        concept COpCategory = requires { requires static_cast<Category>(T::Type) == cat; };
 
         template <typename T>
-        concept CArithmetic = requires
-        {
-            requires static_cast<Category>(T::Type) == Category::Arithmetic;
-        };
+        concept CArithmetic
+            = requires { requires static_cast<Category>(T::Type) == Category::Arithmetic; };
 
         template <typename T>
-        concept CComparison = requires
-        {
-            requires static_cast<Category>(T::Type) == Category::Comparison;
-        };
+        concept CComparison
+            = requires { requires static_cast<Category>(T::Type) == Category::Comparison; };
 
         template <typename T>
-        concept CLogical = requires
-        {
-            requires static_cast<Category>(T::Type) == Category::Logical;
-        };
+        concept CLogical
+            = requires { requires static_cast<Category>(T::Type) == Category::Logical; };
 
         template <typename T>
-        concept CConversion = requires
-        {
-            requires static_cast<Category>(T::Type) == Category::Conversion;
-        };
+        concept CConversion
+            = requires { requires static_cast<Category>(T::Type) == Category::Conversion; };
 
         template <typename T>
         concept CShift = CIsAnyOf<T, ShiftL, LogicalShiftR, ArithmeticShiftR>;
@@ -687,14 +664,12 @@ namespace rocRoller
             = CIsAnyOf<T, BitwiseAnd, BitwiseOr, BitwiseNegate, BitwiseXor, ShiftL, LogicalShiftR>;
 
         template <typename T>
-        concept CAssociativeBinary = requires
-        {
+        concept CAssociativeBinary = requires {
             requires CBinary<T> && T::Properties[AlgebraicProperty::Associative] == true;
         };
 
         template <typename T>
-        concept CCommutativeBinary = requires
-        {
+        concept CCommutativeBinary = requires {
             requires CBinary<T> && T::Properties[AlgebraicProperty::Commutative] == true;
         };
 
@@ -709,31 +684,23 @@ namespace rocRoller
         concept CTranslateTimeValue = std::same_as<T, CommandArgumentValue>;
 
         template <typename T>
-        concept CTranslateTimeOperation = requires
-        {
-            requires T::EvalTimes[EvaluationTime::Translate] == true;
-        };
+        concept CTranslateTimeOperation
+            = requires { requires T::EvalTimes[EvaluationTime::Translate] == true; };
 
         template <typename T>
-        concept CTranslateTime = requires
-        {
-            requires CTranslateTimeValue<T> || CTranslateTimeOperation<T>;
-        };
+        concept CTranslateTime
+            = requires { requires CTranslateTimeValue<T> || CTranslateTimeOperation<T>; };
 
         template <typename T>
         concept CKernelLaunchTimeValue = CIsAnyOf<T, CommandArgumentValue, CommandArgumentPtr>;
 
         template <typename T>
-        concept CKernelLaunchTimeOperation = requires
-        {
-            requires T::EvalTimes[EvaluationTime::KernelLaunch] == true;
-        };
+        concept CKernelLaunchTimeOperation
+            = requires { requires T::EvalTimes[EvaluationTime::KernelLaunch] == true; };
 
         template <typename T>
-        concept CKernelLaunchTime = requires
-        {
-            requires CKernelLaunchTimeValue<T> || CKernelLaunchTimeOperation<T>;
-        };
+        concept CKernelLaunchTime
+            = requires { requires CKernelLaunchTimeValue<T> || CKernelLaunchTimeOperation<T>; };
 
         template <typename T>
         concept CKernelExecuteTimeValue = CIsAnyOf<T,
@@ -744,16 +711,12 @@ namespace rocRoller
                                                    WaveTilePtr>;
 
         template <typename T>
-        concept CKernelExecuteTimeOperation = requires
-        {
-            requires(T::EvalTimes[EvaluationTime::KernelExecute] == true);
-        };
+        concept CKernelExecuteTimeOperation
+            = requires { requires(T::EvalTimes[EvaluationTime::KernelExecute] == true); };
 
         template <typename T>
-        concept CKernelExecuteTime = requires
-        {
-            requires CKernelExecuteTimeValue<T> || CKernelExecuteTimeOperation<T>;
-        };
+        concept CKernelExecuteTime
+            = requires { requires CKernelExecuteTimeValue<T> || CKernelExecuteTimeOperation<T>; };
 
         static_assert(CTranslateTime<Add>);
         static_assert(CTranslateTime<MagicMultiple>);
@@ -880,7 +843,8 @@ namespace rocRoller
          * Throws if expr is not of type Expr.
          */
         template <typename Expr>
-        requires(CUnary<Expr> || CBinary<Expr> || CTernary<Expr>) auto split(ExpressionPtr expr);
+            requires(CUnary<Expr> || CBinary<Expr> || CTernary<Expr>)
+        auto split(ExpressionPtr expr);
 
         /**
          * Returns an approximate total complexity for an expression, to be used as a heuristic.

@@ -28,7 +28,7 @@
     #include "hiprand/hiprand_kernel.h"
 
 /// \cond
-typedef mtgp32_params mtgp32_kernel_params_t;
+typedef mtgp32_params      mtgp32_kernel_params_t;
 typedef mtgp32_fast_params mtgp32_fast_param_t;
 /// \endcond
 
@@ -85,28 +85,22 @@ inline hiprandStatus_t hiprandMakeMTGP32KernelState(hiprandStateMtgp32_t* s,
 
 #else // for HIP NVCC platfrom
 
-#include "hiprand/hiprand_kernel.h"
-#include <curand_mtgp32_host.h>
+    #include "hiprand/hiprand_kernel.h"
+    #include <curand_mtgp32_host.h>
 
-__forceinline__ __host__
-hiprandStatus_t hiprandMakeMTGP32Constants(const mtgp32_params_fast_t params[],
-                                           mtgp32_kernel_params_t * p)
+__forceinline__ __host__ hiprandStatus_t
+    hiprandMakeMTGP32Constants(const mtgp32_params_fast_t params[], mtgp32_kernel_params_t* p)
 {
-    return to_hiprand_status(
-        curandMakeMTGP32Constants(params, p)
-    );
+    return to_hiprand_status(curandMakeMTGP32Constants(params, p));
 }
 
-__forceinline__ __host__
-hiprandStatus_t hiprandMakeMTGP32KernelState(hiprandStateMtgp32_t *s,
-                                             mtgp32_params_fast_t params[],
-                                             mtgp32_kernel_params_t *k,
-                                             int n,
-                                             unsigned long long seed)
+__forceinline__ __host__ hiprandStatus_t hiprandMakeMTGP32KernelState(hiprandStateMtgp32_t* s,
+                                                                      mtgp32_params_fast_t params[],
+                                                                      mtgp32_kernel_params_t* k,
+                                                                      int                     n,
+                                                                      unsigned long long      seed)
 {
-    return to_hiprand_status(
-        curandMakeMTGP32KernelState(s, params, k, n, seed)
-    );
+    return to_hiprand_status(curandMakeMTGP32KernelState(s, params, k, n, seed));
 }
 #endif // __HIP_PLATFORM_AMD__
 

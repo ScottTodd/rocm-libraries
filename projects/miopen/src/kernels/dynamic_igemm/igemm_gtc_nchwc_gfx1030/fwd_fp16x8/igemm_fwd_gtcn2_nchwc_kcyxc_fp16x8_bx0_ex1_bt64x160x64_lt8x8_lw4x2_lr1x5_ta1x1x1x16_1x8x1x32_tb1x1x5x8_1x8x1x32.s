@@ -48,11 +48,11 @@
 ; nxb                        : 0
 ; nxe                        : 1
 ; vector_c                   : 8
-; 
+;
 ; block_size                 : 256
 ; lds_total                  : 65536
 ; lds_buffer_num             : 1
-; 
+;
 .set k_p_in, 0
 .set k_p_wei, 8
 .set k_p_out, 16
@@ -408,7 +408,7 @@ igemm_fwd_gtcn2_nchwc_kcyxc_fp16x8_bx0_ex1_bt64x160x64_lt8x8_lw4x2_lr1x5_ta1x1x1
 
     s_lshl_b32 s[s_wei_stride_k], s[s_wei_stride_k], 1
 
-    
+
     .v_clear_nc v_gld_a, 8
     ; load weight
     buffer_load_dwordx4 v[v_gld_a+0:v_gld_a+0+3], v[v_wei_os], s[s_p_wei:s_p_wei+3], 0 offen offset:0
@@ -605,8 +605,8 @@ igemm_fwd_gtcn2_nchwc_kcyxc_fp16x8_bx0_ex1_bt64x160x64_lt8x8_lw4x2_lr1x5_ta1x1x1
 
     v_mov_b32 v[v_tmp+5], v0
     ; dotx mapping, get source matrix gemm index, k_pack:8, v_pack:1, k_pack_per_thread:4
-    v_and_b32 v[v_gemm_in], 7, v[v_tmp+5]           ; lanegroup_n index 
-    v_and_b32 v[v_gemm_im], 7, v[v_tmp+5]           ; lanegroup_m index 
+    v_and_b32 v[v_gemm_in], 7, v[v_tmp+5]           ; lanegroup_n index
+    v_and_b32 v[v_gemm_im], 7, v[v_tmp+5]           ; lanegroup_m index
     v_lshrrev_b32 v[v_tmp+5], 3, v[v_tmp+5]
     v_and_b32 v[v_tmp + 0], 1, v[v_tmp+5]          ; lanegroup_n_per_wave index
     v_lshl_or_b32 v[v_gemm_in], v[v_tmp + 0], 3, v[v_gemm_in]
@@ -730,10 +730,10 @@ igemm_fwd_gtcn2_nchwc_kcyxc_fp16x8_bx0_ex1_bt64x160x64_lt8x8_lw4x2_lr1x5_ta1x1x1
 
     ; start FMA loop
     s_waitcnt vmcnt(5)
-    ds_write_b128 v[v_sst_a_os], v[v_gld_a+0:v_gld_a+0+3] 
+    ds_write_b128 v[v_sst_a_os], v[v_gld_a+0:v_gld_a+0+3]
     ds_write_b128 v[v_sst_a_os], v[v_gld_a+4:v_gld_a+4+3] offset:512
     s_waitcnt vmcnt(0)
-    ds_write_b128 v[v_sst_b_os], v[v_gld_b+0:v_gld_b+0+3] 
+    ds_write_b128 v[v_sst_b_os], v[v_gld_b+0:v_gld_b+0+3]
     ds_write_b128 v[v_sst_b_os], v[v_gld_b+4:v_gld_b+4+3] offset:512
     ds_write_b128 v[v_sst_b_os], v[v_gld_b+8:v_gld_b+8+3] offset:1024
     ds_write_b128 v[v_sst_b_os], v[v_gld_b+12:v_gld_b+12+3] offset:1536
@@ -742,7 +742,7 @@ igemm_fwd_gtcn2_nchwc_kcyxc_fp16x8_bx0_ex1_bt64x160x64_lt8x8_lw4x2_lr1x5_ta1x1x1
     s_sub_i32 s[s_kitr], s[s_knum], 8
     s_cmp_gt_i32 s[s_kitr], 0
     s_cbranch_scc0 L_igemm_fwd_gtcn2_nchwc_kcyxc_fp16x8_bx0_ex1_bt64x160x64_lt8x8_lw4x2_lr1x5_ta1x1x1x16_1x8x1x32_tb1x1x5x8_1x8x1x32_end
-    
+
     v_mov_b32 v[v_tmp+5], s[s_diff_in_iwi_ovf_x]
     v_add_co_u32 v[v_gtc_ix], vcc_lo, s[s_move_slice_k_x_dw], v[v_gtc_ix]
     v_cndmask_b32 v[v_tmp+1], 0, s[s_dilation_h]
@@ -833,8 +833,8 @@ L_igemm_fwd_gtcn2_nchwc_kcyxc_fp16x8_bx0_ex1_bt64x160x64_lt8x8_lw4x2_lr1x5_ta1x1
     ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] offset:0
     ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os] offset:0
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:512
-    
-    
+
+
     s_waitcnt lgkmcnt(1)
     .v_lanegroup_dotx_fp16_8x8x8 v_c,v_a,v_b
     ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] offset:0+0*2560+1024
@@ -958,15 +958,15 @@ L_igemm_fwd_gtcn2_nchwc_kcyxc_fp16x8_bx0_ex1_bt64x160x64_lt8x8_lw4x2_lr1x5_ta1x1
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:0+7*2560+2048
     s_waitcnt lgkmcnt(1)
     .v_lanegroup_dotx_fp16_8x8x8 v_c+24,v_a,v_b
-    
-    
+
+
     s_waitcnt lgkmcnt(0)
     s_barrier
     s_waitcnt vmcnt(5)
-    ds_write_b128 v[v_sst_a_os], v[v_gld_a+0:v_gld_a+0+3] 
+    ds_write_b128 v[v_sst_a_os], v[v_gld_a+0:v_gld_a+0+3]
     ds_write_b128 v[v_sst_a_os], v[v_gld_a+4:v_gld_a+4+3] offset:512
     s_waitcnt vmcnt(0)
-    ds_write_b128 v[v_sst_b_os], v[v_gld_b+0:v_gld_b+0+3] 
+    ds_write_b128 v[v_sst_b_os], v[v_gld_b+0:v_gld_b+0+3]
     ds_write_b128 v[v_sst_b_os], v[v_gld_b+4:v_gld_b+4+3] offset:512
     ds_write_b128 v[v_sst_b_os], v[v_gld_b+8:v_gld_b+8+3] offset:1024
     ds_write_b128 v[v_sst_b_os], v[v_gld_b+12:v_gld_b+12+3] offset:1536
@@ -974,7 +974,7 @@ L_igemm_fwd_gtcn2_nchwc_kcyxc_fp16x8_bx0_ex1_bt64x160x64_lt8x8_lw4x2_lr1x5_ta1x1
     s_sub_i32 s[s_kitr], s[s_kitr], 8
     s_cmp_gt_i32 s[s_kitr], 0
     s_cbranch_scc0 L_igemm_fwd_gtcn2_nchwc_kcyxc_fp16x8_bx0_ex1_bt64x160x64_lt8x8_lw4x2_lr1x5_ta1x1x1x16_1x8x1x32_tb1x1x5x8_1x8x1x32_fma_finishing
-    
+
     v_mov_b32 v[v_tmp+5], s[s_diff_in_iwi_ovf_x]
     v_add_co_u32 v[v_gtc_ix], vcc_lo, s[s_move_slice_k_x_dw], v[v_gtc_ix]
     v_cndmask_b32 v[v_tmp+1], 0, s[s_dilation_h]
@@ -1073,8 +1073,8 @@ L_igemm_fwd_gtcn2_nchwc_kcyxc_fp16x8_bx0_ex1_bt64x160x64_lt8x8_lw4x2_lr1x5_ta1x1
     ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] offset:0
     ds_read_b128 v[v_a:v_a+3], v[v_sld_a_os] offset:0
     ds_read_b128 v[v_b+4:v_b+4+3], v[v_sld_b_os] offset:512
-    
-    
+
+
     s_waitcnt lgkmcnt(1)
     .v_lanegroup_dotx_fp16_8x8x8 v_c,v_a,v_b
     ds_read_b128 v[v_b:v_b+3], v[v_sld_b_os] offset:0+0*2560+1024
@@ -1200,11 +1200,11 @@ L_igemm_fwd_gtcn2_nchwc_kcyxc_fp16x8_bx0_ex1_bt64x160x64_lt8x8_lw4x2_lr1x5_ta1x1
     .v_lanegroup_dotx_fp16_8x8x8 v_c+24,v_a,v_b
     s_waitcnt lgkmcnt(0)
     .v_lanegroup_dotx_fp16_8x8x8 v_c+32,v_a,v_b+4
-    
-    
-    
-    
-    
+
+
+
+
+
     ; coalescing store, mapping:c_m:8x1-1x4-1x2-1x1, c_n:1x8-1x2-1x2-5x1, a_m:1x8, a_n:1x8, a_k:2x1
     ; coalescing_groups:1, num_dword_per_group:40, block_size:256
     ; gemm_co_prev_desc:[1, 2, 4, 1, 8, 160], gemm_co_split_lengths:[1, 2, 4, 1, 8, 5, 2, 2, 8, 1], gemm_co_post_desc:[1, 64, 1, 160, 1]
@@ -1219,7 +1219,7 @@ L_igemm_fwd_gtcn2_nchwc_kcyxc_fp16x8_bx0_ex1_bt64x160x64_lt8x8_lw4x2_lr1x5_ta1x1
     v_cvt_f16_f32_sdwa v[v_c+2], v[v_c+5]  dst_sel:WORD_1
     v_cvt_f16_f32 v[v_c+3], v[v_c+6]
     v_cvt_f16_f32_sdwa v[v_c+3], v[v_c+7]  dst_sel:WORD_1
-    ds_write_b128 v[v_co_sst], v[v_c:v_c+3] 
+    ds_write_b128 v[v_co_sst], v[v_c:v_c+3]
     v_cvt_f16_f32 v[v_c+8], v[v_c+8]
     v_cvt_f16_f32_sdwa v[v_c+8], v[v_c+9]  dst_sel:WORD_1
     v_cvt_f16_f32 v[v_c+9], v[v_c+10]

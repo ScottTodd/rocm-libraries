@@ -299,7 +299,7 @@ struct FMKeyBase
     FMKeyBase()                 = default;
     FMKeyBase(const FMKeyBase&) = default;
 
-    virtual ~FMKeyBase(){};
+    virtual ~FMKeyBase() {};
 
     // LDS size this config is intended for.  This is not a key
     // field, and multiple configs that differ only in LDS size are

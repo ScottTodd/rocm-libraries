@@ -111,8 +111,7 @@ template<class Type,
          class FlagOpType,
          unsigned int BlockSize,
          unsigned int ItemsPerThread>
-__global__
-__launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void flag_heads_kernel(Type* device_input, long long* device_heads)
 {
     const unsigned int lid             = hipThreadIdx_x;
@@ -249,8 +248,7 @@ template<class Type,
          class FlagOpType,
          unsigned int BlockSize,
          unsigned int ItemsPerThread>
-__global__
-__launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void flag_tails_kernel(Type* device_input, long long* device_tails)
 {
     const unsigned int lid             = hipThreadIdx_x;
@@ -388,8 +386,7 @@ template<class Type,
          class FlagOpType,
          unsigned int BlockSize,
          unsigned int ItemsPerThread>
-__global__
-__launch_bounds__(BlockSize)
+__global__ __launch_bounds__(BlockSize)
 void flag_heads_and_tails_kernel(Type*      device_input,
                                  long long* device_heads,
                                  long long* device_tails)

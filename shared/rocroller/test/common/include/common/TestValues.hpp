@@ -180,11 +180,8 @@ namespace TestValues
     };
 
     template <typename T>
-    concept CHasTestValues = requires()
-    {
-        {
-            ByType<T>::values
-            } -> std::convertible_to<std::vector<T>>;
+    concept CHasTestValues = requires() {
+        { ByType<T>::values } -> std::convertible_to<std::vector<T>>;
     };
 
     inline std::vector<rocRoller::CommandArgumentValue> byType(rocRoller::DataType type)

@@ -82,11 +82,10 @@ template<typename T, unsigned int ItemsPerThread, unsigned int BlockSize>
 struct operation<custom_operation, T, ItemsPerThread, BlockSize>
 {
     ROCPRIM_HOST_DEVICE
-    inline void
-        operator()(T (&input)[ItemsPerThread],
-                   void*        shared_storage      = nullptr,
-                   unsigned int shared_storage_size = 0,
-                   T*           global_mem_output   = nullptr) const
+    inline void operator()(T (&input)[ItemsPerThread],
+                           void*        shared_storage      = nullptr,
+                           unsigned int shared_storage_size = 0,
+                           T*           global_mem_output   = nullptr) const
     {
         (void)shared_storage;
         (void)shared_storage_size;
@@ -109,11 +108,10 @@ template<typename T, unsigned int ItemsPerThread, unsigned int BlockSize>
 struct operation<block_scan, T, ItemsPerThread, BlockSize>
 {
     ROCPRIM_HOST_DEVICE
-    inline void
-        operator()(T (&input)[ItemsPerThread],
-                   void*        shared_storage      = nullptr,
-                   unsigned int shared_storage_size = 0,
-                   T*           global_mem_output   = nullptr) const
+    inline void operator()(T (&input)[ItemsPerThread],
+                           void*        shared_storage      = nullptr,
+                           unsigned int shared_storage_size = 0,
+                           T*           global_mem_output   = nullptr) const
     {
         (void)global_mem_output;
         using block_scan_type = typename rocprim::
@@ -126,7 +124,8 @@ struct operation<block_scan, T, ItemsPerThread, BlockSize>
         if(shared_storage == nullptr
            || shared_storage_size < sizeof(typename block_scan_type::storage_type))
         {
-            __shared__ typename block_scan_type::storage_type storage;
+            __shared__
+            typename block_scan_type::storage_type storage;
             shared_storage = &storage;
         }
 
@@ -143,11 +142,10 @@ template<typename T, unsigned int ItemsPerThread, unsigned int BlockSize>
 struct operation<atomics_no_collision, T, ItemsPerThread, BlockSize>
 {
     ROCPRIM_HOST_DEVICE
-    inline void
-        operator()(T (&input)[ItemsPerThread],
-                   void*        shared_storage      = nullptr,
-                   unsigned int shared_storage_size = 0,
-                   T*           global_mem_output   = nullptr)
+    inline void operator()(T (&input)[ItemsPerThread],
+                           void*        shared_storage      = nullptr,
+                           unsigned int shared_storage_size = 0,
+                           T*           global_mem_output   = nullptr)
     {
         (void)shared_storage;
         (void)shared_storage_size;
@@ -167,11 +165,10 @@ template<typename T, unsigned int ItemsPerThread, unsigned int BlockSize>
 struct operation<atomics_inter_warp_collision, T, ItemsPerThread, BlockSize>
 {
     ROCPRIM_HOST_DEVICE
-    inline void
-        operator()(T (&input)[ItemsPerThread],
-                   void*        shared_storage      = nullptr,
-                   unsigned int shared_storage_size = 0,
-                   T*           global_mem_output   = nullptr)
+    inline void operator()(T (&input)[ItemsPerThread],
+                           void*        shared_storage      = nullptr,
+                           unsigned int shared_storage_size = 0,
+                           T*           global_mem_output   = nullptr)
     {
         (void)shared_storage;
         (void)shared_storage_size;
@@ -191,11 +188,10 @@ template<typename T, unsigned int ItemsPerThread, unsigned int BlockSize>
 struct operation<atomics_inter_block_collision, T, ItemsPerThread, BlockSize>
 {
     ROCPRIM_HOST_DEVICE
-    inline void
-        operator()(T (&input)[ItemsPerThread],
-                   void*        shared_storage      = nullptr,
-                   unsigned int shared_storage_size = 0,
-                   T*           global_mem_output   = nullptr)
+    inline void operator()(T (&input)[ItemsPerThread],
+                           void*        shared_storage      = nullptr,
+                           unsigned int shared_storage_size = 0,
+                           T*           global_mem_output   = nullptr)
     {
         (void)shared_storage;
         (void)shared_storage_size;

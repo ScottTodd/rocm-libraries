@@ -21,8 +21,7 @@ namespace rocisa
     inline std::string slash50(const std::string& comment)
     {
         std::ostringstream oss;
-        oss << std::setw(50) << ""
-            << " // " << comment << "\n";
+        oss << std::setw(50) << "" << " // " << comment << "\n";
         return oss.str();
     }
 

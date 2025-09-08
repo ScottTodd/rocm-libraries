@@ -168,7 +168,7 @@ TYPED_TEST(HipcubDeviceReduceTests, ReduceSum)
             HIP_CHECK(hipDeviceSynchronize());
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             // Run
@@ -194,7 +194,7 @@ TYPED_TEST(HipcubDeviceReduceTests, ReduceSum)
                                                     stream));
             }
 
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipPeekAtLastError());
@@ -295,7 +295,7 @@ TYPED_TEST(HipcubDeviceReduceTests, ReduceMinimum)
             HIP_CHECK(hipDeviceSynchronize());
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             // Run
@@ -306,7 +306,7 @@ TYPED_TEST(HipcubDeviceReduceTests, ReduceMinimum)
                                                 input.size(),
                                                 stream));
 
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipPeekAtLastError());
@@ -619,7 +619,7 @@ void test_argminmax(typename TestFixture::input_type empty_value)
             HIP_CHECK(hipDeviceSynchronize());
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             // Run
@@ -630,7 +630,7 @@ void test_argminmax(typename TestFixture::input_type empty_value)
                                input.size(),
                                stream));
 
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipPeekAtLastError());
@@ -1085,7 +1085,7 @@ TYPED_TEST(HipcubDeviceReduceTests, TransformReduce)
             HIP_CHECK(test_common_utils::hipMallocHelper(&d_temp_storage, temp_storage_size_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             // Run
@@ -1099,7 +1099,7 @@ TYPED_TEST(HipcubDeviceReduceTests, TransformReduce)
                                                             init,
                                                             stream));
 
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipPeekAtLastError());
@@ -1158,8 +1158,8 @@ TYPED_TEST(HipcubDeviceReduceLargeIndicesTests, LargeIndices)
     SCOPED_TRACE(testing::Message() << "with device_id= " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using T            = typename TestFixture::input_type;
-    using U            = typename TestFixture::output_type;
+    using T                             = typename TestFixture::input_type;
+    using U                             = typename TestFixture::output_type;
     using IteratorType                  = rocprim::constant_iterator<T>;
     const std::vector<size_t> exponents = {30, 31, 32, 33, 34};
     for(auto exponent : exponents)

@@ -185,8 +185,8 @@ namespace TensileLite
         {
             //If required code object file hasn't yet been loaded, load it now
             m_access.lock();
-            bool loaded = m_loadedCOFiles.find(removeXnack(codeObjectFile))
-                          != m_loadedCOFiles.end();
+            bool loaded
+                = m_loadedCOFiles.find(removeXnack(codeObjectFile)) != m_loadedCOFiles.end();
             std::string codeObjectDir = m_codeObjectDirectory;
             m_access.unlock();
 
@@ -223,7 +223,7 @@ namespace TensileLite
             for(auto name : kernelNames)
             {
                 hipFunction_t function;
-                auto result = getKernel(function, name);
+                auto          result = getKernel(function, name);
                 if(result != hipSuccess)
                     return result;
             }
@@ -283,8 +283,7 @@ namespace TensileLite
             m_access.unlock();
         }
 
-        hipError_t SolutionAdapter::initializeLazyLoading(std::string arch,
-                                                          std::string codeObjDir)
+        hipError_t SolutionAdapter::initializeLazyLoading(std::string arch, std::string codeObjDir)
         {
             //Ensure there's a slash at the end of the path
             if(!codeObjDir.empty())
@@ -416,7 +415,7 @@ namespace TensileLite
                                                   hipStream_t                          stream,
                                                   hipEvent_t                           startEvent,
                                                   hipEvent_t                           stopEvent,
-                                                  bool                                 isKernelLoaded)
+                                                  bool isKernelLoaded)
         {
             auto first = kernels.begin();
             auto last  = kernels.end() - 1;

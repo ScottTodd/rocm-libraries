@@ -56,15 +56,17 @@
 // Vose M. D.
 // A Linear Algorithm For Generating Random Numbers With a Given Distribution, 1991
 
-namespace rocrand_device {
-namespace detail {
+namespace rocrand_device
+{
+namespace detail
+{
 
-__forceinline__ __device__ __host__ unsigned int
-    discrete_alias(const double       x,
-                   const unsigned int size,
-                   const unsigned int offset,
-                   const unsigned int* __restrict__ alias,
-                   const double* __restrict__ probability)
+__forceinline__ __device__ __host__
+unsigned int discrete_alias(const double       x,
+                            const unsigned int size,
+                            const unsigned int offset,
+                            const unsigned int* __restrict__ alias,
+                            const double* __restrict__ probability)
 {
     // Calculate value using Alias table
 
@@ -76,41 +78,43 @@ __forceinline__ __device__ __host__ unsigned int
     return offset + (y < probability[i] ? i : alias[i]);
 }
 
-__forceinline__ __device__ __host__ unsigned int
-    discrete_alias(const double x, const rocrand_discrete_distribution_st& dis)
+__forceinline__ __device__ __host__
+unsigned int discrete_alias(const double x, const rocrand_discrete_distribution_st& dis)
 {
     return discrete_alias(x, dis.size, dis.offset, dis.alias, dis.probability);
 }
 
-__forceinline__ __device__ __host__ unsigned int
-    discrete_alias(const unsigned int r, const rocrand_discrete_distribution_st& dis)
+__forceinline__ __device__ __host__
+unsigned int discrete_alias(const unsigned int r, const rocrand_discrete_distribution_st& dis)
 {
     constexpr double inv_double_32 = ROCRAND_2POW32_INV_DOUBLE;
-    const double x = r * inv_double_32;
+    const double     x             = r * inv_double_32;
     return discrete_alias(x, dis);
 }
 
 // To prevent ambiguity compile error when compiler is facing the type "unsigned long"!!!
-__forceinline__ __device__ __host__ unsigned int
-    discrete_alias(const unsigned long r, const rocrand_discrete_distribution_st& dis)
+__forceinline__ __device__ __host__
+unsigned int discrete_alias(const unsigned long r, const rocrand_discrete_distribution_st& dis)
 {
     constexpr double inv_double_32 = ROCRAND_2POW32_INV_DOUBLE;
-    const double x = r * inv_double_32;
+    const double     x             = r * inv_double_32;
     return discrete_alias(x, dis);
 }
 
-__forceinline__ __device__ __host__ unsigned int
-    discrete_alias(const unsigned long long int r, const rocrand_discrete_distribution_st& dis)
+__forceinline__ __device__ __host__
+unsigned int discrete_alias(const unsigned long long int            r,
+                            const rocrand_discrete_distribution_st& dis)
 {
     constexpr double inv_double_64 = ROCRAND_2POW64_INV_DOUBLE;
-    const double x = r * inv_double_64;
+    const double     x             = r * inv_double_64;
     return discrete_alias(x, dis);
 }
 
-__forceinline__ __device__ __host__ unsigned int discrete_cdf(const double       x,
-                                                              const unsigned int size,
-                                                              const unsigned int offset,
-                                                              const double* __restrict__ cdf)
+__forceinline__ __device__ __host__
+unsigned int discrete_cdf(const double       x,
+                          const unsigned int size,
+                          const unsigned int offset,
+                          const double* __restrict__ cdf)
 {
     // Calculate value using binary search in CDF
 
@@ -134,34 +138,35 @@ __forceinline__ __device__ __host__ unsigned int discrete_cdf(const double      
     return offset + min;
 }
 
-__forceinline__ __device__ __host__ unsigned int
-    discrete_cdf(const double x, const rocrand_discrete_distribution_st& dis)
+__forceinline__ __device__ __host__
+unsigned int discrete_cdf(const double x, const rocrand_discrete_distribution_st& dis)
 {
     return discrete_cdf(x, dis.size, dis.offset, dis.cdf);
 }
 
-__forceinline__ __device__ __host__ unsigned int
-    discrete_cdf(const unsigned int r, const rocrand_discrete_distribution_st& dis)
+__forceinline__ __device__ __host__
+unsigned int discrete_cdf(const unsigned int r, const rocrand_discrete_distribution_st& dis)
 {
     constexpr double inv_double_32 = ROCRAND_2POW32_INV_DOUBLE;
-    const double x = r * inv_double_32;
+    const double     x             = r * inv_double_32;
     return discrete_cdf(x, dis);
 }
 
 // To prevent ambiguity compile error when compiler is facing the type "unsigned long"!!!
-__forceinline__ __device__ __host__ unsigned int
-    discrete_cdf(const unsigned long r, const rocrand_discrete_distribution_st& dis)
+__forceinline__ __device__ __host__
+unsigned int discrete_cdf(const unsigned long r, const rocrand_discrete_distribution_st& dis)
 {
     constexpr double inv_double_32 = ROCRAND_2POW32_INV_DOUBLE;
-    const double x = r * inv_double_32;
+    const double     x             = r * inv_double_32;
     return discrete_cdf(x, dis);
 }
 
-__forceinline__ __device__ __host__ unsigned int
-    discrete_cdf(const unsigned long long int r, const rocrand_discrete_distribution_st& dis)
+__forceinline__ __device__ __host__
+unsigned int discrete_cdf(const unsigned long long int            r,
+                          const rocrand_discrete_distribution_st& dis)
 {
     constexpr double inv_double_64 = ROCRAND_2POW64_INV_DOUBLE;
-    const double x = r * inv_double_64;
+    const double     x             = r * inv_double_64;
     return discrete_cdf(x, dis);
 }
 
@@ -209,12 +214,10 @@ uint4 rocrand_discrete4(rocrand_state_philox4x32_10*        state,
                         const rocrand_discrete_distribution discrete_distribution)
 {
     const uint4 u4 = rocrand4(state);
-    return uint4 {
-        rocrand_device::detail::discrete_alias(u4.x, *discrete_distribution),
-        rocrand_device::detail::discrete_alias(u4.y, *discrete_distribution),
-        rocrand_device::detail::discrete_alias(u4.z, *discrete_distribution),
-        rocrand_device::detail::discrete_alias(u4.w, *discrete_distribution)
-    };
+    return uint4{rocrand_device::detail::discrete_alias(u4.x, *discrete_distribution),
+                 rocrand_device::detail::discrete_alias(u4.y, *discrete_distribution),
+                 rocrand_device::detail::discrete_alias(u4.z, *discrete_distribution),
+                 rocrand_device::detail::discrete_alias(u4.w, *discrete_distribution)};
 }
 
 /**

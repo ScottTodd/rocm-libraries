@@ -200,8 +200,7 @@ private:
             for(auto tag : rocsparse_clients_envariables::s_var_bool_all)
             {
                 const bool v = this->m_var_bool[tag];
-                std::cout << ""
-                          << "env variable " << s_var_bool_names[tag] << " : "
+                std::cout << "" << "env variable " << s_var_bool_names[tag] << " : "
                           << ((this->m_var_bool_defined[tag]) ? ((v) ? "enabled" : "disabled")
                                                               : "<undefined>")
                           << std::endl;
@@ -210,8 +209,7 @@ private:
             for(auto tag : rocsparse_clients_envariables::s_var_string_all)
             {
                 const std::string v = this->m_var_string[tag];
-                std::cout << ""
-                          << "env variable " << s_var_string_names[tag] << " : "
+                std::cout << "" << "env variable " << s_var_string_names[tag] << " : "
                           << ((this->m_var_string_defined[tag]) ? this->m_var_string[tag]
                                                                 : "<undefined>")
                           << std::endl;

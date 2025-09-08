@@ -67,21 +67,20 @@ rocsparselt_status spmm_typecasting(const char*                     caller,
 
     RocsparseltContractionProblem<Ti, To, Tc>* problem;
 
-    auto status = ConstructRocSparseLtProblem(
-        caller,
-        &problem,
-        plan->matmul_descr,
-        reinterpret_cast<const Tc*>(alpha),
-        reinterpret_cast<const Tc*>(beta),
-        reinterpret_cast<const Ti*>(a),
-        reinterpret_cast<const Ti*>(b),
-        reinterpret_cast<const To*>(c),
-        (To*)d,
-        true,
-        workspace,
-        workspaceSize,
-        streams,
-        numStreams);
+    auto status = ConstructRocSparseLtProblem(caller,
+                                              &problem,
+                                              plan->matmul_descr,
+                                              reinterpret_cast<const Tc*>(alpha),
+                                              reinterpret_cast<const Tc*>(beta),
+                                              reinterpret_cast<const Ti*>(a),
+                                              reinterpret_cast<const Ti*>(b),
+                                              reinterpret_cast<const To*>(c),
+                                              (To*)d,
+                                              true,
+                                              workspace,
+                                              workspaceSize,
+                                              streams,
+                                              numStreams);
 
     if(status != rocsparselt_status_success)
         return status;
@@ -116,9 +115,9 @@ inline rocsparselt_status rocsparselt_spmm_template(const char*                 
                                                     const int                       config_max_id,
                                                     const int search_iterations)
 {
-#define EX_TYPECASTING_PARM                                                                                  \
-    caller, handle, plan, alpha, beta, a, b, c, d, workspace, workspaceSize, streams, numStreams, config_id, \
-        config_max_id, search_iterations
+#define EX_TYPECASTING_PARM                                                                       \
+    caller, handle, plan, alpha, beta, a, b, c, d, workspace, workspaceSize, streams, numStreams, \
+        config_id, config_max_id, search_iterations
 
     const hipDataType              a_type       = plan->matmul_descr->matrix_A->type;
     const hipDataType              b_type       = plan->matmul_descr->matrix_B->type;

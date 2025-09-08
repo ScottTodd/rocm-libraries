@@ -84,8 +84,8 @@ template<class Type,
          hipcub::BlockStoreAlgorithm StoreMethod,
          unsigned int                BlockSize,
          unsigned int                ItemsPerThread>
-__global__ __launch_bounds__(BlockSize) void load_store_kernel(Type * device_input,
-                                                               Type * device_output)
+__global__ __launch_bounds__(BlockSize)
+void load_store_kernel(Type* device_input, Type* device_output)
 {
     Type         items[ItemsPerThread];
     unsigned int offset = hipBlockIdx_x * BlockSize * ItemsPerThread;
@@ -100,9 +100,8 @@ template<class Type,
          hipcub::BlockStoreAlgorithm StoreMethod,
          unsigned int                BlockSize,
          unsigned int                ItemsPerThread>
-__global__ __launch_bounds__(BlockSize) void load_store_valid_kernel(Type * device_input,
-                                                                     Type * device_output,
-                                                                     size_t valid)
+__global__ __launch_bounds__(BlockSize)
+void load_store_valid_kernel(Type* device_input, Type* device_output, size_t valid)
 {
     Type         items[ItemsPerThread];
     unsigned int offset = hipBlockIdx_x * BlockSize * ItemsPerThread;
@@ -117,10 +116,11 @@ template<class Type,
          hipcub::BlockStoreAlgorithm StoreMethod,
          unsigned int                BlockSize,
          unsigned int                ItemsPerThread>
-__global__ __launch_bounds__(BlockSize) void load_store_valid_default_kernel(Type*  device_input,
-                                                                             Type*  device_output,
-                                                                             size_t valid,
-                                                                             Type   _default)
+__global__ __launch_bounds__(BlockSize)
+void load_store_valid_default_kernel(Type*  device_input,
+                                     Type*  device_output,
+                                     size_t valid,
+                                     Type   _default)
 {
     Type         items[ItemsPerThread];
     unsigned int offset = hipBlockIdx_x * BlockSize * ItemsPerThread;
@@ -137,10 +137,10 @@ template<typename InputIteratorT,
          unsigned int                BlockSize,
          unsigned int                ItemsPerThread>
 __launch_bounds__(BlockSize) __global__
-    void load_store_guarded_kernel(InputIteratorT  d_in,
-                                   OutputIteratorT d_out_unguarded,
-                                   OutputIteratorT d_out_guarded,
-                                   int             num_items)
+void load_store_guarded_kernel(InputIteratorT  d_in,
+                               OutputIteratorT d_out_unguarded,
+                               OutputIteratorT d_out_guarded,
+                               int             num_items)
 {
     enum
     {
@@ -171,7 +171,8 @@ __launch_bounds__(BlockSize) __global__
     };
 
     // Allocate temp storage in shared memory
-    __shared__ TempStorage temp_storage;
+    __shared__
+    TempStorage temp_storage;
 
     // Threadblock work bounds
     int block_offset     = blockIdx.x * TileSize;
@@ -206,4 +207,4 @@ __launch_bounds__(BlockSize) __global__
     BlockStore(temp_storage.store).Store(d_out_guarded + block_offset, data, guarded_elements);
 }
 
-#endif  // HIPCUB_TEST_HIPCUB_BLOCK_LOAD_STORE_KERNELS_HPP
+#endif // HIPCUB_TEST_HIPCUB_BLOCK_LOAD_STORE_KERNELS_HPP

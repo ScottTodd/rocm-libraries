@@ -69,12 +69,13 @@ struct nth_element_onesweep_lookback_state
 
     underlying_type state;
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE explicit nth_element_onesweep_lookback_state(underlying_type state)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    explicit nth_element_onesweep_lookback_state(underlying_type state)
         : state(state)
     {}
 
-    ROCPRIM_DEVICE ROCPRIM_INLINE nth_element_onesweep_lookback_state(prefix_flag     status,
-                                                                     underlying_type value)
+    ROCPRIM_DEVICE ROCPRIM_INLINE
+    nth_element_onesweep_lookback_state(prefix_flag status, underlying_type value)
         : state(static_cast<underlying_type>(status) | value)
     {}
 
@@ -185,7 +186,8 @@ ROCPRIM_DEVICE ROCPRIM_FORCE_INLINE void find_splitters_kernel_impl(
 
     using block_sort_key = block_sort<key_type, num_splitters>;
 
-    ROCPRIM_SHARED_MEMORY typename block_sort_key::storage_type storage;
+    ROCPRIM_SHARED_MEMORY
+    typename block_sort_key::storage_type storage;
 
     const unsigned int stride = size / num_splitters;
     const unsigned int idx    = threadIdx.x;

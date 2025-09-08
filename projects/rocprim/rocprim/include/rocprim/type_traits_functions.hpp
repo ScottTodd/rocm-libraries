@@ -304,8 +304,8 @@ inline void for_each_in_tuple_impl(Tuple&& t, Function&& f, ::rocprim::index_seq
 
 template<class Tuple, class Function>
 ROCPRIM_HOST_DEVICE
-inline auto for_each_in_tuple(Tuple&& t, Function&& f)
-    -> void_t<tuple_size<std::remove_reference_t<Tuple>>>
+inline auto for_each_in_tuple(Tuple&&    t,
+                              Function&& f) -> void_t<tuple_size<std::remove_reference_t<Tuple>>>
 {
     static constexpr size_t size = tuple_size<std::remove_reference_t<Tuple>>::value;
     for_each_in_tuple_impl(std::forward<Tuple>(t),
@@ -326,7 +326,8 @@ struct guarded_inequality_wrapper
     size_t guard;
 
     /// Constructor
-    ROCPRIM_HOST_DEVICE inline guarded_inequality_wrapper(EqualityOp op, size_t guard)
+    ROCPRIM_HOST_DEVICE
+    inline guarded_inequality_wrapper(EqualityOp op, size_t guard)
         : op(op), guard(guard)
     {}
 
@@ -340,8 +341,7 @@ struct guarded_inequality_wrapper
     /// \returns <tt>!op(a, b)</tt> for a certain equality operator \p op when in-bounds.
     template<typename T>
     ROCPRIM_HOST_DEVICE
-    inline bool
-        operator()(const T& a, const T& b, size_t idx) const
+    inline bool operator()(const T& a, const T& b, size_t idx) const
     {
         // In-bounds return operation result, out-of-bounds return ret.
         return (idx < guard) ? !op(a, b) : Ret;

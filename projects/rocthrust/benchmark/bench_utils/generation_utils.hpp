@@ -93,7 +93,7 @@ public:
   }
 
   managed_seed()
-      : managed_seed("random"){};
+      : managed_seed("random") {};
 
   unsigned int get_0() const
   {

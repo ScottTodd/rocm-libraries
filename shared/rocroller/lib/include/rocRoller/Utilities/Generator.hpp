@@ -515,17 +515,17 @@ namespace rocRoller
      * can be a Generator or another collection or range.
      */
     template <std::ranges::input_range Range, typename Predicate>
-    requires(std::predicate<Predicate, std::ranges::range_value_t<Range>>)
-        Generator<std::ranges::range_value_t<Range>> filter(Predicate predicate, Range range);
+        requires(std::predicate<Predicate, std::ranges::range_value_t<Range>>)
+    Generator<std::ranges::range_value_t<Range>> filter(Predicate predicate, Range range);
 
     /**
      * Yields the result of applying `func` on each element from `range`. Range
      * can be a Generator or another collection or range.
      */
     template <std::ranges::input_range Range, typename Func>
-    requires(std::invocable<Func, std::ranges::range_value_t<Range>>)
-        Generator<std::invoke_result_t<Func, std::ranges::range_value_t<Range>>> map(Func  func,
-                                                                                     Range range);
+        requires(std::invocable<Func, std::ranges::range_value_t<Range>>)
+    Generator<std::invoke_result_t<Func, std::ranges::range_value_t<Range>>> map(Func  func,
+                                                                                 Range range);
 
     /**
      * Yields the first `n` values from `gen`

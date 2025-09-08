@@ -384,8 +384,8 @@ TYPED_TEST(RocprimDeviceSegmentedScan, ExclusiveScan)
             HIP_CHECK(hipDeviceSynchronize());
 
             ASSERT_GT(temporary_storage_bytes, 0);
-            common::device_ptr<void>     d_temporary_storage(temporary_storage_bytes);
-            test_utils::GraphHelper      gHelper;
+            common::device_ptr<void> d_temporary_storage(temporary_storage_bytes);
+            test_utils::GraphHelper  gHelper;
             if(TestFixture::params::use_graphs)
             {
                 gHelper.startStreamCapture(stream);

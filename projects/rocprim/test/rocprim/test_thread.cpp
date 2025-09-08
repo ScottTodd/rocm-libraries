@@ -29,11 +29,7 @@
 
 #include "test_utils.hpp"
 
-template<
-    unsigned int BlockSizeX,
-    unsigned int BlockSizeY,
-    unsigned int BlockSizeZ
->
+template<unsigned int BlockSizeX, unsigned int BlockSizeY, unsigned int BlockSizeZ>
 struct params
 {
     static constexpr unsigned int block_size_x = BlockSizeX;
@@ -42,7 +38,8 @@ struct params
 };
 
 template<class Params>
-class RocprimThreadTests : public ::testing::Test {
+class RocprimThreadTests : public ::testing::Test
+{
 public:
     using params = Params;
 };
@@ -70,26 +67,21 @@ using Params = ::testing::Types<params<32, 1, 1>,
 
 TYPED_TEST_SUITE(RocprimThreadTests, Params);
 
-template<
-    unsigned int BlockSizeX,
-    unsigned int BlockSizeY,
-    unsigned int BlockSizeZ
->
-__global__
-__launch_bounds__(1024)
+template<unsigned int BlockSizeX, unsigned int BlockSizeY, unsigned int BlockSizeZ>
+__global__ __launch_bounds__(1024)
 void flat_id_kernel(unsigned int* device_output)
 {
-    unsigned int thread_id = rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>();
+    unsigned int thread_id   = rocprim::flat_block_thread_id<BlockSizeX, BlockSizeY, BlockSizeZ>();
     device_output[thread_id] = thread_id;
 }
 
 TYPED_TEST(RocprimThreadTests, FlatBlockThreadID)
 {
-    using Type = unsigned int;
+    using Type                           = unsigned int;
     static constexpr size_t block_size_x = TestFixture::params::block_size_x;
     static constexpr size_t block_size_y = TestFixture::params::block_size_y;
     static constexpr size_t block_size_z = TestFixture::params::block_size_z;
-    static constexpr size_t block_size = block_size_x * block_size_y * block_size_z;
+    static constexpr size_t block_size   = block_size_x * block_size_y * block_size_z;
     // Given block size not supported
     if(block_size > test_utils::get_max_block_size() || (block_size & (block_size - 1)) != 0)
     {
@@ -98,7 +90,8 @@ TYPED_TEST(RocprimThreadTests, FlatBlockThreadID)
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data
@@ -131,13 +124,8 @@ TYPED_TEST(RocprimThreadTests, FlatBlockThreadID)
     }
 }
 
-template<
-    unsigned int BlockSizeX,
-    unsigned int BlockSizeY,
-    unsigned int BlockSizeZ
->
-__global__
-__launch_bounds__(1024)
+template<unsigned int BlockSizeX, unsigned int BlockSizeY, unsigned int BlockSizeZ>
+__global__ __launch_bounds__(1024)
 void block_id_kernel(unsigned int* device_output)
 {
     unsigned int block_id = rocprim::flat_block_id<BlockSizeX, BlockSizeY, BlockSizeZ>();
@@ -149,13 +137,13 @@ void block_id_kernel(unsigned int* device_output)
 
 TYPED_TEST(RocprimThreadTests, FlatBlockID)
 {
-    using Type = unsigned int;
+    using Type                           = unsigned int;
     static constexpr size_t block_size_x = TestFixture::params::block_size_x;
     static constexpr size_t block_size_y = TestFixture::params::block_size_y;
     static constexpr size_t block_size_z = TestFixture::params::block_size_z;
-    static constexpr size_t block_size = block_size_x * block_size_y * block_size_z;
-    const size_t size = block_size * block_size;
-    const auto grid_size = size / block_size;
+    static constexpr size_t block_size   = block_size_x * block_size_y * block_size_z;
+    const size_t            size         = block_size * block_size;
+    const auto              grid_size    = size / block_size;
 
     // Given block size not supported
     if(block_size > test_utils::get_max_block_size() || (block_size & (block_size - 1)) != 0)
@@ -165,7 +153,8 @@ TYPED_TEST(RocprimThreadTests, FlatBlockID)
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
     {
-        unsigned int seed_value = seed_index < random_seeds_count  ? rand() : seeds[seed_index - random_seeds_count];
+        unsigned int seed_value
+            = seed_index < random_seeds_count ? rand() : seeds[seed_index - random_seeds_count];
         SCOPED_TRACE(testing::Message() << "with seed = " << seed_value);
 
         // Generate data

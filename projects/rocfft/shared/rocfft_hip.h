@@ -41,8 +41,8 @@ public:
     }
 
     // not copyable or movable
-    rocfft_scoped_device(const rocfft_scoped_device&) = delete;
-    rocfft_scoped_device(rocfft_scoped_device&&)      = delete;
+    rocfft_scoped_device(const rocfft_scoped_device&)            = delete;
+    rocfft_scoped_device(rocfft_scoped_device&&)                 = delete;
     rocfft_scoped_device& operator=(const rocfft_scoped_device&) = delete;
 
 private:

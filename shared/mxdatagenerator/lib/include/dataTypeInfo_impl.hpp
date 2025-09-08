@@ -31,8 +31,10 @@
 //
 
 template <typename DTYPE>
-inline bool
-    isOne(uint8_t const* scaleBytes, uint8_t const* dataBytes, index_t scaleIndex, index_t dataIndex)
+inline bool isOne(uint8_t const* scaleBytes,
+                  uint8_t const* dataBytes,
+                  index_t        scaleIndex,
+                  index_t        dataIndex)
 {
     return toDouble<DTYPE>(scaleBytes, dataBytes, scaleIndex, dataIndex) == 1.0;
 }
@@ -40,8 +42,8 @@ inline bool
 template <typename DTYPE>
 inline bool isOnePacked(uint8_t const* scaleBytes,
                         uint8_t const* dataBytes,
-                        index_t         scaleIndex,
-                        index_t         dataIndex)
+                        index_t        scaleIndex,
+                        index_t        dataIndex)
 {
 
     return toDoublePacked<DTYPE>(scaleBytes, dataBytes, scaleIndex, dataIndex) == 1.0;
@@ -51,8 +53,8 @@ template <typename DTYPE>
 inline bool isLess(double         val,
                    uint8_t const* scaleBytes,
                    uint8_t const* dataBytes,
-                   index_t         scaleIndex,
-                   index_t         dataIndex)
+                   index_t        scaleIndex,
+                   index_t        dataIndex)
 {
     return toDouble<DTYPE>(scaleBytes, dataBytes, scaleIndex, dataIndex) < val;
 }
@@ -61,8 +63,8 @@ template <typename DTYPE>
 inline bool isLessPacked(double         val,
                          uint8_t const* scaleBytes,
                          uint8_t const* dataBytes,
-                         index_t         scaleIndex,
-                         index_t         dataIndex)
+                         index_t        scaleIndex,
+                         index_t        dataIndex)
 {
     return toDoublePacked<DTYPE>(scaleBytes, dataBytes, scaleIndex, dataIndex) < val;
 }
@@ -71,8 +73,8 @@ template <typename DTYPE>
 inline bool isGreater(double         val,
                       uint8_t const* scaleBytes,
                       uint8_t const* dataBytes,
-                      index_t         scaleIndex,
-                      index_t         dataIndex)
+                      index_t        scaleIndex,
+                      index_t        dataIndex)
 {
     return toDouble<DTYPE>(scaleBytes, dataBytes, scaleIndex, dataIndex) > val;
 }
@@ -81,8 +83,8 @@ template <typename DTYPE>
 inline bool isGreaterPacked(double         val,
                             uint8_t const* scaleBytes,
                             uint8_t const* dataBytes,
-                            index_t         scaleIndex,
-                            index_t         dataIndex)
+                            index_t        scaleIndex,
+                            index_t        dataIndex)
 {
     return toDoublePacked<DTYPE>(scaleBytes, dataBytes, scaleIndex, dataIndex) > val;
 }
@@ -487,7 +489,7 @@ inline T convertToTypeSR(float value, uint seed)
         float maxVal = getDataMax<DTYPE>();
 
         cvt t;
-        
+
         // cppcheck-suppress redundantAssignment
         t.num     = maxVal;
         uint bMax = t.bRep;

@@ -40,9 +40,9 @@
 namespace TensileLite
 {
 
-    struct tensile_hip_fp8_e4m3: public __hip_fp8_e4m3
+    struct tensile_hip_fp8_e4m3 : public __hip_fp8_e4m3
     {
-        using __hip_fp8_e4m3:: __hip_fp8_e4m3; // list base's constructor in derive's scope
+        using __hip_fp8_e4m3::__hip_fp8_e4m3; // list base's constructor in derive's scope
 
         // constructor -> down cast
 #if HIP_FP8_TYPE_OCP
@@ -50,7 +50,9 @@ namespace TensileLite
 #else
         HIP_HOST tensile_hip_fp8_e4m3(const _Float16 f)
 #endif
-        : __hip_fp8_e4m3(reinterpret_cast<const __half &>(f)) {}
+            : __hip_fp8_e4m3(reinterpret_cast<const __half&>(f))
+        {
+        }
 
         // operator overloadiing -> upcast
 #if HIP_FP8_TYPE_OCP
@@ -61,21 +63,21 @@ namespace TensileLite
         {
             return _Float16(float(*this));
         }
-
     };
-
 
     typedef tensile_hip_fp8_e4m3 Float8;
 
-    struct tensile_hip_fp8_e5m2: public __hip_fp8_e5m2
+    struct tensile_hip_fp8_e5m2 : public __hip_fp8_e5m2
     {
-        using __hip_fp8_e5m2:: __hip_fp8_e5m2;
+        using __hip_fp8_e5m2::__hip_fp8_e5m2;
 #if HIP_FP8_TYPE_OCP
         HIP_HOST_DEVICE tensile_hip_fp8_e5m2(const _Float16 f)
 #else
         HIP_HOST tensile_hip_fp8_e5m2(const _Float16 f)
 #endif
-        : __hip_fp8_e5m2(reinterpret_cast<const __half &>(f)) {}
+            : __hip_fp8_e5m2(reinterpret_cast<const __half&>(f))
+        {
+        }
 
         // operator overloadiing -> upcast
 #if HIP_FP8_TYPE_OCP
@@ -88,18 +90,19 @@ namespace TensileLite
         }
     };
 
-
     typedef tensile_hip_fp8_e5m2 BFloat8;
 
-    struct tensile_hip_fp8_e4m3_fnuz: public __hip_fp8_e4m3_fnuz
+    struct tensile_hip_fp8_e4m3_fnuz : public __hip_fp8_e4m3_fnuz
     {
-        using __hip_fp8_e4m3_fnuz:: __hip_fp8_e4m3_fnuz;
+        using __hip_fp8_e4m3_fnuz::__hip_fp8_e4m3_fnuz;
 #if HIP_FP8_TYPE_FNUZ
         HIP_HOST_DEVICE tensile_hip_fp8_e4m3_fnuz(const _Float16 f)
 #else
         HIP_HOST tensile_hip_fp8_e4m3_fnuz(const _Float16 f)
 #endif
-        : __hip_fp8_e4m3_fnuz(reinterpret_cast<const __half &>(f)) {}
+            : __hip_fp8_e4m3_fnuz(reinterpret_cast<const __half&>(f))
+        {
+        }
 
         // operator overloadiing -> upcast
 #if HIP_FP8_TYPE_FNUZ
@@ -113,16 +116,17 @@ namespace TensileLite
     };
     typedef tensile_hip_fp8_e4m3_fnuz Float8_fnuz;
 
-
-    struct tensile_hip_fp8_e5m2_fnuz: public __hip_fp8_e5m2_fnuz
+    struct tensile_hip_fp8_e5m2_fnuz : public __hip_fp8_e5m2_fnuz
     {
-        using __hip_fp8_e5m2_fnuz:: __hip_fp8_e5m2_fnuz;
+        using __hip_fp8_e5m2_fnuz::__hip_fp8_e5m2_fnuz;
 #if HIP_FP8_TYPE_FNUZ
         HIP_HOST_DEVICE tensile_hip_fp8_e5m2_fnuz(const _Float16 f)
 #else
         HIP_HOST tensile_hip_fp8_e5m2_fnuz(const _Float16 f)
 #endif
-        : __hip_fp8_e5m2_fnuz(reinterpret_cast<const __half &>(f)) {}
+            : __hip_fp8_e5m2_fnuz(reinterpret_cast<const __half&>(f))
+        {
+        }
 
         // operator overloadiing -> upcast
 #if HIP_FP8_TYPE_FNUZ
@@ -135,7 +139,6 @@ namespace TensileLite
         }
     };
     typedef tensile_hip_fp8_e5m2_fnuz BFloat8_fnuz;
-
 
     //  Other operator overloading
     inline std::ostream& operator<<(std::ostream& os, const Float8& f8)
@@ -275,7 +278,7 @@ namespace TensileLite
         return static_cast<float>(a) >= static_cast<float>(b);
     }
 
-//  FNUZ
+    //  FNUZ
     inline Float8_fnuz operator+(Float8_fnuz a, Float8_fnuz b)
     {
         return static_cast<Float8_fnuz>(static_cast<float>(a) + static_cast<float>(b));
@@ -393,11 +396,22 @@ namespace TensileLite
 } // end of namespace TensileLite
 
 // dummy datatypes! TODO: removes these by redesigning the computeType
-typedef struct Float8BFloat8{ uint8_t data;} Float8BFloat8;
-typedef struct BFloat8Float8{ uint8_t data;} BFloat8Float8;
-typedef struct Float8BFloat8_fnuz{ uint8_t data;} Float8BFloat8_fnuz;
-typedef struct BFloat8Float8_fnuz{ uint8_t data;} BFloat8Float8_fnuz;
-
+typedef struct Float8BFloat8
+{
+    uint8_t data;
+} Float8BFloat8;
+typedef struct BFloat8Float8
+{
+    uint8_t data;
+} BFloat8Float8;
+typedef struct Float8BFloat8_fnuz
+{
+    uint8_t data;
+} Float8BFloat8_fnuz;
+typedef struct BFloat8Float8_fnuz
+{
+    uint8_t data;
+} BFloat8Float8_fnuz;
 
 namespace std
 {
@@ -483,11 +497,11 @@ namespace std
     }
     inline bool iszero(const TensileLite::Float8_fnuz& a)
     {
-        return static_cast<unsigned char>(a) == 0x0;  // NOTE: only +0 exists
+        return static_cast<unsigned char>(a) == 0x0; // NOTE: only +0 exists
     }
     inline bool iszero(const TensileLite::BFloat8_fnuz& a)
     {
-        return static_cast<unsigned char>(a) == 0x0;  // NOTE: only +0 exists
+        return static_cast<unsigned char>(a) == 0x0; // NOTE: only +0 exists
     }
 
     inline TensileLite::Float8_fnuz abs(const TensileLite::Float8_fnuz& a)

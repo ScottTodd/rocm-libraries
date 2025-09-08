@@ -243,8 +243,7 @@ namespace rocRoller
         {
             std::ostringstream msg;
             msg << BaseDimension::toString() << "(" << rank << "/" << memoryType << "/"
-                << layoutType << ")"
-                << "{";
+                << layoutType << ")" << "{";
 
             streamJoin(msg, sizes, ",");
 

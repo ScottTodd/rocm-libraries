@@ -68,21 +68,22 @@ template<class Key,
          typename Config          = rocprim::default_config>
 struct params
 {
-    using key_type = Key;
-    using value_type = Value;
-    using reduce_op_type = ReduceOp;
+    using key_type                                   = Key;
+    using value_type                                 = Value;
+    using reduce_op_type                             = ReduceOp;
     static constexpr unsigned int min_segment_length = MinSegmentLength;
     static constexpr unsigned int max_segment_length = MaxSegmentLength;
-    using aggregate_type = Aggregate;
-    using key_compare_op = KeyCompareFunction;
-    static constexpr bool use_identity_iterator = UseIdentityIterator;
-    static constexpr bool use_graphs = UseGraphs;
+    using aggregate_type                             = Aggregate;
+    using key_compare_op                             = KeyCompareFunction;
+    static constexpr bool use_identity_iterator      = UseIdentityIterator;
+    static constexpr bool use_graphs                 = UseGraphs;
     static constexpr bool deterministic              = Deterministic;
     using config                                     = Config;
 };
 
 template<class Params>
-class RocprimDeviceReduceByKey : public ::testing::Test {
+class RocprimDeviceReduceByKey : public ::testing::Test
+{
 public:
     using params = Params;
 };
@@ -163,12 +164,12 @@ TYPED_TEST(RocprimDeviceReduceByKey, ReduceByKey)
     SCOPED_TRACE(testing::Message() << "with device_id = " << device_id);
     HIP_CHECK(hipSetDevice(device_id));
 
-    using key_type = typename TestFixture::params::key_type;
-    using value_type = typename TestFixture::params::value_type;
-    using aggregate_type = typename TestFixture::params::aggregate_type;
-    using reduce_op_type = typename TestFixture::params::reduce_op_type;
-    using key_compare_op_type = typename TestFixture::params::key_compare_op;
-    using key_inner_type = typename test_utils::inner_type<key_type>::type;
+    using key_type              = typename TestFixture::params::key_type;
+    using value_type            = typename TestFixture::params::value_type;
+    using aggregate_type        = typename TestFixture::params::aggregate_type;
+    using reduce_op_type        = typename TestFixture::params::reduce_op_type;
+    using key_compare_op_type   = typename TestFixture::params::key_compare_op;
+    using key_inner_type        = typename test_utils::inner_type<key_type>::type;
     using key_distribution_type = typename std::conditional<
         std::is_floating_point<key_inner_type>::value,
         std::uniform_real_distribution<key_inner_type>,
@@ -183,12 +184,12 @@ TYPED_TEST(RocprimDeviceReduceByKey, ReduceByKey)
 
     constexpr bool use_identity_iterator = TestFixture::params::use_identity_iterator;
     constexpr bool deterministic         = TestFixture::params::deterministic;
-    const bool debug_synchronous = false;
+    const bool     debug_synchronous     = false;
 
-    reduce_op_type reduce_op;
+    reduce_op_type      reduce_op;
     key_compare_op_type key_compare_op;
 
-    const unsigned int seed = 123;
+    const unsigned int         seed = 123;
     std::default_random_engine gen(seed);
 
     for(size_t seed_index = 0; seed_index < number_of_runs; seed_index++)
@@ -202,7 +203,7 @@ TYPED_TEST(RocprimDeviceReduceByKey, ReduceByKey)
             SCOPED_TRACE(testing::Message() << "with size = " << size);
 
             hipStream_t stream = 0; // default
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
             {
                 // Default stream does not support hipGraph stream capture, so create one
                 HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -211,9 +212,9 @@ TYPED_TEST(RocprimDeviceReduceByKey, ReduceByKey)
             const bool use_unique_keys = bool(test_utils::get_random_value<int>(0, 1, seed_value));
 
             // Generate data and calculate expected results
-            std::vector<key_type> unique_expected;
+            std::vector<key_type>       unique_expected;
             std::vector<aggregate_type> aggregates_expected;
-            size_t unique_count_expected = 0;
+            size_t                      unique_count_expected = 0;
 
             std::vector<key_type>                    keys_input(size);
             key_distribution_type                    key_delta_dis(1, 5);
@@ -223,7 +224,7 @@ TYPED_TEST(RocprimDeviceReduceByKey, ReduceByKey)
             std::vector<value_type> values_input
                 = test_utils::get_random_data_wrapped<value_type>(size, 0, 100, seed_value);
 
-            size_t offset = 0;
+            size_t   offset      = 0;
             key_type prev_key    = static_cast<key_type>(key_distribution_type(0, 100)(gen));
             key_type current_key = static_cast<key_type>(prev_key + key_delta_dis(gen));
             while(offset < size)
@@ -254,7 +255,7 @@ TYPED_TEST(RocprimDeviceReduceByKey, ReduceByKey)
                     aggregates_expected.back() = reduce_op(aggregates_expected.back(), aggregate);
                 }
 
-                if (use_unique_keys)
+                if(use_unique_keys)
                 {
                     prev_key = current_key;
                     // e.g. 1,1,1,2,5,5,8,8,8
@@ -299,7 +300,7 @@ TYPED_TEST(RocprimDeviceReduceByKey, ReduceByKey)
             test_utils::GraphHelper gHelper;
             if(TestFixture::params::use_graphs)
             {
-               gHelper.startStreamCapture(stream);
+                gHelper.startStreamCapture(stream);
             }
 
             HIP_CHECK((invoke_reduce_by_key<deterministic, config>(d_temporary_storage.get(),
@@ -324,7 +325,7 @@ TYPED_TEST(RocprimDeviceReduceByKey, ReduceByKey)
             const auto aggregates_output   = d_aggregates_output.load();
             const auto unique_count_output = d_unique_count_output.load();
 
-            if (TestFixture::params::use_graphs)
+            if(TestFixture::params::use_graphs)
             {
                 gHelper.cleanupGraphHelper();
                 HIP_CHECK(hipStreamDestroy(stream));
@@ -354,7 +355,7 @@ void large_indices_reduce_by_key()
     ::rocprim::equal_to<key_type> key_compare_op;
 
     hipStream_t stream = 0; // default
-    if (use_graphs)
+    if(use_graphs)
     {
         // Default stream does not support hipGraph stream capture, so create one
         HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -407,7 +408,7 @@ void large_indices_reduce_by_key()
         test_utils::GraphHelper gHelper;
         if(use_graphs)
         {
-           gHelper.startStreamCapture(stream);
+            gHelper.startStreamCapture(stream);
         }
 
         HIP_CHECK(invoke_reduce_by_key<Deterministic>(d_temporary_storage.get(),
@@ -494,7 +495,7 @@ void large_segment_count_reduce_by_key()
     ::rocprim::equal_to<key_type> key_compare_op;
 
     hipStream_t stream = 0; // default
-    if (use_graphs)
+    if(use_graphs)
     {
         // Default stream does not support hipGraphs
         HIP_CHECK(hipStreamCreateWithFlags(&stream, hipStreamNonBlocking));
@@ -537,7 +538,7 @@ void large_segment_count_reduce_by_key()
         test_utils::GraphHelper gHelper;
         if(use_graphs)
         {
-           gHelper.startStreamCapture(stream);
+            gHelper.startStreamCapture(stream);
         }
 
         HIP_CHECK(invoke_reduce_by_key<Deterministic>(d_temporary_storage.get(),
@@ -562,11 +563,11 @@ void large_segment_count_reduce_by_key()
 
         ASSERT_EQ(unique_count_output, unique_count_expected);
 
-        if (use_graphs)
+        if(use_graphs)
             gHelper.cleanupGraphHelper();
     }
 
-    if (use_graphs)
+    if(use_graphs)
         HIP_CHECK(hipStreamDestroy(stream));
 }
 
@@ -599,7 +600,7 @@ TEST(RocprimDeviceReduceByKey, ReduceByNonEqualKeys)
     using key_type   = size_t;
     using value_type = unsigned int;
 
-    const bool debug_synchronous = false;
+    const bool     debug_synchronous = false;
     constexpr bool deterministic     = false;
 
     ::rocprim::plus<value_type> reduce_op;

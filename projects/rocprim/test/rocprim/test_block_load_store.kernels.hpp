@@ -484,11 +484,13 @@ struct enable_block_load_store_test
 struct dummy_load_store
 {
     template<typename... Args>
-    __device__ void load(Args...)
+    __device__
+    void load(Args...)
     {}
 
     template<typename... Args>
-    __device__ void store(Args...)
+    __device__
+    void store(Args...)
     {}
 };
 
@@ -521,8 +523,8 @@ template<class Type,
          rocprim::block_store_method StoreMethod,
          unsigned int                BlockSize,
          unsigned int                ItemsPerThread>
-__global__ __launch_bounds__(BlockSize) void load_store_kernel(Type* device_input,
-                                                               Type* device_output)
+__global__ __launch_bounds__(BlockSize)
+void load_store_kernel(Type* device_input, Type* device_output)
 {
     Type _items[ItemsPerThread];
     auto offset = blockIdx.x * BlockSize * ItemsPerThread;
@@ -533,15 +535,12 @@ __global__ __launch_bounds__(BlockSize) void load_store_kernel(Type* device_inpu
     store.store(device_output + offset, _items);
 }
 
-template<
-    class Type,
-    rocprim::block_load_method LoadMethod,
-    rocprim::block_store_method StoreMethod,
-    unsigned int BlockSize,
-    unsigned int ItemsPerThread
->
-__global__
-__launch_bounds__(BlockSize)
+template<class Type,
+         rocprim::block_load_method  LoadMethod,
+         rocprim::block_store_method StoreMethod,
+         unsigned int                BlockSize,
+         unsigned int                ItemsPerThread>
+__global__ __launch_bounds__(BlockSize)
 void load_store_valid_kernel(Type* device_input, Type* device_output, size_t valid)
 {
     Type _items[ItemsPerThread];
@@ -553,17 +552,17 @@ void load_store_valid_kernel(Type* device_input, Type* device_output, size_t val
     store.store(device_output + offset, _items, (unsigned int)valid);
 }
 
-template<
-    class Type,
-    rocprim::block_load_method LoadMethod,
-    rocprim::block_store_method StoreMethod,
-    unsigned int BlockSize,
-    unsigned int ItemsPerThread,
-    class Def
->
-__global__
-__launch_bounds__(BlockSize)
-void load_store_valid_default_kernel(Type* device_input, Type* device_output, size_t valid, Def _default)
+template<class Type,
+         rocprim::block_load_method  LoadMethod,
+         rocprim::block_store_method StoreMethod,
+         unsigned int                BlockSize,
+         unsigned int                ItemsPerThread,
+         class Def>
+__global__ __launch_bounds__(BlockSize)
+void load_store_valid_default_kernel(Type*  device_input,
+                                     Type*  device_output,
+                                     size_t valid,
+                                     Def    _default)
 {
     Type _items[ItemsPerThread];
     auto offset = blockIdx.x * BlockSize * ItemsPerThread;

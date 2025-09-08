@@ -1177,14 +1177,12 @@ namespace Tensile
                 {
                     bool rv = (*this)(problem);
 
-                    stream << *this << ": ("
-                           << " (" << problem.a().strides()[1] << " * " << value.depthUorMT0
-                           << " + " << value.shiftPtrElemA << ") * " << problem.a().elementBytes()
-                           << " < 4294967296 && "
-                           << " (" << problem.b().strides()[1] << " * " << value.depthUorMT1
-                           << " + " << value.shiftPtrElemB << ") * " << problem.b().elementBytes()
-                           << " < 4294967296"
-                           << ") == " << rv;
+                    stream << *this << ": (" << " (" << problem.a().strides()[1] << " * "
+                           << value.depthUorMT0 << " + " << value.shiftPtrElemA << ") * "
+                           << problem.a().elementBytes() << " < 4294967296 && " << " ("
+                           << problem.b().strides()[1] << " * " << value.depthUorMT1 << " + "
+                           << value.shiftPtrElemB << ") * " << problem.b().elementBytes()
+                           << " < 4294967296" << ") == " << rv;
 
                     return rv;
                 }

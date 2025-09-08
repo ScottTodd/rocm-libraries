@@ -30,12 +30,12 @@
 #include <ostream>
 #include <type_traits>
 
-namespace test_utils {
+namespace test_utils
+{
 
 template<class T>
 struct is_custom_test_array_type : std::false_type
-{
-};
+{};
 
 template<class T>
 struct inner_type
@@ -81,13 +81,13 @@ struct custom_non_default_type
 template<class T, size_t N>
 struct custom_test_array_type
 {
-    using value_type = T;
+    using value_type             = T;
     static constexpr size_t size = N;
 
     T values[N];
 
-    ROCPRIM_HOST_DEVICE inline
-        custom_test_array_type()
+    ROCPRIM_HOST_DEVICE
+    inline custom_test_array_type()
     {
         for(size_t i = 0; i < N; i++)
         {
@@ -95,7 +95,8 @@ struct custom_test_array_type
         }
     }
 
-    ROCPRIM_HOST_DEVICE inline custom_test_array_type(T v)
+    ROCPRIM_HOST_DEVICE
+    inline custom_test_array_type(T v)
     {
         for(size_t i = 0; i < N; i++)
         {
@@ -104,8 +105,8 @@ struct custom_test_array_type
     }
 
     template<class U>
-    ROCPRIM_HOST_DEVICE inline
-        custom_test_array_type(const custom_test_array_type<U, N>& other)
+    ROCPRIM_HOST_DEVICE
+    inline custom_test_array_type(const custom_test_array_type<U, N>& other)
     {
         for(size_t i = 0; i < N; i++)
         {
@@ -113,11 +114,12 @@ struct custom_test_array_type
         }
     }
 
-    ROCPRIM_HOST_DEVICE inline ~custom_test_array_type() {}
+    ROCPRIM_HOST_DEVICE
+    inline ~custom_test_array_type()
+    {}
 
     ROCPRIM_HOST_DEVICE
-    inline custom_test_array_type&
-        operator=(const custom_test_array_type& other)
+    inline custom_test_array_type& operator=(const custom_test_array_type& other)
     {
         for(size_t i = 0; i < N; i++)
         {
@@ -127,8 +129,7 @@ struct custom_test_array_type
     }
 
     ROCPRIM_HOST_DEVICE
-    inline custom_test_array_type
-        operator+(const custom_test_array_type& other) const
+    inline custom_test_array_type operator+(const custom_test_array_type& other) const
     {
         custom_test_array_type result;
         for(size_t i = 0; i < N; i++)
@@ -138,8 +139,8 @@ struct custom_test_array_type
         return result;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-        custom_test_array_type operator-(const custom_test_array_type& other) const
+    ROCPRIM_HOST_DEVICE
+    inline custom_test_array_type operator-(const custom_test_array_type& other) const
     {
         custom_test_array_type result;
         for(size_t i = 0; i < N; i++)
@@ -149,8 +150,8 @@ struct custom_test_array_type
         return result;
     }
 
-    ROCPRIM_HOST_DEVICE inline
-        bool operator<(const custom_test_array_type& other) const
+    ROCPRIM_HOST_DEVICE
+    inline bool operator<(const custom_test_array_type& other) const
     {
         for(unsigned int i = 0; i < N; i++)
         {
@@ -167,8 +168,7 @@ struct custom_test_array_type
     }
 
     ROCPRIM_HOST_DEVICE
-    inline bool
-        operator>(const custom_test_array_type& other) const
+    inline bool operator>(const custom_test_array_type& other) const
     {
         for(unsigned int i = 0; i < N; i++)
         {
@@ -185,8 +185,7 @@ struct custom_test_array_type
     }
 
     ROCPRIM_HOST_DEVICE
-    inline bool
-        operator==(const custom_test_array_type& other) const
+    inline bool operator==(const custom_test_array_type& other) const
     {
         for(size_t i = 0; i < N; i++)
         {
@@ -199,16 +198,14 @@ struct custom_test_array_type
     }
 
     ROCPRIM_HOST_DEVICE
-    inline bool
-        operator!=(const custom_test_array_type& other) const
+    inline bool operator!=(const custom_test_array_type& other) const
     {
         return !(*this == other);
     }
 };
 
-template<class T, size_t N> inline
-    std::ostream& operator<<(std::ostream& stream,
-               const custom_test_array_type<T, N>& value)
+template<class T, size_t N>
+inline std::ostream& operator<<(std::ostream& stream, const custom_test_array_type<T, N>& value)
 {
     stream << "[";
     for(size_t i = 0; i < N; i++)
@@ -225,8 +222,7 @@ template<class T, size_t N> inline
 
 template<class T, size_t N>
 struct is_custom_test_array_type<custom_test_array_type<T, N>> : std::true_type
-{
-};
+{};
 
 template<class T>
 struct inner_type<common::custom_type<T, T, true>>

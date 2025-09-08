@@ -214,16 +214,17 @@ private:
         case BFN_LOAD_RC_FWD_CHIRP:
         {
             op = std::make_unique<Expression>(
-                planar
-                    ? CallExpr{get_op_name(BFN_LOAD_RC_FWD_CHIRP) + render_template(),
-                               {data.global_transf_id,
-                                data.buf_inre,
-                                data.buf_inim,
-                                data.load_cb_fn,
-                                data.load_cb_data}}
-                    : CallExpr{
-                        get_op_name(BFN_LOAD_RC_FWD_CHIRP) + render_template(),
-                        {data.global_transf_id, data.buf_in, data.load_cb_fn, data.load_cb_data}});
+                planar ? CallExpr{get_op_name(BFN_LOAD_RC_FWD_CHIRP) + render_template(),
+                                  {data.global_transf_id,
+                                   data.buf_inre,
+                                   data.buf_inim,
+                                   data.load_cb_fn,
+                                   data.load_cb_data}}
+                       : CallExpr{get_op_name(BFN_LOAD_RC_FWD_CHIRP) + render_template(),
+                                  {data.global_transf_id,
+                                   data.buf_in,
+                                   data.load_cb_fn,
+                                   data.load_cb_data}});
             break;
         }
         case BFN_LOAD_CC_FWD_CHIRP_MUL:
@@ -251,15 +252,16 @@ private:
         case BFN_LOAD_RC_FWD_CHIRP_MUL:
         {
             op = std::make_unique<Expression>(
-                planar ? CallExpr{get_op_name(BFN_LOAD_RC_FWD_CHIRP_MUL) + render_template(),
-                                  {data.global_data_id,
-                                   data.buf_inre,
-                                   data.buf_inim,
-                                   data.load_cb_fn,
-                                   data.load_cb_data}}
-                       : CallExpr{
-                           get_op_name(BFN_LOAD_RC_FWD_CHIRP_MUL) + render_template(),
-                           {data.global_data_id, data.buf_in, data.load_cb_fn, data.load_cb_data}});
+                planar
+                    ? CallExpr{get_op_name(BFN_LOAD_RC_FWD_CHIRP_MUL) + render_template(),
+                               {data.global_data_id,
+                                data.buf_inre,
+                                data.buf_inim,
+                                data.load_cb_fn,
+                                data.load_cb_data}}
+                    : CallExpr{
+                          get_op_name(BFN_LOAD_RC_FWD_CHIRP_MUL) + render_template(),
+                          {data.global_data_id, data.buf_in, data.load_cb_fn, data.load_cb_data}});
             break;
         }
         case BFN_LOAD_CC_INV_CHIRP_MUL:
@@ -285,15 +287,16 @@ private:
         case BFN_LOAD_RC_INV_CHIRP_MUL:
         {
             op = std::make_unique<Expression>(
-                planar ? CallExpr{get_op_name(BFN_LOAD_RC_INV_CHIRP_MUL) + render_template(),
-                                  {data.global_data_id,
-                                   data.buf_inre,
-                                   data.buf_inim,
-                                   data.load_cb_fn,
-                                   data.load_cb_data}}
-                       : CallExpr{
-                           get_op_name(BFN_LOAD_RC_INV_CHIRP_MUL) + render_template(),
-                           {data.global_data_id, data.buf_in, data.load_cb_fn, data.load_cb_data}});
+                planar
+                    ? CallExpr{get_op_name(BFN_LOAD_RC_INV_CHIRP_MUL) + render_template(),
+                               {data.global_data_id,
+                                data.buf_inre,
+                                data.buf_inim,
+                                data.load_cb_fn,
+                                data.load_cb_data}}
+                    : CallExpr{
+                          get_op_name(BFN_LOAD_RC_INV_CHIRP_MUL) + render_template(),
+                          {data.global_data_id, data.buf_in, data.load_cb_fn, data.load_cb_data}});
             break;
         }
         default:

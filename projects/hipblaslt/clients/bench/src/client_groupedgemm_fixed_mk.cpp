@@ -24,6 +24,7 @@
  *
  *******************************************************************************/
 
+#include "utility.hpp"
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -37,7 +38,6 @@
 #include <limits>
 #include <string>
 #include <vector>
-#include "utility.hpp"
 
 #ifndef CHECK_HIP_ERROR
 #define CHECK_HIP_ERROR(error)                    \

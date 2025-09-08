@@ -220,7 +220,7 @@ struct csritilu0_params_t
         , options(options_)
         , maxiter(maxiter_)
         , tol(tol_)
-        , datatype(rocsparse_datatype_t::get<T>()){};
+        , datatype(rocsparse_datatype_t::get<T>()) {};
 };
 
 template <typename T>

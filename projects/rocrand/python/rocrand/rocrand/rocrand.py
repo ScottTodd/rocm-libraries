@@ -35,14 +35,13 @@ from .utils import find_library, expand_paths
 
 # Finalize is only supported by python >= 3.4
 try:
-  from weakref import finalize
+    from weakref import finalize
 except ImportError:
-  from backports.weakref import finalize
+    from backports.weakref import finalize
 
 
-ROCRAND_PATHS = [
-        os.getenv("ROCRAND_PATH")
-    ] + expand_paths(HIP_PATHS, ["", "rocrand"])
+ROCRAND_PATHS = [os.getenv("ROCRAND_PATH")] + expand_paths(HIP_PATHS, ["", "rocrand"])
+
 
 def load_rocrand():
     global rocrand
@@ -54,6 +53,7 @@ def load_rocrand():
 
     load_hip()
 
+
 # Delay the loading of rocrand to the first use
 # so no code is executed when loading this module
 class _load_rocrand_on_access(object):
@@ -61,6 +61,7 @@ class _load_rocrand_on_access(object):
         global rocrand
         load_rocrand()
         return getattr(rocrand, name)
+
 
 rocrand = _load_rocrand_on_access()
 
@@ -94,37 +95,42 @@ ROCRAND_STATUS_LAUNCH_FAILURE = 107
 ROCRAND_STATUS_INTERNAL_ERROR = 108
 
 ROCRAND_STATUS = {
-    ROCRAND_STATUS_SUCCESS: (
-        "ROCRAND_STATUS_SUCCESS",
-        "Success"),
+    ROCRAND_STATUS_SUCCESS: ("ROCRAND_STATUS_SUCCESS", "Success"),
     ROCRAND_STATUS_VERSION_MISMATCH: (
         "ROCRAND_STATUS_VERSION_MISMATCH",
-        "Header file and linked library version do not match"),
+        "Header file and linked library version do not match",
+    ),
     ROCRAND_STATUS_NOT_CREATED: (
         "ROCRAND_STATUS_NOT_CREATED",
-        "Generator was not created using rocrand_create_generator"),
+        "Generator was not created using rocrand_create_generator",
+    ),
     ROCRAND_STATUS_ALLOCATION_FAILED: (
         "ROCRAND_STATUS_ALLOCATION_FAILED",
-        "Memory allocation failed during execution"),
-    ROCRAND_STATUS_TYPE_ERROR: (
-        "ROCRAND_STATUS_TYPE_ERROR",
-        "Generator type is wrong"),
+        "Memory allocation failed during execution",
+    ),
+    ROCRAND_STATUS_TYPE_ERROR: ("ROCRAND_STATUS_TYPE_ERROR", "Generator type is wrong"),
     ROCRAND_STATUS_OUT_OF_RANGE: (
         "ROCRAND_STATUS_OUT_OF_RANGE",
-        "Argument out of range"),
+        "Argument out of range",
+    ),
     ROCRAND_STATUS_LENGTH_NOT_MULTIPLE: (
         "ROCRAND_STATUS_LENGTH_NOT_MULTIPLE",
-        "Length requested is not a multiple of dimension"),
+        "Length requested is not a multiple of dimension",
+    ),
     ROCRAND_STATUS_DOUBLE_PRECISION_REQUIRED: (
         "ROCRAND_STATUS_DOUBLE_PRECISION_REQUIRED",
-        "GPU does not have double precision"),
+        "GPU does not have double precision",
+    ),
     ROCRAND_STATUS_LAUNCH_FAILURE: (
         "ROCRAND_STATUS_LAUNCH_FAILURE",
-        "Kernel launch failure"),
+        "Kernel launch failure",
+    ),
     ROCRAND_STATUS_INTERNAL_ERROR: (
         "ROCRAND_STATUS_INTERNAL_ERROR",
-        "Internal library error")
+        "Internal library error",
+    ),
 }
+
 
 def check_rocrand(status):
     if status != ROCRAND_STATUS_SUCCESS:
@@ -150,7 +156,11 @@ class RNG(object):
 
     def __init__(self, rngtype, offset=None, stream=None, is_host=False):
         self._gen = c_void_p()
-        create_fun = rocrand.rocrand_create_generator_host if is_host else rocrand.rocrand_create_generator
+        create_fun = (
+            rocrand.rocrand_create_generator_host
+            if is_host
+            else rocrand.rocrand_create_generator
+        )
         check_rocrand(create_fun(byref(self._gen), rngtype))
         finalize(self, RNG._finalize, self._gen)
 
@@ -219,12 +229,16 @@ class RNG(object):
             raise ValueError("requested size is greater than ary")
 
         if isinstance(ary, DeviceNDArray):
-            raise TypeError("Generate called with a device-side array on a host-side generator. "
-                            "For device arrays, instantiate a device-side generator")
+            raise TypeError(
+                "Generate called with a device-side array on a host-side generator. "
+                "For device arrays, instantiate a device-side generator"
+            )
         elif not isinstance(ary, np.ndarray):
             raise TypeError("unsupported type {}".format(type(ary)))
 
-        check_rocrand(gen_func(self._gen, ctypes.c_void_p(ary.ctypes.data), c_size_t(size), *args))
+        check_rocrand(
+            gen_func(self._gen, ctypes.c_void_p(ary.ctypes.data), c_size_t(size), *args)
+        )
         # If we're generating on the host, synchronize the kernel to match the
         # behavior of a device-side generator being called with a host array (_generate_device).
         stream_synchronize(self.stream)
@@ -248,9 +262,7 @@ class RNG(object):
         :param size: Number of samples to generate, default to **ary.size**
         """
         if ary.dtype in (np.uint32, np.int32):
-            self._generate(
-                rocrand.rocrand_generate,
-                ary, size)
+            self._generate(rocrand.rocrand_generate, ary, size)
         else:
             raise TypeError("unsupported type {}".format(ary.dtype))
 
@@ -270,13 +282,9 @@ class RNG(object):
         :param size: Number of samples to generate, default to **ary.size**
         """
         if ary.dtype == np.float32:
-            self._generate(
-                rocrand.rocrand_generate_uniform,
-                ary, size)
+            self._generate(rocrand.rocrand_generate_uniform, ary, size)
         elif ary.dtype == np.float64:
-            self._generate(
-                rocrand.rocrand_generate_uniform_double,
-                ary, size)
+            self._generate(rocrand.rocrand_generate_uniform_double, ary, size)
         else:
             raise TypeError("unsupported type {}".format(ary.dtype))
 
@@ -297,13 +305,19 @@ class RNG(object):
         if ary.dtype == np.float32:
             self._generate(
                 rocrand.rocrand_generate_normal,
-                ary, size,
-                c_float(mean), c_float(stddev))
+                ary,
+                size,
+                c_float(mean),
+                c_float(stddev),
+            )
         elif ary.dtype == np.float64:
             self._generate(
                 rocrand.rocrand_generate_normal_double,
-                ary, size,
-                c_double(mean), c_double(stddev))
+                ary,
+                size,
+                c_double(mean),
+                c_double(stddev),
+            )
         else:
             raise TypeError("unsupported type {}".format(ary.dtype))
 
@@ -324,13 +338,19 @@ class RNG(object):
         if ary.dtype == np.float32:
             self._generate(
                 rocrand.rocrand_generate_log_normal,
-                ary, size,
-                c_float(mean), c_float(stddev))
+                ary,
+                size,
+                c_float(mean),
+                c_float(stddev),
+            )
         elif ary.dtype == np.float64:
             self._generate(
                 rocrand.rocrand_generate_log_normal_double,
-                ary, size,
-                c_double(mean), c_double(stddev))
+                ary,
+                size,
+                c_double(mean),
+                c_double(stddev),
+            )
         else:
             raise TypeError("unsupported type {}".format(ary.dtype))
 
@@ -348,30 +368,27 @@ class RNG(object):
         :param size:  Number of samples to generate, default to **ary.size**
         """
         if ary.dtype in (np.uint32, np.int32):
-            self._generate(
-                rocrand.rocrand_generate_poisson,
-                ary, size,
-                c_double(lmbd))
+            self._generate(rocrand.rocrand_generate_poisson, ary, size, c_double(lmbd))
         else:
             raise TypeError("unsupported type {}".format(ary.dtype))
 
 
 class PRNG(RNG):
-    DEFAULT         = ROCRAND_RNG_PSEUDO_DEFAULT
+    DEFAULT = ROCRAND_RNG_PSEUDO_DEFAULT
     """Default pseudo-random generator type, :const:`XORWOW`"""
-    XORWOW          = ROCRAND_RNG_PSEUDO_XORWOW
+    XORWOW = ROCRAND_RNG_PSEUDO_XORWOW
     """XORWOW pseudo-random generator type"""
-    MRG31K3P        = ROCRAND_RNG_PSEUDO_MRG31K3P
+    MRG31K3P = ROCRAND_RNG_PSEUDO_MRG31K3P
     """MRG31k3p pseudo-random generator type"""
-    MRG32K3A        = ROCRAND_RNG_PSEUDO_MRG32K3A
+    MRG32K3A = ROCRAND_RNG_PSEUDO_MRG32K3A
     """MRG32k3a pseudo-random generator type"""
-    MTGP32          = ROCRAND_RNG_PSEUDO_MTGP32
+    MTGP32 = ROCRAND_RNG_PSEUDO_MTGP32
     """Mersenne Twister MTGP32 pseudo-random generator type"""
-    MT19937         = ROCRAND_RNG_PSEUDO_MT19937
+    MT19937 = ROCRAND_RNG_PSEUDO_MT19937
     """Mersenne Twister pseudo-random generator type"""
-    PHILOX4_32_10   = ROCRAND_RNG_PSEUDO_PHILOX4_32_10
+    PHILOX4_32_10 = ROCRAND_RNG_PSEUDO_PHILOX4_32_10
     """PHILOX_4x32 (10 rounds) pseudo-random generator type"""
-    LFSR113         = ROCRAND_RNG_PSEUDO_LFSR113
+    LFSR113 = ROCRAND_RNG_PSEUDO_LFSR113
     """LFSR113 pseudo-random generator type"""
     THREEFRY2_32_20 = ROCRAND_RNG_PSEUDO_THREEFRY2_32_20
     """THREEFRY2_32_20 pseudo-random generator type"""
@@ -382,7 +399,9 @@ class PRNG(RNG):
     THREEFRY4_64_20 = ROCRAND_RNG_PSEUDO_THREEFRY4_64_20
     """THREEFRY4_64_20 pseudo-random generator type"""
 
-    def __init__(self, rngtype=DEFAULT, seed=None, offset=None, stream=None, is_host=False):
+    def __init__(
+        self, rngtype=DEFAULT, seed=None, offset=None, stream=None, is_host=False
+    ):
         """Creates a new pseudo-random number generator.
 
         A new pseudo-random number generator of type **rngtype** is initialized
@@ -421,7 +440,9 @@ class PRNG(RNG):
             gen.poisson(a, 10.0)
             print(a)
         """
-        super(PRNG, self).__init__(rngtype, offset=offset, stream=stream, is_host=is_host)
+        super(PRNG, self).__init__(
+            rngtype, offset=offset, stream=stream, is_host=is_host
+        )
 
         self._seed = None
         if seed is not None:
@@ -442,18 +463,20 @@ class PRNG(RNG):
 
 
 class QRNG(RNG):
-    DEFAULT           = ROCRAND_RNG_QUASI_DEFAULT
+    DEFAULT = ROCRAND_RNG_QUASI_DEFAULT
     """Default quasi-random generator type, :const:`SOBOL32`"""
-    SOBOL32           = ROCRAND_RNG_QUASI_SOBOL32
+    SOBOL32 = ROCRAND_RNG_QUASI_SOBOL32
     """Sobol32 quasi-random generator type"""
-    SCRAMBLED_SOBOL32           = ROCRAND_RNG_QUASI_SCRAMBLED_SOBOL32
+    SCRAMBLED_SOBOL32 = ROCRAND_RNG_QUASI_SCRAMBLED_SOBOL32
     """Scrambled Sobol32 quasi-random generator type"""
-    SOBOL64           = ROCRAND_RNG_QUASI_SOBOL64
+    SOBOL64 = ROCRAND_RNG_QUASI_SOBOL64
     """Sobol64 quasi-random generator type"""
-    SCRAMBLED_SOBOL64           = ROCRAND_RNG_QUASI_SCRAMBLED_SOBOL64
+    SCRAMBLED_SOBOL64 = ROCRAND_RNG_QUASI_SCRAMBLED_SOBOL64
     """Scrambled Sobol64 quasi-random generator type"""
 
-    def __init__(self, rngtype=DEFAULT, ndim=None, offset=None, stream=None, is_host=False):
+    def __init__(
+        self, rngtype=DEFAULT, ndim=None, offset=None, stream=None, is_host=False
+    ):
         """Creates a new quasi-random number generator.
 
         A new quasi-random number generator of type **rngtype** is initialized
@@ -488,7 +511,9 @@ class QRNG(RNG):
             print(a)
         """
 
-        super(QRNG, self).__init__(rngtype, offset=offset, stream=stream, is_host=is_host)
+        super(QRNG, self).__init__(
+            rngtype, offset=offset, stream=stream, is_host=is_host
+        )
 
         self._ndim = 1
         if ndim is not None:
@@ -505,7 +530,11 @@ class QRNG(RNG):
 
     @ndim.setter
     def ndim(self, ndim):
-        check_rocrand(rocrand.rocrand_set_quasi_random_generator_dimensions(self._gen, c_uint(ndim)))
+        check_rocrand(
+            rocrand.rocrand_set_quasi_random_generator_dimensions(
+                self._gen, c_uint(ndim)
+            )
+        )
         self._ndim = ndim
 
 

@@ -152,7 +152,8 @@ void TestSortKeyValue()
         {
             auto j = i;
             for(; j < output_key.size() && eq_op(output_key[j], output_key[i]); ++j)
-            {}
+            {
+            }
             std::sort(output_value.begin() + i, output_value.begin() + j, value_op);
             std::sort(expected_value.begin() + i, expected_value.begin() + j, value_op);
             i = j;
@@ -242,8 +243,9 @@ void TestSortKey(std::vector<size_t> sizes)
 struct less_tuple
 {
     template<class A, class B>
-    ROCPRIM_HOST_DEVICE inline constexpr bool operator()(const rocprim::tuple<A, B>& a,
-                                                         const rocprim::tuple<A, B>& b) const
+    ROCPRIM_HOST_DEVICE
+    inline constexpr bool operator()(const rocprim::tuple<A, B>& a,
+                                     const rocprim::tuple<A, B>& b) const
     {
         return rocprim::get<0>(a) < rocprim::get<0>(b);
     }
@@ -428,7 +430,7 @@ typed_test_def(suite_name,
     static constexpr const rocprim::block_sort_algorithm algo = TEST_BLOCK_SORT_ALGORITHM;
     static constexpr const unsigned int                  block_size       = TestFixture::block_size;
     static constexpr const unsigned int                  items_per_thread = 4;
-    std::vector<size_t> sizes
+    std::vector<size_t>                                  sizes
         = {0, 53, 512, 5000, 34567, (1 << 17) - 1220, 1134 * 256, (1 << 20) - 123};
     TestSortKey<block_size, items_per_thread, key_type, value_type, algo, binary_op_type>(sizes);
 }

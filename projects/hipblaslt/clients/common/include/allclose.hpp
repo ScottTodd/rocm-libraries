@@ -73,9 +73,9 @@ bool allclose(size_t* N, T* a, T* b, double atol, double rtol, bool equal_nan = 
 template <
     typename T,
     std::enable_if_t<!(std::is_same<T, hipblaslt_f8_fnuz>{} || std::is_same<T, hipblaslt_bf8_fnuz>{}
-                       || std::is_same<T, hipblaslt_f8>{} || std::is_same<T, hipblaslt_bf8>{}
-                       ),
-                     int> = 0>
+                       || std::is_same<T, hipblaslt_f8>{} || std::is_same<T, hipblaslt_bf8>{}),
+                     int>
+    = 0>
 bool allclose_check_general(char    allclose_type,
                             int64_t M,
                             int64_t N,
@@ -131,7 +131,8 @@ bool allclose_check_general(char    allclose_type,
 template <typename T,
           std::enable_if_t<(std::is_same<T, hipblaslt_f8_fnuz>{}
                             || std::is_same<T, hipblaslt_bf8_fnuz>{}),
-                           int> = 0>
+                           int>
+          = 0>
 bool allclose_check_general(char    allclose_type,
                             int64_t M,
                             int64_t N,
@@ -184,9 +185,10 @@ bool allclose_check_general(char    allclose_type,
     return true;
 }
 
-template <typename T,
-          std::enable_if_t<(std::is_same<T, hipblaslt_f8>{} || std::is_same<T, hipblaslt_bf8>{}),
-                           int> = 0>
+template <
+    typename T,
+    std::enable_if_t<(std::is_same<T, hipblaslt_f8>{} || std::is_same<T, hipblaslt_bf8>{}), int>
+    = 0>
 bool allclose_check_general(char    allclose_type,
                             int64_t M,
                             int64_t N,
@@ -239,10 +241,10 @@ bool allclose_check_general(char    allclose_type,
     return true;
 }
 // For BF16 and half, we convert the results to double first
-template <
-    typename T,
-    typename VEC,
-    std::enable_if_t<std::is_same<T, hipblasLtHalf>{} || std::is_same<T, hip_bfloat16>{}, int> = 0>
+template <typename T,
+          typename VEC,
+          std::enable_if_t<std::is_same<T, hipblasLtHalf>{} || std::is_same<T, hip_bfloat16>{}, int>
+          = 0>
 bool allclose_check_general(char    allclose_type,
                             int64_t M,
                             int64_t N,

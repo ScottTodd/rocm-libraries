@@ -588,10 +588,10 @@ auto GenericSearch(const Solver s,
                 ret = 1;
             }
 
-            MIOPEN_LOG_T("##"
-                         << "(n_current, n_failed, n_runs_total):  " << n_current << '/' << n_failed
-                         << '/' << n_runs_total << " elapsed_time: " << elapsed_time
-                         << ", best_time: " << best_time << ", " << current_config);
+            MIOPEN_LOG_T("##" << "(n_current, n_failed, n_runs_total):  " << n_current << '/'
+                              << n_failed << '/' << n_runs_total
+                              << " elapsed_time: " << elapsed_time << ", best_time: " << best_time
+                              << ", " << current_config);
 
             if(ret == 0)
             {
@@ -646,7 +646,6 @@ auto GenericSearch(const Solver s,
                             MIOPEN_LOG_I2("Mean is not better: " << elapsed_time
                                                                  << " >= " << best_time);
                         }
-
                     }
                 }
                 if(perf_sols)

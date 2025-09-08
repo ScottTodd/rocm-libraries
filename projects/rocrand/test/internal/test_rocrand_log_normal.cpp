@@ -216,11 +216,12 @@ public:
 TYPED_TEST_SUITE(LogNormalTest, logNormalParams);
 
 template<typename OutputType, typename InputType, class RocrandPRNGType, class LogNormalFunc>
-void __global__ log_normal_kernel(OutputType*         device_output,
-                                  const InputType     mean,
-                                  const InputType     std_dev,
-                                  RocrandPRNGType*    states,
-                                  const LogNormalFunc lnf)
+void __global__
+log_normal_kernel(OutputType*         device_output,
+                  const InputType     mean,
+                  const InputType     std_dev,
+                  RocrandPRNGType*    states,
+                  const LogNormalFunc lnf)
 {
     const size_t offset = (GlobalSizes::items_per_block * blockIdx.x)
                           + (GlobalSizes::items_per_thread * threadIdx.x);

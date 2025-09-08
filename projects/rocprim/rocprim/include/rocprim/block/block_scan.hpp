@@ -26,8 +26,8 @@
 #include "../config.hpp"
 #include "../detail/various.hpp"
 
-#include "../intrinsics.hpp"
 #include "../functional.hpp"
+#include "../intrinsics.hpp"
 
 #include "detail/block_scan_reduce_then_scan.hpp"
 #include "detail/block_scan_warp_scan.hpp"
@@ -207,9 +207,9 @@ public:
     /// \endparblock
     template<class BinaryFunction = ::rocprim::plus<T>>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void inclusive_scan(T input,
-                        T& output,
-                        storage_type& storage,
+    void inclusive_scan(T              input,
+                        T&             output,
+                        storage_type&  storage,
                         BinaryFunction scan_op = BinaryFunction())
     {
         base_type{}.inclusive_scan(input, output, storage, scan_op);
@@ -291,10 +291,10 @@ public:
     /// \endparblock
     template<class BinaryFunction = ::rocprim::plus<T>>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void inclusive_scan(T input,
-                        T& output,
-                        T& reduction,
-                        storage_type& storage,
+    void inclusive_scan(T              input,
+                        T&             output,
+                        T&             reduction,
+                        storage_type&  storage,
                         BinaryFunction scan_op = BinaryFunction())
     {
         base_type{}.inclusive_scan(input, output, reduction, storage, scan_op);
@@ -402,16 +402,13 @@ public:
     /// \p output values in will be <tt>{11, 12, 13, ..., 266}</tt>, and the \p prefix will
     /// be <tt>266</tt>.
     /// \endparblock
-    template<
-        class PrefixCallback,
-        class BinaryFunction = ::rocprim::plus<T>
-    >
+    template<class PrefixCallback, class BinaryFunction = ::rocprim::plus<T>>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void inclusive_scan(T input,
-                        T& output,
-                        storage_type& storage,
+    void inclusive_scan(T               input,
+                        T&              output,
+                        storage_type&   storage,
                         PrefixCallback& prefix_callback_op,
-                        BinaryFunction scan_op)
+                        BinaryFunction  scan_op)
     {
         base_type{}.inclusive_scan(input, output, storage, prefix_callback_op, scan_op);
     }
@@ -463,14 +460,11 @@ public:
     /// If the \p input values across threads in a block are <tt>{-1, 2, -3, 4, ..., -255, 256}</tt>, then
     /// \p output values in will be <tt>{-1, 2, 2, 4, ..., 254, 256}</tt>.
     /// \endparblock
-    template<
-        unsigned int ItemsPerThread,
-        class BinaryFunction = ::rocprim::plus<T>
-    >
+    template<unsigned int ItemsPerThread, class BinaryFunction = ::rocprim::plus<T>>
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void inclusive_scan(T (&input)[ItemsPerThread],
                         T (&output)[ItemsPerThread],
-                        storage_type& storage,
+                        storage_type&  storage,
                         BinaryFunction scan_op = BinaryFunction())
     {
         if(ItemsPerThread == 1)
@@ -659,15 +653,12 @@ public:
     /// If the \p input values across threads in a block are <tt>{-1, 2, -3, 4, ..., -255, 256}</tt>, then
     /// \p output values in will be <tt>{-1, 2, 2, 4, ..., 254, 256}</tt> and the \p reduction will be \p 256.
     /// \endparblock
-    template<
-        unsigned int ItemsPerThread,
-        class BinaryFunction = ::rocprim::plus<T>
-    >
+    template<unsigned int ItemsPerThread, class BinaryFunction = ::rocprim::plus<T>>
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void inclusive_scan(T (&input)[ItemsPerThread],
                         T (&output)[ItemsPerThread],
-                        T& reduction,
-                        storage_type& storage,
+                        T&             reduction,
+                        storage_type&  storage,
                         BinaryFunction scan_op = BinaryFunction())
     {
         if(ItemsPerThread == 1)
@@ -894,17 +885,13 @@ public:
     /// \p output values in will be <tt>{11, 12, 13, ..., 266}</tt>, and the \p prefix will
     /// be <tt>266</tt>.
     /// \endparblock
-    template<
-        unsigned int ItemsPerThread,
-        class PrefixCallback,
-        class BinaryFunction
-    >
+    template<unsigned int ItemsPerThread, class PrefixCallback, class BinaryFunction>
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void inclusive_scan(T (&input)[ItemsPerThread],
                         T (&output)[ItemsPerThread],
-                        storage_type& storage,
+                        storage_type&   storage,
                         PrefixCallback& prefix_callback_op,
-                        BinaryFunction scan_op)
+                        BinaryFunction  scan_op)
     {
         if(ItemsPerThread == 1)
         {
@@ -968,10 +955,10 @@ public:
     /// \endparblock
     template<class BinaryFunction = ::rocprim::plus<T>>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void exclusive_scan(T input,
-                        T& output,
-                        T init,
-                        storage_type& storage,
+    void exclusive_scan(T              input,
+                        T&             output,
+                        T              init,
+                        storage_type&  storage,
                         BinaryFunction scan_op = BinaryFunction())
     {
         base_type{}.exclusive_scan(input, output, init, storage, scan_op);
@@ -1060,11 +1047,11 @@ public:
     /// \endparblock
     template<class BinaryFunction = ::rocprim::plus<T>>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void exclusive_scan(T input,
-                        T& output,
-                        T init,
-                        T& reduction,
-                        storage_type& storage,
+    void exclusive_scan(T              input,
+                        T&             output,
+                        T              init,
+                        T&             reduction,
+                        storage_type&  storage,
                         BinaryFunction scan_op = BinaryFunction())
     {
         base_type{}.exclusive_scan(input, output, init, reduction, storage, scan_op);
@@ -1175,16 +1162,13 @@ public:
     /// \p output values in will be <tt>{10, 11, 12, 13, ..., 265}</tt>, and the \p prefix will
     /// be <tt>266</tt>.
     /// \endparblock
-    template<
-        class PrefixCallback,
-        class BinaryFunction = ::rocprim::plus<T>
-    >
+    template<class PrefixCallback, class BinaryFunction = ::rocprim::plus<T>>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void exclusive_scan(T input,
-                        T& output,
-                        storage_type& storage,
+    void exclusive_scan(T               input,
+                        T&              output,
+                        storage_type&   storage,
                         PrefixCallback& prefix_callback_op,
-                        BinaryFunction scan_op)
+                        BinaryFunction  scan_op)
     {
         base_type{}.exclusive_scan(input, output, storage, prefix_callback_op, scan_op);
     }
@@ -1240,15 +1224,12 @@ public:
     /// If the \p input values across threads in a block are <tt>{-1, 2, -3, 4, ..., -255, 256}</tt>
     /// and \p init is 0, then \p output values in will be <tt>{0, 0, 2, 2, 4, ..., 254, 254}</tt>.
     /// \endparblock
-    template<
-        unsigned int ItemsPerThread,
-        class BinaryFunction = ::rocprim::plus<T>
-    >
+    template<unsigned int ItemsPerThread, class BinaryFunction = ::rocprim::plus<T>>
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void exclusive_scan(T (&input)[ItemsPerThread],
                         T (&output)[ItemsPerThread],
-                        T init,
-                        storage_type& storage,
+                        T              init,
+                        storage_type&  storage,
                         BinaryFunction scan_op = BinaryFunction())
     {
         if(ItemsPerThread == 1)
@@ -1354,16 +1335,13 @@ public:
     /// and \p init is 0, then \p output values in will be <tt>{0, 0, 2, 2, 4, ..., 254, 254}</tt>
     /// and the \p reduction will be \p 256.
     /// \endparblock
-    template<
-        unsigned int ItemsPerThread,
-        class BinaryFunction = ::rocprim::plus<T>
-    >
+    template<unsigned int ItemsPerThread, class BinaryFunction = ::rocprim::plus<T>>
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void exclusive_scan(T (&input)[ItemsPerThread],
                         T (&output)[ItemsPerThread],
-                        T init,
-                        T& reduction,
-                        storage_type& storage,
+                        T              init,
+                        T&             reduction,
+                        storage_type&  storage,
                         BinaryFunction scan_op = BinaryFunction())
     {
         if(ItemsPerThread == 1)
@@ -1493,17 +1471,13 @@ public:
     /// \p output values in will be <tt>{10, 11, 12, 13, ..., 265}</tt>, and the \p prefix will
     /// be <tt>266</tt>.
     /// \endparblock
-    template<
-        unsigned int ItemsPerThread,
-        class PrefixCallback,
-        class BinaryFunction
-    >
+    template<unsigned int ItemsPerThread, class PrefixCallback, class BinaryFunction>
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void exclusive_scan(T (&input)[ItemsPerThread],
                         T (&output)[ItemsPerThread],
-                        storage_type& storage,
+                        storage_type&   storage,
                         PrefixCallback& prefix_callback_op,
-                        BinaryFunction scan_op)
+                        BinaryFunction  scan_op)
     {
         if(ItemsPerThread == 1)
         {

@@ -67,7 +67,8 @@ struct inclusive_scan
         auto               value = input[i];
 
         using wscan_t = rocprim::warp_scan<T, VirtualWaveSize>;
-        __shared__ typename wscan_t::storage_type storage;
+        __shared__
+        typename wscan_t::storage_type storage;
         ROCPRIM_NO_UNROLL
         for(unsigned int trial = 0; trial < Trials; ++trial)
         {
@@ -88,7 +89,8 @@ struct exclusive_scan
         auto               value = input[i];
 
         using wscan_t = rocprim::warp_scan<T, VirtualWaveSize>;
-        __shared__ typename wscan_t::storage_type storage;
+        __shared__
+        typename wscan_t::storage_type storage;
         ROCPRIM_NO_UNROLL
         for(unsigned int trial = 0; trial < Trials; ++trial)
         {
@@ -112,7 +114,8 @@ struct broadcast
         auto               value    = input[i];
 
         using wscan_t = rocprim::warp_scan<T, VirtualWaveSize>;
-        __shared__ typename wscan_t::storage_type storage;
+        __shared__
+        typename wscan_t::storage_type storage;
         ROCPRIM_NO_UNROLL
         for(unsigned int trial = 0; trial < Trials; ++trial)
         {

@@ -101,8 +101,8 @@ public:
     I               n{};
     int64_t         ld{1};
     rocsparse_order order{rocsparse_order_column};
-    dense_matrix_view(){};
-    ~dense_matrix_view(){};
+    dense_matrix_view() {};
+    ~dense_matrix_view() {};
 
     template <memory_mode::value_t THAT_MODE>
     dense_matrix_view<MODE, T, I>(const dense_matrix_view<THAT_MODE, T, I>& that) = delete;
@@ -159,11 +159,8 @@ public:
         {
             if(ld_ < n_)
             {
-                std::cerr << "dense_matrix constructor, row order 'ld' is invalid:"
-                          << " (ld = " << ld_ << ")"
-                          << " < "
-                          << " (n = " << n_ << ")"
-                          << ")" << std::endl;
+                std::cerr << "dense_matrix constructor, row order 'ld' is invalid:" << " (ld = "
+                          << ld_ << ")" << " < " << " (n = " << n_ << ")" << ")" << std::endl;
                 exit(1);
             }
             break;
@@ -172,11 +169,8 @@ public:
         {
             if(ld_ < m_)
             {
-                std::cerr << "dense_matrix constructor, row order 'ld' is invalid:"
-                          << " (ld = " << ld_ << ")"
-                          << " < "
-                          << " (m = " << m_ << ")"
-                          << ")" << std::endl;
+                std::cerr << "dense_matrix constructor, row order 'ld' is invalid:" << " (ld = "
+                          << ld_ << ")" << " < " << " (m = " << m_ << ")" << ")" << std::endl;
                 exit(1);
             }
             break;
@@ -365,7 +359,7 @@ private:
     using allocator = rocsparse_allocator<MODE, T>;
 
 public:
-    dense_matrix(){};
+    dense_matrix() {};
     ~dense_matrix()
     {
         if(this->data() != nullptr)
@@ -409,7 +403,7 @@ public:
                                         n_,
                                         allocator::malloc(size_t(m_) * size_t(n_)),
                                         (order_ == rocsparse_order_column) ? m_ : n_,
-                                        order_){};
+                                        order_) {};
 
     /*! \brief Copy constructor from a dense_matrix_view with the same memory mode. */
     explicit dense_matrix(const dense_matrix_view<MODE, T, I>& that, bool transfer = true)

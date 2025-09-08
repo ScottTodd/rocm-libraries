@@ -12,9 +12,8 @@
 namespace rocRoller
 {
     template <typename T, typename Result, typename... Args>
-    concept CInvokableTo
-        = std::invocable<T, Args...> && std::convertible_to<Result,
-                                                            std::invoke_result_t<T, Args...>>;
+    concept CInvokableTo = std::invocable<T, Args...>
+                           && std::convertible_to<Result, std::invoke_result_t<T, Args...>>;
 
     template <std::totally_ordered Node, std::totally_ordered Category>
     Generator<Instruction>

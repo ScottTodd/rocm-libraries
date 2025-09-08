@@ -131,23 +131,24 @@ private:
     using storage_type_ = typename ::rocprim::detail::empty_storage_type;
 
 public:
-    ROCPRIM_INLINE ROCPRIM_HOST_DEVICE warp_load()
+    ROCPRIM_INLINE ROCPRIM_HOST_DEVICE
+    warp_load()
     {
         detail::check_virtual_wave_size<VirtualWaveSize>();
     }
-    /// \brief Struct used to allocate a temporary memory that is required for thread
-    /// communication during operations provided by related parallel primitive.
-    ///
-    /// Depending on the implemention the operations exposed by parallel primitive may
-    /// require a temporary storage for thread communication. The storage should be allocated
-    /// using keywords \p __shared__. It can be aliased to
-    /// an externally allocated memory, or be a part of a union with other storage types
-    /// to increase shared memory reusability.
-    #ifndef DOXYGEN_SHOULD_SKIP_THIS // hides storage_type implementation for Doxygen
+/// \brief Struct used to allocate a temporary memory that is required for thread
+/// communication during operations provided by related parallel primitive.
+///
+/// Depending on the implemention the operations exposed by parallel primitive may
+/// require a temporary storage for thread communication. The storage should be allocated
+/// using keywords \p __shared__. It can be aliased to
+/// an externally allocated memory, or be a part of a union with other storage types
+/// to increase shared memory reusability.
+#ifndef DOXYGEN_SHOULD_SKIP_THIS // hides storage_type implementation for Doxygen
     using storage_type = typename ::rocprim::detail::empty_storage_type;
-    #else
+#else
     using storage_type = storage_type_; // only for Doxygen
-    #endif
+#endif
 
     /// \brief Loads data from continuous memory into an arrangement of items across the
     /// warp.
@@ -164,9 +165,7 @@ public:
     /// can be dereferenced and then implicitly converted to \p T.
     template<class InputIterator>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void load(InputIterator input,
-              T (&items)[ItemsPerThread],
-              storage_type& /*storage*/)
+    void load(InputIterator input, T (&items)[ItemsPerThread], storage_type& /*storage*/)
     {
         using value_type = typename std::iterator_traits<InputIterator>::value_type;
         static_assert(std::is_convertible<value_type, T>::value,
@@ -220,15 +219,12 @@ public:
     /// \par Overview
     /// * The type \p T must be such that an object of type \p InputIterator
     /// can be dereferenced and then implicitly converted to \p T.
-    template<
-        class InputIterator,
-        class Default
-    >
+    template<class InputIterator, class Default>
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void load(InputIterator input,
               T (&items)[ItemsPerThread],
               unsigned int valid,
-              Default out_of_bounds,
+              Default      out_of_bounds,
               storage_type& /*storage*/)
     {
         using value_type = typename std::iterator_traits<InputIterator>::value_type;
@@ -236,8 +232,7 @@ public:
                       "The type T must be such that an object of type InputIterator "
                       "can be dereferenced and then implicitly converted to T.");
         const unsigned int flat_id = ::rocprim::detail::logical_lane_id<VirtualWaveSize>();
-        block_load_direct_blocked(flat_id, input, items, valid,
-                                  out_of_bounds);
+        block_load_direct_blocked(flat_id, input, items, valid, out_of_bounds);
     }
 };
 
@@ -292,7 +287,8 @@ class warp_load<T,
                   "Logical warp size must be a power of two.");
 
 public:
-    ROCPRIM_INLINE ROCPRIM_HOST_DEVICE warp_load()
+    ROCPRIM_INLINE ROCPRIM_HOST_DEVICE
+    warp_load()
     {
         detail::check_virtual_wave_size<VirtualWaveSize>();
     }
@@ -301,9 +297,7 @@ public:
 
     template<class InputIterator>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void load(InputIterator input,
-              T (&items)[ItemsPerThread],
-              storage_type& /*storage*/)
+    void load(InputIterator input, T (&items)[ItemsPerThread], storage_type& /*storage*/)
     {
         using value_type = typename std::iterator_traits<InputIterator>::value_type;
         static_assert(std::is_convertible<value_type, T>::value,
@@ -328,15 +322,12 @@ public:
         block_load_direct_warp_striped<VirtualWaveSize>(flat_id, input, items, valid);
     }
 
-    template<
-        class InputIterator,
-        class Default
-    >
+    template<class InputIterator, class Default>
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void load(InputIterator input,
               T (&items)[ItemsPerThread],
               unsigned int valid,
-              Default out_of_bounds,
+              Default      out_of_bounds,
               storage_type& /*storage*/)
     {
         using value_type = typename std::iterator_traits<InputIterator>::value_type;
@@ -367,7 +358,8 @@ class warp_load<T,
                   "Logical warp size must be a power of two.");
 
 public:
-    ROCPRIM_INLINE ROCPRIM_HOST_DEVICE warp_load()
+    ROCPRIM_INLINE ROCPRIM_HOST_DEVICE
+    warp_load()
     {
         detail::check_virtual_wave_size<VirtualWaveSize>();
     }
@@ -375,9 +367,7 @@ public:
     using storage_type = typename ::rocprim::detail::empty_storage_type;
 
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void load(T* input,
-              T (&items)[ItemsPerThread],
-              storage_type& /*storage*/)
+    void load(T* input, T (&items)[ItemsPerThread], storage_type& /*storage*/)
     {
         const unsigned int flat_id = ::rocprim::detail::logical_lane_id<VirtualWaveSize>();
         block_load_direct_blocked_vectorized(flat_id, input, items);
@@ -385,9 +375,7 @@ public:
 
     template<class InputIterator>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void load(InputIterator input,
-              T (&items)[ItemsPerThread],
-              storage_type& /*storage*/)
+    void load(InputIterator input, T (&items)[ItemsPerThread], storage_type& /*storage*/)
     {
         using value_type = typename std::iterator_traits<InputIterator>::value_type;
         static_assert(std::is_convertible<value_type, T>::value,
@@ -412,15 +400,12 @@ public:
         block_load_direct_blocked(flat_id, input, items, valid);
     }
 
-    template<
-        class InputIterator,
-        class Default
-    >
+    template<class InputIterator, class Default>
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void load(InputIterator input,
               T (&items)[ItemsPerThread],
               unsigned int valid,
-              Default out_of_bounds,
+              Default      out_of_bounds,
               storage_type& /*storage*/)
     {
         using value_type = typename std::iterator_traits<InputIterator>::value_type;
@@ -428,8 +413,7 @@ public:
                       "The type T must be such that an object of type InputIterator "
                       "can be dereferenced and then implicitly converted to T.");
         const unsigned int flat_id = ::rocprim::detail::logical_lane_id<VirtualWaveSize>();
-        block_load_direct_blocked(flat_id, input, items, valid,
-                                  out_of_bounds);
+        block_load_direct_blocked(flat_id, input, items, valid, out_of_bounds);
     }
 };
 
@@ -448,7 +432,8 @@ class warp_load<T,
                   "Logical warp size must be a power of two.");
 
 public:
-    ROCPRIM_INLINE ROCPRIM_HOST_DEVICE warp_load()
+    ROCPRIM_INLINE ROCPRIM_HOST_DEVICE
+    warp_load()
     {
         detail::check_virtual_wave_size<VirtualWaveSize>();
     }
@@ -461,9 +446,7 @@ public:
 
     template<class InputIterator>
     ROCPRIM_DEVICE ROCPRIM_INLINE
-    void load(InputIterator input,
-              T (&items)[ItemsPerThread],
-              storage_type& storage)
+    void load(InputIterator input, T (&items)[ItemsPerThread], storage_type& storage)
     {
         using value_type = typename std::iterator_traits<InputIterator>::value_type;
         static_assert(std::is_convertible<value_type, T>::value,
@@ -478,7 +461,7 @@ public:
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void load(InputIterator input,
               T (&items)[ItemsPerThread],
-              unsigned int valid,
+              unsigned int  valid,
               storage_type& storage)
     {
         using value_type = typename std::iterator_traits<InputIterator>::value_type;
@@ -490,15 +473,12 @@ public:
         exchange_type().striped_to_blocked(items, items, storage);
     }
 
-    template<
-        class InputIterator,
-        class Default
-    >
+    template<class InputIterator, class Default>
     ROCPRIM_DEVICE ROCPRIM_INLINE
     void load(InputIterator input,
               T (&items)[ItemsPerThread],
-              unsigned int valid,
-              Default out_of_bounds,
+              unsigned int  valid,
+              Default       out_of_bounds,
               storage_type& storage)
     {
         using value_type = typename std::iterator_traits<InputIterator>::value_type;

@@ -24,7 +24,6 @@
  *
  *******************************************************************************/
 
-
 #include <dataTypeInfo.hpp>
 
 #include <gtest/gtest.h>
@@ -1648,7 +1647,7 @@ TEST_F(fp16_test, greaterThanMaxTest)
 {
 
     float max = getDataMax<DT>();
-    cvt t;
+    cvt   t;
 
     t.num     = max;
     uint bMax = t.bRep;

@@ -64,8 +64,9 @@ template<typename T,
          typename BinaryFunction,
          unsigned int BlockSize,
          unsigned int ItemsPerThread>
-__global__ __launch_bounds__(BlockSize, ROCPRIM_DEFAULT_MIN_WARPS_PER_EU) void subtract_left_kernel(
-    const T* input, StorageType* output)
+__global__
+__launch_bounds__(BlockSize, ROCPRIM_DEFAULT_MIN_WARPS_PER_EU) void
+    subtract_left_kernel(const T* input, StorageType* output)
 {
     const unsigned int lid             = threadIdx.x;
     const unsigned int items_per_block = BlockSize * ItemsPerThread;
@@ -74,8 +75,9 @@ __global__ __launch_bounds__(BlockSize, ROCPRIM_DEFAULT_MIN_WARPS_PER_EU) void s
     T thread_items[ItemsPerThread];
     rocprim::block_load_direct_blocked(lid, input + block_offset, thread_items);
 
-    rocprim::block_adjacent_difference<T, BlockSize> adjacent_difference;
-    __shared__ typename decltype(adjacent_difference)::storage_type storage;
+    rocprim::block_adjacent_difference<T, BlockSize>     adjacent_difference;
+    __shared__
+    typename decltype(adjacent_difference)::storage_type storage;
 
     Output thread_output[ItemsPerThread];
 
@@ -102,11 +104,9 @@ template<typename T,
          typename BinaryFunction,
          unsigned int BlockSize,
          unsigned int ItemsPerThread>
-__global__ __launch_bounds__(
-    BlockSize,
-    ROCPRIM_DEFAULT_MIN_WARPS_PER_EU) void subtract_left_partial_kernel(const T*      input,
-                                                                        unsigned int* tile_sizes,
-                                                                        StorageType*  output)
+__global__
+__launch_bounds__(BlockSize, ROCPRIM_DEFAULT_MIN_WARPS_PER_EU) void
+    subtract_left_partial_kernel(const T* input, unsigned int* tile_sizes, StorageType* output)
 {
     const unsigned int lid             = threadIdx.x;
     const unsigned int items_per_block = BlockSize * ItemsPerThread;
@@ -115,8 +115,9 @@ __global__ __launch_bounds__(
     T thread_items[ItemsPerThread];
     rocprim::block_load_direct_blocked(lid, input + block_offset, thread_items);
 
-    rocprim::block_adjacent_difference<T, BlockSize> adjacent_difference;
-    __shared__ typename decltype(adjacent_difference)::storage_type storage;
+    rocprim::block_adjacent_difference<T, BlockSize>     adjacent_difference;
+    __shared__
+    typename decltype(adjacent_difference)::storage_type storage;
 
     Output thread_output[ItemsPerThread];
 
@@ -149,9 +150,9 @@ template<typename T,
          typename BinaryFunction,
          unsigned int BlockSize,
          unsigned int ItemsPerThread>
-__global__ __launch_bounds__(
-    BlockSize, ROCPRIM_DEFAULT_MIN_WARPS_PER_EU) void subtract_right_kernel(const T*     input,
-                                                                            StorageType* output)
+__global__
+__launch_bounds__(BlockSize, ROCPRIM_DEFAULT_MIN_WARPS_PER_EU) void
+    subtract_right_kernel(const T* input, StorageType* output)
 {
     const unsigned int lid             = threadIdx.x;
     const unsigned int items_per_block = BlockSize * ItemsPerThread;
@@ -160,8 +161,9 @@ __global__ __launch_bounds__(
     T thread_items[ItemsPerThread];
     rocprim::block_load_direct_blocked(lid, input + block_offset, thread_items);
 
-    rocprim::block_adjacent_difference<T, BlockSize> adjacent_difference;
-    __shared__ typename decltype(adjacent_difference)::storage_type storage;
+    rocprim::block_adjacent_difference<T, BlockSize>     adjacent_difference;
+    __shared__
+    typename decltype(adjacent_difference)::storage_type storage;
 
     Output thread_output[ItemsPerThread];
 
@@ -188,11 +190,9 @@ template<typename T,
          typename BinaryFunction,
          unsigned int BlockSize,
          unsigned int ItemsPerThread>
-__global__ __launch_bounds__(
-    BlockSize,
-    ROCPRIM_DEFAULT_MIN_WARPS_PER_EU) void subtract_right_partial_kernel(const T*      input,
-                                                                         unsigned int* tile_sizes,
-                                                                         StorageType*  output)
+__global__
+__launch_bounds__(BlockSize, ROCPRIM_DEFAULT_MIN_WARPS_PER_EU) void
+    subtract_right_partial_kernel(const T* input, unsigned int* tile_sizes, StorageType* output)
 {
     const unsigned int lid             = threadIdx.x;
     const unsigned int items_per_block = BlockSize * ItemsPerThread;
@@ -201,8 +201,9 @@ __global__ __launch_bounds__(
     T thread_items[ItemsPerThread];
     rocprim::block_load_direct_blocked(lid, input + block_offset, thread_items);
 
-    rocprim::block_adjacent_difference<T, BlockSize> adjacent_difference;
-    __shared__ typename decltype(adjacent_difference)::storage_type storage;
+    rocprim::block_adjacent_difference<T, BlockSize>     adjacent_difference;
+    __shared__
+    typename decltype(adjacent_difference)::storage_type storage;
 
     Output thread_output[ItemsPerThread];
 
@@ -592,8 +593,8 @@ auto test_block_adjacent_difference() -> typename std::enable_if<Method == 3>::t
         ASSERT_NO_FATAL_FAILURE(test_utils::assert_near(output, expected,
             is_add_op::value
                 ? std::max(test_utils::precision<T>, test_utils::precision<stored_type>)
-                : std::is_same<T, stored_type>::value 
-                    ? 0 
+                : std::is_same<T, stored_type>::value
+                    ? 0
                     : test_utils::precision<stored_type>));
         // clang-format on
     }

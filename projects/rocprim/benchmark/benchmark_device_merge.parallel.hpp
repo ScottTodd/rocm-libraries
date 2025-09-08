@@ -118,7 +118,7 @@ struct device_merge_benchmark : public benchmark_utils::autotune_interface
         common::device_ptr<key_type> d_keys_output(size);
 
         common::device_ptr<void> d_temporary_storage;
-        size_t temporary_storage_bytes = 0;
+        size_t                   temporary_storage_bytes = 0;
         HIP_CHECK(rocprim::merge<Config>(d_temporary_storage.get(),
                                          temporary_storage_bytes,
                                          d_keys_input1.get(),
@@ -198,7 +198,7 @@ struct device_merge_benchmark : public benchmark_utils::autotune_interface
         common::device_ptr<value_type> d_values_output(size);
 
         common::device_ptr<void> d_temporary_storage;
-        size_t temporary_storage_bytes = 0;
+        size_t                   temporary_storage_bytes = 0;
         HIP_CHECK(rocprim::merge<Config>(d_temporary_storage.get(),
                                          temporary_storage_bytes,
                                          d_keys_input1.get(),

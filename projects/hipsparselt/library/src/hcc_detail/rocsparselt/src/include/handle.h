@@ -29,8 +29,8 @@
 #include "rocsparselt.h"
 
 #include <fstream>
-#include <hip/hip_runtime_api.h>
 #include <hip/hip_fp8.h>
+#include <hip/hip_runtime_api.h>
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -277,7 +277,7 @@ struct _rocsparselt_matmul_descr
     bool                  _is_sparse_a = true;
     bool                  _swap_ab     = false;
 
-    uintptr_t is_init                  = 0;
+    uintptr_t is_init = 0;
 
 private:
     bool is_reference = true;
@@ -399,25 +399,40 @@ enum _rocsparselt_matmul_datatype
 struct _rocsparselt_matmul_type
 {
     _rocsparselt_matmul_datatype type;
-    hipDataType a;
-    hipDataType b;
-    hipDataType c;
-    hipDataType d;
-    rocsparselt_compute_type compute;
+    hipDataType                  a;
+    hipDataType                  b;
+    hipDataType                  c;
+    hipDataType                  d;
+    rocsparselt_compute_type     compute;
 };
 
-constexpr _rocsparselt_matmul_type valid_matmul_datatypes[] =
-{
+constexpr _rocsparselt_matmul_type valid_matmul_datatypes[] = {
     {MATMUL_DATATYPE_H_H_S, HIP_R_16F, HIP_R_16F, HIP_R_16F, HIP_R_16F, rocsparselt_compute_f32},
-    {MATMUL_DATATYPE_B_B_S, HIP_R_16BF, HIP_R_16BF, HIP_R_16BF, HIP_R_16BF, rocsparselt_compute_f32},
+    {MATMUL_DATATYPE_B_B_S,
+     HIP_R_16BF,
+     HIP_R_16BF,
+     HIP_R_16BF,
+     HIP_R_16BF,
+     rocsparselt_compute_f32},
     {MATMUL_DATATYPE_I8_I8_S, HIP_R_8I, HIP_R_8I, HIP_R_8I, HIP_R_8I, rocsparselt_compute_i32},
     {MATMUL_DATATYPE_I8_H_S, HIP_R_8I, HIP_R_8I, HIP_R_16F, HIP_R_16F, rocsparselt_compute_i32},
     {MATMUL_DATATYPE_I8_B_S, HIP_R_8I, HIP_R_8I, HIP_R_16BF, HIP_R_16BF, rocsparselt_compute_i32},
 #if HIP_FP8_TYPE_OCP
-    {MATMUL_DATATYPE_E4M3_S_S, HIP_R_8F_E4M3, HIP_R_8F_E4M3, HIP_R_32F, HIP_R_32F, rocsparselt_compute_f32},
-    {MATMUL_DATATYPE_E5M2_S_S, HIP_R_8F_E5M2, HIP_R_8F_E5M2, HIP_R_32F, HIP_R_32F, rocsparselt_compute_f32},
+    {MATMUL_DATATYPE_E4M3_S_S,
+     HIP_R_8F_E4M3,
+     HIP_R_8F_E4M3,
+     HIP_R_32F,
+     HIP_R_32F,
+     rocsparselt_compute_f32},
+    {MATMUL_DATATYPE_E5M2_S_S,
+     HIP_R_8F_E5M2,
+     HIP_R_8F_E5M2,
+     HIP_R_32F,
+     HIP_R_32F,
+     rocsparselt_compute_f32},
 #endif
 };
 
-_rocsparselt_matmul_datatype is_matmul_datatype_valid(hipDataType a, hipDataType b, hipDataType c, hipDataType d, rocsparselt_compute_type compute);
+_rocsparselt_matmul_datatype is_matmul_datatype_valid(
+    hipDataType a, hipDataType b, hipDataType c, hipDataType d, rocsparselt_compute_type compute);
 #endif // HANDLE_H

@@ -19,7 +19,7 @@ GlobalParameters:
 #  GenerateSourcesAndExit : True
   MaxLDS: 163840
   DeviceLDS: 163840
-  
+
 BenchmarkProblems:
   -
     - # ProblemType
@@ -81,4 +81,3 @@ BenchmarkProblems:
         - BiasTypeArgs: ['s']
         - ActivationArgs:
           - [Enum: none]
- 

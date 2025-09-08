@@ -70,7 +70,8 @@ public:
 #endif
     };
 
-    __forceinline__ __device__ __host__ mrg31k3p_engine()
+    __forceinline__ __device__ __host__
+    mrg31k3p_engine()
     {
         this->seed(ROCRAND_MRG31K3P_DEFAULT_SEED, 0, 0);
     }
@@ -83,9 +84,10 @@ public:
     /// zero, value \p ROCRAND_MRG31K3P_DEFAULT_SEED is used instead.
     ///
     /// A subsequence is 2^72 numbers long.
-    __forceinline__ __device__ __host__ mrg31k3p_engine(const unsigned long long seed,
-                                                        const unsigned long long subsequence,
-                                                        const unsigned long long offset)
+    __forceinline__ __device__ __host__
+    mrg31k3p_engine(const unsigned long long seed,
+                    const unsigned long long subsequence,
+                    const unsigned long long offset)
     {
         this->seed(seed, subsequence, offset);
     }
@@ -98,9 +100,10 @@ public:
     /// zero, value \p ROCRAND_MRG31K3P_DEFAULT_SEED is used instead.
     ///
     /// A subsequence is 2^72 numbers long.
-    __forceinline__ __device__ __host__ void seed(unsigned long long       seed_value,
-                                                  const unsigned long long subsequence,
-                                                  const unsigned long long offset)
+    __forceinline__ __device__ __host__
+    void seed(unsigned long long       seed_value,
+              const unsigned long long subsequence,
+              const unsigned long long offset)
     {
         if(seed_value == 0)
         {
@@ -118,27 +121,30 @@ public:
     }
 
     /// Advances the internal state to skip \p offset numbers.
-    __forceinline__ __device__ __host__ void discard(unsigned long long offset)
+    __forceinline__ __device__ __host__
+    void discard(unsigned long long offset)
     {
         this->discard_impl(offset);
     }
 
     /// Advances the internal state to skip \p subsequence subsequences.
     /// A subsequence is 2^72 numbers long.
-    __forceinline__ __device__ __host__ void discard_subsequence(unsigned long long subsequence)
+    __forceinline__ __device__ __host__
+    void discard_subsequence(unsigned long long subsequence)
     {
         this->discard_subsequence_impl(subsequence);
     }
 
     /// Advances the internal state to skip \p sequence sequences.
     /// A sequence is 2^134 numbers long.
-    __forceinline__ __device__ __host__ void discard_sequence(unsigned long long sequence)
+    __forceinline__ __device__ __host__
+    void discard_sequence(unsigned long long sequence)
     {
         this->discard_sequence_impl(sequence);
     }
 
-    __forceinline__ __device__ __host__ void restart(const unsigned long long subsequence,
-                                                     const unsigned long long offset)
+    __forceinline__ __device__ __host__
+    void restart(const unsigned long long subsequence, const unsigned long long offset)
     {
 #ifndef ROCRAND_DETAIL_BM_NOT_IN_STATE
         m_state.boxmuller_float_state  = 0;
@@ -148,13 +154,15 @@ public:
         this->discard_impl(offset);
     }
 
-    __forceinline__ __device__ __host__ unsigned int operator()()
+    __forceinline__ __device__ __host__
+    unsigned int operator()()
     {
         return this->next();
     }
 
     // Returned value is in range [1, ROCRAND_MRG31K3P_M1].
-    __forceinline__ __device__ __host__ unsigned int next()
+    __forceinline__ __device__ __host__
+    unsigned int next()
     {
         // First component
         unsigned int tmp
@@ -187,14 +195,15 @@ public:
 
 protected:
     // Advances the internal state to skip \p offset numbers.
-    __forceinline__ __device__ __host__ void discard_impl(unsigned long long offset)
+    __forceinline__ __device__ __host__
+    void discard_impl(unsigned long long offset)
     {
         discard_state(offset);
     }
 
     // Advances the internal state to skip \p subsequence subsequences.
-    __forceinline__ __device__ __host__ void
-        discard_subsequence_impl(unsigned long long subsequence)
+    __forceinline__ __device__ __host__
+    void discard_subsequence_impl(unsigned long long subsequence)
     {
         int i = 0;
 
@@ -216,7 +225,8 @@ protected:
     }
 
     // Advances the internal state to skip \p sequences.
-    __forceinline__ __device__ __host__ void discard_sequence_impl(unsigned long long sequence)
+    __forceinline__ __device__ __host__
+    void discard_sequence_impl(unsigned long long sequence)
     {
         int i = 0;
 
@@ -238,7 +248,8 @@ protected:
     }
 
     // Advances the internal state to skip \p offset numbers.
-    __forceinline__ __device__ __host__ void discard_state(unsigned long long offset)
+    __forceinline__ __device__ __host__
+    void discard_state(unsigned long long offset)
     {
         int i = 0;
 
@@ -260,14 +271,15 @@ protected:
     }
 
     // Advances the internal state to the next state.
-    __forceinline__ __device__ __host__ void discard_state()
+    __forceinline__ __device__ __host__
+    void discard_state()
     {
         discard_state(1);
     }
 
 private:
-    __forceinline__ __device__ __host__ static void mod_mat_vec_m1(const unsigned int* A,
-                                                                   unsigned int*       s)
+    __forceinline__ __device__ __host__
+    static void mod_mat_vec_m1(const unsigned int* A, unsigned int* s)
     {
         unsigned long long x[3] = {s[0], s[1], s[2]};
 
@@ -278,8 +290,8 @@ private:
         s[2] = mod_m1(mod_m1(A[6] * x[0]) + mod_m1(A[7] * x[1]) + mod_m1(A[8] * x[2]));
     }
 
-    __forceinline__ __device__ __host__ static void mod_mat_vec_m2(const unsigned int* A,
-                                                                   unsigned int*       s)
+    __forceinline__ __device__ __host__
+    static void mod_mat_vec_m2(const unsigned int* A, unsigned int* s)
     {
         unsigned long long x[3] = {s[0], s[1], s[2]};
 
@@ -290,24 +302,26 @@ private:
         s[2] = mod_m2(mod_m2(A[6] * x[0]) + mod_m2(A[7] * x[1]) + mod_m2(A[8] * x[2]));
     }
 
-    __forceinline__ __device__ __host__ static unsigned long long mod_mul_m1(unsigned int       i,
-                                                                             unsigned long long j)
+    __forceinline__ __device__ __host__
+    static unsigned long long mod_mul_m1(unsigned int i, unsigned long long j)
     {
         return mod_m1(i * j);
     }
 
-    __forceinline__ __device__ __host__ static unsigned long long mod_m1(unsigned long long p)
+    __forceinline__ __device__ __host__
+    static unsigned long long mod_m1(unsigned long long p)
     {
         return p % ROCRAND_MRG31K3P_M1;
     }
 
-    __forceinline__ __device__ __host__ static unsigned long long mod_mul_m2(unsigned int       i,
-                                                                             unsigned long long j)
+    __forceinline__ __device__ __host__
+    static unsigned long long mod_mul_m2(unsigned int i, unsigned long long j)
     {
         return mod_m2(i * j);
     }
 
-    __forceinline__ __device__ __host__ static unsigned long long mod_m2(unsigned long long p)
+    __forceinline__ __device__ __host__
+    static unsigned long long mod_m2(unsigned long long p)
     {
         return p % ROCRAND_MRG31K3P_M2;
     }

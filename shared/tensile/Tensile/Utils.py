@@ -30,6 +30,7 @@ from typing import List
 
 from .Common import DeveloperWarning, printWarning
 
+
 class ProgressBar:
     """A class for displaying a progress bar in the console.
 
@@ -48,8 +49,9 @@ class ProgressBar:
         createTime: The timestamp when the progress bar was created.
         message: The message displayed alongside the progress bar.
     """
+
     def __init__(self, maxValue: int, desc: str, width=40):
-        self.char: str = '.'
+        self.char: str = "."
         self.maxValue: int = maxValue
         self.width: int = width
         self.maxTicks: int = self.width - 10  # Adjusted for better alignment
@@ -77,13 +79,13 @@ class ProgressBar:
 
     def printStatus(self):
         """Prints the current status of the progress bar to the console."""
-        progress_bar = self.char * self.numTicks + ' ' * (self.maxTicks - self.numTicks)
+        progress_bar = self.char * self.numTicks + " " * (self.maxTicks - self.numTicks)
         status_msg = f"{self.message} {progress_bar} {self.fraction * 100:.1f}%"
-        
+
         if self.numTicks == 0:
             sys.stdout.write(status_msg)
         else:
-            sys.stdout.write('\r' + ' ' * len(status_msg) + '\r' + status_msg)
+            sys.stdout.write("\r" + " " * len(status_msg) + "\r" + status_msg)
         sys.stdout.flush()
 
     def finish(self):
@@ -92,6 +94,7 @@ class ProgressBar:
 
         sys.stdout.write(f" (took {stopTime - self.createTime:.1f} secs)\n")
         sys.stdout.flush()
+
 
 class SpinnyThing:
     """A class to display a spinning indicator in the console for long-running operations.
@@ -108,9 +111,10 @@ class SpinnyThing:
         count: A counter to control the update frequency of the spinner.
         createTime: The timestamp when the spinner was created.
     """
+
     def __init__(self, desc: str):
         self.message: str = "# " + desc
-        self.chars: List[str] = ['|', '/', '-', '\\']
+        self.chars: List[str] = ["|", "/", "-", "\\"]
         self.index: int = 0
         self.count: int = 0
         self.createTime: float = time.time()
@@ -121,50 +125,55 @@ class SpinnyThing:
         if self.count % 3 != 0:
             return
 
-        sys.stdout.write('\r' + ' ' * (len(self.message) + 10))
+        sys.stdout.write("\r" + " " * (len(self.message) + 10))
         sys.stdout.flush()
 
-        sys.stdout.write('\r' + self.message + " " + self.chars[self.index])
+        sys.stdout.write("\r" + self.message + " " + self.chars[self.index])
         sys.stdout.flush()
         self.index = (self.index + 1) % len(self.chars)
 
     def finish(self):
         """Clears the spinner and displays a completion message with the elapsed time."""
-        sys.stdout.write('\r' + ' ' * (len(self.message) + 10))
+        sys.stdout.write("\r" + " " * (len(self.message) + 10))
         sys.stdout.flush()
 
         stopTime = time.time()
         elapsedTime = stopTime - self.createTime
 
-        sys.stdout.write('\r' + self.message + f'... Done in {elapsedTime:.1f} secs\n')
+        sys.stdout.write("\r" + self.message + f"... Done in {elapsedTime:.1f} secs\n")
         sys.stdout.flush()
 
+
 def iterate_progress(obj, *args, **kwargs):
-    if 'desc' not in kwargs:
-        printWarning("No message provided for TQDM progress bar/spinner", DeveloperWarning)
-        kwargs['desc'] = 'Processing unknown function'
-    if 'total' in kwargs:
-        progress = ProgressBar(kwargs['total'], kwargs['desc'])
+    if "desc" not in kwargs:
+        printWarning(
+            "No message provided for TQDM progress bar/spinner", DeveloperWarning
+        )
+        kwargs["desc"] = "Processing unknown function"
+    if "total" in kwargs:
+        progress = ProgressBar(kwargs["total"], kwargs["desc"])
     else:
         try:
-            progress =  ProgressBar(len(obj), kwargs['desc'])
+            progress = ProgressBar(len(obj), kwargs["desc"])
         except TypeError:
-            progress = SpinnyThing(kwargs['desc'])
+            progress = SpinnyThing(kwargs["desc"])
     for o in obj:
         yield o
         progress.increment()
     progress.finish()
+
 
 try:
     from tqdm import tqdm
 except ImportError:
     tqdm = iterate_progress
 
+
 def state(obj):
-    if hasattr(obj, 'state'):
+    if hasattr(obj, "state"):
         return obj.state()
 
-    if hasattr(obj.__class__, 'StateKeys'):
+    if hasattr(obj.__class__, "StateKeys"):
         rv = {}
         for key in obj.__class__.StateKeys:
             attr = key
@@ -174,7 +183,7 @@ def state(obj):
         return rv
 
     if isinstance(obj, dict):
-        return dict([(k, state(v)) for k,v in list(obj.items())])
+        return dict([(k, state(v)) for k, v in list(obj.items())])
 
     if any([isinstance(obj, cls) for cls in [str, int, float]]):
         return obj
@@ -187,12 +196,14 @@ def state(obj):
 
     return obj
 
+
 def state_key_ordering(cls):
     def tup(obj):
         return tuple([getattr(obj, k) for k in cls.StateKeys])
 
     def lt(a, b):
         return tup(a) < tup(b)
+
     def eq(a, b):
         return tup(a) == tup(b)
 
@@ -201,10 +212,11 @@ def state_key_ordering(cls):
 
     return functools.total_ordering(cls)
 
+
 def hash_combine(*objs, **kwargs):
     shift = 1
-    if 'shift' in kwargs:
-        shift = kwargs['shift']
+    if "shift" in kwargs:
+        shift = kwargs["shift"]
 
     if len(objs) == 1:
         objs = objs[0]
@@ -221,8 +233,10 @@ def hash_combine(*objs, **kwargs):
         pass
     return rv
 
+
 def hash_objs(*objs, **kwargs):
     return hash(tuple(objs))
+
 
 def ceil_divide(numerator, denominator):
     # import pdb
@@ -234,11 +248,12 @@ def ceil_divide(numerator, denominator):
         print("ERROR: Can't have a negative register value")
         return 0
     try:
-        div = int((numerator+denominator-1) // denominator)
+        div = int((numerator + denominator - 1) // denominator)
     except ZeroDivisionError:
         print("ERROR: Divide by 0")
         return 0
     return div
 
+
 def roundUpToNearestMultiple(numerator, denominator):
-    return ceil_divide(numerator,denominator)*int(denominator)
+    return ceil_divide(numerator, denominator) * int(denominator)

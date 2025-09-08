@@ -137,8 +137,8 @@ TYPED_TEST(HipcubDeviceScanTests, InclusiveScan)
     using scan_op_type = typename TestFixture::scan_op_type;
     // if scan_op_type is plus and input_type is bfloat16 or half,
     // use float as device-side accumulator and double as host-side accumulator
-    using is_add_op    = test_utils::is_add_operator<scan_op_type>;
-    using acc_type     = typename accum_type<T, scan_op_type>::type;
+    using is_add_op        = test_utils::is_add_operator<scan_op_type>;
+    using acc_type         = typename accum_type<T, scan_op_type>::type;
     using IteratorType     = rocprim::transform_iterator<T*, hipcub::CastOp<acc_type>, acc_type>;
     constexpr bool inplace = std::is_same<T, U>::value && std::is_same<acc_type, T>::value;
 
@@ -268,13 +268,13 @@ TYPED_TEST(HipcubDeviceScanTests, InclusiveScan)
             HIP_CHECK(test_common_utils::hipMallocHelper(&d_temp_storage, temp_storage_size_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             // Run
             call(d_temp_storage, temp_storage_size_bytes);
 
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipPeekAtLastError());
@@ -329,8 +329,8 @@ TYPED_TEST(HipcubDeviceScanTests, InclusiveScanInit)
     using scan_op_type = typename TestFixture::scan_op_type;
     // if scan_op_type is plus and input_type is bfloat16 or half,
     // use float as device-side accumulator and double as host-side accumulator
-    using is_add_op    = test_utils::is_add_operator<scan_op_type>;
-    using acc_type     = typename accum_type<T, scan_op_type>::type;
+    using is_add_op        = test_utils::is_add_operator<scan_op_type>;
+    using acc_type         = typename accum_type<T, scan_op_type>::type;
     using IteratorType     = rocprim::transform_iterator<T*, hipcub::CastOp<acc_type>, acc_type>;
     constexpr bool inplace = std::is_same<T, U>::value && std::is_same<acc_type, T>::value;
 
@@ -627,7 +627,7 @@ TYPED_TEST(HipcubDeviceScanTests, InclusiveScanByKey)
             HIP_CHECK(hipDeviceSynchronize());
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             // Run
@@ -655,7 +655,7 @@ TYPED_TEST(HipcubDeviceScanTests, InclusiveScanByKey)
                                                                  stream));
             }
 
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipPeekAtLastError());
@@ -698,8 +698,8 @@ TYPED_TEST(HipcubDeviceScanTests, ExclusiveScan)
     using scan_op_type = typename TestFixture::scan_op_type;
     // if scan_op_type is plus and input_type is bfloat16 or half,
     // use float as device-side accumulator and double as host-side accumulator
-    using is_add_op    = test_utils::is_add_operator<scan_op_type>;
-    using acc_type     = typename accum_type<T, scan_op_type>::type;
+    using is_add_op        = test_utils::is_add_operator<scan_op_type>;
+    using acc_type         = typename accum_type<T, scan_op_type>::type;
     using IteratorType     = rocprim::transform_iterator<T*, hipcub::CastOp<acc_type>, acc_type>;
     constexpr bool inplace = std::is_same<T, U>::value && std::is_same<acc_type, T>::value;
 
@@ -841,13 +841,13 @@ TYPED_TEST(HipcubDeviceScanTests, ExclusiveScan)
             HIP_CHECK(test_common_utils::hipMallocHelper(&d_temp_storage, temp_storage_size_bytes));
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             // Run
             call(d_temp_storage, temp_storage_size_bytes);
 
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipPeekAtLastError());
@@ -1030,7 +1030,7 @@ TYPED_TEST(HipcubDeviceScanTests, ExclusiveScanByKey)
             HIP_CHECK(hipDeviceSynchronize());
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             // Run
@@ -1059,7 +1059,7 @@ TYPED_TEST(HipcubDeviceScanTests, ExclusiveScanByKey)
                                                                  stream));
             }
 
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipPeekAtLastError());
@@ -1369,7 +1369,7 @@ TYPED_TEST(HipcubDeviceScanTests, ExclusiveScanFuture)
             HIP_CHECK(hipGetLastError());
 
             test_utils::GraphHelper gHelper;
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.startStreamCapture(stream);
 
             // Run
@@ -1382,7 +1382,7 @@ TYPED_TEST(HipcubDeviceScanTests, ExclusiveScanFuture)
                                                         input.size(),
                                                         stream));
 
-            if (TestFixture::use_graphs)
+            if(TestFixture::use_graphs)
                 gHelper.createAndLaunchGraph(stream);
 
             HIP_CHECK(hipPeekAtLastError());

@@ -47,7 +47,7 @@ namespace rocRoller
         public:
             VALUWriteVCCVDIVFMAS() {}
             VALUWriteVCCVDIVFMAS(ContextPtr context)
-                : WaitStateObserver<VALUWriteVCCVDIVFMAS>(context){};
+                : WaitStateObserver<VALUWriteVCCVDIVFMAS>(context) {};
 
             constexpr static bool required(GPUArchitectureTarget const& target)
             {
