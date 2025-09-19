@@ -1,6 +1,8 @@
 # find_package(PythonInterp)
 # # TODO: Check PYTHON_VERSION_MAJOR
 
+# TODO: delete all of this? minimally replace with Python3_EXECUTABLE?
+
 find_program(VIRTUALENV_PYTHON_EXE ${python})
 if(NOT VIRTUALENV_PYTHON_EXE)
     # look for non default name
