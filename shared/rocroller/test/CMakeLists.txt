@@ -78,6 +78,7 @@ if(ROCROLLER_ENABLE_GEMM_CLIENT_TESTS)
             set(rocroller_skip_regex "key = amdhsa.version")
         endif()
     endif()
+    find_package(Python3 REQUIRED COMPONENTS Interpreter)
     find_package(Pytest REQUIRED) # requires pip install -r requirements.txt
     pytest_discover_tests(
         GEMMClientTests

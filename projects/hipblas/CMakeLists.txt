@@ -45,7 +45,7 @@ endif()
 project( hipblas LANGUAGES CXX )
 
 if (NOT python)
-    set(python "python3") # default for linux
+    set(python "python") # default for linux
 endif()
 
 # Append our library helper cmake path and the cmake path for hip (for convenience)
@@ -159,7 +159,7 @@ if( BUILD_CLIENTS_SAMPLES OR BUILD_CLIENTS_TESTS OR BUILD_CLIENTS_BENCHMARKS )
         COMPONENT clients-common)
   endif()
   if(BUILD_CLIENTS_SAMPLES)
-    rocm_package_setup_client_component( 
+    rocm_package_setup_client_component(
       samples
       DEPENDS
         COMPONENT clients-common)

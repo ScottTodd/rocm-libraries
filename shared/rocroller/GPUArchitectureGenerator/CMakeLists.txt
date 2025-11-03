@@ -150,3 +150,8 @@ add_custom_target(
         "${CMAKE_CURRENT_BINARY_DIR}/GPUArchitecture_def.yaml"
         "${CMAKE_CURRENT_BINARY_DIR}/GPUArchitecture_def.msgpack"
 )
+
+
+message(STATUS "CMAKE_C_FLAGS in rocroller/GPUArchitectureGenerator: ${CMAKE_C_FLAGS}")
+message(STATUS "CMAKE_CXX_FLAGS in rocroller/GPUArchitectureGenerator: ${CMAKE_CXX_FLAGS}")
+message(STATUS "CMAKE_EXE_LINKER_FLAGS in rocroller/GPUArchitectureGenerator: ${CMAKE_EXE_LINKER_FLAGS}")
