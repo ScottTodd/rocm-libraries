@@ -5,7 +5,9 @@
 
 #ifdef _WIN32
 
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif
 #include <algorithm>
 #include <cwctype>
 #include <filesystem>
